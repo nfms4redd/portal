@@ -1,0 +1,49 @@
+UNREDD NFMS Portal Roadmap
+
+1.0 (31th of May) (CLOSED)
+---------------------------
+
+This version is the first result of the simplification process. It is fully functional but some of the process to be done in the backend are to be done manually. This is intended to be deployed in Ecuador in June and they will have to publish the layers directly in geoserver (they already can do it after Fernando training mission in March). The statistics will be calculated with the assistance of the team in Rome.
+
+- Slight improvements to the customization of the portal (prune unnecessary translations, integrate a software to manage the files, improved error messages and naming on configuration files, ...)
+
+- Utility for improve the creation of map symbology.
+
+- Internal reorganization of the code repository.
+
+- Removal of unused components: GeoBatch, GeoStore, administrative interface API, custom polygon statistics
+
+- Creation of two installation programs to deploy the staging and dissemination systems (deployable in the same machine for trainings)
+
+- Revamp the communication with two systems to be able to do a deploment.
+
+
+2.0 (28th June)
+----------------
+
+Fully automation of the manual processes of 1.0. Ingestion and publication of layers will be done through a linux command line and statistics will be automatically calculated at the moment of the ingestion.
+
+- Setup of a database to support the development of statistics
+
+- Creation of the automatic ingestion process
+
+- Creation of the statistic precalculation process
+
+- ...
+
+
+2.1 (beginning of November)
+----------------------------
+
+- ...
+
+
+3.0 (end December)
+-------------------
+
+This version should include the development done in Argentina on the administrative web interface. After this, all the administrative process that are done in command line can be done with a web interface so it is possible to deploy the system in countries were managing the system from command line may pose problems.
+
+- Administrative interface
+
+- ...
+
