@@ -59,6 +59,21 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.packtag</groupId>
+			<artifactId>packtag-core</artifactId>
+			<version>3.8</version>
+		</dependency>
 		<!-- Logging: log4j and slf4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
