@@ -10,6 +10,7 @@
 	</parent>
 	<groupId>org.fao.unredd</groupId>
 	<artifactId>admin-portal</artifactId>
+	<packaging>war</packaging>
 	<name>UNREDD Administrative Portal</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
