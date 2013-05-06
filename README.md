@@ -29,8 +29,7 @@ Procedures
 
 The following sections explain the procedures to interact with the project to have new features implemented.
 
-Feature request tracker
-.......................
+### Feature request tracker
 
 A feature request tracker provides a centralized way to manage the requests for new functionalities on the
 portal. Associated with each feature request there is a space for communication and discussion so it is
@@ -46,8 +45,7 @@ In our case the feature request of the NFMS portal can be found here: https://gi
 The way to start a discussion to include a new functionality is to create an issue. If the issue is 
 already created, it is possible to add new comments asking for the functionality to be included in the next release.
 
-Mailing list
-............
+### Mailing list
 
 Where technical decisions will take place publicly so that they are documented in the future. Eventually, 
 developers may have chats that will be dumped to the list.
