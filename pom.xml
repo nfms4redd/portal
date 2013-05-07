@@ -15,6 +15,10 @@
 	<url>http://maven.apache.org</url>
 	<repositories>
 		<repository>
+			<id>EclipseLink</id>
+			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+		</repository>
+		<repository>
 			<id>geosolutions</id>
 			<name>GeoSolutions public maven repository</name>
 			<url>http://maven.geo-solutions.it/</url>
