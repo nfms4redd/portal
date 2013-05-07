@@ -13,6 +13,13 @@
 	<packaging>war</packaging>
 	<name>UNREDD Portal</name>
 	<url>http://maven.apache.org</url>
+	<repositories>
+		<repository>
+			<id>geosolutions</id>
+			<name>GeoSolutions public maven repository</name>
+			<url>http://maven.geo-solutions.it/</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -46,6 +53,22 @@
 			<groupId>net.tanesha.recaptcha4j</groupId>
 			<artifactId>recaptcha4j</artifactId>
 			<version>0.0.7</version>
+		</dependency>
+		<!-- Geosolutions proxy + transitive dependencies. See issue #7 -->
+		<dependency>
+			<groupId>proxy</groupId>
+			<artifactId>http_proxy</artifactId>
+			<version>1.0.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
 		</dependency>
 		<!-- J2EE -->
 		<dependency>
