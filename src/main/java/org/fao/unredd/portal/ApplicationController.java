@@ -75,19 +75,8 @@ public class ApplicationController {
 		SYNTAX_ERROR(3, 400, "ajax_syntax_error"), //
 		STORING_ERROR(4, 500, "ajax_storing_error"), //
 		UNAUTHORIZED(5, 401, "ajax_invalid_recaptcha"), //
-		ILLEGAL_ARGUMENT(17, 400, "ajax_invalid_parameter"), //
-		/* reporting errors */
-		MANY_TIME_LAYER_STATS(6, 500, "stats_many_time_layer"), //
-		WPS_SERVICE_NO_ACCESS(8, 500, "stats_wps_process_not_accessible"), //
-		WPS_PROCESS_INTERRUPTED(8, 500, "stats_wps_process_interrupted"), //
-		WPS_EXECUTION_EXCEPTION(9, 500, "stats_wps_execution_exception"), //
-		NO_STATS_TO_RUN(10, 500, "stats_no_stats_to_run"), //
-		INVALID_WKT_ROI(11, 400, "stats_invalid_wkt_roi"), //
-		GROOVY_SCRIPT_NOT_FOUND(12, 500, "stats_groovy_script_not_found"), //
-		GROOVY_SCRIPT_RUN_ERROR(13, 500, "stats_groovy_script_run_error"), //
-		GROOVY_SCRIPT_NO_FUNCTION(14, 500, "stats_groovy_script_no_function"), //
-		GEOSTORE_ERROR(15, 500, "stats_geostore_error"), //
-		INVALID_STATSDEF_XML(16, 500, "stats_xml_def_invalid");
+		ILLEGAL_ARGUMENT(17, 400, "ajax_invalid_parameter");
+
 		private int id, status;
 
 		private String message;
