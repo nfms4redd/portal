@@ -31,7 +31,7 @@ The following sections explain the procedures to interact with the project to ha
 
 ### Feature request tracker
 
-A feature request tracker provides a centralized way to manage the requests for new functionalities on the
+A feature request tracker provides a centralized way to manage the requests for fixes and new functionalities on the
 portal. Associated with each feature request there is a space for communication and discussion so it is
 an interesting tool for collaboration and finding common interests in the context of the portal.
 
@@ -43,7 +43,8 @@ and maintenance and in terms of convenience related to the general objectives of
 In our case the feature request of the NFMS portal can be found here: https://github.com/nfms4redd/nfms/issues.
 
 The way to start a discussion to include a new functionality is to create an issue. If the issue is 
-already created, it is possible to add new comments asking for the functionality to be included in the next release.
+already created, it is possible to add new comments asking for the functionality or the bug fix to be 
+included in the next release.
 
 ### Mailing list
 
