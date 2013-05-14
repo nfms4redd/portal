@@ -16,33 +16,6 @@ import org.junit.Test;
 public class StatsCalculatorTest {
 
 	@Test
-	public void testOkThreeSnapshots() throws Exception {
-		File file = new File("src/test/resources/okThreeSnapshots");
-		StatsCalculator statsCalculator = new StatsCalculator(file);
-		CalculationListener calculationListener = mock(CalculationListener.class);
-		statsCalculator.run(calculationListener);
-
-		String folderBase = "src/test/resources/okThreeSnapshots/";
-		File areaRaster = new File(folderBase
-				+ "configuration/sample-areas.tiff");
-		// clean up before checks
-		assertTrue(!areaRaster.exists() || areaRaster.delete());
-
-		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase + "mosaic/snapshot_2000.tiff"),
-				"unredd:provinces", "name");
-		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase + "mosaic/snapshot_2000.tiff"),
-				"unredd:projects", "id");
-		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase + "mosaic/snapshot_2001.tiff"),
-				"unredd:provinces", "name");
-		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase + "mosaic/snapshot_2001.tiff"),
-				"unredd:projects", "id");
-	}
-
-	@Test
 	public void testUnexistantFolder() throws Exception {
 		File file = new File("does not exist");
 		assertFalse(file.exists());
@@ -124,4 +97,45 @@ public class StatsCalculatorTest {
 		}
 	}
 
+	@Test
+	public void testOkThreeSnapshots() throws Exception {
+		File folderBase = new File("src/test/resources/okThreeSnapshots");
+		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		CalculationListener calculationListener = mock(CalculationListener.class);
+		statsCalculator.run(calculationListener);
+
+		File areaRaster = statsCalculator.getSampleAreasFile();
+		// clean up before checks
+		assertTrue(!areaRaster.exists() || areaRaster.delete());
+
+		verify(calculationListener).calculate(areaRaster,
+				new File(folderBase, "mosaic/snapshot_2000.tiff"),
+				"unredd:provinces", "name");
+		verify(calculationListener).calculate(areaRaster,
+				new File(folderBase, "mosaic/snapshot_2000.tiff"),
+				"unredd:projects", "id");
+		verify(calculationListener).calculate(areaRaster,
+				new File(folderBase, "mosaic/snapshot_2001.tiff"),
+				"unredd:provinces", "name");
+		verify(calculationListener).calculate(areaRaster,
+				new File(folderBase, "mosaic/snapshot_2001.tiff"),
+				"unredd:projects", "id");
+	}
+
+	@Test
+	public void testSnapshotDifferentGeometry() throws Exception {
+		File folderBase = new File(
+				"src/test/resources/snapshotDifferentGeometry");
+		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		CalculationListener calculationListener = mock(CalculationListener.class);
+		try {
+			statsCalculator.run(calculationListener);
+			fail();
+		} catch (MixedRasterGeometryException e) {
+		} finally {
+			File areaRaster = statsCalculator.getSampleAreasFile();
+			// clean up before checks
+			assertTrue(!areaRaster.exists() || areaRaster.delete());
+		}
+	}
 }

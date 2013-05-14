@@ -24,6 +24,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.fao.unredd.InvalidFolderStructureException;
+import org.fao.unredd.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.generated.ClassificationType;
 import org.fao.unredd.statsCalculator.generated.Classifications;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -67,8 +68,7 @@ public class StatsCalculator {
 
 	private static final String MOSAIC_SUB_FOLDER = "mosaic";
 	private static final String CONFIGURATION_SUB_FOLDER = "configuration";
-	private static final int ILLEGAL_ARGS = -1;
-	private static final int ILLEGAL_FOLDER_STRUCTURE = -2;
+	private static final String SAMPLE_AREAS_FILE_NAME = "sample-areas.tiff";
 
 	private File mosaicFolder;
 	private File configurationSubFolder;
@@ -172,7 +172,7 @@ public class StatsCalculator {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e1) {
 			printUsage();
-			System.exit(ILLEGAL_ARGS);
+			System.exit(-1);
 		}
 
 		// Read folder as unique parameter
@@ -181,7 +181,7 @@ public class StatsCalculator {
 			folder = new File(cmd.getOptionValue("f"));
 		} else {
 			printUsage();
-			System.exit(ILLEGAL_ARGS);
+			System.exit(-1);
 		}
 		try {
 			StatsCalculator statsCalculator = new StatsCalculator(folder);
@@ -199,18 +199,22 @@ public class StatsCalculator {
 			});
 		} catch (IllegalArgumentException e) {
 			System.err.println(e.getMessage());
-			System.exit(ILLEGAL_ARGS);
+			System.exit(-1);
 		} catch (InvalidFolderStructureException e) {
 			System.err.println(e.getMessage());
-			System.exit(ILLEGAL_FOLDER_STRUCTURE);
+			System.exit(-1);
 		} catch (SnapshotNamingException e) {
 			System.err.println(e.getMessage());
-			System.exit(ILLEGAL_FOLDER_STRUCTURE);
+			System.exit(-1);
+		} catch (MixedRasterGeometryException e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
 		}
 	}
 
 	public void run(CalculationListener calculationListener)
-			throws IllegalArgumentException, IOException {
+			throws IllegalArgumentException, IOException,
+			MixedRasterGeometryException {
 		// Obtain the raster info from first tiff
 		Entry<Date, File> firstSnapshot = files.firstEntry();
 		File firstSnapshotFile = firstSnapshot.getValue();
@@ -225,8 +229,8 @@ public class StatsCalculator {
 			// Check the snapshot matches first snapshot's geometry
 			if (!new RasterInfo(timestampFile)
 					.matchesGeometry(firstSnapshotInfo)) {
-				System.err.println("The snapshot of '" + timestamp
-						+ "' does not match the "
+				throw new MixedRasterGeometryException("The snapshot of '"
+						+ timestamp + "' does not match the "
 						+ "geometry of the first snapshot: '"
 						+ firstSnapshot.getKey() + "'");
 			}
@@ -235,8 +239,7 @@ public class StatsCalculator {
 			 * Remove the area-raster if it does not match the snapshots
 			 * geometry
 			 */
-			File areaRaster = new File(configurationSubFolder,
-					"sample-areas.tiff");
+			File areaRaster = getSampleAreasFile();
 			if (areaRaster.exists()) {
 				if (!firstSnapshotInfo.matchesGeometry(new RasterInfo(
 						areaRaster))) {
@@ -282,7 +285,7 @@ public class StatsCalculator {
 					value.setValue(params);
 					writer.write(grid, new GeneralParameterValue[] { value });
 				} catch (RuntimeException e) {
-					throw new RuntimeException("Bug writing the area raster");
+					throw new RuntimeException("Bug writing the area raster", e);
 				} catch (IOException e) {
 					throw new RuntimeException("Error writing the area raster");
 				} finally {
@@ -302,6 +305,10 @@ public class StatsCalculator {
 						classificationType.getFieldName());
 			}
 		}
+	}
+
+	public File getSampleAreasFile() {
+		return new File(configurationSubFolder, SAMPLE_AREAS_FILE_NAME);
 	}
 
 	private static void printUsage() {

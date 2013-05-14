@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<classifications>
+	<classification layer="unredd:provinces" field-name="name"/>
+	<classification layer="unredd:projects" field-name="id"/>
+</classifications>
