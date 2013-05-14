@@ -54,6 +54,8 @@ import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
  */
 public class StatsCalculator {
 
+	private static final String MOSAIC_SUB_FOLDER = "mosaic";
+	private static final String CONFIGURATION_SUB_FOLDER = "configuration";
 	private static final int INVALID_ARGS = -1;
 
 	public static void main(String[] args) {
@@ -88,7 +90,20 @@ public class StatsCalculator {
 
 		// Get a hashmap with the association between timestamps and files
 		TreeMap<Date, File> files = new TreeMap<Date, File>();
-		File[] snapshotFiles = folder.listFiles(new FilenameFilter() {
+		File mosaicFolder = new File(folder, MOSAIC_SUB_FOLDER);
+		if (!mosaicFolder.exists()) {
+			System.err.println("The folder does not contain a subfolder "
+					+ "'mosaic' containing the coverages: "
+					+ folder.getAbsolutePath());
+			System.exit(INVALID_ARGS);
+		}
+		File configurationSubFolder = new File(folder, CONFIGURATION_SUB_FOLDER);
+		if (!configurationSubFolder.exists()) {
+			System.err.println("The folder does not contain a subfolder "
+					+ "'configuration': " + folder.getAbsolutePath());
+			System.exit(INVALID_ARGS);
+		}
+		File[] snapshotFiles = mosaicFolder.listFiles(new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String name) {
@@ -118,8 +133,8 @@ public class StatsCalculator {
 			}
 		}
 		if (files.isEmpty()) {
-			System.err.println("There are no snapshots in the folder: "
-					+ folder.getAbsolutePath());
+			System.err.println("There are no snapshots in the mosaic folder: "
+					+ mosaicFolder.getAbsolutePath());
 			System.exit(INVALID_ARGS);
 		}
 
@@ -147,7 +162,8 @@ public class StatsCalculator {
 			 * Remove the area-raster if it does not match the snapshots
 			 * geometry
 			 */
-			File areaRaster = new File(folder, "sample-areas.tiff");
+			File areaRaster = new File(configurationSubFolder,
+					"sample-areas.tiff");
 			if (areaRaster.exists()) {
 				if (!firstSnapshotInfo.matchesGeometry(new RasterInfo(
 						areaRaster))) {
