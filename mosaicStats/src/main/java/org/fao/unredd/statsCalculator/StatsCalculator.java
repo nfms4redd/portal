@@ -24,16 +24,23 @@ import org.apache.commons.cli.ParseException;
 import org.fao.unredd.statsCalculator.generated.ClassificationType;
 import org.fao.unredd.statsCalculator.generated.Classifications;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.geotools.gce.geotiff.GeoTiffWriter;
+import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.raster.AreaGridProcess;
+import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * <p>
@@ -58,7 +65,8 @@ public class StatsCalculator {
 	private static final String CONFIGURATION_SUB_FOLDER = "configuration";
 	private static final int INVALID_ARGS = -1;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IllegalArgumentException,
+			IOException {
 		Options options = new Options();
 		OptionBuilder.hasArg();
 		OptionBuilder.withDescription("Folder with the temporal mosaic");
@@ -180,8 +188,15 @@ public class StatsCalculator {
 			// Generate the area-raster if it does not exist
 			if (!areaRaster.exists()) {
 				AreaGridProcess process = new AreaGridProcess();
-				ReferencedEnvelope envelope = firstSnapshotInfo
-						.getReferencedEnvelope();
+				GeneralEnvelope generalEnvelope = firstSnapshotInfo
+						.getEnvelope();
+				Envelope jtsEnvelope = new Envelope(
+						generalEnvelope.getMinimum(0),
+						generalEnvelope.getMaximum(0),
+						generalEnvelope.getMinimum(1),
+						generalEnvelope.getMaximum(1));
+				ReferencedEnvelope envelope = new ReferencedEnvelope(
+						jtsEnvelope, firstSnapshotInfo.getCRS());
 				int width = firstSnapshotInfo.getWidth();
 				int height = firstSnapshotInfo.getHeight();
 				GridCoverage2D grid = process.execute(envelope, width, height);
@@ -211,14 +226,15 @@ public class StatsCalculator {
 			}
 
 			// Read the calculations
-			File classificationsFile = new File(folder, "classifications.xml");
+			File classificationsFile = new File(configurationSubFolder,
+					"classifications.xml");
 			List<ClassificationType> classifications = JAXB.unmarshal(
 					classificationsFile, Classifications.class)
 					.getClassification();
 			for (ClassificationType classificationType : classifications) {
 				// TODO Execute the calculation method
 				System.out.println("Executing the stats for \"" + timestamp
-						+ " \" (" + timestampFile + ") with "
+						+ "\" (" + timestampFile + ") with "
 						+ classificationType.getLayer() + "/"
 						+ classificationType.getFieldName()
 						+ " as classification ");
@@ -232,37 +248,41 @@ public class StatsCalculator {
 
 	private static class RasterInfo {
 
-		public RasterInfo(File areaRaster) {
-			// TODO Auto-generated constructor stub
-			// Maybe the following exception management is useful later.
-			// try {
-			// CoordinateReferenceSystem crs = CRS.decode("EPSG:4326");
-			// } catch (NoSuchAuthorityCodeException e) {
-			// throw new RuntimeException("Bug. Cannot decode 4326 CRS");
-			// } catch (FactoryException e) {
-			// throw new RuntimeException("Bug. Cannot decode CRSs");
-			// }
+		private GeneralEnvelope envelope;
+		private GridEnvelope gridRange;
+		private CoordinateReferenceSystem crs;
+
+		public RasterInfo(File raster) throws IllegalArgumentException,
+				IOException {
+			AbstractGridFormat format = GridFormatFinder.findFormat(raster);
+			AbstractGridCoverage2DReader reader = format.getReader(raster);
+			envelope = reader.getOriginalEnvelope();
+			gridRange = reader.getOriginalGridRange();
+			crs = reader.getCrs();
 		}
 
 		public int getHeight() {
-			// TODO Auto-generated method stub
-			return 0;
+			return gridRange.getSpan(1);
 		}
 
 		public int getWidth() {
-			// TODO Auto-generated method stub
-			return 0;
+			return gridRange.getSpan(0);
 		}
 
-		public ReferencedEnvelope getReferencedEnvelope() {
-			// TODO Auto-generated method stub
-			return null;
+		public GeneralEnvelope getEnvelope() {
+			return envelope;
 		}
 
-		public boolean matchesGeometry(RasterInfo rasterGeometry) {
-			// TODO Auto-generated method stub
-			return false;
+		public CoordinateReferenceSystem getCRS() {
+			return crs;
 		}
 
+		public boolean matchesGeometry(RasterInfo that) {
+			return this.getCRS().toWKT().equals(that.getCRS().toWKT())
+					&& this.getEnvelope().equals(that.getEnvelope(), 0.000001,
+							false)//
+					&& this.getWidth() == that.getWidth()
+					&& this.getHeight() == that.getHeight();
+		}
 	}
 }
