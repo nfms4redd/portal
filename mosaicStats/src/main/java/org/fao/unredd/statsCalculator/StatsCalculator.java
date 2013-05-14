@@ -185,7 +185,18 @@ public class StatsCalculator {
 		}
 		try {
 			StatsCalculator statsCalculator = new StatsCalculator(folder);
-			statsCalculator.run();
+			statsCalculator.run(new CalculationListener() {
+
+				@Override
+				public void calculate(File areaRaster, File mask,
+						String classificationLayer,
+						String classificationFieldName) {
+					System.out.println("Executing the stats for ("
+							+ mask.getAbsolutePath() + ") with "
+							+ classificationLayer + "/"
+							+ classificationFieldName + " as classification ");
+				}
+			});
 		} catch (IllegalArgumentException e) {
 			System.err.println(e.getMessage());
 			System.exit(ILLEGAL_ARGS);
@@ -198,7 +209,8 @@ public class StatsCalculator {
 		}
 	}
 
-	public void run() throws IllegalArgumentException, IOException {
+	public void run(CalculationListener calculationListener)
+			throws IllegalArgumentException, IOException {
 		// Obtain the raster info from first tiff
 		Entry<Date, File> firstSnapshot = files.firstEntry();
 		File firstSnapshotFile = firstSnapshot.getValue();
@@ -285,12 +297,9 @@ public class StatsCalculator {
 					classificationsFile, Classifications.class)
 					.getClassification();
 			for (ClassificationType classificationType : classifications) {
-				// TODO Execute the calculation method
-				System.out.println("Executing the stats for \"" + timestamp
-						+ "\" (" + timestampFile + ") with "
-						+ classificationType.getLayer() + "/"
-						+ classificationType.getFieldName()
-						+ " as classification ");
+				calculationListener.calculate(areaRaster, timestampFile,
+						classificationType.getLayer(),
+						classificationType.getFieldName());
 			}
 		}
 	}
