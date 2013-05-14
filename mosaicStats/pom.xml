@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -32,6 +32,11 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-geotiff</artifactId>
+			<version>9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-imagemosaic</artifactId>
 			<version>9.1</version>
 		</dependency>
 		<dependency>
@@ -61,6 +66,19 @@
 							<generatePackage>org.fao.unredd.statsCalculator.generated</generatePackage>
 							<addCompileSourceRoot>true</addCompileSourceRoot>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.2</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>cobertura</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

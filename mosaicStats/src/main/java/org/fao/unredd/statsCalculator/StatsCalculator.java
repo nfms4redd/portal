@@ -1,13 +1,15 @@
 package org.fao.unredd.statsCalculator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +23,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.fao.unredd.InvalidFolderStructureException;
 import org.fao.unredd.statsCalculator.generated.ClassificationType;
 import org.fao.unredd.statsCalculator.generated.Classifications;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -31,6 +34,7 @@ import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.geotools.gce.geotiff.GeoTiffWriter;
+import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.raster.AreaGridProcess;
@@ -63,7 +67,97 @@ public class StatsCalculator {
 
 	private static final String MOSAIC_SUB_FOLDER = "mosaic";
 	private static final String CONFIGURATION_SUB_FOLDER = "configuration";
-	private static final int INVALID_ARGS = -1;
+	private static final int ILLEGAL_ARGS = -1;
+	private static final int ILLEGAL_FOLDER_STRUCTURE = -2;
+
+	private File mosaicFolder;
+	private File configurationSubFolder;
+	private TreeMap<Date, File> files;
+
+	/**
+	 * Builds a new StatsCalculator instance
+	 * 
+	 * @param folder
+	 * @throws IllegalArgumentException
+	 *             If the folder does not exist
+	 * @throws InvalidFolderStructureException
+	 * @throws SnapshotNamingException
+	 * @throws IOException
+	 *             If the folder contents cannot be added
+	 */
+	public StatsCalculator(File folder) throws IllegalArgumentException,
+			InvalidFolderStructureException, SnapshotNamingException,
+			IOException {
+		if (!folder.exists()) {
+			throw new IllegalArgumentException("The folder does not exist: "
+					+ folder.getAbsolutePath());
+		}
+		this.mosaicFolder = new File(folder, MOSAIC_SUB_FOLDER);
+		if (!mosaicFolder.exists()) {
+			throw new InvalidFolderStructureException(
+					"The folder does not contain a subfolder "
+							+ "'mosaic' containing the coverages: "
+							+ folder.getAbsolutePath());
+		}
+		this.configurationSubFolder = new File(folder, CONFIGURATION_SUB_FOLDER);
+		if (!configurationSubFolder.exists()) {
+			throw new InvalidFolderStructureException(
+					"The folder does not contain a subfolder "
+							+ "'configuration': " + folder.getAbsolutePath());
+		}
+		// Get a hashmap with the association between timestamps and files
+		files = new TreeMap<Date, File>();
+		File[] snapshotFiles = mosaicFolder.listFiles(new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+				String lowerCaseName = name.toLowerCase();
+				return lowerCaseName.endsWith(".tiff")
+						|| lowerCaseName.endsWith(".tif");
+			}
+		});
+		Properties timeregexProperties = new Properties();
+		try {
+			timeregexProperties.load(new FileInputStream(new File(mosaicFolder,
+					"timeregex.properties")));
+		} catch (FileNotFoundException e) {
+			throw new InvalidFolderStructureException(
+					"The folder does not contain a timeregex.properties"
+							+ " file in the 'mosaic' subfolder: "
+							+ folder.getAbsolutePath());
+		}
+		String timeregex = timeregexProperties.getProperty("regex");
+		if (timeregex == null) {
+			throw new InvalidFolderStructureException(
+					"The timeregex.properties file does not contain"
+							+ " the regex property in the folder: "
+							+ folder.getAbsolutePath());
+		}
+		Pattern pattern = Pattern.compile(timeregex);
+		for (File snapshotFile : snapshotFiles) {
+			String name = snapshotFile.getName();
+			Matcher matcher = pattern.matcher(name);
+			if (!matcher.find()) {
+				throw new SnapshotNamingException("The date of the snapshot "
+						+ "could not be obtained: "
+						+ snapshotFile.getAbsolutePath());
+			}
+			String dateString = matcher.group();
+			try {
+				TimeParser timeParser = new TimeParser();
+				List<Date> dates = timeParser.parse(dateString);
+				files.put(dates.get(0), snapshotFile);
+			} catch (java.text.ParseException e) {
+				throw new SnapshotNamingException("The date of the snapshot "
+						+ "could not be obtained: " + dateString);
+			}
+		}
+		if (files.isEmpty()) {
+			throw new InvalidFolderStructureException(
+					"There are no snapshots in the mosaic folder: "
+							+ mosaicFolder.getAbsolutePath());
+		}
+	}
 
 	public static void main(String[] args) throws IllegalArgumentException,
 			IOException {
@@ -78,7 +172,7 @@ public class StatsCalculator {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e1) {
 			printUsage();
-			System.exit(INVALID_ARGS);
+			System.exit(ILLEGAL_ARGS);
 		}
 
 		// Read folder as unique parameter
@@ -87,65 +181,24 @@ public class StatsCalculator {
 			folder = new File(cmd.getOptionValue("f"));
 		} else {
 			printUsage();
-			System.exit(INVALID_ARGS);
+			System.exit(ILLEGAL_ARGS);
 		}
+		try {
+			StatsCalculator statsCalculator = new StatsCalculator(folder);
+			statsCalculator.run();
+		} catch (IllegalArgumentException e) {
+			System.err.println(e.getMessage());
+			System.exit(ILLEGAL_ARGS);
+		} catch (InvalidFolderStructureException e) {
+			System.err.println(e.getMessage());
+			System.exit(ILLEGAL_FOLDER_STRUCTURE);
+		} catch (SnapshotNamingException e) {
+			System.err.println(e.getMessage());
+			System.exit(ILLEGAL_FOLDER_STRUCTURE);
+		}
+	}
 
-		if (!folder.exists()) {
-			System.err.println("The folder does not exist: "
-					+ folder.getAbsolutePath());
-			System.exit(INVALID_ARGS);
-		}
-
-		// Get a hashmap with the association between timestamps and files
-		TreeMap<Date, File> files = new TreeMap<Date, File>();
-		File mosaicFolder = new File(folder, MOSAIC_SUB_FOLDER);
-		if (!mosaicFolder.exists()) {
-			System.err.println("The folder does not contain a subfolder "
-					+ "'mosaic' containing the coverages: "
-					+ folder.getAbsolutePath());
-			System.exit(INVALID_ARGS);
-		}
-		File configurationSubFolder = new File(folder, CONFIGURATION_SUB_FOLDER);
-		if (!configurationSubFolder.exists()) {
-			System.err.println("The folder does not contain a subfolder "
-					+ "'configuration': " + folder.getAbsolutePath());
-			System.exit(INVALID_ARGS);
-		}
-		File[] snapshotFiles = mosaicFolder.listFiles(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				String lowerCaseName = name.toLowerCase();
-				return lowerCaseName.endsWith(".tiff")
-						|| lowerCaseName.endsWith(".tif");
-			}
-		});
-		Pattern pattern = Pattern.compile("[0-9]{4}");
-		for (File snapshotFile : snapshotFiles) {
-			String name = snapshotFile.getName();
-			Matcher matcher = pattern.matcher(name);
-			if (!matcher.find()) {
-				System.err.println("The date of the snapshot "
-						+ "could not be obtained: "
-						+ snapshotFile.getAbsolutePath());
-				System.exit(INVALID_ARGS);
-			}
-			String dateString = matcher.group();
-			try {
-				files.put(new SimpleDateFormat("yyyy").parse(dateString),
-						snapshotFile);
-			} catch (java.text.ParseException e) {
-				System.err.println("The date of the snapshot "
-						+ "could not be obtained: " + dateString);
-				System.exit(INVALID_ARGS);
-			}
-		}
-		if (files.isEmpty()) {
-			System.err.println("There are no snapshots in the mosaic folder: "
-					+ mosaicFolder.getAbsolutePath());
-			System.exit(INVALID_ARGS);
-		}
-
+	public void run() throws IllegalArgumentException, IOException {
 		// Obtain the raster info from first tiff
 		Entry<Date, File> firstSnapshot = files.firstEntry();
 		File firstSnapshotFile = firstSnapshot.getValue();
