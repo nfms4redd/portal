@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.statsCalculator.CalculationListener;
@@ -133,6 +134,30 @@ public class StatsCalculatorTest {
 		assertTrue(!areaRaster.exists() || areaRaster.delete());
 
 		verifyOk(folderBase, calculationListener, areaRaster);
+	}
+
+	@Test
+	public void testOkExistingBadSampleAreasCannotBeDeleted() throws Exception {
+		File folderBase = new File(
+				"src/test/resources/okExistingBadSampleAreas");
+		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		File areaRaster = statsCalculator.getSampleAreasFile();
+		File backupAreaRaster = new File(areaRaster.getParentFile(),
+				"backup-sample-areas.tiff");
+		IOUtils.copy(new FileInputStream(backupAreaRaster),
+				new FileOutputStream(areaRaster));
+		assertTrue(areaRaster.getParentFile().setReadOnly()
+				&& !areaRaster.delete());
+		CalculationListener calculationListener = mock(CalculationListener.class);
+		try {
+			statsCalculator.run(calculationListener);
+			fail();
+		} catch (IOException e) {
+		}
+
+		// clean up before checks
+		areaRaster.getParentFile().setWritable(true);
+		assertTrue(!areaRaster.exists() || areaRaster.delete());
 	}
 
 	private void verifyOk(File folderBase,
