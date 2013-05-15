@@ -23,8 +23,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.fao.unredd.InvalidFolderStructureException;
-import org.fao.unredd.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.generated.ClassificationType;
 import org.fao.unredd.statsCalculator.generated.Classifications;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -244,11 +242,10 @@ public class StatsCalculator {
 				if (!firstSnapshotInfo.matchesGeometry(new RasterInfo(
 						areaRaster))) {
 					if (!areaRaster.delete()) {
-						System.err.println("The area raster geometry "
+						throw new IOException("The area raster geometry "
 								+ "does not match "
 								+ "the snapshots' and could not "
 								+ "be deleted to be regenerated");
-						System.exit(-2);
 					}
 				}
 			}

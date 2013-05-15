@@ -7,8 +7,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.fao.unredd.statsCalculator.CalculationListener;
+import org.fao.unredd.statsCalculator.InvalidFolderStructureException;
+import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.SnapshotNamingException;
 import org.fao.unredd.statsCalculator.StatsCalculator;
 import org.junit.Test;
@@ -108,6 +113,30 @@ public class StatsCalculatorTest {
 		// clean up before checks
 		assertTrue(!areaRaster.exists() || areaRaster.delete());
 
+		verifyOk(folderBase, calculationListener, areaRaster);
+	}
+
+	@Test
+	public void testOkExistingBadSampleAreas() throws Exception {
+		File folderBase = new File(
+				"src/test/resources/okExistingBadSampleAreas");
+		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		File areaRaster = statsCalculator.getSampleAreasFile();
+		File backupAreaRaster = new File(areaRaster.getParentFile(),
+				"backup-sample-areas.tiff");
+		IOUtils.copy(new FileInputStream(backupAreaRaster),
+				new FileOutputStream(areaRaster));
+		CalculationListener calculationListener = mock(CalculationListener.class);
+		statsCalculator.run(calculationListener);
+
+		// clean up before checks
+		assertTrue(!areaRaster.exists() || areaRaster.delete());
+
+		verifyOk(folderBase, calculationListener, areaRaster);
+	}
+
+	private void verifyOk(File folderBase,
+			CalculationListener calculationListener, File areaRaster) {
 		verify(calculationListener).calculate(areaRaster,
 				new File(folderBase, "mosaic/snapshot_2000.tiff"),
 				"unredd:provinces", "name");
