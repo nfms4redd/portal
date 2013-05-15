@@ -29,6 +29,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridFormatFinder;
+import org.geotools.coverage.grid.io.UnknownFormat;
 import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffWriteParams;
@@ -280,11 +281,22 @@ public class StatsCalculator {
 					ParameterValue<GeoToolsWriteParams> value = GeoTiffFormat.GEOTOOLS_WRITE_PARAMS
 							.createValue();
 					value.setValue(params);
-					writer.write(grid, new GeneralParameterValue[] { value });
+					try {
+						writer.write(grid,
+								new GeneralParameterValue[] { value });
+					} catch (NullPointerException e) {
+						/**
+						 * if no permission, GT gives NPE, we have to report
+						 * this to fix it and handle properly the exception.
+						 * {@link TriggerTest#testGTGeotiffWriterExceptionManagement()}
+						 */
+						throw new IOException("Error writing the area raster",
+								e);
+					}
 				} catch (RuntimeException e) {
 					throw new RuntimeException("Bug writing the area raster", e);
 				} catch (IOException e) {
-					throw new RuntimeException("Error writing the area raster");
+					throw new IOException("Error writing the area raster", e);
 				} finally {
 					writer.dispose();
 				}
@@ -318,10 +330,17 @@ public class StatsCalculator {
 		private GridEnvelope gridRange;
 		private CoordinateReferenceSystem crs;
 
-		public RasterInfo(File raster) throws IllegalArgumentException,
-				IOException {
+		public RasterInfo(File raster) throws IOException {
 			AbstractGridFormat format = GridFormatFinder.findFormat(raster);
+			if (format instanceof UnknownFormat) {
+				throw new IOException("Unable to read the TIFF file: "
+						+ raster.getAbsolutePath());
+			}
 			AbstractGridCoverage2DReader reader = format.getReader(raster);
+			if (reader == null) {
+				throw new IOException("Unable to read the TIFF file: "
+						+ raster.getAbsolutePath());
+			}
 			envelope = reader.getOriginalEnvelope();
 			gridRange = reader.getOriginalGridRange();
 			crs = reader.getCrs();
@@ -350,5 +369,9 @@ public class StatsCalculator {
 					&& this.getWidth() == that.getWidth()
 					&& this.getHeight() == that.getHeight();
 		}
+	}
+
+	public File getConfigurationFolder() {
+		return configurationSubFolder;
 	}
 }

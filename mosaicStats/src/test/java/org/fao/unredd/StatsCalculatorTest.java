@@ -192,4 +192,33 @@ public class StatsCalculatorTest {
 			assertTrue(!areaRaster.exists() || areaRaster.delete());
 		}
 	}
+
+	@Test
+	public void testErrorCreatingAreaRaster() throws Exception {
+		File folderBase = new File("src/test/resources/errorCreatingAreaRaster");
+		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		statsCalculator.getConfigurationFolder().setReadOnly();
+		CalculationListener calculationListener = mock(CalculationListener.class);
+		try {
+			statsCalculator.run(calculationListener);
+			fail();
+		} catch (IOException e) {
+		} finally {
+			File areaRaster = statsCalculator.getSampleAreasFile();
+			// clean up before checks
+			assertTrue(!areaRaster.exists() || areaRaster.delete());
+		}
+	}
+
+	@Test
+	public void testCorruptedTiff() throws Exception {
+		File folderBase = new File("src/test/resources/corruptedTiff");
+		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		CalculationListener calculationListener = mock(CalculationListener.class);
+		try {
+			statsCalculator.run(calculationListener);
+			fail();
+		} catch (IOException e) {
+		}
+	}
 }
