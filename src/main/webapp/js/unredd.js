@@ -54,18 +54,18 @@ UNREDD.Layer = function (layerId, layerDefinition)
 
   // Check layer attributes
   if (!layerDefinition.baseUrl) {
-    alert('Error in layer "' + layerDefinition.id + '": attribute "baseUrl" not defined'); // TODO: make it multi-language
+    alert(messages.layersjson_layer_def_error + " '" + layerDefinition.id + "': " + messages.layersjson_baseUrl_not_defined);
   }
   if (!layerDefinition.wmsName) {
-    alert('Error in layer "' + layerDefinition.id + '": attribute "wmsName" not defined'); // TODO: make it multi-language
+    alert(messages.layersjson_layer_def_error + " '" + layerDefinition.id + "': " + messages.layersjson_wmsName_not_defined);
   }
   // if there is the legend there should be the label too
   if (layerDefinition.legend && !layerDefinition.label) {
-    alert('Error in layer "' + layerDefinition.id + '": attribute "label" should be present when "legend" is defined'); // TODO: make it multi-language
+    alert(messages.layersjson_layer_def_error + " '" + layerDefinition.id + "': " + messages.layersjson_layer_label_not_defined);
   }
   // if there is the sourceLink there should be the sourceLabel too
   if (layerDefinition.sourceLink && !layerDefinition.sourceLabel) {
-    alert('Error in layer "' + layerDefinition.id + '": attribute "sourceLabel" should be present when "sourceLink" is defined'); // TODO: make it multi-language
+    alert(messages.layersjson_layer_def_error + " '" + layerDefinition.id + "': " + messages.layersjson_source_label_not_defined);
   }
 
   this.name = layerId;
@@ -122,7 +122,7 @@ UNREDD.Context = function (contextId, contextDefinition)
 
   // Check context attributes
   if (!contextDefinition.label) {
-    alert('Error in context "' + contextDefinition.id + '": attribute "label" not defined'); // TODO: make it multi-language
+    alert(messages.layersjson_context_def_error+ " '" + contextDefinition.id + "': " + messages.layersjson_context_label_not_defined);
   }
 
   var nLayers = 0;
@@ -145,7 +145,7 @@ UNREDD.Context = function (contextId, contextDefinition)
       if (UNREDD.allLayers[layerName]) {
         this.layers.push(UNREDD.allLayers[layerName]);
       } else {
-        alert('Error in context "' + contextDefinition.id + '": layer "' + layerName + '" has not been not defined'); // TODO: make it multi-language
+        alert(messages.layersjson_context_def_error + " '" + contextDefinition.id + "': " + messages.layer + " '" + layerName + "' " + messages.layersjson_not_defined);
       }
     }
   }
@@ -296,7 +296,7 @@ $(window).load(function () {
     // Create layers objects
     jQuery.each(data_.layers, function (i, layerDefinition) {
       if (!layerDefinition.id) {
-        alert('Error in layer definition: attribute "id" not defined'); // TODO: make it multi-language
+        alert(messages.layersjson_layer_id_not_defined);
       } else {
         var layerId = layerDefinition.id;
         var layer = new UNREDD.Layer(layerId, layerDefinition);
@@ -329,7 +329,7 @@ $(window).load(function () {
     // Create context objects
     jQuery.each(data_.contexts, function (i, contextDefinition) {
       if (!contextDefinition.id) {
-        alert('Error in context definition: attribute "id" not defined'); // TODO: make it multi-language
+        alert(messages.layersjson_context_id_not_defined);
       } else {
         var contextId = contextDefinition.id;
         var context = new UNREDD.Context(contextId, contextDefinition);
@@ -509,7 +509,7 @@ $(window).load(function () {
             contextName = contextGroupDefinition.context;
 
             if (!UNREDD.mapContexts[contextName]) {
-              alert('Error in context group: context "' + contextName + '" has not been not defined'); // TODO: make it multi-language
+              alert(messages.layersjson_context_group_error + ": context '" + contextName + "' " + messages.layersjson_not_defined);
               return;
             }
 
