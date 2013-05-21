@@ -10,7 +10,15 @@ UNREDD.wmsServers = [
 ];
 
 UNREDD.layerInfo = {
-    drc_provinces: function(feature) {
+/*
+Each queriable layer should have here a function that returns
+an object with either:
+ - "title" and "statsLink" functions returning the text and link to statistics.
+ - "customPopup" function returning a custom popup.
+
+Example:
+
+    layer_name: function(feature) {
         var that = {};
         that.title = function() {
             return messages.province + ": " + feature.attributes.PROVINCE;
@@ -60,4 +68,5 @@ UNREDD.layerInfo = {
     	
     	return that;
     }
+*/
 }

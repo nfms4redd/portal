@@ -499,7 +499,7 @@ table.layer_legend td
   text-decoration: none;
 }
 
-#info_popup table:hover {
+#info_popup>table:hover {
   border: 2px solid #cc7722;
 	/*filter: alpha(opacity=75);
 	opacity: 0.75;*/
