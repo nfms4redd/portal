@@ -12,8 +12,6 @@ Contents:
    livedvd/index
    install/index
    geoserver/index
-   geobatch/index
-   geostore/index
    admin/index
    portal/index
 
