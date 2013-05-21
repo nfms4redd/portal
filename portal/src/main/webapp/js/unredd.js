@@ -692,16 +692,18 @@ $(window).load(function () {
         // handle custom popup - info will be taken from json but for now it's in the custom.js. Don't have time
         var customPopupLayer = null;
         $.each(selectedFeatures, function (layerId, feature) {
-          info = UNREDD.layerInfo[layerId](feature);
-          if (typeof(info.customPopup) !== "undefined") {
-            customPopupLayer = layerId;
-            info.customPopup();
+          if (UNREDD.layerInfo.hasOwnProperty(layerId)) {
+            info = UNREDD.layerInfo[layerId](feature);
+            if (typeof(info.customPopup) !== "undefined") {
+              customPopupLayer = layerId;
+              info.customPopup();
 
-            $.fancybox({
-              href: '#custom_popup'
-            });
-
-            return false; // only show the custom info dialog for the first layer that has it
+              $.fancybox({
+                href: '#custom_popup'
+              });
+  
+              return false; // only show the custom info dialog for the first layer that has it
+            }
           }
 
           return true;
@@ -719,7 +721,11 @@ $(window).load(function () {
             td1, td2, td3,
             tr1, tr2, tr3;
 
-          info = UNREDD.layerInfo[layerId](feature);
+          if (UNREDD.layerInfo.hasOwnProperty(layerId)) {
+            info = UNREDD.layerInfo[layerId](feature);
+          } else {
+            info = genericInfoContent(feature);
+          }
 
           table = $("<table>");
           tr1 = $("<tr/>");
@@ -743,23 +749,23 @@ $(window).load(function () {
           table.append(tr2);
 
           // TODO: localize statistics and zoom to area buttons
-          td2.append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"stats_link_" + layerId + "\" href=\"" + info.statsLink() + "\">Statistics</a>");
+          td2.append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"stats_link_" + layerId + "\" href=\"javascript:void(0)\" onclick=\"unsupported();return false;\">Statistics</a>");
           td3 = $("<td class=\"td_right\"/>");
           td3.append("<a style=\"color:white\" class=\"feature_link\" href=\"#\" id=\"zoom_to_feature_" + layerId + "\">Zoom to area</a>");
           tr2.append(td3);
           infoPopup.append(table);
 
-          $('#stats_link_' + layerId).fancybox({
-            maxWidth    : 840,
-            maxHeight : 600,
-            fitToView : false,
-            width       : 840,
-            height      : 590,
-            autoSize    : false,
-            closeClick  : false,
-            openEffect  : 'none',
-            closeEffect : 'fade'
-          });
+//          $('#stats_link_' + layerId).fancybox({
+//            maxWidth    : 840,
+//            maxHeight : 600,
+//            fitToView : false,
+//            width       : 840,
+//            height      : 590,
+//            autoSize    : false,
+//            closeClick  : false,
+//            openEffect  : 'none',
+//            closeEffect : 'fade'
+//          });
 
           if (info.info && info.info()) {
             tr3 = $("<tr/>");
@@ -800,12 +806,6 @@ $(window).load(function () {
           // Finally open the dialog
           infoPopup.dialog('open');
         }
-
-        $.each($('#info_popup table'), function (id, elem) {
-          totalHeight += $(elem).height() + 12;
-        });
-
-        infoPopup.dialog('option', 'height', totalHeight + 35);
       }
     };
   };
@@ -1418,3 +1418,24 @@ $(window).load(function () {
     UNREDD.customInit();
   }
 });
+
+function unsupported() {
+	window.alert(messages.statistics_not_supported);
+}
+
+function genericInfoContent(feature) {
+	var ret = "<div><table>";
+	$.each(feature.attributes, function(index, attribute) {
+		ret += "<tr><td>" + index + "</td><td>" + attribute + "</td></tr>";
+		return true;
+	});
+
+	ret += "</table></div>";
+
+	var that = {};
+	that.title = function() {
+		return ret;
+	};
+
+	return that;
+}
