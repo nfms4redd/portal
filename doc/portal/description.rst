@@ -38,7 +38,7 @@ The map is the main component of the web portal, it allows the user to overlay a
 Navigation Buttons
 ==================
 
-Navigation buttons are used to zoom in and out and to the maximum extent (the whole country). Zoom levels are discontinuous, an match Google Maps™ ones to allow overlay with their layers if needed. When the map is zoomed on a small area and you want to quickly move to another one, you can zoom to the maximum extent and then zoom in again to the area you are interested in.
+Navigation buttons are used to zoom in and out and to the maximum extent (the whole country). Zoom levels are discontinuous, and match Google Maps™ ones to allow overlay with their layers if needed. When the map is zoomed on a small area and you want to quickly move to another one, you can zoom to the maximum extent and then zoom in again to the area you are interested in.
 
 .. figure:: img/nav_buttons.png
    :align: center
@@ -52,7 +52,7 @@ Navigation buttons are used to zoom in and out and to the maximum extent (the wh
 Layers Pane
 ===========
 
-The layers pane shows all the map layers available in the portal, organized in a three-levels structure. The first level it's thematic areas which the layers belongs to. On the example below they are:
+The layers pane shows all the map layers available in the portal, organized in a three-level structure. The first level it's thematic areas which the layers belongs to. On the example below they are:
 
 * Base layers
 * Administrative areas
@@ -102,7 +102,7 @@ If the layer is actually available as an online map (it could not be available a
 Inline Legends
 --------------
 
- When the layer has one only category (in the case of country boundary layers for instance), an inline legend icon is shown at the left of its label in the :ref:`layers pane <layers-pane>`.
+When the layer has one single category (in the case of country boundary layers for instance), an inline legend icon is shown at the left of its label in the :ref:`layers pane <layers-pane>`.
 
 .. figure:: img/layer_inline_legend.png
    :align: center
@@ -161,7 +161,7 @@ Clicking on the ``Selected layers`` button you get a subset of the layer list co
 Time Slider
 ===========
 
-Some of the layers, in particular the ones that are periodically produced by, or used in, the analysis process, are time-dependent (``layer updates`` in the GeoStore model). To choose a date among the ones available you can drag the time slider (see figure below). The date that the system chooses for each layer is its closest previous one available for that layer. To better explain this behavior let's consider a particular case in which we have the following layers and dates:
+Some of the layers, in particular the ones that are periodically produced, are time-dependent. This means that there are different versions of the layer for different points in time. To choose a date among the ones available you can drag the time slider (see figure below). The date that the system chooses for each layer is its closest previous one available for that layer. To better explain this behavior let's consider a particular case in which we have the following layers and dates:
 
 * Deforestation - years 2000, 2005, and 2010
 * Landsat mosaic - years 2000 and 2010.
@@ -255,7 +255,7 @@ The Query Dialog
 
    Query Dialog
 
-If any `queryable` layer is visible on the map, you can get access to information and statistics related to them by clicking on the point you are interested to. A dialog is shown with an entry for each queryable layer that has features (if vector) or a no-data value (if raster) on that point. When hovering one of the entries in the dialog, the related polygon feature is highlighted on the map (see image below). You can also zoom to that area by clicking the ``Zoom to area`` button, and access statistics based on it.
+If any `queryable` layer is visible on the map, you can get access to information and statistics related to them by clicking on the point you are interested to. A dialog is shown with an entry for each queryable layer that has features (if vector) or a value different from "no-data" (if raster) on that point. When hovering one of the entries in the dialog, the related polygon feature is highlighted on the map (see image below). You can also zoom to that area by clicking the ``Zoom to area`` button, and access statistics based on it.
 
 .. figure:: img/query_dialog_2.png
    :align: center
@@ -279,31 +279,6 @@ By clicking on ``the statistics`` button in the query dialog, a modal popup cont
 Hovering the mouse on the chart shows actual values.
 
 The chart can be printed clicking on the printer button on the top left of the dialog.
-
-
-Real-time Statistics
---------------------
-
--- To be implemented --
-
-To access real-time statistics:
-
-* click on the Statistics button on the header and start drawing the contour of the area you want to calculate the statistics for (see the image :ref:`draw-polygon` below)
-* double click to close the polygon
-* a dialog will show you the list of the available statistics
-* after you chose the statistic and click on the ``Calculate`` button, you'll have to enter your email and the captcha text and click ``Ok``
-
-.. _draw-polygon:
-
-.. figure:: img/draw_polygon.png
-   :align: center
-   :scale: 75 %
-
-   Draw polygon
-
-
-When the calculation is complete, you will receive by email the URL with the link to the statistics you requested
-
 
 Feedback
 ========
