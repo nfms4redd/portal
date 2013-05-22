@@ -39,6 +39,7 @@ public class StatsCalculatorTest {
 			new StatsCalculator(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
+			assertTrue(e.getOffendingFile().equals(new File(file, "mosaic")));
 		}
 	}
 
@@ -49,6 +50,8 @@ public class StatsCalculatorTest {
 			new StatsCalculator(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
+			assertTrue(e.getOffendingFile().equals(
+					new File(file, "configuration")));
 		}
 	}
 
@@ -59,6 +62,7 @@ public class StatsCalculatorTest {
 			new StatsCalculator(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
+			assertTrue(e.getOffendingFile().equals(new File(file, "mosaic")));
 		}
 	}
 
@@ -83,12 +87,14 @@ public class StatsCalculatorTest {
 	}
 
 	@Test
-	public void testBadTimeregexPropertiesKey() throws Exception {
+	public void testBadTimeregexProperties() throws Exception {
 		File file = new File("src/test/resources/badTimeregexProperties");
 		try {
 			new StatsCalculator(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
+			assertTrue(e.getOffendingFile().equals(
+					new File(file, "mosaic/timeregex.properties")));
 		}
 	}
 
@@ -100,6 +106,8 @@ public class StatsCalculatorTest {
 			new StatsCalculator(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
+			assertTrue(e.getOffendingFile().equals(
+					new File(file, "mosaic/timeregex.properties")));
 		}
 	}
 

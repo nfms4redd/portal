@@ -96,13 +96,14 @@ public class StatsCalculator {
 			throw new InvalidFolderStructureException(
 					"The folder does not contain a subfolder "
 							+ "'mosaic' containing the coverages: "
-							+ folder.getAbsolutePath());
+							+ folder.getAbsolutePath(), mosaicFolder);
 		}
 		this.configurationSubFolder = new File(folder, CONFIGURATION_SUB_FOLDER);
 		if (!configurationSubFolder.exists()) {
 			throw new InvalidFolderStructureException(
 					"The folder does not contain a subfolder "
-							+ "'configuration': " + folder.getAbsolutePath());
+							+ "'configuration': " + folder.getAbsolutePath(),
+					configurationSubFolder);
 		}
 		// Get a hashmap with the association between timestamps and files
 		files = new TreeMap<Date, File>();
@@ -116,21 +117,23 @@ public class StatsCalculator {
 			}
 		});
 		Properties timeregexProperties = new Properties();
+		File timeregexPropertiesFile = new File(mosaicFolder,
+				"timeregex.properties");
 		try {
-			timeregexProperties.load(new FileInputStream(new File(mosaicFolder,
-					"timeregex.properties")));
+			timeregexProperties.load(new FileInputStream(
+					timeregexPropertiesFile));
 		} catch (FileNotFoundException e) {
 			throw new InvalidFolderStructureException(
 					"The folder does not contain a timeregex.properties"
 							+ " file in the 'mosaic' subfolder: "
-							+ folder.getAbsolutePath());
+							+ folder.getAbsolutePath(), timeregexPropertiesFile);
 		}
 		String timeregex = timeregexProperties.getProperty("regex");
 		if (timeregex == null) {
 			throw new InvalidFolderStructureException(
 					"The timeregex.properties file does not contain"
 							+ " the regex property in the folder: "
-							+ folder.getAbsolutePath());
+							+ folder.getAbsolutePath(), timeregexPropertiesFile);
 		}
 		Pattern pattern = Pattern.compile(timeregex);
 		for (File snapshotFile : snapshotFiles) {
@@ -154,7 +157,7 @@ public class StatsCalculator {
 		if (files.isEmpty()) {
 			throw new InvalidFolderStructureException(
 					"There are no snapshots in the mosaic folder: "
-							+ mosaicFolder.getAbsolutePath());
+							+ mosaicFolder.getAbsolutePath(), mosaicFolder);
 		}
 	}
 
