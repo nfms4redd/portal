@@ -15,8 +15,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm>
-		<connection>scm:git:git://github.com:nfms4redd/nfms.git</connection>
-		<developerConnection>scm:git:git://github.com:nfms4redd/nfms.git</developerConnection>
+		<connection>scm:git:git://github.com/nfms4redd/nfms.git</connection>
+		<developerConnection>scm:git:https://github.com/nfms4redd/nfms.git</developerConnection>
 		<url>https://github.com/nfms4redd/nfms.git</url>
 	</scm>
 	<distributionManagement>
