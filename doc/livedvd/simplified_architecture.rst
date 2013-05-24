@@ -1,6 +1,8 @@
 Training Machine Simplified Architecture
 ========================================
 
+.. warning:: This documentation out of date. There is no liveDVD for the last version of the system
+
 The UNREDD NMFS platform provides both a *staging* and a *dissemination* areas,
 so the data can be reviewed and prior to its definite publication.
 

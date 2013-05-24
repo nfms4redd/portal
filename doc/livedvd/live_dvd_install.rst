@@ -6,6 +6,8 @@
 Installing the LiveDVD on the system
 ------------------------------------
 
+.. warning:: This documentation out of date. There is no liveDVD for the last version of the system
+
 In order to increase the system performaces and, in case of live DVD, to have your work persisted for a later session, it is worth to *install* the LiveDVD on the system. It can be done either by installing the operating system on your local machine or on a Virtual Machine (VM) such as VMWare or VirtualBox.
 
    .. note::  In order to work smoothly and without issues with GeoServer it is **recommended** to make the ``GEOSERVER_DATA_DIR`` point to a folder on the persistent storage (see next section).

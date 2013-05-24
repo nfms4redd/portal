@@ -6,6 +6,8 @@
 Running the LiveDVD
 -------------------
 
+.. warning:: This documentation out of date. There is no liveDVD for the last version of the system
+
 The workshop data and material is provided through the LiveDVD shipped with this documentation. The LiveDVD runs an instance of XUbuntu 9.10 customized for the workshop, containing the following software:
 
 #. The `SUN Java <http://www.java.com>`_ JDK 1.6 and `Tomcat <http://tomcat.apache.org/index.html>`_ 6.0.30 Servlet Container
