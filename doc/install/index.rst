@@ -15,11 +15,11 @@ There are two possible scenarios for the installation:
 
 Along the following documentation, installation steps that specifically apply to only one of the two subsystem will specify this clearly. Therefore, steps that do not indicate anything apply to the installation of both subsystems.
 
-The installation has been fully tested on Ubuntu 13.04
+The installation has been fully tested on Ubuntu 12.04
 
 .. note:
 
-   This step by step guide is based on the `Ubuntu 13.04 <http://www.ubuntu.com/>`_ Linux distribution.
+   This step by step guide is based on the `Ubuntu 12.04 <http://www.ubuntu.com/>`_ Linux distribution.
    The exact steps may vary depending on your Operating System, distribution and version.
 
 
