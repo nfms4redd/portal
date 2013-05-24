@@ -20,6 +20,6 @@ To customize the portal for a new country, you need to create a new ``PORTAL_CON
 In order to use it as a starting point copy it to the portal configuration directory::
 
   $ sudo mkdir /var/portal
-  $ sudo cp -R /var/tomcat/portal/webapps/portal/WEB-INF/default_config/* /var/portal/
+  $ sudo cp -R /var/tomcat/webapps/portal/WEB-INF/default_config/* /var/portal/
 
 Further details on customization are found in :ref:`unredd-portal-customize`.

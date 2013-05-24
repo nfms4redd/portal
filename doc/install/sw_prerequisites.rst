@@ -95,7 +95,7 @@ Configuring tomcat as a service
 
 #. Create ``tomcat6`` user::
 
-	$ useradd tomcat6
+	$ sudo useradd tomcat6
 	
 #. Make all the server tree structure belong to the ``tomcat6`` user::
 
@@ -392,13 +392,34 @@ Configuring tomcat as a service
 
 #. Make the file created in ``/etc/init.d/`` executable::
 
-      chmod +x ubuntuTomcatRunner.sh tomcat6
+    $ sudo chmod +x ubuntuTomcatRunner.sh tomcat6
 
 #. Launch tomcat::
 
-	service tomcat6 start
+	$ sudo service tomcat6 start
 	
 #. Check tomcat is up visiting ``http://localhost:8080/`` with a web browser.
+
+
+Make services start at boot time
+--------------------------------
+
+Install ``chkconfig``::
+
+  $ sudo apt-get install chkconfig
+
+Hack to make chkconfig work under ubuntu 12.04::
+
+  $ sudo ln -s /usr/lib/insserv/insserv /sbin/insserv
+
+Add all of the services::
+
+  $ sudo chkconfig -s tomcat6 on
+
+Check their status::
+
+  chkconfig --list
+
 
 Apache 2
 --------
@@ -418,6 +439,42 @@ Restart the server::
   sudo service apache2 restart
 
 Accessing http://localhost should display an **It works!** message.
+
+AJP proxying
+............
+
+Configurations to connect to all backend webapp throught AJP are
+in ``/etc/httpd/conf.d/proxy_ajp.conf``.
+
+Create the file ``/etc/apache2/mods-available/proxy_ajp.conf`` and define the redirections to the various tomcat applications::
+
+  # Don't rewrite hostname
+  ProxyPreserveHost on
+
+  # Staging and dissemination proxy rules
+  ProxyPass        /stg_geoserver   ajp://localhost:8009/stg_geoserver
+  ProxyPassReverse /stg_geoserver   ajp://localhost:8009/stg_geoserver
+  ProxyPassReverse /stg_geoserver/  ajp://localhost:8009/stg_geoserver/
+
+  # Proxy rules for the staging area
+  ProxyPass        /admin   ajp://localhost:8009/admin
+  ProxyPassReverse /admin   ajp://localhost:8009/admin
+  ProxyPassReverse /admin/  ajp://localhost:8009/admin/
+
+  # Proxy rules for the dissemination area
+  ProxyPass        /portal   ajp://localhost:8009/portal
+  ProxyPassReverse /portal   ajp://localhost:8009/portal
+  ProxyPassReverse /portal/  ajp://localhost:8009/portal/
+
+
+Create a link in mods-enabled::
+
+  $ sudo ln -s /etc/apache2/mods-available/proxy_ajp.conf /etc/apache2/mods-enabled/proxy_ajp.conf
+
+Restart Apache server:
+
+  $ sudo service apache2 restart
+
 
 GDAL
 ----
@@ -474,21 +531,17 @@ PostGIS
 
 In Ubuntu, use the package manager to install PostgreSQL 9.1 and other prerequisites needed for PostGIS building::
 
-  sudo apt-get install build-essential postgresql-9.1 postgresql-server-dev-9.1 libxml2-dev libgeos-dev proj
+  sudo apt-get install build-essential postgresql-9.1 postgresql-server-dev-9.1 libxml2-dev libgeos-dev proj postgresql-9.1-postgis
   
 Finally, create a postgis template, useful to create spatially enabled databases from it::
 
   sudo -u postgres createdb template_postgis
   sudo -u postgres psql -d template_postgis -c "UPDATE pg_database SET datistemplate=true WHERE datname='template_postgis'"
-  sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql
-  sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql
-  sudo -u postgres psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis_comments.sql
+  sudo -u postgres psql -d template_postgis -c "CREATE EXTENSION postgis;"
 
 .. note:: References:
 
-   http://trac.osgeo.org/postgis/wiki/UsersWikiPostGIS15Ubuntu1110src
-
-   http://postgis.refractions.net/documentation/manual-1.5/ch02.html
+   http://postgis.net/docs/manual-2.0/postgis_installation.html
 
 You will need these PostGIS databases:
 
@@ -496,7 +549,7 @@ geoserver
    DB for GeoServer vector layers.
 app 
    DB for storing portal application data, such as feedback reports, on the dissemination system.
-
+   
 .. warning:: The set of databases that are necessary on the system depends on the concrete subsystem that is being installed. In concrete, the staging subsystem does not require the app database since it does not contain the portal.
 
 
@@ -525,13 +578,11 @@ Again, the *app* user is only necessary in dissemination.
 
 app::
 
-  sudo -u postgres createdb -O stg_geostore stg_geostore
+	$ sudo -u postgres createdb -O app app
 
 geoserver::
 
-  sudo -u postgres createdb -O geoserver -T template_postgis geoserver
-  sudo -u postgres psql geoserver
-    geoserver=# GRANT ALL ON geometry_columns TO geoserver;
+    $ sudo -u postgres createdb -O geoserver -T template_postgis geoserver
 
 
 Configure PostgreSQL access
@@ -555,7 +606,7 @@ Configuration file is in ``/etc/postgresql/9.1/main/pg_hba.conf``::
 
 Then, reboot the posgresql service::
 
-  sudo /etc/init.d/postgresql restart
+  sudo service postgresql restart
   
 Autostart
 .........

@@ -2,6 +2,8 @@
 Interface description
 ======================
 
+.. warning:: This documentation out of date. There is no administrative interface currently installed
+
 The UNREDD NFMS portal relies on GeoStore and GeoBatch to process data coming from the analysis tool, publish them on GeoServer and to produce statistics and charts.
 
 The UNREDD GeoStore Administration User Interface allows the administrator user of the UNREDD NFMS portal to easily configure and manage the publication and processing flows by creating and editing the following GeoStore resource types:
