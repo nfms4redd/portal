@@ -1,5 +1,5 @@
 ====================
-Dissemination Portal
+Developer's guide
 ====================
 
 .. toctree::
@@ -7,4 +7,3 @@ Dissemination Portal
 
    description
    customize
-   develop

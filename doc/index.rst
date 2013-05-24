@@ -14,5 +14,6 @@ Contents:
    geoserver/index
    admin/index
    portal/index
+   developer/index
 
 .. * :ref:`search`
