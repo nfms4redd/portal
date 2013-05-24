@@ -7,7 +7,6 @@ Following is the description of the sample data provided for the training exerci
 This dataset is a simplified version from a real use case, the `DRC portal <http://www.rdc-snsf.org>`_, and is a minimal set which will cover all the cases that the system administrator may face when configuring the portal:
 
  * Publication of base layers on GeoServer for visualization,
- * Configuration of GeoStore for time varying layers,
  * Calculation of statistics based on regions (polygons).
 
 

@@ -3,6 +3,8 @@
 Deploy and configure Administration interface
 =============================================
 
+.. warning:: This documentation out of date. There is no administrative interface currently installed
+
 Simply copy the application file ``unredd-admin.war`` to the tomcat webapps directory. For example::
 
   sudo cp unredd-admin.war /var/tomcat/admin/webapps/admin.war
