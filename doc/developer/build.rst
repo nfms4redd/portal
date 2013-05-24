@@ -8,6 +8,12 @@ The nfms4redd code is hosted on github. To get a local copy using git, run::
 
   git clone https://github.com/nfms4redd/nfms.git
 
+Branching model
+----------------
+
+The branching model followed by the project is the on described here: http://nvie.com/posts/a-successful-git-branching-model/
+
+Roughly, it means that the developments are done on the ``develop`` branch and they are only merged back in ``master`` when they are stable. 
 
 Building
 --------
