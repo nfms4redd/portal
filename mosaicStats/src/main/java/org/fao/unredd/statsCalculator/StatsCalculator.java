@@ -65,7 +65,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class StatsCalculator {
 
-	private static final String MOSAIC_SUB_FOLDER = "mosaic";
+	private static final String MOSAIC_SUB_FOLDER = "data";
 	private static final String CONFIGURATION_SUB_FOLDER = "configuration";
 	private static final String SAMPLE_AREAS_FILE_NAME = "sample-areas.tiff";
 

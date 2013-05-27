@@ -33,13 +33,13 @@ public class StatsCalculatorTest {
 	}
 
 	@Test
-	public void testUnexistantMosaicFolder() throws Exception {
-		File file = new File("src/test/resources/noMosaicDir");
+	public void testUnexistantDataFolder() throws Exception {
+		File file = new File("src/test/resources/noDataDir");
 		try {
 			new StatsCalculator(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
-			assertTrue(e.getOffendingFile().equals(new File(file, "mosaic")));
+			assertTrue(e.getOffendingFile().equals(new File(file, "data")));
 		}
 	}
 
@@ -62,7 +62,7 @@ public class StatsCalculatorTest {
 			new StatsCalculator(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
-			assertTrue(e.getOffendingFile().equals(new File(file, "mosaic")));
+			assertTrue(e.getOffendingFile().equals(new File(file, "data")));
 		}
 	}
 
@@ -94,7 +94,7 @@ public class StatsCalculatorTest {
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(
-					new File(file, "mosaic/timeregex.properties")));
+					new File(file, "data/timeregex.properties")));
 		}
 	}
 
@@ -107,7 +107,7 @@ public class StatsCalculatorTest {
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(
-					new File(file, "mosaic/timeregex.properties")));
+					new File(file, "data/timeregex.properties")));
 		}
 	}
 
@@ -171,16 +171,16 @@ public class StatsCalculatorTest {
 	private void verifyOk(File folderBase,
 			CalculationListener calculationListener, File areaRaster) {
 		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase, "mosaic/snapshot_2000.tiff"),
+				new File(folderBase, "data/snapshot_2000.tiff"),
 				"unredd:provinces", "name");
 		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase, "mosaic/snapshot_2000.tiff"),
+				new File(folderBase, "data/snapshot_2000.tiff"),
 				"unredd:projects", "id");
 		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase, "mosaic/snapshot_2001.tiff"),
+				new File(folderBase, "data/snapshot_2001.tiff"),
 				"unredd:provinces", "name");
 		verify(calculationListener).calculate(areaRaster,
-				new File(folderBase, "mosaic/snapshot_2001.tiff"),
+				new File(folderBase, "data/snapshot_2001.tiff"),
 				"unredd:projects", "id");
 	}
 
