@@ -18,24 +18,26 @@ This version is the first result of the simplification process. It is fully func
 - Revamp the communication with two systems to be able to do a deploment.
 
 
-2.0 (28th June)
-----------------
+2.0 (7th June) (CLOSED)
+-------------------------
 
-Fully automation of the manual processes of 1.0. Ingestion and publication of layers will be done through a linux command line and statistics will be automatically calculated at the moment of the ingestion.
+Fully automation of the manual processes of 1.0. Ingestion will be done manually and the calculation of indicators (zonal statistics) will be done through the execution of a command line utility. There is no publication possibilities yet.
 
-- Setup of a database to support the development of statistics
+- Implementation of Statistics button in dissemination portal. Folder structure convention. Issues #13 and #14.
 
-- Creation of the automatic ingestion process
+- Creation of a command line utility to generate the zonal statistics give a specific layer-folder. Issue #15.
 
-- Creation of the statistic precalculation process
+- Documentation for ingestion.
 
-- ...
+- Improve documentation. Issue #16.
+
+- Simplified system chef installer.
 
 
 2.1 (beginning of November)
 ----------------------------
 
-- ...
+- Utility to publish from staging to dissemination system.
 
 
 3.0 (end December)
