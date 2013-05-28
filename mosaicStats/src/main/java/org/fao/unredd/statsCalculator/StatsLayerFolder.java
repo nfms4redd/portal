@@ -56,7 +56,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author fergonco
  */
-public class StatsCalculator extends AbstractLayerFolder {
+public class StatsLayerFolder extends AbstractLayerFolder {
 
 	private static final String SAMPLE_AREAS_FILE_NAME = "sample-areas.tiff";
 
@@ -73,7 +73,7 @@ public class StatsCalculator extends AbstractLayerFolder {
 	 * @throws IOException
 	 *             If the folder contents cannot be added
 	 */
-	public StatsCalculator(File folder) throws IllegalArgumentException,
+	public StatsLayerFolder(File folder) throws IllegalArgumentException,
 			InvalidFolderStructureException, SnapshotNamingException,
 			IOException {
 		super(folder);
@@ -126,7 +126,7 @@ public class StatsCalculator extends AbstractLayerFolder {
 			System.exit(-1);
 		}
 		try {
-			StatsCalculator statsCalculator = new StatsCalculator(folder);
+			StatsLayerFolder statsCalculator = new StatsLayerFolder(folder);
 			statsCalculator.run(new CalculationListener() {
 
 				@Override

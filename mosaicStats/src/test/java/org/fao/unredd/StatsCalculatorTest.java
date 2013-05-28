@@ -19,7 +19,7 @@ import org.fao.unredd.statsCalculator.GeoserverLayerFolderTranslator;
 import org.fao.unredd.statsCalculator.InvalidFolderStructureException;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.SnapshotNamingException;
-import org.fao.unredd.statsCalculator.StatsCalculator;
+import org.fao.unredd.statsCalculator.StatsLayerFolder;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class StatsCalculatorTest {
 		File file = new File("does not exist");
 		assertFalse(file.exists());
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
@@ -42,7 +42,7 @@ public class StatsCalculatorTest {
 	public void testUnexistantDataFolder() throws Exception {
 		File file = new File("src/test/resources/noDataDir");
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(new File(file, "data")));
@@ -54,7 +54,7 @@ public class StatsCalculatorTest {
 	public void testUnexistantConfigurationFolder() throws Exception {
 		File file = new File("src/test/resources/noConfigurationDir");
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(
@@ -67,7 +67,7 @@ public class StatsCalculatorTest {
 	public void testEmptyMosaic() throws Exception {
 		File file = new File("src/test/resources/emptyMosaic");
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(new File(file, "data")));
@@ -79,7 +79,7 @@ public class StatsCalculatorTest {
 	public void testBadSnapshotNaming() throws Exception {
 		File file = new File("src/test/resources/badSnapshotNaming");
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (SnapshotNamingException e) {
 		}
@@ -90,7 +90,7 @@ public class StatsCalculatorTest {
 	public void testBadSnapshotTimeFormat() throws Exception {
 		File file = new File("src/test/resources/badSnapshotTimeFormat");
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (SnapshotNamingException e) {
 		}
@@ -101,7 +101,7 @@ public class StatsCalculatorTest {
 	public void testBadTimeregexProperties() throws Exception {
 		File file = new File("src/test/resources/badTimeregexProperties");
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(
@@ -115,7 +115,7 @@ public class StatsCalculatorTest {
 		File file = new File(
 				"src/test/resources/nonExistingTimeregexProperties");
 		try {
-			new StatsCalculator(file);
+			new StatsLayerFolder(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(
@@ -127,7 +127,7 @@ public class StatsCalculatorTest {
 	@Test
 	public void testOkThreeSnapshots() throws Exception {
 		File folderBase = new File("src/test/resources/okThreeSnapshots");
-		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
 		CalculationListener calculationListener = mock(CalculationListener.class);
 		statsCalculator.run(calculationListener, null);
 
@@ -144,7 +144,7 @@ public class StatsCalculatorTest {
 	public void testOkExistingBadSampleAreas() throws Exception {
 		File folderBase = new File(
 				"src/test/resources/okExistingBadSampleAreas");
-		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
 		File areaRaster = null;// statsCalculator.getSampleAreasFile();
 		fail();
 		File backupAreaRaster = new File(areaRaster.getParentFile(),
@@ -165,7 +165,7 @@ public class StatsCalculatorTest {
 	public void testOkExistingBadSampleAreasCannotBeDeleted() throws Exception {
 		File folderBase = new File(
 				"src/test/resources/okExistingBadSampleAreas");
-		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
 		File areaRaster = null;// statsCalculator.getSampleAreasFile();
 		fail();
 		File backupAreaRaster = new File(areaRaster.getParentFile(),
@@ -208,7 +208,7 @@ public class StatsCalculatorTest {
 	public void testSnapshotDifferentGeometry() throws Exception {
 		File folderBase = new File(
 				"src/test/resources/snapshotDifferentGeometry");
-		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
 		CalculationListener calculationListener = mock(CalculationListener.class);
 		try {
 			statsCalculator.run(calculationListener, null);
@@ -226,7 +226,7 @@ public class StatsCalculatorTest {
 	@Test
 	public void testErrorCreatingAreaRaster() throws Exception {
 		File folderBase = new File("src/test/resources/errorCreatingAreaRaster");
-		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
 		statsCalculator.getConfigurationFolder().setReadOnly();
 		CalculationListener calculationListener = mock(CalculationListener.class);
 		try {
@@ -245,7 +245,7 @@ public class StatsCalculatorTest {
 	@Test
 	public void testCorruptedTiff() throws Exception {
 		File folderBase = new File("src/test/resources/corruptedTiff");
-		StatsCalculator statsCalculator = new StatsCalculator(folderBase);
+		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
 		CalculationListener calculationListener = mock(CalculationListener.class);
 		try {
 			statsCalculator.run(calculationListener, null);
@@ -263,7 +263,7 @@ public class StatsCalculatorTest {
 				temporalMosaic);
 		CalculationListener calculationListener = mock(CalculationListener.class);
 
-		StatsCalculator statsCalculator = new StatsCalculator(layer);
+		StatsLayerFolder statsCalculator = new StatsLayerFolder(layer);
 		statsCalculator.run(calculationListener, geoserverLayerFactory);
 
 		verify(calculationListener).calculate(
