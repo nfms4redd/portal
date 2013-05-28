@@ -13,11 +13,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.statsCalculator.CalculationListener;
 import org.fao.unredd.statsCalculator.GeoserverLayerFolderTranslator;
 import org.fao.unredd.statsCalculator.InvalidFolderStructureException;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
+import org.fao.unredd.statsCalculator.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.SnapshotNamingException;
 import org.fao.unredd.statsCalculator.StatsLayerFolder;
 import org.junit.Ignore;
@@ -266,13 +268,21 @@ public class StatsCalculatorTest {
 		StatsLayerFolder statsCalculator = new StatsLayerFolder(layer);
 		statsCalculator.run(calculationListener, geoserverLayerFactory);
 
-		verify(calculationListener).calculate(
-				new File(temporalMosaic, "work/sample-areas.tiff"),
-				new File(temporalMosaic, "data/snapshot_2000.tiff"),
-				new File(layer, "data/zones.shp"), "id");
-		verify(calculationListener).calculate(
-				new File(temporalMosaic, "work/sample-areas.tiff"),
-				new File(temporalMosaic, "data/snapshot_2001.tiff"),
-				new File(layer, "data/zones.shp"), "id");
+		try {
+			verify(calculationListener).calculate(
+					new File(temporalMosaic, "work/sample-areas.tiff"),
+					new File(temporalMosaic, "data/snapshot_2000.tiff"),
+					new File(layer, "data/zones.shp"), "id");
+			verify(calculationListener).calculate(
+					new File(temporalMosaic, "work/sample-areas.tiff"),
+					new File(temporalMosaic, "data/snapshot_2001.tiff"),
+					new File(layer, "data/zones.shp"), "id");
+		} finally {
+			File workFolder = new MosaicLayerFolder(temporalMosaic)
+					.getWorkFolder();
+			if (workFolder.exists()) {
+				FileUtils.deleteDirectory(workFolder);
+			}
+		}
 	}
 }
