@@ -31,7 +31,7 @@ public class TriggerTest {
 		assertTrue(folder.getRoot().setReadOnly());
 
 		File dummyReadTiff = new File("src/test/resources/"
-				+ "okThreeSnapshots/mosaic/snapshot_2000.tiff");
+				+ "okThreeSnapshots/data/snapshot_2000.tiff");
 		AbstractGridFormat format = GridFormatFinder.findFormat(dummyReadTiff);
 		AbstractGridCoverage2DReader reader = format.getReader(dummyReadTiff);
 
