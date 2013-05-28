@@ -452,9 +452,9 @@ Create the file ``/etc/apache2/mods-available/proxy_ajp.conf`` and define the re
   ProxyPreserveHost on
 
   # Staging and dissemination proxy rules
-  ProxyPass        /stg_geoserver   ajp://localhost:8009/stg_geoserver
-  ProxyPassReverse /stg_geoserver   ajp://localhost:8009/stg_geoserver
-  ProxyPassReverse /stg_geoserver/  ajp://localhost:8009/stg_geoserver/
+  ProxyPass        /geoserver   ajp://localhost:8009/geoserver
+  ProxyPassReverse /geoserver   ajp://localhost:8009/geoserver
+  ProxyPassReverse /geoserver/  ajp://localhost:8009/geoserver/
 
   # Proxy rules for the staging area
   ProxyPass        /admin   ajp://localhost:8009/admin
