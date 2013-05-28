@@ -24,7 +24,6 @@ import org.fao.unredd.statsCalculator.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.NotAMosaicException;
 import org.fao.unredd.statsCalculator.SnapshotNamingException;
 import org.fao.unredd.statsCalculator.StatsLayerFolder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class StatsCalculatorTest {
@@ -189,52 +188,53 @@ public class StatsCalculatorTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testSnapshotDifferentGeometry() throws Exception {
-		File folderBase = new File(
+		File temporalMosaic = new File(
 				"src/test/resources/snapshotDifferentGeometry");
-		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
-		CalculationListener calculationListener = mock(CalculationListener.class);
+		File layer = new File("src/test/resources/okZonesSHP");
 		try {
-			statsCalculator.run(calculationListener, null);
+			executionWithMosaic(layer, temporalMosaic);
 			fail();
 		} catch (MixedRasterGeometryException e) {
 		} finally {
-			// File areaRaster = statsCalculator.getSampleAreasFile();
-			// // clean up before checks
-			// assertTrue(!areaRaster.exists() || areaRaster.delete());
-			fail();
+			File areaRaster = new StatsLayerFolder(layer)
+					.getSampleAreasRasterFile(new MosaicLayerFolder(
+							temporalMosaic));
+			// clean up before checks
+			assertTrue(!areaRaster.exists() || areaRaster.delete());
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testErrorCreatingAreaRaster() throws Exception {
-		File folderBase = new File("src/test/resources/errorCreatingAreaRaster");
-		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
-		statsCalculator.getConfigurationFolder().setReadOnly();
-		CalculationListener calculationListener = mock(CalculationListener.class);
+		File temporalMosaic = new File(
+				"src/test/resources/errorCreatingAreaRaster");
+		File layer = new File("src/test/resources/okZonesSHP");
+		File mosaicWorkFolder = new MosaicLayerFolder(temporalMosaic)
+				.getWorkFolder();
+		assertTrue(mosaicWorkFolder.exists() || mosaicWorkFolder.mkdir());
+		mosaicWorkFolder.setReadOnly();
 		try {
-			statsCalculator.run(calculationListener, null);
+			executionWithMosaic(layer, temporalMosaic);
 			fail();
 		} catch (IOException e) {
 		} finally {
-			// File areaRaster = statsCalculator.getSampleAreasFile();
-			// // clean up before checks
-			// assertTrue(!areaRaster.exists() || areaRaster.delete());
-			fail();
+			File areaRaster = new StatsLayerFolder(layer)
+					.getSampleAreasRasterFile(new MosaicLayerFolder(
+							temporalMosaic));
+			// clean up before checks
+			assertTrue(!areaRaster.exists() || areaRaster.delete());
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testCorruptedTiff() throws Exception {
-		File folderBase = new File("src/test/resources/corruptedTiff");
-		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
-		CalculationListener calculationListener = mock(CalculationListener.class);
+		File temporalMosaic = new File("src/test/resources/corruptedTiff");
+		File layer = new File("src/test/resources/okZonesSHP");
+		new StatsLayerFolder(layer).getConfigurationFolder().setReadOnly();
 		try {
-			statsCalculator.run(calculationListener, null);
+			executionWithMosaic(layer, temporalMosaic);
 			fail();
 		} catch (IOException e) {
 		}
