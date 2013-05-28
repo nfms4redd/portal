@@ -7,7 +7,7 @@ public class InvalidFolderStructureException extends Exception {
 	private File offendingFile;
 
 	public InvalidFolderStructureException(String msg, File offendingFile) {
-		super(msg);
+		super(msg + ": " + offendingFile.getAbsolutePath());
 		this.offendingFile = offendingFile;
 	}
 

@@ -4,7 +4,7 @@ import java.io.File;
 
 public interface CalculationListener {
 
-	void calculate(File areaRaster, File mask, String classificationLayer,
+	void calculate(File areaRaster, File mask, File classificationLayer,
 			String classificationFieldName);
 
 }

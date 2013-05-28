@@ -1,18 +1,12 @@
 package org.fao.unredd.statsCalculator;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXB;
 
@@ -23,8 +17,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.fao.unredd.statsCalculator.generated.ClassificationType;
-import org.fao.unredd.statsCalculator.generated.Classifications;
+import org.fao.unredd.statsCalculator.generated.VariableType;
+import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -34,7 +28,6 @@ import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffWriteParams;
 import org.geotools.gce.geotiff.GeoTiffWriter;
-import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.raster.AreaGridProcess;
@@ -63,15 +56,11 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author fergonco
  */
-public class StatsCalculator {
+public class StatsCalculator extends AbstractLayerFolder {
 
-	private static final String MOSAIC_SUB_FOLDER = "data";
-	private static final String CONFIGURATION_SUB_FOLDER = "configuration";
 	private static final String SAMPLE_AREAS_FILE_NAME = "sample-areas.tiff";
 
-	private File mosaicFolder;
-	private File configurationSubFolder;
-	private TreeMap<Date, File> files;
+	private ZonalStatistics statisticsConfiguration;
 
 	/**
 	 * Builds a new StatsCalculator instance
@@ -87,78 +76,29 @@ public class StatsCalculator {
 	public StatsCalculator(File folder) throws IllegalArgumentException,
 			InvalidFolderStructureException, SnapshotNamingException,
 			IOException {
-		if (!folder.exists()) {
-			throw new IllegalArgumentException("The folder does not exist: "
-					+ folder.getAbsolutePath());
-		}
-		this.mosaicFolder = new File(folder, MOSAIC_SUB_FOLDER);
-		if (!mosaicFolder.exists()) {
+		super(folder);
+		if (!getDataFolder().exists()) {
 			throw new InvalidFolderStructureException(
 					"The folder does not contain a subfolder "
 							+ "'mosaic' containing the coverages: "
-							+ folder.getAbsolutePath(), mosaicFolder);
+							+ folder.getAbsolutePath(), getDataFolder());
 		}
-		this.configurationSubFolder = new File(folder, CONFIGURATION_SUB_FOLDER);
-		if (!configurationSubFolder.exists()) {
+		if (!getConfigurationFolder().exists()) {
 			throw new InvalidFolderStructureException(
 					"The folder does not contain a subfolder "
 							+ "'configuration': " + folder.getAbsolutePath(),
-					configurationSubFolder);
+					getConfigurationFolder());
 		}
-		// Get a hashmap with the association between timestamps and files
-		files = new TreeMap<Date, File>();
-		File[] snapshotFiles = mosaicFolder.listFiles(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				String lowerCaseName = name.toLowerCase();
-				return lowerCaseName.endsWith(".tiff")
-						|| lowerCaseName.endsWith(".tif");
-			}
-		});
-		Properties timeregexProperties = new Properties();
-		File timeregexPropertiesFile = new File(mosaicFolder,
-				"timeregex.properties");
-		try {
-			timeregexProperties.load(new FileInputStream(
-					timeregexPropertiesFile));
-		} catch (FileNotFoundException e) {
+		// Get the configuration of the zonal-stats
+		File zonalStatisticsFile = new File(getConfigurationFolder(),
+				"zonal-statistics.xml");
+		if (!zonalStatisticsFile.exists()) {
 			throw new InvalidFolderStructureException(
-					"The folder does not contain a timeregex.properties"
-							+ " file in the 'mosaic' subfolder: "
-							+ folder.getAbsolutePath(), timeregexPropertiesFile);
+					"The folder does not contain the configuration for the statistics",
+					zonalStatisticsFile);
 		}
-		String timeregex = timeregexProperties.getProperty("regex");
-		if (timeregex == null) {
-			throw new InvalidFolderStructureException(
-					"The timeregex.properties file does not contain"
-							+ " the regex property in the folder: "
-							+ folder.getAbsolutePath(), timeregexPropertiesFile);
-		}
-		Pattern pattern = Pattern.compile(timeregex);
-		for (File snapshotFile : snapshotFiles) {
-			String name = snapshotFile.getName();
-			Matcher matcher = pattern.matcher(name);
-			if (!matcher.find()) {
-				throw new SnapshotNamingException("The date of the snapshot "
-						+ "could not be obtained: "
-						+ snapshotFile.getAbsolutePath());
-			}
-			String dateString = matcher.group();
-			try {
-				TimeParser timeParser = new TimeParser();
-				List<Date> dates = timeParser.parse(dateString);
-				files.put(dates.get(0), snapshotFile);
-			} catch (java.text.ParseException e) {
-				throw new SnapshotNamingException("The date of the snapshot "
-						+ "could not be obtained: " + dateString);
-			}
-		}
-		if (files.isEmpty()) {
-			throw new InvalidFolderStructureException(
-					"There are no snapshots in the mosaic folder: "
-							+ mosaicFolder.getAbsolutePath(), mosaicFolder);
-		}
+		this.statisticsConfiguration = JAXB.unmarshal(zonalStatisticsFile,
+				ZonalStatistics.class);
 	}
 
 	public static void main(String[] args) throws IllegalArgumentException,
@@ -191,136 +131,153 @@ public class StatsCalculator {
 
 				@Override
 				public void calculate(File areaRaster, File mask,
-						String classificationLayer,
-						String classificationFieldName) {
+						File classificationLayer, String classificationFieldName) {
 					System.out.println("Executing the stats for ("
 							+ mask.getAbsolutePath() + ") with "
 							+ classificationLayer + "/"
 							+ classificationFieldName + " as classification ");
 				}
-			});
-		} catch (IllegalArgumentException e) {
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		} catch (InvalidFolderStructureException e) {
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		} catch (SnapshotNamingException e) {
-			System.err.println(e.getMessage());
-			System.exit(-1);
-		} catch (MixedRasterGeometryException e) {
+			}, null);
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			System.exit(-1);
 		}
 	}
 
-	public void run(CalculationListener calculationListener)
+	public void run(CalculationListener calculationListener,
+			GeoserverLayerFolderTranslator geoserverLayerFolderTranslator)
 			throws IllegalArgumentException, IOException,
-			MixedRasterGeometryException {
-		// Obtain the raster info from first tiff
-		Entry<Date, File> firstSnapshot = files.firstEntry();
-		File firstSnapshotFile = firstSnapshot.getValue();
-		RasterInfo firstSnapshotInfo = new RasterInfo(firstSnapshotFile);
-
-		// Calculate statistics for every snapshot
-		Iterator<Date> timestampIterator = files.keySet().iterator();
-		while (timestampIterator.hasNext()) {
-			Date timestamp = timestampIterator.next();
-			File timestampFile = files.get(timestamp);
-
-			// Check the snapshot matches first snapshot's geometry
-			if (!new RasterInfo(timestampFile)
-					.matchesGeometry(firstSnapshotInfo)) {
-				throw new MixedRasterGeometryException("The snapshot of '"
-						+ timestamp + "' does not match the "
-						+ "geometry of the first snapshot: '"
-						+ firstSnapshot.getKey() + "'");
+			MixedRasterGeometryException, InvalidFolderStructureException,
+			ConfigurationException, SnapshotNamingException {
+		// For each zonal statistics
+		for (VariableType variable : this.statisticsConfiguration.getVariable()) {
+			MosaicLayerFolder mosaicLayer;
+			try {
+				mosaicLayer = new MosaicLayerFolder(
+						geoserverLayerFolderTranslator.getLayerFolder(variable
+								.getLayer()));
+			} catch (NotAMosaicException e1) {
+				throw new ConfigurationException(
+						"The layer specified in the configuration is not a time mosaic: "
+								+ variable.getLayer());
 			}
+			// Get a hashmap with the association between timestamps and files
+			TreeMap<Date, File> files = mosaicLayer.getTimestamps();
 
-			/*
-			 * Remove the area-raster if it does not match the snapshots
-			 * geometry
-			 */
-			File areaRaster = getSampleAreasFile();
-			if (areaRaster.exists()) {
-				if (!firstSnapshotInfo.matchesGeometry(new RasterInfo(
-						areaRaster))) {
-					if (!areaRaster.delete()) {
-						throw new IOException("The area raster geometry "
-								+ "does not match "
-								+ "the snapshots' and could not "
-								+ "be deleted to be regenerated");
+			// Obtain the raster info from first tiff
+			Entry<Date, File> firstSnapshot = files.firstEntry();
+			File firstSnapshotFile = firstSnapshot.getValue();
+			RasterInfo firstSnapshotInfo = new RasterInfo(firstSnapshotFile);
+
+			// Calculate statistics for every snapshot
+			Iterator<Date> timestampIterator = files.keySet().iterator();
+			while (timestampIterator.hasNext()) {
+				Date timestamp = timestampIterator.next();
+				File timestampFile = files.get(timestamp);
+
+				// Check the snapshot matches first snapshot's geometry
+				if (!new RasterInfo(timestampFile)
+						.matchesGeometry(firstSnapshotInfo)) {
+					throw new MixedRasterGeometryException("The snapshot of '"
+							+ timestamp + "' does not match the "
+							+ "geometry of the first snapshot: '"
+							+ firstSnapshot.getKey() + "'");
+				}
+
+				/*
+				 * Remove the area-raster if it does not match the snapshots
+				 * geometry
+				 */
+				File areaRaster = mosaicLayer
+						.getWorkFile(SAMPLE_AREAS_FILE_NAME);
+				if (areaRaster.exists()) {
+					if (!firstSnapshotInfo.matchesGeometry(new RasterInfo(
+							areaRaster))) {
+						if (!areaRaster.delete()) {
+							throw new IOException("The area raster geometry "
+									+ "does not match "
+									+ "the snapshots' and could not "
+									+ "be deleted to be regenerated");
+						}
 					}
 				}
-			}
 
-			// Generate the area-raster if it does not exist
-			if (!areaRaster.exists()) {
-				AreaGridProcess process = new AreaGridProcess();
-				GeneralEnvelope generalEnvelope = firstSnapshotInfo
-						.getEnvelope();
-				Envelope jtsEnvelope = new Envelope(
-						generalEnvelope.getMinimum(0),
-						generalEnvelope.getMaximum(0),
-						generalEnvelope.getMinimum(1),
-						generalEnvelope.getMaximum(1));
-				ReferencedEnvelope envelope = new ReferencedEnvelope(
-						jtsEnvelope, firstSnapshotInfo.getCRS());
-				int width = firstSnapshotInfo.getWidth();
-				int height = firstSnapshotInfo.getHeight();
-				GridCoverage2D grid = process.execute(envelope, width, height);
-				GeoTiffWriter writer = null;
-				try {
-					writer = new GeoTiffWriter(areaRaster);
-				} catch (IOException e) {
-					System.err.println("Cannot create the writer for file: "
-							+ areaRaster.getAbsolutePath());
-					System.exit(-3);
-				}
-				try {
-					GeoTiffWriteParams params = new GeoTiffWriteParams();
-					params.setTilingMode(TIFFImageWriteParam.MODE_EXPLICIT);
-					params.setTiling(512, 512);
-					ParameterValue<GeoToolsWriteParams> value = GeoTiffFormat.GEOTOOLS_WRITE_PARAMS
-							.createValue();
-					value.setValue(params);
+				// Generate the area-raster if it does not exist
+				if (!areaRaster.exists()) {
+					File workFolder = areaRaster.getParentFile();
+					if (!workFolder.exists() && !workFolder.mkdir()) {
+						throw new IOException("Cannot create work folder: "
+								+ workFolder);
+					}
+					AreaGridProcess process = new AreaGridProcess();
+					GeneralEnvelope generalEnvelope = firstSnapshotInfo
+							.getEnvelope();
+					Envelope jtsEnvelope = new Envelope(
+							generalEnvelope.getMinimum(0),
+							generalEnvelope.getMaximum(0),
+							generalEnvelope.getMinimum(1),
+							generalEnvelope.getMaximum(1));
+					ReferencedEnvelope envelope = new ReferencedEnvelope(
+							jtsEnvelope, firstSnapshotInfo.getCRS());
+					int width = firstSnapshotInfo.getWidth();
+					int height = firstSnapshotInfo.getHeight();
+					GridCoverage2D grid = process.execute(envelope, width,
+							height);
+					GeoTiffWriter writer = null;
 					try {
-						writer.write(grid,
-								new GeneralParameterValue[] { value });
-					} catch (NullPointerException e) {
-						/**
-						 * if no permission, GT gives NPE, we have to report
-						 * this to fix it and handle properly the exception.
-						 * {@link TriggerTest#testGTGeotiffWriterExceptionManagement()}
-						 */
+						writer = new GeoTiffWriter(areaRaster);
+					} catch (IOException e) {
+						System.err
+								.println("Cannot create the writer for file: "
+										+ areaRaster.getAbsolutePath());
+						System.exit(-3);
+					}
+					try {
+						GeoTiffWriteParams params = new GeoTiffWriteParams();
+						params.setTilingMode(TIFFImageWriteParam.MODE_EXPLICIT);
+						params.setTiling(512, 512);
+						ParameterValue<GeoToolsWriteParams> value = GeoTiffFormat.GEOTOOLS_WRITE_PARAMS
+								.createValue();
+						value.setValue(params);
+						try {
+							writer.write(grid,
+									new GeneralParameterValue[] { value });
+						} catch (NullPointerException e) {
+							/**
+							 * if no permission, GT gives NPE, we have to report
+							 * this to fix it and handle properly the exception.
+							 * {@link TriggerTest#testGTGeotiffWriterExceptionManagement()}
+							 */
+							throw new IOException(
+									"Error writing the area raster", e);
+						}
+					} catch (RuntimeException e) {
+						throw new RuntimeException(
+								"Bug writing the area raster", e);
+					} catch (IOException e) {
 						throw new IOException("Error writing the area raster",
 								e);
+					} finally {
+						writer.dispose();
 					}
-				} catch (RuntimeException e) {
-					throw new RuntimeException("Bug writing the area raster", e);
-				} catch (IOException e) {
-					throw new IOException("Error writing the area raster", e);
-				} finally {
-					writer.dispose();
 				}
-			}
 
-			// Read the calculations
-			File classificationsFile = new File(configurationSubFolder,
-					"classifications.xml");
-			List<ClassificationType> classifications = JAXB.unmarshal(
-					classificationsFile, Classifications.class)
-					.getClassification();
-			for (ClassificationType classificationType : classifications) {
 				calculationListener.calculate(areaRaster, timestampFile,
-						classificationType.getLayer(),
-						classificationType.getFieldName());
+						getShapefile(),
+						this.statisticsConfiguration.getZoneIdField());
 			}
 		}
+
 	}
 
-	public File getSampleAreasFile() {
-		return new File(configurationSubFolder, SAMPLE_AREAS_FILE_NAME);
+	private File getShapefile() {
+		return getDataFolder().listFiles(new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".shp");
+			}
+		})[0];
 	}
 
 	private static void printUsage() {
@@ -372,9 +329,5 @@ public class StatsCalculator {
 					&& this.getWidth() == that.getWidth()
 					&& this.getHeight() == that.getHeight();
 		}
-	}
-
-	public File getConfigurationFolder() {
-		return configurationSubFolder;
 	}
 }
