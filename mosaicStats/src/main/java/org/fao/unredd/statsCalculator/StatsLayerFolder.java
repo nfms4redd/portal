@@ -190,8 +190,7 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 				 * Remove the area-raster if it does not match the snapshots
 				 * geometry
 				 */
-				File areaRaster = mosaicLayer
-						.getWorkFile(SAMPLE_AREAS_FILE_NAME);
+				File areaRaster = getSampleAreasRasterFile(mosaicLayer);
 				if (areaRaster.exists()) {
 					if (!firstSnapshotInfo.matchesGeometry(new RasterInfo(
 							areaRaster))) {
@@ -270,6 +269,10 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 			}
 		}
 
+	}
+
+	public File getSampleAreasRasterFile(MosaicLayerFolder mosaicLayer) {
+		return mosaicLayer.getWorkFile(SAMPLE_AREAS_FILE_NAME);
 	}
 
 	private File getShapefile() {

@@ -16,10 +16,12 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.statsCalculator.CalculationListener;
+import org.fao.unredd.statsCalculator.ConfigurationException;
 import org.fao.unredd.statsCalculator.GeoserverLayerFolderTranslator;
 import org.fao.unredd.statsCalculator.InvalidFolderStructureException;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicLayerFolder;
+import org.fao.unredd.statsCalculator.NotAMosaicException;
 import org.fao.unredd.statsCalculator.SnapshotNamingException;
 import org.fao.unredd.statsCalculator.StatsLayerFolder;
 import org.junit.Ignore;
@@ -27,7 +29,6 @@ import org.junit.Test;
 
 public class StatsCalculatorTest {
 
-	@Ignore
 	@Test
 	public void testUnexistantFolder() throws Exception {
 		File file = new File("does not exist");
@@ -39,7 +40,6 @@ public class StatsCalculatorTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testUnexistantDataFolder() throws Exception {
 		File file = new File("src/test/resources/noDataDir");
@@ -51,7 +51,6 @@ public class StatsCalculatorTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testUnexistantConfigurationFolder() throws Exception {
 		File file = new File("src/test/resources/noConfigurationDir");
@@ -64,102 +63,107 @@ public class StatsCalculatorTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testEmptyMosaic() throws Exception {
-		File file = new File("src/test/resources/emptyMosaic");
 		try {
-			new StatsLayerFolder(file);
-			fail();
+			executeWithInvalidMosaic(new File("src/test/resources/emptyMosaic"));
 		} catch (InvalidFolderStructureException e) {
-			assertTrue(e.getOffendingFile().equals(new File(file, "data")));
+			assertTrue(e
+					.getOffendingFile()
+					.equals(new File(
+							new File("src/test/resources/emptyMosaic"), "data")));
 		}
 	}
 
-	@Ignore
+	private void executeWithInvalidMosaic(File mosaic)
+			throws NotAMosaicException, InvalidFolderStructureException,
+			SnapshotNamingException, IOException, MixedRasterGeometryException,
+			ConfigurationException {
+		executeWithMosaic(new File("src/test/resources/okZonesSHP"), mosaic);
+		fail("Previous execution should raise an exception");
+	}
+
+	private CalculationListener executeWithMosaic(File layer, File mosaic)
+			throws NotAMosaicException, InvalidFolderStructureException,
+			SnapshotNamingException, IOException, MixedRasterGeometryException,
+			ConfigurationException {
+		GeoserverLayerFolderTranslator geoserverLayerFactory = mock(GeoserverLayerFolderTranslator.class);
+		when(geoserverLayerFactory.getLayerFolder(anyString())).thenReturn(
+				mosaic);
+		CalculationListener calculationListener = mock(CalculationListener.class);
+
+		StatsLayerFolder statsLayerFolder = new StatsLayerFolder(layer);
+		statsLayerFolder.run(calculationListener, geoserverLayerFactory);
+
+		return calculationListener;
+	}
+
 	@Test
 	public void testBadSnapshotNaming() throws Exception {
-		File file = new File("src/test/resources/badSnapshotNaming");
 		try {
-			new StatsLayerFolder(file);
-			fail();
+			executeWithInvalidMosaic(new File(
+					"src/test/resources/badSnapshotNaming"));
 		} catch (SnapshotNamingException e) {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testBadSnapshotTimeFormat() throws Exception {
-		File file = new File("src/test/resources/badSnapshotTimeFormat");
 		try {
-			new StatsLayerFolder(file);
-			fail();
+			executeWithInvalidMosaic(new File(
+					"src/test/resources/badSnapshotTimeFormat"));
 		} catch (SnapshotNamingException e) {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testBadTimeregexProperties() throws Exception {
-		File file = new File("src/test/resources/badTimeregexProperties");
+		File mosaic = new File("src/test/resources/badTimeregexProperties");
 		try {
-			new StatsLayerFolder(file);
-			fail();
+			executeWithInvalidMosaic(mosaic);
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(
-					new File(file, "data/timeregex.properties")));
+					new File(mosaic, "data/timeregex.properties")));
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testNonExistingTimeregexProperties() throws Exception {
-		File file = new File(
+		File mosaic = new File(
 				"src/test/resources/nonExistingTimeregexProperties");
 		try {
-			new StatsLayerFolder(file);
-			fail();
+			executeWithInvalidMosaic(mosaic);
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(
-					new File(file, "data/timeregex.properties")));
+					new File(mosaic, "data/timeregex.properties")));
 		}
 	}
 
-	@Ignore
-	@Test
-	public void testOkThreeSnapshots() throws Exception {
-		File folderBase = new File("src/test/resources/okThreeSnapshots");
-		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
-		CalculationListener calculationListener = mock(CalculationListener.class);
-		statsCalculator.run(calculationListener, null);
-
-		// File areaRaster = statsCalculator.getSampleAreasFile();
-		// // clean up before checks
-		// assertTrue(!areaRaster.exists() || areaRaster.delete());
-		//
-		// verifyOk(folderBase, calculationListener, areaRaster);
-		fail();
-	}
-
-	@Ignore
 	@Test
 	public void testOkExistingBadSampleAreas() throws Exception {
-		File folderBase = new File(
-				"src/test/resources/okExistingBadSampleAreas");
-		StatsLayerFolder statsCalculator = new StatsLayerFolder(folderBase);
-		File areaRaster = null;// statsCalculator.getSampleAreasFile();
-		fail();
+		File mosaic = new File("src/test/resources/okExistingBadSampleAreas");
+		File layer = new File("src/test/resources/okZonesSHP");
+		File areaRaster = new StatsLayerFolder(layer)
+				.getSampleAreasRasterFile(new MosaicLayerFolder(mosaic));
 		File backupAreaRaster = new File(areaRaster.getParentFile(),
 				"backup-sample-areas.tiff");
 		IOUtils.copy(new FileInputStream(backupAreaRaster),
 				new FileOutputStream(areaRaster));
-		CalculationListener calculationListener = mock(CalculationListener.class);
-		statsCalculator.run(calculationListener, null);
+
+		CalculationListener calculationListener = executeWithMosaic(layer,
+				mosaic);
 
 		// clean up before checks
 		assertTrue(!areaRaster.exists() || areaRaster.delete());
 
-		verifyOk(folderBase, calculationListener, areaRaster);
+		verify(calculationListener).calculate(
+				new File(mosaic, StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
+				new File(mosaic, "data/snapshot_2000.tiff"),
+				new File(layer, "data/zones.shp"), "id");
+		verify(calculationListener).calculate(
+				new File(mosaic, StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
+				new File(mosaic, "data/snapshot_2001.tiff"),
+				new File(layer, "data/zones.shp"), "id");
 	}
 
 	@Ignore
@@ -260,13 +264,8 @@ public class StatsCalculatorTest {
 	public void testOkZonesSHP() throws Exception {
 		File temporalMosaic = new File("src/test/resources/temporalMosaic");
 		File layer = new File("src/test/resources/okZonesSHP");
-		GeoserverLayerFolderTranslator geoserverLayerFactory = mock(GeoserverLayerFolderTranslator.class);
-		when(geoserverLayerFactory.getLayerFolder(anyString())).thenReturn(
+		CalculationListener calculationListener = executeWithMosaic(layer,
 				temporalMosaic);
-		CalculationListener calculationListener = mock(CalculationListener.class);
-
-		StatsLayerFolder statsLayerFolder = new StatsLayerFolder(layer);
-		statsLayerFolder.run(calculationListener, geoserverLayerFactory);
 
 		try {
 			verify(calculationListener).calculate(
