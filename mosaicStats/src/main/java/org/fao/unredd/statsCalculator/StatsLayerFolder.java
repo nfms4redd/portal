@@ -59,6 +59,8 @@ import com.vividsolutions.jts.geom.Envelope;
 public class StatsLayerFolder extends AbstractLayerFolder {
 
 	private static final String SAMPLE_AREAS_FILE_NAME = "sample-areas.tiff";
+	public static final String SAMPLE_AREAS_RELATIVE_PATH = "work/"
+			+ SAMPLE_AREAS_FILE_NAME;
 
 	private ZonalStatistics statisticsConfiguration;
 

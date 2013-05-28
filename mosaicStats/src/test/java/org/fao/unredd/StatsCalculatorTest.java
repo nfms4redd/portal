@@ -265,16 +265,18 @@ public class StatsCalculatorTest {
 				temporalMosaic);
 		CalculationListener calculationListener = mock(CalculationListener.class);
 
-		StatsLayerFolder statsCalculator = new StatsLayerFolder(layer);
-		statsCalculator.run(calculationListener, geoserverLayerFactory);
+		StatsLayerFolder statsLayerFolder = new StatsLayerFolder(layer);
+		statsLayerFolder.run(calculationListener, geoserverLayerFactory);
 
 		try {
 			verify(calculationListener).calculate(
-					new File(temporalMosaic, "work/sample-areas.tiff"),
+					new File(temporalMosaic,
+							StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
 					new File(temporalMosaic, "data/snapshot_2000.tiff"),
 					new File(layer, "data/zones.shp"), "id");
 			verify(calculationListener).calculate(
-					new File(temporalMosaic, "work/sample-areas.tiff"),
+					new File(temporalMosaic,
+							StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
 					new File(temporalMosaic, "data/snapshot_2001.tiff"),
 					new File(layer, "data/zones.shp"), "id");
 		} finally {
