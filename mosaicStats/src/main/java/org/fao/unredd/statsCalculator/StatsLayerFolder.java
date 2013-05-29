@@ -71,13 +71,10 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 	 * @throws IllegalArgumentException
 	 *             If the folder does not exist
 	 * @throws InvalidFolderStructureException
-	 * @throws SnapshotNamingException
-	 * @throws IOException
-	 *             If the folder contents cannot be added
+	 *             If the layer does not follow the expected rules
 	 */
 	public StatsLayerFolder(File folder) throws IllegalArgumentException,
-			InvalidFolderStructureException, SnapshotNamingException,
-			IOException {
+			InvalidFolderStructureException {
 		super(folder);
 		if (!getDataFolder().exists()) {
 			throw new InvalidFolderStructureException(
@@ -150,7 +147,7 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 			GeoserverLayerFolderTranslator geoserverLayerFolderTranslator)
 			throws IllegalArgumentException, IOException,
 			MixedRasterGeometryException, InvalidFolderStructureException,
-			ConfigurationException, SnapshotNamingException {
+			ConfigurationException {
 		// For each zonal statistics
 		for (VariableType variable : this.statisticsConfiguration.getVariable()) {
 			MosaicLayerFolder mosaicLayer;
@@ -158,9 +155,9 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 				mosaicLayer = new MosaicLayerFolder(
 						geoserverLayerFolderTranslator.getLayerFolder(variable
 								.getLayer()));
-			} catch (NotAMosaicException e1) {
+			} catch (NoSuchGeoserverLayerException e) {
 				throw new ConfigurationException(
-						"The layer specified in the configuration is not a time mosaic: "
+						"The layer specified in the configuration cannot be found in the geoserver instance: "
 								+ variable.getLayer());
 			}
 			// Get a hashmap with the association between timestamps and files
@@ -228,6 +225,7 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 					try {
 						writer = new GeoTiffWriter(areaRaster);
 					} catch (IOException e) {
+						// TODO
 						System.err
 								.println("Cannot create the writer for file: "
 										+ areaRaster.getAbsolutePath());

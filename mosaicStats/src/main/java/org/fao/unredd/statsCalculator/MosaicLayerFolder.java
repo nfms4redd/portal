@@ -14,15 +14,29 @@ import java.util.regex.Pattern;
 
 import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 
+/**
+ * Manages a layer folder containing a time mosaic
+ * 
+ * @author fergonco
+ */
 public class MosaicLayerFolder extends AbstractLayerFolder {
 
-	public MosaicLayerFolder(File folder) throws NotAMosaicException {
-		super(folder);
-	}
+	private TreeMap<Date, File> files;
 
-	public TreeMap<Date, File> getTimestamps()
-			throws InvalidFolderStructureException, IOException,
-			SnapshotNamingException {
+	/**
+	 * Creates a new instance
+	 * 
+	 * @param folder
+	 * @throws InvalidFolderStructureException
+	 *             If the folder does not match the expected structure for a
+	 *             mosaic
+	 * @throws IOException
+	 *             If there is any problem analyzing the folder
+	 */
+	public MosaicLayerFolder(File folder)
+			throws InvalidFolderStructureException, IOException {
+		super(folder);
+
 		File[] snapshotFiles = getDataFolder().listFiles(new FilenameFilter() {
 
 			@Override
@@ -52,14 +66,14 @@ public class MosaicLayerFolder extends AbstractLayerFolder {
 					timeregexPropertiesFile);
 		}
 		Pattern pattern = Pattern.compile(timeregex);
-		TreeMap<Date, File> files = new TreeMap<Date, File>();
+		files = new TreeMap<Date, File>();
 		for (File snapshotFile : snapshotFiles) {
 			String name = snapshotFile.getName();
 			Matcher matcher = pattern.matcher(name);
 			if (!matcher.find()) {
-				throw new SnapshotNamingException("The date of the snapshot "
-						+ "could not be obtained: "
-						+ snapshotFile.getAbsolutePath());
+				throw new InvalidFolderStructureException(
+						"The date of the snapshot could not be obtained",
+						snapshotFile);
 			}
 			String dateString = matcher.group();
 			try {
@@ -67,8 +81,9 @@ public class MosaicLayerFolder extends AbstractLayerFolder {
 				List<Date> dates = timeParser.parse(dateString);
 				files.put(dates.get(0), snapshotFile);
 			} catch (java.text.ParseException e) {
-				throw new SnapshotNamingException("The date of the snapshot "
-						+ "could not be obtained: " + dateString);
+				throw new InvalidFolderStructureException(
+						"The date of the snapshot " + "could not be obtained: "
+								+ dateString, snapshotFile);
 			}
 		}
 		if (files.isEmpty()) {
@@ -77,7 +92,13 @@ public class MosaicLayerFolder extends AbstractLayerFolder {
 							+ getDataFolder().getAbsolutePath(),
 					getDataFolder());
 		}
+	}
 
+	/**
+	 * Gets a map that associates the timestamps of the snapshots in the time
+	 * mosaic with the tiff file that represents the snapshot
+	 */
+	public TreeMap<Date, File> getTimestamps() {
 		return files;
 	}
 

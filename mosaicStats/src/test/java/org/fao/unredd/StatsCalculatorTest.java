@@ -16,13 +16,10 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.statsCalculator.CalculationListener;
-import org.fao.unredd.statsCalculator.ConfigurationException;
 import org.fao.unredd.statsCalculator.GeoserverLayerFolderTranslator;
 import org.fao.unredd.statsCalculator.InvalidFolderStructureException;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicLayerFolder;
-import org.fao.unredd.statsCalculator.NotAMosaicException;
-import org.fao.unredd.statsCalculator.SnapshotNamingException;
 import org.fao.unredd.statsCalculator.StatsLayerFolder;
 import org.junit.Test;
 
@@ -74,18 +71,13 @@ public class StatsCalculatorTest {
 		}
 	}
 
-	private void failedExecutionWithMosaic(File mosaic)
-			throws NotAMosaicException, InvalidFolderStructureException,
-			SnapshotNamingException, IOException, MixedRasterGeometryException,
-			ConfigurationException {
+	private void failedExecutionWithMosaic(File mosaic) throws Exception {
 		executionWithMosaic(new File("src/test/resources/okZonesSHP"), mosaic);
 		fail("Previous execution should raise an exception");
 	}
 
 	private CalculationListener executionWithMosaic(File layer, File mosaic)
-			throws NotAMosaicException, InvalidFolderStructureException,
-			SnapshotNamingException, IOException, MixedRasterGeometryException,
-			ConfigurationException {
+			throws Exception {
 		GeoserverLayerFolderTranslator geoserverLayerFactory = mock(GeoserverLayerFolderTranslator.class);
 		when(geoserverLayerFactory.getLayerFolder(anyString())).thenReturn(
 				mosaic);
@@ -99,19 +91,23 @@ public class StatsCalculatorTest {
 
 	@Test
 	public void testBadSnapshotNaming() throws Exception {
+		File mosaic = new File("src/test/resources/badSnapshotNaming");
 		try {
-			failedExecutionWithMosaic(new File(
-					"src/test/resources/badSnapshotNaming"));
-		} catch (SnapshotNamingException e) {
+			failedExecutionWithMosaic(mosaic);
+		} catch (InvalidFolderStructureException e) {
+			assertTrue(e.getOffendingFile().equals(
+					new File(mosaic, "data/snapshot_202.tiff")));
 		}
 	}
 
 	@Test
 	public void testBadSnapshotTimeFormat() throws Exception {
+		File mosaic = new File("src/test/resources/badSnapshotTimeFormat");
 		try {
-			failedExecutionWithMosaic(new File(
-					"src/test/resources/badSnapshotTimeFormat"));
-		} catch (SnapshotNamingException e) {
+			failedExecutionWithMosaic(mosaic);
+		} catch (InvalidFolderStructureException e) {
+			assertTrue(e.getOffendingFile().equals(
+					new File(mosaic, "data/snapshot_20021313.tiff")));
 		}
 	}
 

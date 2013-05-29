@@ -2,6 +2,11 @@ package org.fao.unredd.statsCalculator;
 
 import java.io.File;
 
+/**
+ * Abstract class with the common folder structure
+ * 
+ * @author fergonco
+ */
 public abstract class AbstractLayerFolder {
 
 	private static final String OUTPUT = "output";
@@ -26,6 +31,12 @@ public abstract class AbstractLayerFolder {
 		return new File(root, WORK);
 	}
 
+	/**
+	 * Convenience method to get a file on the work folder
+	 * 
+	 * @param fileName
+	 * @return
+	 */
 	public File getWorkFile(String fileName) {
 		return new File(getWorkFolder(), fileName);
 	}
