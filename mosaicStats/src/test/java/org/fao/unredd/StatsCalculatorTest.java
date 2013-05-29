@@ -140,7 +140,8 @@ public class StatsCalculatorTest {
 
 	@Test
 	public void testOkExistingBadSampleAreas() throws Exception {
-		File mosaic = new File("src/test/resources/okExistingBadSampleAreas");
+		File mosaic = new File(
+				"src/test/resources/temporalMosaicExistingBadSampleAreas");
 		File layer = new File("src/test/resources/okZonesSHP");
 		File areaRaster = new StatsLayerFolder(layer)
 				.getSampleAreasRasterFile(new MosaicLayerFolder(mosaic));
@@ -167,7 +168,8 @@ public class StatsCalculatorTest {
 
 	@Test
 	public void testOkExistingBadSampleAreasCannotBeDeleted() throws Exception {
-		File mosaic = new File("src/test/resources/okExistingBadSampleAreas");
+		File mosaic = new File(
+				"src/test/resources/temporalMosaicExistingBadSampleAreas");
 		File layer = new File("src/test/resources/okZonesSHP");
 		File areaRaster = new StatsLayerFolder(layer)
 				.getSampleAreasRasterFile(new MosaicLayerFolder(mosaic));
