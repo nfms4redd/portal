@@ -6,8 +6,23 @@ The layers that are to be published in the system that will be used to show any 
 	/
 	|- data (Subfolder to store the actual data)
 	|- configuration (Subfolder to store all configuration required to create indicators)
-	|- temp (Subfolder to store any derived data necessary for calculations)
+	|- work (Subfolder to store any derived data necessary for calculations)
 	\- output (Subfolder to store the results that will be presented to the user of the system when he asks for a certain indicator of the layer)
+
+Every layer has to follow this structure since any indicator at any time can reference it and create a ``work`` subfolder for the layer.
+
+.. warning::
+   The choice of using folders instead of a database to keep additional information about the layers is justified by the fact that
+
+   * It is easier to understand and to develop since there is no need to learn JDBC or any JPA library.
+   * It is easier to build the structure by hand and see the results
+
+   However, there are some drawbacks of not using a database. First, two of the ACID (http://en.wikipedia.org/wiki/ACID) properties are very relevant and should be taken into account by the code developed: 
+
+   * Atomicity: the operations done in the folders should be done completely or at all in order to let the folders always in a consistent status.
+   * Isolation: two simultaneous operations on the same folder should result in the same as executing them sequentially.
+
+   So far, the operations to be done to the folders are not very complex and the folder structure is a suitable solution. However it is likely that the system will evolve and using a database may become interesting. Therefore it would be wise to access the folders through an interface that is now implemented using folders and that can be implemented in the future accessing a database easily.
 
 Example
 --------
@@ -31,10 +46,10 @@ the following steps have to be followed:
 	provinces
 		|- data
 		|- configuration
-		|- temp
+		|- work
 		\- output
 
-   The services of the dissemination portal will look for the indicators output in the ``output`` folder so the indicators can be produced manually and placed there easily. If the indicators are to be produced automatically, it is possible to use all the other folders: ``configuration`` and ``temp``.
+   The services of the dissemination portal will look for the indicators output in the ``output`` folder so the indicators can be produced manually and placed there easily. If the indicators are to be produced automatically, it is possible to use all the other folders: ``configuration`` and ``work``.
 
 #. Place the configuration data in the ``configuration`` folder. In our case it could be a file ``zonal-statistics.xml`` containing information about the field in the layer that identifies the unique zones and about the layers that contain the variables to calculate. Could be something similar to::
 
@@ -45,7 +60,7 @@ the following steps have to be followed:
 		<variable layer="unredd:forest-classification"/>
 	</zonal-statistics>
 
-#. Produce the indicator. This depends on the tools used to get the indicator calculated. Normally it should imply the execution of some program that reads the previous configuration, accesses the data, may produce the first time some permanent derived result in ``temp`` and will produce the output data in the ``output`` folder. 
+#. Produce the indicator. This depends on the tools used to get the indicator calculated. Normally it should imply the execution of some program that reads the previous configuration, accesses the data, may produce the first time some permanent derived result in ``work`` and will produce the output data in the ``output`` folder. 
 
 
 
