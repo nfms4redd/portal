@@ -19,7 +19,8 @@ fieldId=$2
 tif=$3
 res=$4
 tempraster=/tmp/rast$$.tif
-layername=${shp%.*}
+layername=$(basename $shp)
+layername=${layername%.*}
 
 # Check field exists
 ogrinfo -so -fields=YES $shp $layername | grep "${fieldId}:" 
@@ -40,11 +41,11 @@ gdal_rasterize -a $fieldId -ot Byte -ts $width $height -l $layername $shp $tempr
 
 # Obtain the statistics
 printf "\n--Generating stats in $res\n" &&
-oft-stat -i $tif -um $tempraster -o /tmp/stats$$.txt
+oft-stat -i $tif -um $tempraster -o /tmp/stats$$.txt &&
 
 # Obtain the sum
-tempstats=/tmp/stats$$.txt
-awk < $tempstats 'BEGIN{print "prov number avg sum"} {print $1,$2,$3,$2*$3}' > ${res}
+tempstats=/tmp/stats$$.txt &&
+awk < $tempstats 'BEGIN{print "prov number avg sum"} {print $1,$2,$3,$2*$3}' > ${res} &&
 
 printf "\n--clean up\n"
 rm $tempraster
