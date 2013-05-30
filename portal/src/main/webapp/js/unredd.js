@@ -751,14 +751,14 @@ $(window).load(function () {
 
           td2.append("<img src=\"images/ajax-loader.gif\" alt=\"wait\"/>");
           $.ajax({
-              url: 'indicators.json?layer=' + qualifiedLayerId,
-              success: function(data, textStatus, jqXHR) {
+              url: 'indicators.json?layerId=' + qualifiedLayerId,
+              success: function(indicators, textStatus, jqXHR) {
             	  td2.empty();
-            	  for (i = 0; i < data.length; i++) {
-            		id = "stats_link_" + layerId + "_" + data[i].indicatorId;
+            	  for (i = 0; i < indicators.length; i++) {
+            		id = "stats_link_" + layerId + "_" + indicators[i].id;
                     td2.append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"" + id 
-                    		+ "\" href=\"indicators.json?layer=" + qualifiedLayerId + "&indicator=" + data[i].indicatorId + "\">"
-                    		+ data[i].indicatorName +"</a>");
+                    		+ "\" href=\"indicator.json?layerId=" + qualifiedLayerId + "&indicator=" + indicators[i].id + "\">"
+                    		+ indicators[i].name +"</a>");
                     $('#' + id).fancybox({
                         maxWidth    : 840,
                         maxHeight : 600,

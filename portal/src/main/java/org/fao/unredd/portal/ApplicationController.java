@@ -35,6 +35,10 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.fao.unredd.layers.Indicator;
+import org.fao.unredd.layers.Layer;
+import org.fao.unredd.layers.LayerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +58,9 @@ public class ApplicationController {
 
 	@Autowired
 	net.tanesha.recaptcha.ReCaptchaImpl reCaptcha;
+
+	@Autowired
+	private LayerFactory layerFactory;
 
 	/**
 	 * A collection of the possible error causes.
@@ -197,14 +204,16 @@ public class ApplicationController {
 	@RequestMapping(value = "/indicators.json", method = RequestMethod.GET)
 	public void getLayerIndicators(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
+		String layerName = request.getParameter("layerId");
+		Layer layer = layerFactory.newLayer(layerName);
+		Indicator[] indicators = layer.getIndicators();
+		ObjectMapper mapper = new ObjectMapper();
 		response.setContentType("application/json;charset=UTF-8");
 		try {
-			InputStream is = new FileInputStream(new File(config.getDir()
-					+ "/sample-indicators.json"));
-			IOUtils.copy(is, response.getOutputStream());
+			mapper.writeValue(response.getOutputStream(), indicators);
 			response.flushBuffer();
 		} catch (IOException e) {
-			logger.error("Error reading file", e);
+			logger.error("Error returning the indicators", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}

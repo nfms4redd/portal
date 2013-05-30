@@ -1,7 +1,0 @@
-[ {
-	"indicatorName" : "Statistics",
-	"indicatorId" : "zonal-stats"
-}, {
-	"indicatorName" : "Temperature evolution",
-	"indicatorId" : "temp"
-} ]
