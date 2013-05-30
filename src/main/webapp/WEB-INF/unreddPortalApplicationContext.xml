@@ -65,4 +65,5 @@
 		<property name="publicKey" value="#{config.properties.getProperty('recaptcha.publickey')}" />
 		<property name="includeNoscript" value="false" />
 	</bean>
+	<bean id="layerFactory" class="org.fao.unredd.layers.MockLayerFactory"/>
 </beans>
