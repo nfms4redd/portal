@@ -26,7 +26,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -60,11 +59,6 @@
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>commons</artifactId>
 			<version>2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.12</version>
 		</dependency>
 		<!-- Geosolutions proxy + transitive dependencies. See issue #7 -->
 		<dependency>

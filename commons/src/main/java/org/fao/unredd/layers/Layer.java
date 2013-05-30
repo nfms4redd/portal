@@ -2,6 +2,8 @@ package org.fao.unredd.layers;
 
 public interface Layer {
 
-	Indicator[] getIndicators();
+	Indicators getIndicators();
+
+	Indicator getIndicator(String indicatorId);
 
 }

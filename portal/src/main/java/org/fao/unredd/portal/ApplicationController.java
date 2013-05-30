@@ -35,8 +35,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.fao.unredd.layers.Indicator;
+import org.fao.unredd.layers.Indicators;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,13 +204,29 @@ public class ApplicationController {
 	@RequestMapping(value = "/indicators.json", method = RequestMethod.GET)
 	public void getLayerIndicators(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		String layerName = request.getParameter("layerId");
-		Layer layer = layerFactory.newLayer(layerName);
-		Indicator[] indicators = layer.getIndicators();
-		ObjectMapper mapper = new ObjectMapper();
+		String layerId = request.getParameter("layerId");
+		Layer layer = layerFactory.newLayer(layerId);
+		Indicators indicators = layer.getIndicators();
 		response.setContentType("application/json;charset=UTF-8");
 		try {
-			mapper.writeValue(response.getOutputStream(), indicators);
+			response.getWriter().print(indicators.toJSON());
+			response.flushBuffer();
+		} catch (IOException e) {
+			logger.error("Error returning the indicators", e);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(value = "/indicator.json", method = RequestMethod.GET)
+	public void getLayerIndicatorOutput(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String layerId = request.getParameter("layerId");
+		String indicatorId = request.getParameter("indicatorId");
+		Layer layer = layerFactory.newLayer(layerId);
+		Indicator indicator = layer.getIndicator(indicatorId);
+		response.setContentType(indicator.getContentType());
+		try {
+			response.getWriter().print(indicator.getContents());
 			response.flushBuffer();
 		} catch (IOException e) {
 			logger.error("Error returning the indicators", e);
