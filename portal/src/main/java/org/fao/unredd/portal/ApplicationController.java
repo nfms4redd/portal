@@ -194,6 +194,21 @@ public class ApplicationController {
 		}
 	}
 
+	@RequestMapping(value = "/indicators.json", method = RequestMethod.GET)
+	public void getLayerIndicators(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		response.setContentType("application/json;charset=UTF-8");
+		try {
+			InputStream is = new FileInputStream(new File(config.getDir()
+					+ "/sample-indicators.json"));
+			IOUtils.copy(is, response.getOutputStream());
+			response.flushBuffer();
+		} catch (IOException e) {
+			logger.error("Error reading file", e);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@RequestMapping("/charts.json")
 	public void getCharts(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
