@@ -716,6 +716,7 @@ $(window).load(function () {
         }
 
         $.each(selectedFeatures, function (layerId, feature) {
+          var qualifiedLayerId = feature.gml.featureNSPrefix + ":" + feature.gml.featureType;
           var table,
             info,
             td1, td2, td3,
@@ -748,24 +749,39 @@ $(window).load(function () {
           tr2.append(td2);
           table.append(tr2);
 
+          td2.append("<img src=\"images/ajax-loader.gif\" alt=\"wait\"/>");
+          $.ajax({
+              url: 'indicators.json?layer=' + qualifiedLayerId,
+              success: function(data, textStatus, jqXHR) {
+            	  td2.empty();
+            	  for (i = 0; i < data.length; i++) {
+            		id = "stats_link_" + layerId + "_" + data[i].indicatorId;
+                    td2.append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"" + id 
+                    		+ "\" href=\"indicators.json?layer=" + qualifiedLayerId + "&indicator=" + data[i].indicatorId + "\">"
+                    		+ data[i].indicatorName +"</a>");
+                    $('#' + id).fancybox({
+                        maxWidth    : 840,
+                        maxHeight : 600,
+                        fitToView : false,
+                        width       : 840,
+                        height      : 590,
+                        autoSize    : false,
+                        closeClick  : false,
+                        openEffect  : 'none',
+                        closeEffect : 'fade'
+                      });
+            	  }
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                  alert("shit");
+              }
+            });
+
           // TODO: localize statistics and zoom to area buttons
-          td2.append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"stats_link_" + layerId + "\" href=\"javascript:void(0)\" onclick=\"unsupported();return false;\">Statistics</a>");
           td3 = $("<td class=\"td_right\"/>");
           td3.append("<a style=\"color:white\" class=\"feature_link\" href=\"#\" id=\"zoom_to_feature_" + layerId + "\">Zoom to area</a>");
           tr2.append(td3);
           infoPopup.append(table);
-
-//          $('#stats_link_' + layerId).fancybox({
-//            maxWidth    : 840,
-//            maxHeight : 600,
-//            fitToView : false,
-//            width       : 840,
-//            height      : 590,
-//            autoSize    : false,
-//            closeClick  : false,
-//            openEffect  : 'none',
-//            closeEffect : 'fade'
-//          });
 
           if (info.info && info.info()) {
             tr3 = $("<tr/>");
