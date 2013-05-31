@@ -2,6 +2,8 @@ package org.fao.unredd.statsCalculator;
 
 import java.io.File;
 
+import org.fao.unredd.layers.NoSuchGeoserverLayerException;
+
 /**
  * Transforms names of geoserver layers to their actual folder
  * 

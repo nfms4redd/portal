@@ -1,4 +1,4 @@
-package org.fao.unredd.statsCalculator;
+package org.fao.unredd.layers;
 
 /**
  * Signals that some instance of Geoserver does not contain a specific layer

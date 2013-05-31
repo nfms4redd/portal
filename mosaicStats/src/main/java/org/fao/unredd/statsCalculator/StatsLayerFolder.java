@@ -17,6 +17,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.fao.unredd.layers.NoSuchGeoserverLayerException;
 import org.fao.unredd.statsCalculator.generated.VariableType;
 import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
 import org.geotools.coverage.grid.GridCoverage2D;

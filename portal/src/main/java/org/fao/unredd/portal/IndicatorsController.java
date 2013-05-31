@@ -9,6 +9,7 @@ import org.fao.unredd.layers.Indicator;
 import org.fao.unredd.layers.Indicators;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
+import org.fao.unredd.layers.NoSuchGeoserverLayerException;
 import org.fao.unredd.layers.NoSuchIndicatorException;
 
 public class IndicatorsController {
@@ -39,11 +40,17 @@ public class IndicatorsController {
 			ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
 					.writeError(response);
 		} else {
-			Layer layer = layerFactory.newLayer(layerId);
-			Indicators indicators = layer.getIndicators();
-			response.setContentType("application/json;charset=UTF-8");
+			String answer;
 			try {
-				response.getWriter().print(indicators.toJSON());
+				Layer layer = layerFactory.newLayer(layerId);
+				Indicators indicators = layer.getIndicators();
+				response.setContentType("application/json;charset=UTF-8");
+				answer = indicators.toJSON();
+			} catch (NoSuchGeoserverLayerException e1) {
+				answer = "[]";
+			}
+			try {
+				response.getWriter().print(answer);
 				response.flushBuffer();
 			} catch (IOException e) {
 				logger.error("Error returning the indicators", e);
@@ -58,8 +65,8 @@ public class IndicatorsController {
 			ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
 					.writeError(response);
 		} else {
-			Layer layer = layerFactory.newLayer(layerId);
 			try {
+				Layer layer = layerFactory.newLayer(layerId);
 				Indicator indicator = layer.getIndicator(indicatorId);
 				response.setContentType(indicator.getContentType());
 				try {
@@ -70,6 +77,9 @@ public class IndicatorsController {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 			} catch (NoSuchIndicatorException e) {
+				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
+						.writeError(response);
+			} catch (NoSuchGeoserverLayerException e) {
 				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
 						.writeError(response);
 			}
