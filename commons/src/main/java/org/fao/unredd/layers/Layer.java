@@ -4,6 +4,6 @@ public interface Layer {
 
 	Indicators getIndicators();
 
-	Indicator getIndicator(String indicatorId);
+	Indicator getIndicator(String indicatorId) throws NoSuchIndicatorException;
 
 }
