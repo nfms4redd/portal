@@ -36,7 +36,6 @@ import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.fao.unredd.layers.Indicator;
-import org.fao.unredd.layers.Indicators;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,17 +203,11 @@ public class ApplicationController {
 	@RequestMapping(value = "/indicators.json", method = RequestMethod.GET)
 	public void getLayerIndicators(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		String layerId = request.getParameter("layerId");
-		Layer layer = layerFactory.newLayer(layerId);
-		Indicators indicators = layer.getIndicators();
-		response.setContentType("application/json;charset=UTF-8");
-		try {
-			response.getWriter().print(indicators.toJSON());
-			response.flushBuffer();
-		} catch (IOException e) {
-			logger.error("Error returning the indicators", e);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
+		IndicatorsController controller = new IndicatorsController(response,
+				layerFactory);
+
+		controller.returnIndicators(request
+				.getParameter(IndicatorsController.PARAM_LAYER_ID));
 	}
 
 	@RequestMapping(value = "/indicator.json", method = RequestMethod.GET)
