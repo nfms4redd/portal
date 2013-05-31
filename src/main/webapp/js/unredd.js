@@ -773,7 +773,9 @@ $(window).load(function () {
             	  }
               },
               error: function(jqXHR, textStatus, errorThrown) {
-                  alert("shit");
+                  td2.empty();
+                  var errorMessage = $.parseJSON(jqXHR.responseText).message;
+                  alert(messages[errorMessage]);
               }
             });
 
