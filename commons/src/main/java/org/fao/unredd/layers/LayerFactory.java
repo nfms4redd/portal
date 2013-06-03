@@ -1,5 +1,6 @@
 package org.fao.unredd.layers;
 
+
 public interface LayerFactory {
 
 	/**
@@ -13,5 +14,14 @@ public interface LayerFactory {
 	 *             If the specified layer is not in the instance of geoserver
 	 */
 	Layer newLayer(String layerName) throws NoSuchGeoserverLayerException;
+
+	/**
+	 * @param layer
+	 * @return
+	 * @throws NoSuchGeoserverLayerException
+	 *             If the specified layer is not in the instance of geoserver
+	 */
+	MosaicLayer newMosaicLayer(String layer)
+			throws NoSuchGeoserverLayerException;
 
 }

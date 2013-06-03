@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.fao.unredd.layers.MosaicLayer;
 import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 
 /**
@@ -19,7 +20,8 @@ import org.geotools.gce.imagemosaic.properties.time.TimeParser;
  * 
  * @author fergonco
  */
-public class MosaicLayerFolder extends AbstractLayerFolder {
+public class MosaicLayerFolder extends AbstractLayerFolder implements
+		MosaicLayer {
 
 	private TreeMap<Date, File> files;
 
@@ -98,6 +100,7 @@ public class MosaicLayerFolder extends AbstractLayerFolder {
 	 * Gets a map that associates the timestamps of the snapshots in the time
 	 * mosaic with the tiff file that represents the snapshot
 	 */
+	@Override
 	public TreeMap<Date, File> getTimestamps() {
 		return files;
 	}

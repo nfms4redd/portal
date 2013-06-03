@@ -17,6 +17,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.fao.unredd.layers.LayerFactory;
+import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchGeoserverLayerException;
 import org.fao.unredd.statsCalculator.generated.VariableType;
 import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
@@ -145,17 +147,15 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 	}
 
 	public void run(CalculationListener calculationListener,
-			GeoserverLayerFolderTranslator geoserverLayerFolderTranslator)
+			LayerFactory layerFactory)
 			throws IllegalArgumentException, IOException,
 			MixedRasterGeometryException, InvalidFolderStructureException,
 			ConfigurationException {
 		// For each zonal statistics
 		for (VariableType variable : this.statisticsConfiguration.getVariable()) {
-			MosaicLayerFolder mosaicLayer;
+			MosaicLayer mosaicLayer;
 			try {
-				mosaicLayer = new MosaicLayerFolder(
-						geoserverLayerFolderTranslator.getLayerFolder(variable
-								.getLayer()));
+				mosaicLayer = layerFactory.newMosaicLayer(variable.getLayer());
 			} catch (NoSuchGeoserverLayerException e) {
 				throw new ConfigurationException(
 						"The layer specified in the configuration cannot be found in the geoserver instance: "
@@ -188,7 +188,8 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 				 * Remove the area-raster if it does not match the snapshots
 				 * geometry
 				 */
-				File areaRaster = getSampleAreasRasterFile(mosaicLayer);
+				File areaRaster = mosaicLayer
+						.getWorkFile(SAMPLE_AREAS_FILE_NAME);
 				if (areaRaster.exists()) {
 					if (!firstSnapshotInfo.matchesGeometry(new RasterInfo(
 							areaRaster))) {
@@ -268,10 +269,6 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 			}
 		}
 
-	}
-
-	public File getSampleAreasRasterFile(MosaicLayerFolder mosaicLayer) {
-		return mosaicLayer.getWorkFile(SAMPLE_AREAS_FILE_NAME);
 	}
 
 	private File getShapefile() {

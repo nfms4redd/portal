@@ -2,12 +2,17 @@ package org.fao.unredd.statsCalculator;
 
 import java.io.File;
 
+import org.fao.unredd.layers.Indicator;
+import org.fao.unredd.layers.Indicators;
+import org.fao.unredd.layers.Layer;
+import org.fao.unredd.layers.NoSuchIndicatorException;
+
 /**
  * Abstract class with the common folder structure
  * 
  * @author fergonco
  */
-public abstract class AbstractLayerFolder {
+public abstract class AbstractLayerFolder implements Layer {
 
 	private static final String OUTPUT = "output";
 	private static final String DATA = "data";
@@ -47,5 +52,16 @@ public abstract class AbstractLayerFolder {
 
 	public File getOutputFolder() {
 		return new File(root, OUTPUT);
+	}
+
+	@Override
+	public Indicators getIndicators() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Indicator getIndicator(String indicatorId)
+			throws NoSuchIndicatorException {
+		throw new UnsupportedOperationException();
 	}
 }

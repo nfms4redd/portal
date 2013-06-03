@@ -7,4 +7,10 @@ public class MockLayerFactory implements LayerFactory {
 		return new MockLayer();
 	}
 
+	@Override
+	public MosaicLayer newMosaicLayer(String layer)
+			throws NoSuchGeoserverLayerException {
+		throw new UnsupportedOperationException();
+	}
+
 }
