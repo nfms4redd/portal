@@ -7,15 +7,15 @@ import java.util.Iterator;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.fao.unredd.layers.Indicator;
-import org.fao.unredd.layers.Indicators;
+import org.fao.unredd.layers.Output;
+import org.fao.unredd.layers.Outputs;
 import org.junit.Test;
 
-public class IndicatorTest {
+public class OutputTest {
 
 	@Test
 	public void testSerialization() throws Exception {
-		Indicators indicators = new Indicators(new Indicator("a", "b",
+		Outputs indicators = new Outputs(new Output("a", "b",
 				"application/json", "[{}]"));
 
 		ObjectMapper mapper = new ObjectMapper();

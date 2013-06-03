@@ -4,9 +4,9 @@ import java.io.File;
 
 public interface Layer {
 
-	Indicators getIndicators();
+	Outputs getOutputs();
 
-	Indicator getIndicator(String indicatorId) throws NoSuchIndicatorException;
+	Output getOutput(String outputId) throws NoSuchIndicatorException;
 
 	/**
 	 * Associates a file in the work area to the layer. The file is identified

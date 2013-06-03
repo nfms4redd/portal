@@ -14,8 +14,8 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.fao.unredd.layers.Indicator;
-import org.fao.unredd.layers.Indicators;
+import org.fao.unredd.layers.Output;
+import org.fao.unredd.layers.Outputs;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchIndicatorException;
@@ -41,10 +41,10 @@ public class IndicatorsTest {
 		when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
 		Layer layer = mock(Layer.class);
-		Indicator indicator = new Indicator("id", "name", CONTENT_TYPE, CONTENT);
-		when(layer.getIndicators()).thenReturn(new Indicators(indicator));
-		when(layer.getIndicator("id")).thenReturn(indicator);
-		when(layer.getIndicator(argThat(new BaseMatcher<String>() {
+		Output indicator = new Output("id", "name", CONTENT_TYPE, CONTENT);
+		when(layer.getOutputs()).thenReturn(new Outputs(indicator));
+		when(layer.getOutput("id")).thenReturn(indicator);
+		when(layer.getOutput(argThat(new BaseMatcher<String>() {
 
 			@Override
 			public boolean matches(Object argument) {

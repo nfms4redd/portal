@@ -1,13 +1,13 @@
 package org.fao.unredd.layers;
 
-public class Indicator {
+public class Output {
 
 	private String id;
 	private String name;
 	private String contentType;
 	private String content;
 
-	public Indicator(String id, String name, String contentType, String content) {
+	public Output(String id, String name, String contentType, String content) {
 		super();
 		this.id = id;
 		this.name = name;
