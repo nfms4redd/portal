@@ -18,8 +18,8 @@ import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.statsCalculator.CalculationListener;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicLayerFolder;
+import org.fao.unredd.statsCalculator.StatsIndicator;
 import org.fao.unredd.statsCalculator.StatsLayerFolder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class StatsCalculatorTest {
@@ -31,106 +31,99 @@ public class StatsCalculatorTest {
 				new MosaicLayerFolder(mosaic));
 		CalculationListener calculationListener = mock(CalculationListener.class);
 
-		StatsLayerFolder statsLayerFolder = new StatsLayerFolder(layer);
-		statsLayerFolder.run(calculationListener, layerFactory);
+		StatsIndicator statsIndicator = new StatsIndicator(layerFactory,
+				new StatsLayerFolder(layer));
+		statsIndicator.run(calculationListener);
 
 		return calculationListener;
 	}
 
-	@Ignore
 	@Test
 	public void testOkExistingBadSampleAreas() throws Exception {
-		// File mosaic = new File(
-		// "src/test/resources/temporalMosaicExistingBadSampleAreas");
-		// File layer = new File("src/test/resources/okZonesSHP");
-		// File areaRaster = new StatsLayerFolder(layer)
-		// .getSampleAreasRasterFile(new MosaicLayerFolder(mosaic));
-		// File backupAreaRaster = new File(areaRaster.getParentFile(),
-		// "backup-sample-areas.tiff");
-		// IOUtils.copy(new FileInputStream(backupAreaRaster),
-		// new FileOutputStream(areaRaster));
-		//
-		// CalculationListener calculationListener = executionWithMosaic(layer,
-		// mosaic);
-		//
-		// // clean up before checks
-		// assertTrue(!areaRaster.exists() || areaRaster.delete());
-		//
-		// verify(calculationListener).calculate(
-		// new File(mosaic, StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
-		// new File(mosaic, "data/snapshot_2000.tiff"),
-		// new File(layer, "data/zones.shp"), "id");
-		// verify(calculationListener).calculate(
-		// new File(mosaic, StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
-		// new File(mosaic, "data/snapshot_2001.tiff"),
-		// new File(layer, "data/zones.shp"), "id");
+		File mosaic = new File(
+				"src/test/resources/temporalMosaicExistingBadSampleAreas");
+		File layer = new File("src/test/resources/okZonesSHP");
+		File areaRaster = new MosaicLayerFolder(mosaic)
+				.getWorkFile(StatsIndicator.SAMPLE_AREAS_FILE_NAME);
+		File backupAreaRaster = new File(areaRaster.getParentFile(),
+				"backup-sample-areas.tiff");
+		IOUtils.copy(new FileInputStream(backupAreaRaster),
+				new FileOutputStream(areaRaster));
+
+		CalculationListener calculationListener = executionWithMosaic(layer,
+				mosaic);
+
+		// clean up before checks
+		assertTrue(!areaRaster.exists() || areaRaster.delete());
+
+		verify(calculationListener).calculate(areaRaster,
+				new File(mosaic, "data/snapshot_2000.tiff"),
+				new File(layer, "data/zones.shp"), "id");
+		verify(calculationListener).calculate(areaRaster,
+				new File(mosaic, "data/snapshot_2001.tiff"),
+				new File(layer, "data/zones.shp"), "id");
 	}
 
-	@Ignore
 	@Test
 	public void testOkExistingBadSampleAreasCannotBeDeleted() throws Exception {
-//		File mosaic = new File(
-//				"src/test/resources/temporalMosaicExistingBadSampleAreas");
-//		File layer = new File("src/test/resources/okZonesSHP");
-//		File areaRaster = new StatsLayerFolder(layer)
-//				.getSampleAreasRasterFile(new MosaicLayerFolder(mosaic));
-//		File backupAreaRaster = new File(areaRaster.getParentFile(),
-//				"backup-sample-areas.tiff");
-//		IOUtils.copy(new FileInputStream(backupAreaRaster),
-//				new FileOutputStream(areaRaster));
-//		assertTrue(areaRaster.getParentFile().setReadOnly()
-//				&& !areaRaster.delete());
-//		try {
-//			executionWithMosaic(layer, mosaic);
-//			fail();
-//		} catch (IOException e) {
-//		} finally {
-//			// clean up
-//			areaRaster.getParentFile().setWritable(true);
-//			assertTrue(!areaRaster.exists() || areaRaster.delete());
-//		}
+		File mosaic = new File(
+				"src/test/resources/temporalMosaicExistingBadSampleAreas");
+		File layer = new File("src/test/resources/okZonesSHP");
+		File areaRaster = new MosaicLayerFolder(mosaic)
+				.getWorkFile(StatsIndicator.SAMPLE_AREAS_FILE_NAME);
+		File backupAreaRaster = new File(areaRaster.getParentFile(),
+				"backup-sample-areas.tiff");
+		IOUtils.copy(new FileInputStream(backupAreaRaster),
+				new FileOutputStream(areaRaster));
+		assertTrue(areaRaster.getParentFile().setReadOnly()
+				&& !areaRaster.delete());
+		try {
+			executionWithMosaic(layer, mosaic);
+			fail();
+		} catch (IOException e) {
+		} finally {
+			// clean up
+			areaRaster.getParentFile().setWritable(true);
+			assertTrue(!areaRaster.exists() || areaRaster.delete());
+		}
 	}
 
-	@Ignore
 	@Test
 	public void testSnapshotDifferentGeometry() throws Exception {
-//		File temporalMosaic = new File(
-//				"src/test/resources/snapshotDifferentGeometry");
-//		File layer = new File("src/test/resources/okZonesSHP");
-//		try {
-//			executionWithMosaic(layer, temporalMosaic);
-//			fail();
-//		} catch (MixedRasterGeometryException e) {
-//		} finally {
-//			File areaRaster = new StatsLayerFolder(layer)
-//					.getSampleAreasRasterFile(new MosaicLayerFolder(
-//							temporalMosaic));
-//			// clean up before checks
-//			assertTrue(!areaRaster.exists() || areaRaster.delete());
-//		}
+		File temporalMosaic = new File(
+				"src/test/resources/snapshotDifferentGeometry");
+		File layer = new File("src/test/resources/okZonesSHP");
+		try {
+			executionWithMosaic(layer, temporalMosaic);
+			fail();
+		} catch (MixedRasterGeometryException e) {
+		} finally {
+			File areaRaster = new MosaicLayerFolder(temporalMosaic)
+					.getWorkFile(StatsIndicator.SAMPLE_AREAS_FILE_NAME);
+			// clean up before checks
+			assertTrue(!areaRaster.exists() || areaRaster.delete());
+		}
 	}
 
-	@Ignore
 	@Test
 	public void testErrorCreatingAreaRaster() throws Exception {
-//		File temporalMosaic = new File(
-//				"src/test/resources/errorCreatingAreaRaster");
-//		File layer = new File("src/test/resources/okZonesSHP");
-//		File mosaicWorkFolder = new MosaicLayerFolder(temporalMosaic)
-//				.getWorkFolder();
-//		assertTrue(mosaicWorkFolder.exists() || mosaicWorkFolder.mkdir());
-//		mosaicWorkFolder.setReadOnly();
-//		try {
-//			executionWithMosaic(layer, temporalMosaic);
-//			fail();
-//		} catch (IOException e) {
-//		} finally {
-//			File areaRaster = new StatsLayerFolder(layer)
-//					.getSampleAreasRasterFile(new MosaicLayerFolder(
-//							temporalMosaic));
-//			// clean up before checks
-//			assertTrue(!areaRaster.exists() || areaRaster.delete());
-//		}
+		File temporalMosaic = new File(
+				"src/test/resources/errorCreatingAreaRaster");
+		File layer = new File("src/test/resources/okZonesSHP");
+		File mosaicWorkFolder = new MosaicLayerFolder(temporalMosaic)
+				.getWorkFolder();
+		assertTrue(mosaicWorkFolder.exists() || mosaicWorkFolder.mkdir());
+		mosaicWorkFolder.setReadOnly();
+		try {
+			executionWithMosaic(layer, temporalMosaic);
+			fail();
+		} catch (IOException e) {
+		} finally {
+			File areaRaster = new MosaicLayerFolder(temporalMosaic)
+					.getWorkFile(StatsIndicator.SAMPLE_AREAS_FILE_NAME);
+			// clean up before checks
+			assertTrue(!areaRaster.exists() || areaRaster.delete());
+		}
 	}
 
 	@Test
@@ -151,16 +144,13 @@ public class StatsCalculatorTest {
 		File layer = new File("src/test/resources/okZonesSHP");
 		CalculationListener calculationListener = executionWithMosaic(layer,
 				temporalMosaic);
-
+		File areaRaster = new MosaicLayerFolder(temporalMosaic)
+				.getWorkFile(StatsIndicator.SAMPLE_AREAS_FILE_NAME);
 		try {
-			verify(calculationListener).calculate(
-					new File(temporalMosaic,
-							StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
+			verify(calculationListener).calculate(areaRaster,
 					new File(temporalMosaic, "data/snapshot_2000.tiff"),
 					new File(layer, "data/zones.shp"), "id");
-			verify(calculationListener).calculate(
-					new File(temporalMosaic,
-							StatsLayerFolder.SAMPLE_AREAS_RELATIVE_PATH),
+			verify(calculationListener).calculate(areaRaster,
 					new File(temporalMosaic, "data/snapshot_2001.tiff"),
 					new File(layer, "data/zones.shp"), "id");
 		} finally {

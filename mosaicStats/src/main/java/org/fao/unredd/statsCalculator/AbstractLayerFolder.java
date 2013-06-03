@@ -1,8 +1,13 @@
 package org.fao.unredd.statsCalculator;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
+import org.fao.unredd.layers.NoSuchConfigurationException;
 import org.fao.unredd.layers.NoSuchIndicatorException;
 import org.fao.unredd.layers.Output;
 import org.fao.unredd.layers.Outputs;
@@ -46,6 +51,21 @@ public abstract class AbstractLayerFolder implements Layer {
 		return new File(getWorkFolder(), fileName);
 	}
 
+	@Override
+	public String getConfiguration(String id)
+			throws NoSuchConfigurationException, IOException {
+		File file = new File(getConfigurationFolder(), id);
+		BufferedInputStream input = new BufferedInputStream(
+				new FileInputStream(file));
+		String ret;
+		try {
+			ret = new String(IOUtils.toByteArray(input));
+		} finally {
+			input.close();
+		}
+		return ret;
+	}
+
 	public File getConfigurationFolder() {
 		return new File(root, CONFIGURATION);
 	}
@@ -60,8 +80,7 @@ public abstract class AbstractLayerFolder implements Layer {
 	}
 
 	@Override
-	public Output getOutput(String outputId)
-			throws NoSuchIndicatorException {
+	public Output getOutput(String outputId) throws NoSuchIndicatorException {
 		throw new UnsupportedOperationException();
 	}
 }

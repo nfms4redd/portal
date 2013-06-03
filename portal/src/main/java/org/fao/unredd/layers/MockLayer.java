@@ -1,6 +1,7 @@
 package org.fao.unredd.layers;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MockLayer implements Layer {
 
@@ -19,6 +20,17 @@ public class MockLayer implements Layer {
 
 	@Override
 	public File getWorkFile(String id) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public File getDataFolder() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getConfiguration(String id)
+			throws NoSuchConfigurationException, IOException {
 		throw new UnsupportedOperationException();
 	}
 
