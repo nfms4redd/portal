@@ -22,7 +22,7 @@ import org.fao.unredd.statsCalculator.StatsIndicator;
 import org.fao.unredd.statsCalculator.LayerFolderImpl;
 import org.junit.Test;
 
-public class StatsCalculatorTest {
+public class StatsIndicatorTest {
 
 	private CalculationListener executionWithMosaic(File layer, File mosaic)
 			throws Exception {
