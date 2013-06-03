@@ -5,8 +5,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.fao.unredd.layers.Indicator;
-import org.fao.unredd.layers.Indicators;
+import org.fao.unredd.layers.Output;
+import org.fao.unredd.layers.Outputs;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchGeoserverLayerException;
@@ -43,7 +43,7 @@ public class IndicatorsController {
 			String answer;
 			try {
 				Layer layer = layerFactory.newLayer(layerId);
-				Indicators indicators = layer.getIndicators();
+				Outputs indicators = layer.getOutputs();
 				response.setContentType("application/json;charset=UTF-8");
 				answer = indicators.toJSON();
 			} catch (NoSuchGeoserverLayerException e1) {
@@ -67,7 +67,7 @@ public class IndicatorsController {
 		} else {
 			try {
 				Layer layer = layerFactory.newLayer(layerId);
-				Indicator indicator = layer.getIndicator(indicatorId);
+				Output indicator = layer.getOutput(indicatorId);
 				response.setContentType(indicator.getContentType());
 				try {
 					response.getWriter().print(indicator.getContents());

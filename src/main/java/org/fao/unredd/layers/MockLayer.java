@@ -4,17 +4,17 @@ import java.io.File;
 
 public class MockLayer implements Layer {
 
-	private Indicator indicator = new Indicator("zonal-stats", "Statistics",
+	private Output output = new Output("zonal-stats", "Statistics",
 			"text/html", "These are the statistics maaaaan");
 
 	@Override
-	public Indicators getIndicators() {
-		return new Indicators(indicator);
+	public Outputs getOutputs() {
+		return new Outputs(output);
 	}
 
 	@Override
-	public Indicator getIndicator(String indicatorId) {
-		return indicator;
+	public Output getOutput(String outputId) {
+		return output;
 	}
 
 	@Override
