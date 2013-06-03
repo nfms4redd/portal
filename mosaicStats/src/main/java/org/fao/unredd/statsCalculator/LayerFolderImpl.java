@@ -60,17 +60,8 @@ public class LayerFolderImpl extends AbstractLayerFolder {
 		try {
 			StatsIndicator statsIndicator = new StatsIndicator(null,
 					new LayerFolderImpl(folder));
-			statsIndicator.run(new CalculationListener() {
-
-				@Override
-				public void calculate(File areaRaster, File mask,
-						File classificationLayer, String classificationFieldName) {
-					System.out.println("Executing the stats for ("
-							+ mask.getAbsolutePath() + ") with "
-							+ classificationLayer + "/"
-							+ classificationFieldName + " as classification ");
-				}
-			});
+			statsIndicator.analyze();
+			statsIndicator.run();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			System.exit(-1);

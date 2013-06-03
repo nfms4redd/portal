@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -50,6 +51,8 @@ public class StatsIndicator {
 	private Layer layer;
 	private LayerFactory layerFactory;
 
+	private ArrayList<Execution> executions;
+
 	public StatsIndicator(LayerFactory layerFactory, Layer layer)
 			throws NoSuchGeoserverLayerException {
 		this.layerFactory = layerFactory;
@@ -66,9 +69,9 @@ public class StatsIndicator {
 	 * @throws IOException
 	 *             If a general IO error takes place during the calculation
 	 */
-	public void run(CalculationListener calculationListener)
-			throws ConfigurationException, MixedRasterGeometryException,
-			IOException {
+	public void analyze() throws ConfigurationException,
+			MixedRasterGeometryException, IOException {
+		ArrayList<Execution> executions = new ArrayList<Execution>();
 		File dataFolder = layer.getDataFolder();
 		if (!dataFolder.exists()) {
 			throw new IllegalArgumentException(
@@ -205,11 +208,16 @@ public class StatsIndicator {
 					}
 				})[0];
 
-				calculationListener.calculate(areaRaster, timestampFile,
-						shapefile, statisticsConfiguration.getZoneIdField());
+				executions.add(new Execution(areaRaster, timestampFile,
+						shapefile, statisticsConfiguration.getZoneIdField()));
 			}
 		}
 
+		this.executions = executions;
+	}
+
+	public void run() {
+		throw new UnsupportedOperationException();
 	}
 
 	private static class RasterInfo {
@@ -257,5 +265,12 @@ public class StatsIndicator {
 					&& this.getWidth() == that.getWidth()
 					&& this.getHeight() == that.getHeight();
 		}
+	}
+
+	public Execution[] getExecutions() {
+		if (executions == null) {
+			throw new IllegalStateException("Invoke analyze() first");
+		}
+		return executions.toArray(new Execution[0]);
 	}
 }

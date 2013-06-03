@@ -55,6 +55,9 @@ public abstract class AbstractLayerFolder implements Layer {
 	public String getConfiguration(String id)
 			throws NoSuchConfigurationException, IOException {
 		File file = new File(getConfigurationFolder(), id);
+		if (!file.exists()) {
+			throw new NoSuchConfigurationException();
+		}
 		BufferedInputStream input = new BufferedInputStream(
 				new FileInputStream(file));
 		String ret;

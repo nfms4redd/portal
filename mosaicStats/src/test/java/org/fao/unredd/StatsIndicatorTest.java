@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -15,27 +14,49 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.statsCalculator.CalculationListener;
+import org.fao.unredd.statsCalculator.ConfigurationException;
+import org.fao.unredd.statsCalculator.Execution;
+import org.fao.unredd.statsCalculator.LayerFolderImpl;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.StatsIndicator;
-import org.fao.unredd.statsCalculator.LayerFolderImpl;
 import org.junit.Test;
 
 public class StatsIndicatorTest {
 
-	private CalculationListener executionWithMosaic(File layer, File mosaic)
+	private Execution[] executionWithMosaic(File layer, File mosaic)
 			throws Exception {
 		LayerFactory layerFactory = mock(LayerFactory.class);
 		when(layerFactory.newMosaicLayer(anyString())).thenReturn(
 				new MosaicLayerFolder(mosaic));
-		CalculationListener calculationListener = mock(CalculationListener.class);
 
 		StatsIndicator statsIndicator = new StatsIndicator(layerFactory,
 				new LayerFolderImpl(layer));
-		statsIndicator.run(calculationListener);
+		statsIndicator.analyze();
 
-		return calculationListener;
+		return statsIndicator.getExecutions();
+	}
+
+	@Test
+	public void testUnexistantDataFolder() throws Exception {
+		File mosaic = new File("src/test/resources/temporalMosaic");
+		File file = new File("src/test/resources/noDataDir");
+		try {
+			executionWithMosaic(file, mosaic);
+			fail();
+		} catch (IllegalArgumentException e) {
+		}
+	}
+
+	@Test
+	public void testUnexistantConfigurationFolder() throws Exception {
+		File mosaic = new File("src/test/resources/temporalMosaic");
+		File file = new File("src/test/resources/noConfigurationDir");
+		try {
+			executionWithMosaic(file, mosaic);
+			fail();
+		} catch (ConfigurationException e) {
+		}
 	}
 
 	@Test
@@ -50,18 +71,17 @@ public class StatsIndicatorTest {
 		IOUtils.copy(new FileInputStream(backupAreaRaster),
 				new FileOutputStream(areaRaster));
 
-		CalculationListener calculationListener = executionWithMosaic(layer,
-				mosaic);
+		Execution[] executions = executionWithMosaic(layer, mosaic);
 
 		// clean up before checks
 		assertTrue(!areaRaster.exists() || areaRaster.delete());
 
-		verify(calculationListener).calculate(areaRaster,
-				new File(mosaic, "data/snapshot_2000.tiff"),
-				new File(layer, "data/zones.shp"), "id");
-		verify(calculationListener).calculate(areaRaster,
-				new File(mosaic, "data/snapshot_2001.tiff"),
-				new File(layer, "data/zones.shp"), "id");
+		assertTrue(executions[0].equals(new Execution(areaRaster, new File(
+				mosaic, "data/snapshot_2000.tiff"), new File(layer,
+				"data/zones.shp"), "id")));
+		assertTrue(executions[1].equals(new Execution(areaRaster, new File(
+				mosaic, "data/snapshot_2001.tiff"), new File(layer,
+				"data/zones.shp"), "id")));
 	}
 
 	@Test
@@ -142,17 +162,16 @@ public class StatsIndicatorTest {
 	public void testOkZonesSHP() throws Exception {
 		File temporalMosaic = new File("src/test/resources/temporalMosaic");
 		File layer = new File("src/test/resources/okZonesSHP");
-		CalculationListener calculationListener = executionWithMosaic(layer,
-				temporalMosaic);
+		Execution[] executions = executionWithMosaic(layer, temporalMosaic);
 		File areaRaster = new MosaicLayerFolder(temporalMosaic)
 				.getWorkFile(StatsIndicator.SAMPLE_AREAS_FILE_NAME);
 		try {
-			verify(calculationListener).calculate(areaRaster,
-					new File(temporalMosaic, "data/snapshot_2000.tiff"),
-					new File(layer, "data/zones.shp"), "id");
-			verify(calculationListener).calculate(areaRaster,
-					new File(temporalMosaic, "data/snapshot_2001.tiff"),
-					new File(layer, "data/zones.shp"), "id");
+			assertTrue(executions[0].equals(new Execution(areaRaster, new File(
+					temporalMosaic, "data/snapshot_2000.tiff"), new File(layer,
+					"data/zones.shp"), "id")));
+			assertTrue(executions[1].equals(new Execution(areaRaster, new File(
+					temporalMosaic, "data/snapshot_2001.tiff"), new File(layer,
+					"data/zones.shp"), "id")));
 		} finally {
 			File workFolder = new MosaicLayerFolder(temporalMosaic)
 					.getWorkFolder();
