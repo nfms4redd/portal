@@ -1,5 +1,7 @@
 package org.fao.unredd.layers;
 
+import java.io.File;
+
 public class MockLayer implements Layer {
 
 	private Indicator indicator = new Indicator("zonal-stats", "Statistics",
@@ -13,6 +15,11 @@ public class MockLayer implements Layer {
 	@Override
 	public Indicator getIndicator(String indicatorId) {
 		return indicator;
+	}
+
+	@Override
+	public File getWorkFile(String id) {
+		throw new UnsupportedOperationException();
 	}
 
 }
