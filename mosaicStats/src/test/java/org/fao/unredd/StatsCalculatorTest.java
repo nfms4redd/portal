@@ -19,7 +19,7 @@ import org.fao.unredd.statsCalculator.CalculationListener;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.StatsIndicator;
-import org.fao.unredd.statsCalculator.StatsLayerFolder;
+import org.fao.unredd.statsCalculator.LayerFolderImpl;
 import org.junit.Test;
 
 public class StatsCalculatorTest {
@@ -32,7 +32,7 @@ public class StatsCalculatorTest {
 		CalculationListener calculationListener = mock(CalculationListener.class);
 
 		StatsIndicator statsIndicator = new StatsIndicator(layerFactory,
-				new StatsLayerFolder(layer));
+				new LayerFolderImpl(layer));
 		statsIndicator.run(calculationListener);
 
 		return calculationListener;
@@ -130,7 +130,7 @@ public class StatsCalculatorTest {
 	public void testCorruptedTiff() throws Exception {
 		File temporalMosaic = new File("src/test/resources/corruptedTiff");
 		File layer = new File("src/test/resources/okZonesSHP");
-		new StatsLayerFolder(layer).getConfigurationFolder().setReadOnly();
+		new LayerFolderImpl(layer).getConfigurationFolder().setReadOnly();
 		try {
 			executionWithMosaic(layer, temporalMosaic);
 			fail();

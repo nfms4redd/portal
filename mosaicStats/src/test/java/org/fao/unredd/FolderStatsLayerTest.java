@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 
 import org.fao.unredd.statsCalculator.InvalidFolderStructureException;
-import org.fao.unredd.statsCalculator.StatsLayerFolder;
+import org.fao.unredd.statsCalculator.LayerFolderImpl;
 import org.junit.Test;
 
 public class FolderStatsLayerTest {
@@ -17,7 +17,7 @@ public class FolderStatsLayerTest {
 		File file = new File("does not exist");
 		assertFalse(file.exists());
 		try {
-			new StatsLayerFolder(file);
+			new LayerFolderImpl(file);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
@@ -27,7 +27,7 @@ public class FolderStatsLayerTest {
 	public void testUnexistantDataFolder() throws Exception {
 		File file = new File("src/test/resources/noDataDir");
 		try {
-			new StatsLayerFolder(file);
+			new LayerFolderImpl(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(new File(file, "data")));
@@ -38,7 +38,7 @@ public class FolderStatsLayerTest {
 	public void testUnexistantConfigurationFolder() throws Exception {
 		File file = new File("src/test/resources/noConfigurationDir");
 		try {
-			new StatsLayerFolder(file);
+			new LayerFolderImpl(file);
 			fail();
 		} catch (InvalidFolderStructureException e) {
 			assertTrue(e.getOffendingFile().equals(

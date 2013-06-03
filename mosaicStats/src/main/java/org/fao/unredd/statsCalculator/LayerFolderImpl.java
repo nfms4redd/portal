@@ -10,25 +10,14 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.fao.unredd.layers.Layer;
 
 /**
- * <p>
- * Calculates the statistics of a GeoServer temporal mosaic. Receives as input
- * the folder where the tiff files are.
- * </p>
- * <p>
- * The contents of the folder that are relevant for this process are:
- * </p>
- * <ul>
- * <li>the tiff files of the mosaic. They contain two values: 0 for non forest,
- * 1 for forest</li>
- * <li>an indexer.properties file indicating how to obtain the timestamp
- * associated to each file.</li>
- * </ul>
+ * Basic concrete implementation of the {@link Layer} interface based on folders
  * 
  * @author fergonco
  */
-public class StatsLayerFolder extends AbstractLayerFolder {
+public class LayerFolderImpl extends AbstractLayerFolder {
 
 	/**
 	 * Builds a new instance
@@ -39,7 +28,7 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 	 * @throws InvalidFolderStructureException
 	 *             If the layer does not follow the expected rules
 	 */
-	public StatsLayerFolder(File folder) throws IllegalArgumentException,
+	public LayerFolderImpl(File folder) throws IllegalArgumentException,
 			InvalidFolderStructureException {
 		super(folder);
 	}
@@ -70,7 +59,7 @@ public class StatsLayerFolder extends AbstractLayerFolder {
 		}
 		try {
 			StatsIndicator statsIndicator = new StatsIndicator(null,
-					new StatsLayerFolder(folder));
+					new LayerFolderImpl(folder));
 			statsIndicator.run(new CalculationListener() {
 
 				@Override

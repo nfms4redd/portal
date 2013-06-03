@@ -38,6 +38,12 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
 import com.vividsolutions.jts.geom.Envelope;
 
+/**
+ * Calculates the statistics on a GeoServer layer. Receives as input the layer
+ * instance.
+ * 
+ * @author fergonco
+ */
 public class StatsIndicator {
 	public static final String SAMPLE_AREAS_FILE_NAME = "sample-areas.tiff";
 
