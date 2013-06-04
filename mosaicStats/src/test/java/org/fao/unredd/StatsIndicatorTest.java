@@ -91,10 +91,10 @@ public class StatsIndicatorTest {
 
 		assertTrue(executions[0].equals(new Execution(areaRaster, new File(
 				mosaic, "data/snapshot_2000.tiff"), new File(layer,
-				"data/zones.shp"), "id")));
+				"data/zones.shp"), "id", 5, 5)));
 		assertTrue(executions[1].equals(new Execution(areaRaster, new File(
 				mosaic, "data/snapshot_2001.tiff"), new File(layer,
-				"data/zones.shp"), "id")));
+				"data/zones.shp"), "id", 5, 5)));
 	}
 
 	@Test
@@ -181,10 +181,10 @@ public class StatsIndicatorTest {
 		try {
 			assertTrue(executions[0].equals(new Execution(areaRaster, new File(
 					temporalMosaic, "data/snapshot_2000.tiff"), new File(layer,
-					"data/zones.shp"), "id")));
+					"data/zones.shp"), "id", 5, 5)));
 			assertTrue(executions[1].equals(new Execution(areaRaster, new File(
 					temporalMosaic, "data/snapshot_2001.tiff"), new File(layer,
-					"data/zones.shp"), "id")));
+					"data/zones.shp"), "id", 5, 5)));
 		} finally {
 			File workFolder = new MosaicLayerFolder(temporalMosaic)
 					.getWorkFolder();
@@ -193,4 +193,18 @@ public class StatsIndicatorTest {
 			}
 		}
 	}
+
+	@Test
+	public void testFoo() throws Exception {
+		LayerFactory layerFactory = mock(LayerFactory.class);
+		when(layerFactory.newMosaicLayer(anyString())).thenReturn(
+				new MosaicLayerFolder(new File(
+						"src/test/resources/temporalMosaic")));
+		StatsIndicator statsIndicator = new StatsIndicator(layerFactory,
+				new LayerFolderImpl(new File("src/test/resources/okZonesSHP")));
+		statsIndicator.analyze();
+		statsIndicator.run();
+		fail();
+	}
+
 }

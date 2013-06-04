@@ -17,6 +17,8 @@ import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
 import org.fao.unredd.layers.NoSuchGeoserverLayerException;
+import org.fao.unredd.process.ProcessExecutionException;
+import org.fao.unredd.process.ProcessRunner;
 import org.fao.unredd.statsCalculator.generated.VariableType;
 import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -209,15 +211,37 @@ public class StatsIndicator {
 				})[0];
 
 				executions.add(new Execution(areaRaster, timestampFile,
-						shapefile, statisticsConfiguration.getZoneIdField()));
+						shapefile, statisticsConfiguration.getZoneIdField(),
+						firstSnapshotInfo.getWidth(), firstSnapshotInfo
+								.getHeight()));
 			}
 		}
 
 		this.executions = executions;
 	}
 
-	public void run() {
-		throw new UnsupportedOperationException();
+	public void run() throws IOException, InterruptedException,
+			ProcessExecutionException {
+		for (Execution execution : executions) {
+			File zones = execution.getZones();
+			File tempRaster = File.createTempFile("raster", ".tiff");
+			File tempStats = File.createTempFile("stats", ".txt");
+			ProcessRunner.execute("gdal_rasterize", "-a", execution.getId(),
+					"-ot", "Byte", "-ts", Integer.toString(execution
+							.getRasterWidth()), Integer.toString(execution
+							.getRasterHeight()), "-l", zones.getName()
+							.substring(0, zones.getName().length() - 4), zones
+							.getAbsolutePath(), tempRaster.getAbsolutePath());
+			ProcessRunner.execute("oft-stat", "-i", execution.getAreaRaster()
+					.getAbsolutePath(), "-um", tempRaster.getAbsolutePath(),
+					"-o", tempStats.getAbsolutePath());
+			ProcessRunner.execute(tempStats, new File("/tmp/output"), "awk",
+					"BEGIN{print \"prov number avg sum\"} "
+							+ "{print $1,$2,$3,$2*$3}");
+
+			tempRaster.delete();
+			tempStats.delete();
+		}
 	}
 
 	private static class RasterInfo {

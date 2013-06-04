@@ -7,13 +7,18 @@ public class Execution {
 	private File forestMask;
 	private File zones;
 	private String id;
+	private int rasterWidth;
+	private int rasterHeight;
 
-	public Execution(File areaRaster, File forestMask, File zones, String id) {
+	public Execution(File areaRaster, File forestMask, File zones, String id,
+			int rasterWidth, int rasterHeight) {
 		super();
 		this.areaRaster = areaRaster;
 		this.forestMask = forestMask;
 		this.zones = zones;
 		this.id = id;
+		this.rasterWidth = rasterWidth;
+		this.rasterHeight = rasterHeight;
 	}
 
 	public File getAreaRaster() {
@@ -32,6 +37,14 @@ public class Execution {
 		return zones;
 	}
 
+	public int getRasterHeight() {
+		return rasterHeight;
+	}
+
+	public int getRasterWidth() {
+		return rasterWidth;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Execution) {
@@ -48,4 +61,5 @@ public class Execution {
 		return areaRaster.hashCode() + forestMask.hashCode() + zones.hashCode()
 				+ id.hashCode();
 	}
+
 }
