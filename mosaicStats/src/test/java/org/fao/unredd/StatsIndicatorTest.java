@@ -20,6 +20,7 @@ import org.fao.unredd.statsCalculator.LayerFolderImpl;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.StatsIndicator;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class StatsIndicatorTest {
@@ -35,6 +36,18 @@ public class StatsIndicatorTest {
 		statsIndicator.analyze();
 
 		return statsIndicator.getExecutions();
+	}
+
+	@Ignore
+	@Test
+	public void testNonExistentFieldId() throws Exception {
+		File mosaic = new File("src/test/resources/temporalMosaic");
+		File file = new File("src/test/resources/nonExistentField");
+		try {
+			executionWithMosaic(file, mosaic);
+			fail();
+		} catch (ConfigurationException e) {
+		}
 	}
 
 	@Test
