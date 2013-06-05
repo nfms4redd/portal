@@ -220,8 +220,7 @@ public class StatsIndicator {
 		this.executions = executions;
 	}
 
-	public void run() throws IOException, InterruptedException,
-			ProcessExecutionException {
+	public void run() throws ProcessExecutionException, IOException {
 		for (Execution execution : executions) {
 			File zones = execution.getZones();
 			File tempRaster = File.createTempFile("raster", ".tiff");

@@ -41,8 +41,8 @@ public class ProcessRunner {
 		this.in = in;
 	}
 
-	public void run() throws IOException, InterruptedException,
-			ProcessExecutionException {
+	private void run() throws IOException, InterruptedException,
+			ProcessReturnCodeException {
 		Process process = Runtime.getRuntime().exec(cmd);
 
 		StreamPipe input = new StreamPipe(process.getInputStream(), out);
@@ -57,8 +57,14 @@ public class ProcessRunner {
 		error.join();
 		output.join();
 
-		if (returnCode != 0) {
-			throw new ProcessExecutionException(cmd);
+		/*
+		 * Hack for unconventional oft-stat behavior. Remove once oft-stat is
+		 * fixed.
+		 */
+		if (!cmd[0].equals("oft-stat")) {
+			if (returnCode != 0) {
+				throw new ProcessReturnCodeException();
+			}
 		}
 
 		output.throwExceptionIfAny();
@@ -67,7 +73,7 @@ public class ProcessRunner {
 	}
 
 	public static void execute(File input, File output, String... command)
-			throws IOException, InterruptedException, ProcessExecutionException {
+			throws ProcessExecutionException, IOException {
 		FileInputStream stdInput = new FileInputStream(input);
 		FileOutputStream stdOutput = new FileOutputStream(output);
 		execute(stdInput, stdOutput, command);
@@ -75,25 +81,38 @@ public class ProcessRunner {
 		stdInput.close();
 	}
 
-	public static void execute(String... command) throws IOException,
-			InterruptedException, ProcessExecutionException {
+	public static void execute(String... command)
+			throws ProcessExecutionException {
 		ByteArrayInputStream stdInput = new ByteArrayInputStream(new byte[0]);
 		ByteArrayOutputStream stdOutput = new ByteArrayOutputStream();
 		execute(stdInput, stdOutput, command);
 	}
 
 	public static void execute(InputStream stdInput, OutputStream stdOutput,
-			String... command) throws IOException, InterruptedException,
-			ProcessExecutionException {
+			String... command) throws ProcessExecutionException {
 		ByteArrayOutputStream errorOutputStream = new ByteArrayOutputStream();
 		ProcessRunner process = new ProcessRunner(command, stdInput, stdOutput,
 				errorOutputStream);
-		process.run();
-		byte[] errorBytes = errorOutputStream.toByteArray();
-		if (errorBytes.length > 0) {
-			String errorMessage = new String(errorBytes);
-			throw new ProcessExecutionException(errorMessage);
+		try {
+			process.run();
+			byte[] errorBytes = errorOutputStream.toByteArray();
+			if (errorBytes.length > 0) {
+				throw getExecutionException(command, errorBytes);
+			}
+		} catch (ProcessReturnCodeException e) {
+			throw getExecutionException(command,
+					errorOutputStream.toByteArray());
+		} catch (IOException e) {
+			throw new ProcessExecutionException(command, e);
+		} catch (InterruptedException e) {
+			throw new ProcessExecutionException(command, e);
 		}
+	}
+
+	private static ProcessExecutionException getExecutionException(
+			String[] command, byte[] errorBytes) {
+		String errorMessage = new String(errorBytes);
+		return new ProcessExecutionException(command, errorMessage);
 	}
 
 	/**
