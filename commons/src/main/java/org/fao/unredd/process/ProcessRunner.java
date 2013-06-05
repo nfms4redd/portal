@@ -18,94 +18,81 @@ public class ProcessRunner {
 
 	private String[] cmd;
 	private OutputStream out;
-	private OutputStream err;
 	private InputStream in;
+	private boolean close;
 
-	/**
-	 * Creates a new thread for the external process.
-	 * 
-	 * @param cmd
-	 *            An array containing the command to call and its arguments.
-	 * @param in
-	 *            The stream where the process input must be taken.
-	 * @param out
-	 *            The stream where the process output must be redirected.
-	 * @param err
-	 *            The stream where the process error must be redirected.
-	 */
-	public ProcessRunner(String[] cmd, InputStream in, OutputStream out,
-			OutputStream err) {
-		this.cmd = cmd;
-		this.out = out;
-		this.err = err;
-		this.in = in;
-	}
-
-	private void run() throws IOException, InterruptedException,
-			ProcessReturnCodeException {
-		Process process = Runtime.getRuntime().exec(cmd);
-
-		StreamPipe input = new StreamPipe(process.getInputStream(), out);
-		StreamPipe error = new StreamPipe(process.getErrorStream(), err);
-		StreamPipe output = new StreamPipe(in, process.getOutputStream());
-
-		output.start();
-		input.start();
-		error.start();
-		int returnCode = process.waitFor();
-		input.join();
-		error.join();
-		output.join();
-
-		/*
-		 * Hack for unconventional oft-stat behavior. Remove once oft-stat is
-		 * fixed.
-		 */
-		if (!cmd[0].equals("oft-stat")) {
-			if (returnCode != 0) {
-				throw new ProcessReturnCodeException();
-			}
-		}
-
-		output.throwExceptionIfAny();
-		input.throwExceptionIfAny();
-		error.throwExceptionIfAny();
-	}
-
-	public static void execute(File input, File output, String... command)
+	public ProcessRunner(File input, File output, String... command)
 			throws ProcessExecutionException, IOException {
 		FileInputStream stdInput = new FileInputStream(input);
 		FileOutputStream stdOutput = new FileOutputStream(output);
-		execute(stdInput, stdOutput, command);
-		stdOutput.close();
-		stdInput.close();
+		initialize(stdInput, stdOutput, command);
+		close = true;
 	}
 
-	public static void execute(String... command)
-			throws ProcessExecutionException {
+	public ProcessRunner(String... command) throws ProcessExecutionException {
 		ByteArrayInputStream stdInput = new ByteArrayInputStream(new byte[0]);
 		ByteArrayOutputStream stdOutput = new ByteArrayOutputStream();
-		execute(stdInput, stdOutput, command);
+		initialize(stdInput, stdOutput, command);
 	}
 
-	public static void execute(InputStream stdInput, OutputStream stdOutput,
-			String... command) throws ProcessExecutionException {
-		ByteArrayOutputStream errorOutputStream = new ByteArrayOutputStream();
-		ProcessRunner process = new ProcessRunner(command, stdInput, stdOutput,
-				errorOutputStream);
+	private void initialize(InputStream stdInput, OutputStream stdOutput,
+			String... command) {
+		this.cmd = command;
+		this.out = stdOutput;
+		this.in = stdInput;
+	}
+
+	public void run() throws ProcessExecutionException {
+		ByteArrayOutputStream err = new ByteArrayOutputStream();
 		try {
-			process.run();
-			byte[] errorBytes = errorOutputStream.toByteArray();
+			Process process = Runtime.getRuntime().exec(cmd);
+
+			StreamPipe input = new StreamPipe(process.getInputStream(), out);
+			StreamPipe error = new StreamPipe(process.getErrorStream(), err);
+			StreamPipe output = new StreamPipe(in, process.getOutputStream());
+
+			output.start();
+			input.start();
+			error.start();
+			int returnCode = process.waitFor();
+			input.join();
+			error.join();
+			output.join();
+
+			/*
+			 * Hack for unconventional oft-stat behavior. Remove once oft-stat
+			 * is fixed.
+			 */
+			if (!cmd[0].equals("oft-stat")) {
+				if (returnCode != 0) {
+					throw new ProcessReturnCodeException();
+				}
+			}
+
+			output.throwExceptionIfAny();
+			input.throwExceptionIfAny();
+			error.throwExceptionIfAny();
+			byte[] errorBytes = err.toByteArray();
 			if (errorBytes.length > 0) {
-				throw getExecutionException(command, errorBytes);
+				throw getExecutionException(cmd, errorBytes);
 			}
 		} catch (ProcessReturnCodeException e) {
-			throw getExecutionException(command,
-					errorOutputStream.toByteArray());
+			throw getExecutionException(cmd, err.toByteArray());
 		} catch (IOException e) {
-			throw new ProcessExecutionException(command, e);
+			throw new ProcessExecutionException(cmd, e);
 		} catch (InterruptedException e) {
-			throw new ProcessExecutionException(command, e);
+			throw new ProcessExecutionException(cmd, e);
+		} finally {
+			if (close) {
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+				try {
+					in.close();
+				} catch (IOException e) {
+				}
+			}
 		}
 	}
 
@@ -140,9 +127,13 @@ public class ProcessRunner {
 		public void run() {
 			try {
 				IOUtils.copy(input, output);
-				output.close();
 			} catch (IOException e) {
 				exception = e;
+			} finally {
+				try {
+					output.close();
+				} catch (IOException e) {
+				}
 			}
 		}
 

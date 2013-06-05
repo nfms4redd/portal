@@ -225,18 +225,20 @@ public class StatsIndicator {
 			File zones = execution.getZones();
 			File tempRaster = File.createTempFile("raster", ".tiff");
 			File tempStats = File.createTempFile("stats", ".txt");
-			ProcessRunner.execute("gdal_rasterize", "-a", execution.getId(),
-					"-ot", "Byte", "-ts", Integer.toString(execution
-							.getRasterWidth()), Integer.toString(execution
-							.getRasterHeight()), "-l", zones.getName()
-							.substring(0, zones.getName().length() - 4), zones
-							.getAbsolutePath(), tempRaster.getAbsolutePath());
-			ProcessRunner.execute("oft-stat", "-i", execution.getAreaRaster()
+			new ProcessRunner("gdal_rasterize", "-a", execution.getId(), "-ot",
+					"Byte", "-ts",
+					Integer.toString(execution.getRasterWidth()),
+					Integer.toString(execution.getRasterHeight()), "-l", zones
+							.getName().substring(0,
+									zones.getName().length() - 4),
+					zones.getAbsolutePath(), tempRaster.getAbsolutePath())
+					.run();
+			new ProcessRunner("oft-stat", "-i", execution.getAreaRaster()
 					.getAbsolutePath(), "-um", tempRaster.getAbsolutePath(),
-					"-o", tempStats.getAbsolutePath());
-			ProcessRunner.execute(tempStats, new File("/tmp/output"), "awk",
+					"-o", tempStats.getAbsolutePath()).run();
+			new ProcessRunner(tempStats, new File("/tmp/output"), "awk",
 					"BEGIN{print \"prov number avg sum\"} "
-							+ "{print $1,$2,$3,$2*$3}");
+							+ "{print $1,$2,$3,$2*$3}").run();
 
 			tempRaster.delete();
 			tempStats.delete();
