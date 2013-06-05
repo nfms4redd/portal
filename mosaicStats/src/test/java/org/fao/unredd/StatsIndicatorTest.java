@@ -200,11 +200,18 @@ public class StatsIndicatorTest {
 		when(layerFactory.newMosaicLayer(anyString())).thenReturn(
 				new MosaicLayerFolder(new File(
 						"src/test/resources/temporalMosaic")));
-		StatsIndicator statsIndicator = new StatsIndicator(layerFactory,
-				new LayerFolderImpl(new File("src/test/resources/okZonesSHP")));
+		LayerFolderImpl layer = new LayerFolderImpl(new File(
+				"src/test/resources/okZonesSHP"));
+		StatsIndicator statsIndicator = new StatsIndicator(layerFactory, layer);
 		statsIndicator.analyze();
-		statsIndicator.run();
-		fail();
+		try {
+			statsIndicator.run();
+			assertTrue(layer.getOutputs().size() == 1);
+			assertTrue(layer.getOutput(StatsIndicator.OUTPUT_ID) != null);
+		} finally {
+			// Clean up
+			FileUtils.deleteDirectory(layer.getOutputFolder());
+		}
 	}
 
 }

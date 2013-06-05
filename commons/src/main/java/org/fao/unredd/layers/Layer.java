@@ -5,9 +5,31 @@ import java.io.IOException;
 
 public interface Layer {
 
+	/**
+	 * Get a list of all the outputs identifiers in this layer
+	 * 
+	 * @return
+	 */
 	Outputs getOutputs();
 
+	/**
+	 * Get the output with the specified id
+	 * 
+	 * @param outputId
+	 * @return
+	 * @throws NoSuchIndicatorException
+	 */
 	Output getOutput(String outputId) throws NoSuchIndicatorException;
+
+	/**
+	 * Sets the content of the output with the specified id. If the output
+	 * already exists it is overwritten, otherwise it is created
+	 * 
+	 * @param id
+	 * @param content
+	 * @throws IOException
+	 */
+	void setOutput(String id, String content) throws IOException;
 
 	/**
 	 * Associates a file in the work area to the layer. The file is identified

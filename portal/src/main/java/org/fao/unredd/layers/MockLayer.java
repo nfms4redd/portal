@@ -34,4 +34,9 @@ public class MockLayer implements Layer {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public void setOutput(String id, String content) throws IOException {
+		throw new UnsupportedOperationException();
+	}
+
 }

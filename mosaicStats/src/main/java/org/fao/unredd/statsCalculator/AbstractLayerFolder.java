@@ -1,10 +1,13 @@
 package org.fao.unredd.statsCalculator;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
@@ -79,11 +82,51 @@ public abstract class AbstractLayerFolder implements Layer {
 
 	@Override
 	public Outputs getOutputs() {
-		throw new UnsupportedOperationException();
+		File outputFolder = getOutputFolder();
+		if (!outputFolder.exists()) {
+			return new Outputs();
+		}
+		File[] outputFolders = outputFolder.listFiles();
+		Output[] outputs = new Output[outputFolders.length];
+		for (int i = 0; i < outputs.length; i++) {
+			String id = outputFolders[i].getName();
+			try {
+				outputs[i] = getOutput(id);
+			} catch (NoSuchIndicatorException e) {
+				throw new RuntimeException("bug");
+			}
+		}
+
+		return new Outputs(outputs);
 	}
 
 	@Override
 	public Output getOutput(String outputId) throws NoSuchIndicatorException {
-		throw new UnsupportedOperationException();
+		if (!new File(getOutputFolder(), outputId).exists()) {
+			throw new NoSuchIndicatorException(outputId);
+		}
+		return new Output(outputId, outputId, null, null);
+	}
+
+	@Override
+	public void setOutput(String id, String content) throws IOException {
+		File outputFolder = new File(getOutputFolder(), id);
+		if (outputFolder.exists()) {
+			FileUtils.cleanDirectory(outputFolder);
+		} else {
+			if (!outputFolder.mkdirs()) {
+				throw new IOException(
+						"Cannot create the indicator output folder: "
+								+ outputFolder.getAbsolutePath());
+			}
+		}
+
+		BufferedOutputStream out = new BufferedOutputStream(
+				new FileOutputStream(new File(outputFolder, "raw-stats")));
+		try {
+			IOUtils.write(content, out);
+		} finally {
+			out.close();
+		}
 	}
 }

@@ -2,9 +2,6 @@ package org.fao.unredd.process;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,23 +16,13 @@ public class ProcessRunner {
 	private String[] cmd;
 	private OutputStream out;
 	private InputStream in;
-	private boolean close;
-
-	public ProcessRunner(File input, File output, String... command)
-			throws ProcessExecutionException, IOException {
-		FileInputStream stdInput = new FileInputStream(input);
-		FileOutputStream stdOutput = new FileOutputStream(output);
-		initialize(stdInput, stdOutput, command);
-		close = true;
-	}
 
 	public ProcessRunner(String... command) throws ProcessExecutionException {
-		ByteArrayInputStream stdInput = new ByteArrayInputStream(new byte[0]);
-		ByteArrayOutputStream stdOutput = new ByteArrayOutputStream();
-		initialize(stdInput, stdOutput, command);
+		this(new ByteArrayInputStream(new byte[0]),
+				new ByteArrayOutputStream(), command);
 	}
 
-	private void initialize(InputStream stdInput, OutputStream stdOutput,
+	public ProcessRunner(InputStream stdInput, OutputStream stdOutput,
 			String... command) {
 		this.cmd = command;
 		this.out = stdOutput;
@@ -59,14 +46,8 @@ public class ProcessRunner {
 			error.join();
 			output.join();
 
-			/*
-			 * Hack for unconventional oft-stat behavior. Remove once oft-stat
-			 * is fixed.
-			 */
-			if (!cmd[0].equals("oft-stat")) {
-				if (returnCode != 0) {
-					throw new ProcessReturnCodeException();
-				}
+			if (returnCode != 0) {
+				throw new ProcessReturnCodeException();
 			}
 
 			output.throwExceptionIfAny();
@@ -82,17 +63,6 @@ public class ProcessRunner {
 			throw new ProcessExecutionException(cmd, e);
 		} catch (InterruptedException e) {
 			throw new ProcessExecutionException(cmd, e);
-		} finally {
-			if (close) {
-				try {
-					out.close();
-				} catch (IOException e) {
-				}
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
-			}
 		}
 	}
 

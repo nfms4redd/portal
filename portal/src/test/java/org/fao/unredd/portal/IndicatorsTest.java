@@ -14,11 +14,11 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.fao.unredd.layers.Output;
-import org.fao.unredd.layers.Outputs;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchIndicatorException;
+import org.fao.unredd.layers.Output;
+import org.fao.unredd.layers.Outputs;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public class IndicatorsTest {
 			public void describeTo(Description description) {
 				description.appendText("Different from id");
 			}
-		}))).thenThrow(new NoSuchIndicatorException());
+		}))).thenThrow(new NoSuchIndicatorException(""));
 		layerFactory = mock(LayerFactory.class);
 		when(layerFactory.newLayer(anyString())).thenReturn(layer);
 		indicators = new IndicatorsController(response, layerFactory);

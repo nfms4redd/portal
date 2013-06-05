@@ -1,7 +1,9 @@
 package org.fao.unredd.statsCalculator;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +51,8 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class StatsIndicator {
 	public static final String SAMPLE_AREAS_FILE_NAME = "sample-areas.tiff";
+
+	public static final String OUTPUT_ID = "stats-indicator";
 
 	private Layer layer;
 	private LayerFactory layerFactory;
@@ -210,10 +214,11 @@ public class StatsIndicator {
 					}
 				})[0];
 
-				executions.add(new Execution(areaRaster, timestampFile,
+				Execution execution = new Execution(areaRaster, timestampFile,
 						shapefile, statisticsConfiguration.getZoneIdField(),
-						firstSnapshotInfo.getWidth(), firstSnapshotInfo
-								.getHeight()));
+						firstSnapshotInfo.getWidth(),
+						firstSnapshotInfo.getHeight());
+				executions.add(execution);
 			}
 		}
 
@@ -236,9 +241,12 @@ public class StatsIndicator {
 			new ProcessRunner("oft-stat", "-i", execution.getAreaRaster()
 					.getAbsolutePath(), "-um", tempRaster.getAbsolutePath(),
 					"-o", tempStats.getAbsolutePath()).run();
-			new ProcessRunner(tempStats, new File("/tmp/output"), "awk",
+			ByteArrayOutputStream awkOutput = new ByteArrayOutputStream();
+			new ProcessRunner(new FileInputStream(tempStats), awkOutput, "awk",
 					"BEGIN{print \"prov number avg sum\"} "
 							+ "{print $1,$2,$3,$2*$3}").run();
+
+			layer.setOutput(OUTPUT_ID, new String(awkOutput.toByteArray()));
 
 			tempRaster.delete();
 			tempStats.delete();
