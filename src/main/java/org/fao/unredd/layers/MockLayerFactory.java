@@ -1,10 +1,21 @@
 package org.fao.unredd.layers;
 
+import java.io.File;
+
+import org.fao.unredd.layers.folder.InvalidFolderStructureException;
+import org.fao.unredd.layers.folder.LayerFolderImpl;
+
 public class MockLayerFactory implements LayerFactory {
 
 	@Override
 	public Layer newLayer(String layerName) {
-		return new MockLayer();
+		try {
+			return new LayerFolderImpl(
+					new File(
+							"/home/fergonco/java/nfms/nfms/mosaicStats/src/test/resources/okZonesSHP"));
+		} catch (InvalidFolderStructureException e) {
+			throw new RuntimeException();
+		}
 	}
 
 	@Override
