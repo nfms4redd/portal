@@ -757,7 +757,7 @@ $(window).load(function () {
             	  for (i = 0; i < indicators.length; i++) {
             		id = "stats_link_" + layerId + "_" + indicators[i].id;
                     td2.append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"" + id 
-                    		+ "\" href=\"indicator.json?layerId=" + qualifiedLayerId + "&indicator=" + indicators[i].id + "\">"
+                    		+ "\" href=\"indicator.json?layerId=" + qualifiedLayerId + "&indicatorId=" + indicators[i].id + "\">"
                     		+ indicators[i].name +"</a>");
                     $('#' + id).fancybox({
                         maxWidth    : 840,
