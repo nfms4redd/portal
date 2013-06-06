@@ -9,8 +9,9 @@ public interface Layer {
 	 * Get a list of all the outputs identifiers in this layer
 	 * 
 	 * @return
+	 * @throws IOException
 	 */
-	Outputs getOutputs();
+	Outputs getOutputs() throws IOException;
 
 	/**
 	 * Get the output with the specified id
@@ -19,7 +20,8 @@ public interface Layer {
 	 * @return
 	 * @throws NoSuchIndicatorException
 	 */
-	Output getOutput(String outputId) throws NoSuchIndicatorException;
+	Output getOutput(String outputId) throws NoSuchIndicatorException,
+			IOException;
 
 	/**
 	 * Sets the content of the output with the specified id. If the output

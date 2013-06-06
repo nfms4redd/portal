@@ -14,11 +14,19 @@ import java.util.TreeMap;
 
 import javax.xml.bind.JAXB;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
 import org.fao.unredd.layers.NoSuchGeoserverLayerException;
+import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.process.ProcessRunner;
 import org.fao.unredd.statsCalculator.generated.VariableType;
@@ -305,5 +313,44 @@ public class StatsIndicator {
 			throw new IllegalStateException("Invoke analyze() first");
 		}
 		return executions.toArray(new Execution[0]);
+	}
+
+	public static void main(String[] args) throws IllegalArgumentException,
+			IOException {
+		Options options = new Options();
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("Folder with the temporal mosaic");
+		Option option = OptionBuilder.create("f");
+		options.addOption(option);
+		CommandLineParser parser = new BasicParser();
+		CommandLine cmd = null;
+		try {
+			cmd = parser.parse(options, args);
+		} catch (ParseException e1) {
+			printUsage();
+			System.exit(-1);
+		}
+
+		// Read folder as unique parameter
+		File folder = null;
+		if (cmd.hasOption("f")) {
+			folder = new File(cmd.getOptionValue("f"));
+		} else {
+			printUsage();
+			System.exit(-1);
+		}
+		try {
+			StatsIndicator statsIndicator = new StatsIndicator(null,
+					new LayerFolderImpl(folder));
+			statsIndicator.analyze();
+			statsIndicator.run();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+	}
+
+	private static void printUsage() {
+		throw new UnsupportedOperationException("Print usage not supported yet");
 	}
 }

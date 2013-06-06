@@ -1,4 +1,4 @@
-package org.fao.unredd.statsCalculator;
+package org.fao.unredd.layers.folder;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -81,7 +82,7 @@ public abstract class AbstractLayerFolder implements Layer {
 	}
 
 	@Override
-	public Outputs getOutputs() {
+	public Outputs getOutputs() throws IOException {
 		File outputFolder = getOutputFolder();
 		if (!outputFolder.exists()) {
 			return new Outputs();
@@ -101,11 +102,18 @@ public abstract class AbstractLayerFolder implements Layer {
 	}
 
 	@Override
-	public Output getOutput(String outputId) throws NoSuchIndicatorException {
-		if (!new File(getOutputFolder(), outputId).exists()) {
+	public Output getOutput(String outputId) throws NoSuchIndicatorException,
+			IOException {
+		File outputFolder = new File(getOutputFolder(), outputId);
+		if (!outputFolder.exists()) {
 			throw new NoSuchIndicatorException(outputId);
 		}
-		return new Output(outputId, outputId, null, null);
+		InputStream input = new BufferedInputStream(new FileInputStream(
+				new File(outputFolder, "content.html")));
+		Output ret = new Output(outputId, outputId, "text/html",
+				IOUtils.toString(input));
+		input.close();
+		return ret;
 	}
 
 	@Override

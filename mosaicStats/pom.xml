@@ -39,11 +39,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt-imagemosaic</artifactId>
-			<version>9.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
 			<version>9.1</version>
 		</dependency>

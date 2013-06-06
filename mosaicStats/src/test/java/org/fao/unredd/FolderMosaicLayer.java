@@ -4,8 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-import org.fao.unredd.statsCalculator.InvalidFolderStructureException;
-import org.fao.unredd.statsCalculator.MosaicLayerFolder;
+import org.fao.unredd.layers.folder.InvalidFolderStructureException;
+import org.fao.unredd.layers.folder.MosaicLayerFolder;
 import org.junit.Test;
 
 public class FolderMosaicLayer {

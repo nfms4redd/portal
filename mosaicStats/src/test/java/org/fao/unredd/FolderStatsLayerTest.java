@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import org.fao.unredd.statsCalculator.LayerFolderImpl;
+import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.junit.Test;
 
 public class FolderStatsLayerTest {

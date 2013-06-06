@@ -6,7 +6,7 @@ import it.geosolutions.imageio.plugins.tiff.TIFFImageWriteParam;
 
 import java.io.File;
 
-import org.fao.unredd.statsCalculator.LayerFolderImpl;
+import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;

@@ -1,4 +1,4 @@
-package org.fao.unredd.statsCalculator;
+package org.fao.unredd.layers.folder;
 
 import java.io.File;
 import java.io.FileInputStream;
