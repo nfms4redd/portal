@@ -12,12 +12,6 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValuesType">
-		<xs:sequence>
-			<xs:element name="value" type="ValueType" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
 	<xs:element name="statistics-chart-input">
 		<xs:complexType>
 			<xs:sequence>
@@ -28,7 +22,7 @@
 				<xs:element name="tooltipDecimals" type="xs:int" />
 				<xs:element name="hover" type="xs:string" />
 				<xs:element name="footer" type="xs:string" />
-				<xs:element name="values" type="ValuesType" />
+				<xs:element name="value" type="ValueType" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

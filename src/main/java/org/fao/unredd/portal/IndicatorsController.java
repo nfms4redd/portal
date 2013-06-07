@@ -75,7 +75,7 @@ public class IndicatorsController {
 					ChartGenerator chartGenerator = new ChartGenerator(
 							new ByteArrayInputStream(indicator.getContents()
 									.getBytes()));
-					chartGenerator.generate(response.getOutputStream());
+					chartGenerator.generate(response.getWriter());
 					response.flushBuffer();
 				} catch (IOException e) {
 					logger.error("Error returning the indicators", e);
