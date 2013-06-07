@@ -74,12 +74,14 @@ public class StatsIndicator {
 	}
 
 	/**
-	 * @param calculationListener
+	 * Analyzes the layer associated to the indicator to validate the contents
+	 * and prepare the execution of the indicator.
+	 * 
 	 * @throws ConfigurationException
 	 *             If the configuration of the zonal statistics is wrong
 	 * @throws MixedRasterGeometryException
-	 *             If the rasters of the referenced mosaic layer don't have
-	 *             homogeneous geometry
+	 *             If the rasters of one of the referenced mosaic layer don't
+	 *             have homogeneous geometry
 	 * @throws IOException
 	 *             If a general IO error takes place during the calculation
 	 */
@@ -233,6 +235,14 @@ public class StatsIndicator {
 		this.executions = executions;
 	}
 
+	/**
+	 * Executes the indicator on the layer
+	 * 
+	 * @throws ProcessExecutionException
+	 *             If there is a problem executing one of the commands to
+	 *             calculate the indicator
+	 * @throws IOException
+	 */
 	public void run() throws ProcessExecutionException, IOException {
 		for (Execution execution : executions) {
 			File zones = execution.getZones();

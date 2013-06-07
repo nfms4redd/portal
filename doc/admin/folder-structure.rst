@@ -62,6 +62,42 @@ the following steps have to be followed:
 
 #. Produce the indicator. This depends on the tools used to get the indicator calculated. Normally it should imply the execution of some program that reads the previous configuration, accesses the data, may produce the first time some permanent derived result in ``work`` and will produce the output data in the ``output`` folder. 
 
+Layer statistics indicator
+--------------------------
+
+The system implements a layer statistics indicator that produces statistics about the coverage of different variables in the different zones of the layer. It takes as input the name of the layer and the configuration file in this layer that references the time mosaics to be used as variable. The output will contain, for each individual zone in the layer, the surface that is covered by the time mosaic in each timestamp.
+
+The process to calculate the statistics can be described roughly as follows:
+
+#. The process takes the layer name as a parameter
+#. Using GeoServer RESTful API it obtains the folder where the data is stored, which will be the ``data`` folder under the layer folder (therefore the layer has to be published in GeoServer).
+#. The ``zonal-statistics.xml`` file existing in the layer ``configuration`` folder is read to get the information about the time mosaics to use in the process and the field to identify unique zones in the layer. 
+#. The snapshots are ordered and processed individually to actually produce the data.
+
+The data produced will appear in the ``output/result.xml`` file that will be consumed by the portal to render some output to the user.
+
+In order to install the indicator in a layer it is necessary to follow these steps:
+
+#. Create the layer folder structure
+
+#. Add the layer to geoserver
+
+#. Create a ``configuration/zonal-statistics.xml`` and populate it like this::
+
+   <?xml version="1.0"?>
+   <zonal-statistics xmlns="http://www.nfms.unredd.fao.org/zonal-statistics">
+   	<zone-id-field>id</zone-id-field>
+   	<variable layer="unredd:temporalMosaic" />
+   </zonal-statistics>
+   
+   which indicates that the field ``id`` identifies the individual zones in the layer and that the layer ``unredd:temporalMosaic`` will be the one to use to get the temporal statistics about coverage.
+
+#. Execute the mosaic specifying the name of the layer as a parameter::
+
+   TODO
+
+#. Verify that the result files have appeared on the ``output`` folder and contains the results.
+
 
 
 
