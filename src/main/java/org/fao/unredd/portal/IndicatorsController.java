@@ -1,16 +1,18 @@
 package org.fao.unredd.portal;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.fao.unredd.layers.Output;
-import org.fao.unredd.layers.Outputs;
+import org.fao.unredd.charts.ChartGenerator;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchGeoserverLayerException;
 import org.fao.unredd.layers.NoSuchIndicatorException;
+import org.fao.unredd.layers.Output;
+import org.fao.unredd.layers.Outputs;
 
 public class IndicatorsController {
 
@@ -70,7 +72,10 @@ public class IndicatorsController {
 				Output indicator = layer.getOutput(indicatorId);
 				response.setContentType(indicator.getContentType());
 				try {
-					response.getWriter().print(indicator.getContents());
+					ChartGenerator chartGenerator = new ChartGenerator(
+							new ByteArrayInputStream(indicator.getContents()
+									.getBytes()));
+					chartGenerator.generate(response.getOutputStream());
 					response.flushBuffer();
 				} catch (IOException e) {
 					logger.error("Error returning the indicators", e);
