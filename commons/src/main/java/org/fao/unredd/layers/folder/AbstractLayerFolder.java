@@ -109,7 +109,7 @@ public abstract class AbstractLayerFolder implements Layer {
 			throw new NoSuchIndicatorException(outputId);
 		}
 		InputStream input = new BufferedInputStream(new FileInputStream(
-				new File(outputFolder, "content.html")));
+				new File(outputFolder, "result.xml")));
 		Output ret = new Output(outputId, outputId, "text/html",
 				IOUtils.toString(input));
 		input.close();
