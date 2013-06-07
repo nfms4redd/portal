@@ -224,8 +224,9 @@ public class StatsIndicator {
 					}
 				})[0];
 
-				Execution execution = new Execution(areaRaster, timestampFile,
-						shapefile, statisticsConfiguration.getZoneIdField(),
+				Execution execution = new Execution(areaRaster,
+						timestamp.toString(), timestampFile, shapefile,
+						statisticsConfiguration.getZoneIdField(),
 						firstSnapshotInfo.getWidth(),
 						firstSnapshotInfo.getHeight());
 				executions.add(execution);
@@ -261,8 +262,8 @@ public class StatsIndicator {
 					"-o", tempStats.getAbsolutePath()).run();
 			ByteArrayOutputStream awkOutput = new ByteArrayOutputStream();
 			new ProcessRunner(new FileInputStream(tempStats), awkOutput, "awk",
-					"BEGIN{print \"prov number avg sum\"} "
-							+ "{print $1,$2,$3,$2*$3}").run();
+					"BEGIN{print \"prov " + execution.getTimestamp() + "\"} "
+							+ "{print $1,$2*$3}").run();
 
 			layer.setOutput(OUTPUT_ID, new String(awkOutput.toByteArray()));
 

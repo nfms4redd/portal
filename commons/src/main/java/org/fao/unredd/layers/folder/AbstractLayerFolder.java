@@ -130,7 +130,7 @@ public abstract class AbstractLayerFolder implements Layer {
 		}
 
 		BufferedOutputStream out = new BufferedOutputStream(
-				new FileOutputStream(new File(outputFolder, "raw-stats")));
+				new FileOutputStream(new File(outputFolder, "result.xml")));
 		try {
 			IOUtils.write(content, out);
 		} finally {

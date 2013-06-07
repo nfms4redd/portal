@@ -4,16 +4,18 @@ import java.io.File;
 
 public class Execution {
 	private File areaRaster;
+	private String timestamp;
 	private File forestMask;
 	private File zones;
 	private String id;
 	private int rasterWidth;
 	private int rasterHeight;
 
-	public Execution(File areaRaster, File forestMask, File zones, String id,
-			int rasterWidth, int rasterHeight) {
+	public Execution(File areaRaster, String timestamp, File forestMask,
+			File zones, String id, int rasterWidth, int rasterHeight) {
 		super();
 		this.areaRaster = areaRaster;
+		this.timestamp = timestamp;
 		this.forestMask = forestMask;
 		this.zones = zones;
 		this.id = id;
@@ -43,6 +45,10 @@ public class Execution {
 
 	public int getRasterWidth() {
 		return rasterWidth;
+	}
+
+	public String getTimestamp() {
+		return timestamp;
 	}
 
 	@Override
