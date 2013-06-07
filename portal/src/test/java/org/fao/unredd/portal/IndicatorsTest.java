@@ -9,11 +9,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchIndicatorException;
@@ -22,17 +24,26 @@ import org.fao.unredd.layers.Outputs;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 public class IndicatorsTest {
 
-	private static final String CONTENT = "content";
+	private static String CONTENT = null;
 	private static final String CONTENT_TYPE = "contentType";
 	private HttpServletResponse response;
 	private LayerFactory layerFactory;
 	private StringWriter responseWriter;
 	private IndicatorsController indicators;
+
+	@BeforeClass
+	public static void setupClass() throws Exception {
+		InputStream stream = IndicatorsTest.class
+				.getResourceAsStream("sample-output.xml");
+		CONTENT = IOUtils.toString(stream);
+		stream.close();
+	}
 
 	@Before
 	public void setupCommon() throws Exception {
@@ -80,7 +91,7 @@ public class IndicatorsTest {
 
 		verify(response, never()).setStatus(anyInt());
 		verify(response).setContentType(CONTENT_TYPE);
-		assertTrue(responseWriter.getBuffer().toString().equals(CONTENT));
+		assertTrue(responseWriter.getBuffer().toString().contains("html"));
 	}
 
 	@Test

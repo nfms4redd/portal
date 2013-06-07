@@ -2,11 +2,10 @@ package org.fao.unredd.charts;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.List;
 
 import javax.xml.bind.JAXB;
@@ -29,7 +28,7 @@ public class ChartGenerator {
 		inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
 	}
 
-	public void generate(OutputStream output) throws IOException {
+	public void generate(Writer writer) throws IOException {
 		VelocityEngine engine = new VelocityEngine();
 		engine.setProperty("resource.loader", "class");
 		engine.setProperty("class.resource.loader.class",
@@ -38,20 +37,19 @@ public class ChartGenerator {
 		VelocityContext context = new VelocityContext();
 		context.put("title", inputData.getTitle());
 		context.put("subtitle", inputData.getSubtitle());
-		context.put("dates", getLabels(inputData.getValues().getValue()));
+		context.put("dates", getLabels(inputData.getValue()));
 		context.put("y-label", inputData.getYLabel());
 		context.put("units", inputData.getUnits());
 		context.put("tooltipDecimals", inputData.getTooltipDecimals());
-		context.put("data", getValues(inputData.getValues().getValue()));
+		context.put("data", getValues(inputData.getValue()));
 		context.put("hover", inputData.getHover());
 		context.put("footer", inputData.getFooter());
 
 		Template t = engine
 				.getTemplate("/org/fao/unredd/charts/highcharts-template.vtl");
 
-		OutputStreamWriter sw = new OutputStreamWriter(output);
-		t.merge(context, sw);
-		sw.flush();
+		t.merge(context, writer);
+		writer.flush();
 	}
 
 	private String[] getLabels(List<ValueType> value) {
@@ -75,6 +73,7 @@ public class ChartGenerator {
 				new File("/home/fergonco/java/nfms/nfms/"
 						+ "mosaicStats/src/test/resources/"
 						+ "okZonesSHP/output/stats_indicator/result.xml")));
-		chartGenerator.generate(new FileOutputStream(new File("/tmp/a.html")));
+		chartGenerator.generate(new FileWriter(new File("/tmp/a.html")));
 	}
+
 }

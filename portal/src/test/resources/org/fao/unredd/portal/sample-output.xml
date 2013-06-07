@@ -1,0 +1,15 @@
+<statistics-chart-input
+	xmlns="http://www.nfms.unredd.fao.org/statistics-chart">
+	<title>Deforestación</title>
+	<subtitle>Análisis de la deforestación</subtitle>
+	<y-label>Área</y-label>
+	<units>m&lt;2&gt;</units>
+	<tooltipDecimals>1</tooltipDecimals>
+	<hover></hover>
+	<footer>Powered by UNREDD team at FAO</footer>
+	<values>
+		<value label="1990">129024</value>
+		<value label="1992">122024</value>
+		<value label="1999">110024</value>
+	</values>
+</statistics-chart-input>

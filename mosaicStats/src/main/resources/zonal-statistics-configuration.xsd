@@ -2,8 +2,7 @@
 <xs:schema attributeFormDefault="unqualified"
 	xmlns="http://www.nfms.unredd.fao.org/zonal-statistics"
 	targetNamespace="http://www.nfms.unredd.fao.org/zonal-statistics"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified">
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
 	<xs:complexType name="VariableType">
 		<xs:attribute type="xs:string" name="layer" use="required" />
@@ -12,10 +11,10 @@
 	<xs:element name="zonal-statistics">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="zone-id-field" type="xs:string" />
 				<xs:element name="variable" maxOccurs="unbounded"
 					minOccurs="1" type="VariableType" />
 			</xs:sequence>
-			<xs:attribute name="zone-id-field" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

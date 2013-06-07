@@ -194,8 +194,9 @@ public class StatsIndicatorTest {
 		}
 	}
 
+	@Ignore
 	@Test
-	public void testFoo() throws Exception {
+	public void testOutputs() throws Exception {
 		LayerFactory layerFactory = mock(LayerFactory.class);
 		when(layerFactory.newMosaicLayer(anyString())).thenReturn(
 				new MosaicLayerFolder(new File(
