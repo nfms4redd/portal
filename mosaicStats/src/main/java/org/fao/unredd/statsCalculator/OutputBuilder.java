@@ -79,9 +79,9 @@ public class OutputBuilder {
 			String[] parts = line.split("\\s+");
 			String id = parts[0];
 			DataType data = getData(id, chartInput.getData());
-			data.getValue()
-					.add(Double.parseDouble(parts[1])
-							* Double.parseDouble(parts[2]));
+			data.getValue().add(
+					Double.parseDouble(parts[1]) * Double.parseDouble(parts[2])
+							/ 1000000.0);
 		}
 		br.close();
 
