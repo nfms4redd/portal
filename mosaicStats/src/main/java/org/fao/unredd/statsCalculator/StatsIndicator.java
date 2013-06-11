@@ -111,9 +111,12 @@ public class StatsIndicator {
 			}
 		})[0];
 		for (MosaicLayer mosaicLayer : mosaicLayers) {
-			MosaicProcessor processor = new MosaicProcessor(
-					new OutputGenerator(layer), mosaicLayer);
+			OutputBuilder outputBuilder = new OutputBuilder(layer,
+					configuration);
+			MosaicProcessor processor = new MosaicProcessor(outputBuilder,
+					mosaicLayer);
 			processor.process(shapefile, timeFormat, configuration);
+			outputBuilder.writeResult();
 		}
 	}
 

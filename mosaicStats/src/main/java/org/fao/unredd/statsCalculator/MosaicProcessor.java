@@ -15,11 +15,10 @@ import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
 public class MosaicProcessor {
 
 	private MosaicLayer mosaicLayer;
-	private OutputGenerator outputGenerator;
+	private OutputBuilder outputBuilder;
 
-	public MosaicProcessor(OutputGenerator outputGenerator,
-			MosaicLayer mosaicLayer) {
-		this.outputGenerator = outputGenerator;
+	public MosaicProcessor(OutputBuilder outputBuilder, MosaicLayer mosaicLayer) {
+		this.outputBuilder = outputBuilder;
 		this.mosaicLayer = mosaicLayer;
 	}
 
@@ -56,9 +55,8 @@ public class MosaicProcessor {
 
 			areaRasterManager.createCompatibleAreaRaster();
 
-			outputGenerator.generateOutput(areaRaster,
-					timeFormat.format(timestamp), timestampFile, shapefile,
-					statisticsConfiguration, firstSnapshotInfo.getWidth(),
+			outputBuilder.addToOutput(areaRaster, timeFormat.format(timestamp),
+					timestampFile, shapefile, firstSnapshotInfo.getWidth(),
 					firstSnapshotInfo.getHeight());
 
 		}

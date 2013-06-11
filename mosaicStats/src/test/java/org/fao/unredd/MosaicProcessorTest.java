@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicProcessor;
-import org.fao.unredd.statsCalculator.OutputGenerator;
+import org.fao.unredd.statsCalculator.OutputBuilder;
 import org.fao.unredd.statsCalculator.StatsIndicatorConstants;
 import org.fao.unredd.statsCalculator.generated.PresentationDataType;
 import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
@@ -24,8 +24,8 @@ public class MosaicProcessorTest {
 	public void testCorruptedTiff() throws Exception {
 		File temporalMosaic = new File("src/test/resources/corruptedTiff");
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(
-				mock(OutputGenerator.class), new MosaicLayerFolder(
-						temporalMosaic));
+				mock(OutputBuilder.class),
+				new MosaicLayerFolder(temporalMosaic));
 		ZonalStatistics conf = new ZonalStatistics();
 		conf.setPresentationData(new PresentationDataType());
 		try {
@@ -43,7 +43,7 @@ public class MosaicProcessorTest {
 				"src/test/resources/snapshotDifferentGeometry");
 		MosaicLayerFolder mosaicLayer = new MosaicLayerFolder(temporalMosaic);
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(
-				mock(OutputGenerator.class), mosaicLayer);
+				mock(OutputBuilder.class), mosaicLayer);
 		ZonalStatistics conf = new ZonalStatistics();
 		conf.setPresentationData(new PresentationDataType());
 		try {
@@ -61,8 +61,8 @@ public class MosaicProcessorTest {
 	public void testOkZonesSHP() throws Exception {
 		File temporalMosaic = new File("src/test/resources/temporalMosaic");
 		MosaicLayerFolder mosaicLayer = new MosaicLayerFolder(temporalMosaic);
-		OutputGenerator outputGenerator = mock(OutputGenerator.class);
-		MosaicProcessor mosaicProcessor = new MosaicProcessor(outputGenerator,
+		OutputBuilder outputBuilder = mock(OutputBuilder.class);
+		MosaicProcessor mosaicProcessor = new MosaicProcessor(outputBuilder,
 				mosaicLayer);
 		ZonalStatistics conf = mock(ZonalStatistics.class);
 		File zones = new File("src/test/resources/okZonesSHP/data/zones.shp");
@@ -72,12 +72,12 @@ public class MosaicProcessorTest {
 		try {
 			File areaRaster = new MosaicLayerFolder(temporalMosaic)
 					.getWorkFile(StatsIndicatorConstants.SAMPLE_AREAS_FILE_NAME);
-			verify(outputGenerator).generateOutput(areaRaster, "2000",
+			verify(outputBuilder).addToOutput(areaRaster, "2000",
 					new File(temporalMosaic, "data/snapshot_2000.tiff"), zones,
-					conf, 5, 5);
-			verify(outputGenerator).generateOutput(areaRaster, "2001",
+					5, 5);
+			verify(outputBuilder).addToOutput(areaRaster, "2001",
 					new File(temporalMosaic, "data/snapshot_2001.tiff"), zones,
-					conf, 5, 5);
+					5, 5);
 		} finally {
 			File workFolder = mosaicLayer.getWorkFolder();
 			if (workFolder.exists()) {

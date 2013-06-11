@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchGeoserverLayerException;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
@@ -86,7 +87,9 @@ public class StatsIndicatorTest {
 		try {
 			statsIndicator.run();
 			assertTrue(layer.getOutputs().size() == 1);
-			assertTrue(layer.getOutput(StatsIndicatorConstants.OUTPUT_ID) != null);
+			String output = layer.getOutput(StatsIndicatorConstants.OUTPUT_ID);
+			assertTrue(output != null);
+			assertTrue(StringUtils.countMatches(output, "<value>") == 6);
 		} finally {
 			// Clean up
 			FileUtils.deleteDirectory(layer.getOutputFolder());
