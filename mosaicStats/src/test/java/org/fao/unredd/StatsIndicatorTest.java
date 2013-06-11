@@ -92,9 +92,10 @@ public class StatsIndicatorTest {
 			assertTrue(StringUtils.countMatches(output, "<value>") == 6);
 		} finally {
 			// Clean up
-			FileUtils.deleteDirectory(layer.getOutputFolder());
+			// FileUtils.deleteDirectory(layer.getOutputFolder());
 			FileUtils.deleteDirectory(mosaicLayer.getWorkFolder());
 		}
+		fail();
 	}
 
 }

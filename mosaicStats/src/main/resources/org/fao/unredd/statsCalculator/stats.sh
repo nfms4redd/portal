@@ -1,2 +1,4 @@
-gdal_rasterize -a $field -ot Byte -ts $width $height -l $layerName $rasterizeInput $rasterizeOutput
-oft-stat -i $areaRaster -um $rasterizeOutput -o $tempStats
+gdal_rasterize -a $field -ot Byte -ts $width $height -l $layerName $rasterizeInput $rasterizeOutput &&
+gdal_merge.py -of GTiff -o $maskedAreaBands -separate $forestMask $areaRaster &&
+echo -e "1\n#1 #2 *" | oft-calc -of GTiff -ot Int32 $maskedAreaBands $maskedArea &&
+oft-stat -i $maskedArea -um $rasterizeOutput -o $tempStats

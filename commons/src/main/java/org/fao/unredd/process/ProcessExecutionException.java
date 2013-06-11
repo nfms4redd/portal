@@ -16,4 +16,8 @@ public class ProcessExecutionException extends Exception {
 	public ProcessExecutionException(String[] command, Exception e) {
 		super(StringUtils.join(command, " "), e);
 	}
+
+	public ProcessExecutionException(String message) {
+		super(message);
+	}
 }

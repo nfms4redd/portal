@@ -63,7 +63,6 @@
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
-			<version>1.7</version>
 		</dependency>
 		<!-- Geosolutions proxy + transitive dependencies. See issue #7 -->
 		<dependency>

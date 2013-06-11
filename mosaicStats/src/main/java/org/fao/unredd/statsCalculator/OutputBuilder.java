@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.xml.bind.JAXB;
@@ -45,10 +46,16 @@ public class OutputBuilder {
 			throws IOException, ProcessExecutionException {
 
 		chartInput.getLabels().getLabel().add(timestampText);
-		File tempRaster = File.createTempFile("raster", ".tiff");
+		File tempRasterized = File.createTempFile("raster", ".tiff");
+		File tempMaskedAreaBands = File.createTempFile("masked_area_bands",
+				".tiff");
+		File tempMaskedArea = File.createTempFile("masked_areas", ".tiff");
 		File tempStats = File.createTempFile("stats", ".txt");
 
-		Script script = new Script("stats.sh");
+		InputStream scriptStream = this.getClass().getResourceAsStream(
+				"stats.sh");
+		Script script = new Script(scriptStream);
+		scriptStream.close();
 
 		script.setParameter("field", zoneIdField);
 		script.setParameter("width", width);
@@ -56,8 +63,12 @@ public class OutputBuilder {
 		script.setParameter("layerName",
 				zones.getName().substring(0, zones.getName().length() - 4));
 		script.setParameter("rasterizeInput", zones.getAbsolutePath());
-		script.setParameter("rasterizeOutput", tempRaster.getAbsolutePath());
+		script.setParameter("rasterizeOutput", tempRasterized.getAbsolutePath());
 		script.setParameter("areaRaster", areaRaster.getAbsolutePath());
+		script.setParameter("maskedAreaBands",
+				tempMaskedAreaBands.getAbsolutePath());
+		script.setParameter("maskedArea", tempMaskedArea.getAbsolutePath());
+		script.setParameter("forestMask", timestampFile.getAbsolutePath());
 		script.setParameter("tempStats", tempStats.getAbsolutePath());
 
 		script.run();
@@ -74,7 +85,9 @@ public class OutputBuilder {
 		}
 		br.close();
 
-		tempRaster.delete();
+		tempMaskedArea.delete();
+		tempMaskedAreaBands.delete();
+		tempRasterized.delete();
 		tempStats.delete();
 	}
 
