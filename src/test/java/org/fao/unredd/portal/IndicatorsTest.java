@@ -19,7 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchIndicatorException;
-import org.fao.unredd.layers.Output;
+import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -31,7 +31,6 @@ import org.mockito.ArgumentCaptor;
 public class IndicatorsTest {
 
 	private static String CONTENT = null;
-	private static final String CONTENT_TYPE = "contentType";
 	private HttpServletResponse response;
 	private LayerFactory layerFactory;
 	private StringWriter responseWriter;
@@ -52,9 +51,10 @@ public class IndicatorsTest {
 		when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
 		Layer layer = mock(Layer.class);
-		Output indicator = new Output("id", "name", CONTENT_TYPE, CONTENT);
+		OutputDescriptor indicator = new OutputDescriptor("id", "fieldId",
+				"name");
 		when(layer.getOutputs()).thenReturn(new Outputs(indicator));
-		when(layer.getOutput("id")).thenReturn(indicator);
+		when(layer.getOutput("id")).thenReturn(CONTENT);
 		when(layer.getOutput(argThat(new BaseMatcher<String>() {
 
 			@Override
@@ -87,16 +87,16 @@ public class IndicatorsTest {
 
 	@Test
 	public void testIndicatorOk() throws Exception {
-		indicators.returnIndicator("thelayerid", "id");
+		indicators.returnIndicator("1", "thelayerid", "id");
 
 		verify(response, never()).setStatus(anyInt());
-		verify(response).setContentType(CONTENT_TYPE);
+		verify(response).setContentType("text/html");
 		assertTrue(responseWriter.getBuffer().toString().contains("html"));
 	}
 
 	@Test
 	public void testIndicatorNotFound() throws Exception {
-		indicators.returnIndicator("thelayerid", "notfound");
+		indicators.returnIndicator("1", "thelayerid", "notfound");
 		verify(response).setStatus(
 				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT.getStatus());
 	}
@@ -110,14 +110,21 @@ public class IndicatorsTest {
 
 	@Test
 	public void testIndicatorNullLayerId() throws Exception {
-		indicators.returnIndicator(null, "indicatorId");
+		indicators.returnIndicator("1", null, "indicatorId");
 		verify(response).setStatus(
 				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT.getStatus());
 	}
 
 	@Test
 	public void testIndicatorNullIndicatorId() throws Exception {
-		indicators.returnIndicator("layerId", null);
+		indicators.returnIndicator("1", "layerId", null);
+		verify(response).setStatus(
+				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT.getStatus());
+	}
+
+	@Test
+	public void testIndicatorNullObjectId() throws Exception {
+		indicators.returnIndicator(null, "layerId", "indicatorId");
 		verify(response).setStatus(
 				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT.getStatus());
 	}
