@@ -8,9 +8,19 @@
 		<xs:attribute type="xs:string" name="layer" use="required" />
 	</xs:complexType>
 
+	<xs:complexType name="PresentationDataType">
+		<xs:sequence>
+			<xs:element name="title" type="xs:string" />
+			<xs:element name="subtitle" type="xs:string" minOccurs="0" />
+			<xs:element name="footer" type="xs:string" minOccurs="0" />
+			<xs:element name="hover" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:element name="zonal-statistics">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="presentation-data" type="PresentationDataType" />
 				<xs:element name="zone-id-field" type="xs:string" />
 				<xs:element name="variable" maxOccurs="unbounded"
 					minOccurs="1" type="VariableType" />

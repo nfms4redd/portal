@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <zonal-statistics xmlns="http://www.nfms.unredd.fao.org/zonal-statistics"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.nfms.unredd.fao.org/zonal-statistics ../../../../main/resources/zonal-statistics-configuration.xsd"
-	zone-id-field="this field will not exist">
+	xsi:schemaLocation="http://www.nfms.unredd.fao.org/zonal-statistics ../../../../main/resources/zonal-statistics-configuration.xsd">
+	<presentation-data>
+		<title>Statistics</title>
+	</presentation-data>
+	<zone-id-field>this field will not exist"</zone-id-field>
 	<variable layer="unredd:temporalMosaic" />
 </zonal-statistics>
