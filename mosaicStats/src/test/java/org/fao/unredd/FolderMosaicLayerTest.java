@@ -8,7 +8,7 @@ import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
 import org.junit.Test;
 
-public class FolderMosaicLayer {
+public class FolderMosaicLayerTest {
 
 	@Test
 	public void testEmptyMosaic() throws Exception {
