@@ -155,9 +155,9 @@ public class StatsIndicatorTest {
 	public void testSnapshotDifferentGeometry() throws Exception {
 		File temporalMosaic = new File(
 				"src/test/resources/snapshotDifferentGeometry");
+		MosaicLayerFolder mosaicLayer = new MosaicLayerFolder(temporalMosaic);
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(
-				mock(OutputGenerator.class), new MosaicLayerFolder(
-						temporalMosaic));
+				mock(OutputGenerator.class), mosaicLayer);
 		ZonalStatistics conf = new ZonalStatistics();
 		conf.setPresentationData(new PresentationDataType());
 		try {
@@ -165,6 +165,8 @@ public class StatsIndicatorTest {
 					"src/test/resources/okZonesSHP/data/zones.shp"), conf);
 			fail();
 		} catch (MixedRasterGeometryException e) {
+		} finally {
+			FileUtils.deleteDirectory(mosaicLayer.getWorkFolder());
 		}
 	}
 
@@ -201,9 +203,9 @@ public class StatsIndicatorTest {
 	@Test
 	public void testOutputs() throws Exception {
 		LayerFactory layerFactory = mock(LayerFactory.class);
-		when(layerFactory.newMosaicLayer(anyString())).thenReturn(
-				new MosaicLayerFolder(new File(
-						"src/test/resources/temporalMosaic")));
+		MosaicLayerFolder mosaicLayer = new MosaicLayerFolder(new File(
+				"src/test/resources/temporalMosaic"));
+		when(layerFactory.newMosaicLayer(anyString())).thenReturn(mosaicLayer);
 		LayerFolderImpl layer = new LayerFolderImpl(new File(
 				"src/test/resources/okZonesSHP"));
 		StatsIndicator statsIndicator = new StatsIndicator(layerFactory, layer);
@@ -214,6 +216,7 @@ public class StatsIndicatorTest {
 		} finally {
 			// Clean up
 			FileUtils.deleteDirectory(layer.getOutputFolder());
+			FileUtils.deleteDirectory(mosaicLayer.getWorkFolder());
 		}
 	}
 
