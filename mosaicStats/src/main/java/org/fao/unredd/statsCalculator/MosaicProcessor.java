@@ -2,6 +2,7 @@ package org.fao.unredd.statsCalculator;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -22,9 +23,9 @@ public class MosaicProcessor {
 		this.mosaicLayer = mosaicLayer;
 	}
 
-	public void process(File shapefile, ZonalStatistics statisticsConfiguration)
-			throws IOException, MixedRasterGeometryException,
-			ProcessExecutionException {
+	public void process(File shapefile, SimpleDateFormat timeFormat,
+			ZonalStatistics statisticsConfiguration) throws IOException,
+			MixedRasterGeometryException, ProcessExecutionException {
 
 		// Get a hashmap with the association between timestamps and files
 		TreeMap<Date, File> files = mosaicLayer.getTimestamps();
@@ -55,11 +56,10 @@ public class MosaicProcessor {
 
 			areaRasterManager.createCompatibleAreaRaster();
 
-			outputGenerator
-					.generateOutput(areaRaster, timestamp.toString(),
-							timestampFile, shapefile, statisticsConfiguration,
-							firstSnapshotInfo.getWidth(),
-							firstSnapshotInfo.getHeight());
+			outputGenerator.generateOutput(areaRaster,
+					timeFormat.format(timestamp), timestampFile, shapefile,
+					statisticsConfiguration, firstSnapshotInfo.getWidth(),
+					firstSnapshotInfo.getHeight());
 
 		}
 	}

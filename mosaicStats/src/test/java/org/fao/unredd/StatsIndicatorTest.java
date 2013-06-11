@@ -64,6 +64,17 @@ public class StatsIndicatorTest {
 	}
 
 	@Test
+	public void testBadDateFormat() throws Exception {
+		try {
+			StatsIndicator indicator = newStatsIndicator(new File(
+					"src/test/resources/badTimeFormat"));
+			indicator.run();
+			fail();
+		} catch (ConfigurationException e) {
+		}
+	}
+
+	@Test
 	public void testOutputs() throws Exception {
 		LayerFactory layerFactory = mock(LayerFactory.class);
 		MosaicLayerFolder mosaicLayer = new MosaicLayerFolder(new File(

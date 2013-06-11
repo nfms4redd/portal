@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.FileUtils;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
@@ -15,7 +16,6 @@ import org.fao.unredd.statsCalculator.OutputGenerator;
 import org.fao.unredd.statsCalculator.StatsIndicatorConstants;
 import org.fao.unredd.statsCalculator.generated.PresentationDataType;
 import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
-import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 import org.junit.Test;
 
 public class MosaicProcessorTest {
@@ -30,7 +30,8 @@ public class MosaicProcessorTest {
 		conf.setPresentationData(new PresentationDataType());
 		try {
 			mosaicProcessor.process(new File(
-					"src/test/resources/okZonesSHP/data/zones.shp"), conf);
+					"src/test/resources/okZonesSHP/data/zones.shp"),
+					new SimpleDateFormat(), conf);
 			fail();
 		} catch (IOException e) {
 		}
@@ -47,7 +48,8 @@ public class MosaicProcessorTest {
 		conf.setPresentationData(new PresentationDataType());
 		try {
 			mosaicProcessor.process(new File(
-					"src/test/resources/okZonesSHP/data/zones.shp"), conf);
+					"src/test/resources/okZonesSHP/data/zones.shp"),
+					new SimpleDateFormat(), conf);
 			fail();
 		} catch (MixedRasterGeometryException e) {
 		} finally {
@@ -65,17 +67,15 @@ public class MosaicProcessorTest {
 		ZonalStatistics conf = mock(ZonalStatistics.class);
 		File zones = new File("src/test/resources/okZonesSHP/data/zones.shp");
 
-		mosaicProcessor.process(zones, conf);
+		mosaicProcessor.process(zones, new SimpleDateFormat("yyyy"), conf);
 
 		try {
 			File areaRaster = new MosaicLayerFolder(temporalMosaic)
 					.getWorkFile(StatsIndicatorConstants.SAMPLE_AREAS_FILE_NAME);
-			verify(outputGenerator).generateOutput(areaRaster,
-					new TimeParser().parse("2000").get(0).toString(),
+			verify(outputGenerator).generateOutput(areaRaster, "2000",
 					new File(temporalMosaic, "data/snapshot_2000.tiff"), zones,
 					conf, 5, 5);
-			verify(outputGenerator).generateOutput(areaRaster,
-					new TimeParser().parse("2001").get(0).toString(),
+			verify(outputGenerator).generateOutput(areaRaster, "2001",
 					new File(temporalMosaic, "data/snapshot_2001.tiff"), zones,
 					conf, 5, 5);
 		} finally {
