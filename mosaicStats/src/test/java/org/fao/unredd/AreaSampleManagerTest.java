@@ -22,9 +22,10 @@ public class AreaSampleManagerTest {
 
 	@Test
 	public void testOkExistingBadSampleAreas() throws Exception {
-		long now = System.currentTimeMillis();
 		File areaRaster = new File(
 				"src/test/resources/backup-sample-areas.tiff");
+		long lastModified = areaRaster.lastModified();
+
 		RasterInfo referenceRasterInfo = mockNonMatchingRasterInfo();
 		AreaRasterManager areaRasterManager = new AreaRasterManager(areaRaster,
 				referenceRasterInfo);
@@ -32,7 +33,7 @@ public class AreaSampleManagerTest {
 
 		assertTrue(new RasterInfo(areaRaster)
 				.matchesGeometry(referenceRasterInfo));
-		assertTrue(areaRaster.lastModified() >= now);
+		assertTrue(areaRaster.lastModified() != lastModified);
 	}
 
 	private RasterInfo mockNonMatchingRasterInfo()
