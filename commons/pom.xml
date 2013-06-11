@@ -44,4 +44,28 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.7.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<!-- Changes the default schema directory -->
+							<schemaDirectory>src/main/resources/org/fao/unredd/charts</schemaDirectory>
+							<generateDirectory>src/main/jaxb</generateDirectory>
+							<generatePackage>org.fao.unredd.charts.generated</generatePackage>
+							<addCompileSourceRoot>true</addCompileSourceRoot>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

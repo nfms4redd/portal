@@ -10,9 +10,8 @@ public class MockLayerFactory implements LayerFactory {
 	@Override
 	public Layer newLayer(String layerName) {
 		try {
-			return new LayerFolderImpl(
-					new File(
-							"/home/fergonco/java/nfms/nfms/mosaicStats/src/test/resources/okZonesSHP"));
+			return new LayerFolderImpl(new File(
+					"/home/fergonco/java/nfms/nfms/portal/testlayer"));
 		} catch (InvalidFolderStructureException e) {
 			throw new RuntimeException();
 		}

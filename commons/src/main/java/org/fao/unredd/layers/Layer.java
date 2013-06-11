@@ -20,18 +20,22 @@ public interface Layer {
 	 * @return
 	 * @throws NoSuchIndicatorException
 	 */
-	Output getOutput(String outputId) throws NoSuchIndicatorException,
+	String getOutput(String outputId) throws NoSuchIndicatorException,
 			IOException;
 
 	/**
 	 * Sets the content of the output with the specified id. If the output
-	 * already exists it is overwritten, otherwise it is created
+	 * already exists it is overwritten, otherwise it is created. The output
+	 * shall contain information for every object in the layer identified
+	 * uniquely by the value of the field specified by fieldId.
 	 * 
 	 * @param id
+	 * @param fieldId
 	 * @param content
 	 * @throws IOException
 	 */
-	void setOutput(String id, String content) throws IOException;
+	void setOutput(String id, String fieldId, String content)
+			throws IOException;
 
 	/**
 	 * Associates a file in the work area to the layer. The file is identified

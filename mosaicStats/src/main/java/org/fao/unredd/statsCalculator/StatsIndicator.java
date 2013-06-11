@@ -1,14 +1,16 @@
 package org.fao.unredd.statsCalculator;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -21,6 +23,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.fao.unredd.charts.generated.DataType;
+import org.fao.unredd.charts.generated.LabelType;
+import org.fao.unredd.charts.generated.StatisticsChartInput;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
@@ -67,6 +72,8 @@ public class StatsIndicator {
 
 	private ArrayList<Execution> executions;
 
+	private String fieldId;
+
 	public StatsIndicator(LayerFactory layerFactory, Layer layer)
 			throws NoSuchGeoserverLayerException {
 		this.layerFactory = layerFactory;
@@ -104,6 +111,7 @@ public class StatsIndicator {
 		ZonalStatistics statisticsConfiguration = JAXB.unmarshal(
 				new ByteArrayInputStream(zonalStatisticsConfiguration
 						.getBytes()), ZonalStatistics.class);
+		fieldId = statisticsConfiguration.getZoneIdField();
 
 		for (VariableType variable : statisticsConfiguration.getVariable()) {
 			MosaicLayer mosaicLayer;
@@ -245,7 +253,16 @@ public class StatsIndicator {
 	 * @throws IOException
 	 */
 	public void run() throws ProcessExecutionException, IOException {
+		StatisticsChartInput input = new StatisticsChartInput();
+		input.setTitle("TÍTULO");
+		input.setSubtitle("subtítulo");
+		input.setFooter("(Don't forget to remove hardcoded strings)");
+		input.setTooltipDecimals(2);
+		input.setYLabel("Área");
+		input.setUnits("km<sup>2</sup>");
+		input.setLabels(new LabelType());
 		for (Execution execution : executions) {
+			input.getLabels().getLabel().add(execution.getTimestamp());
 			File zones = execution.getZones();
 			File tempRaster = File.createTempFile("raster", ".tiff");
 			File tempStats = File.createTempFile("stats", ".txt");
@@ -260,16 +277,43 @@ public class StatsIndicator {
 			new ProcessRunner("oft-stat", "-i", execution.getAreaRaster()
 					.getAbsolutePath(), "-um", tempRaster.getAbsolutePath(),
 					"-o", tempStats.getAbsolutePath()).run();
-			ByteArrayOutputStream awkOutput = new ByteArrayOutputStream();
-			new ProcessRunner(new FileInputStream(tempStats), awkOutput, "awk",
-					"BEGIN{print \"prov " + execution.getTimestamp() + "\"} "
-							+ "{print $1,$2*$3}").run();
 
-			layer.setOutput(OUTPUT_ID, new String(awkOutput.toByteArray()));
+			BufferedReader br = new BufferedReader(new FileReader(tempStats));
+			String line;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split("\\s+");
+				String id = parts[0];
+				DataType data = getData(id, input.getData());
+				data.getValue().add(
+						Double.parseDouble(parts[1])
+								* Double.parseDouble(parts[2]));
+			}
+			br.close();
 
 			tempRaster.delete();
 			tempStats.delete();
 		}
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		JAXB.marshal(input, baos);
+		layer.setOutput(OUTPUT_ID, fieldId, new String(baos.toByteArray()));
+	}
+
+	private DataType getData(String id, List<DataType> data) {
+		DataType ret = null;
+		for (DataType dataType : data) {
+			if (dataType.getZoneId().equals(id)) {
+				ret = dataType;
+			}
+		}
+
+		if (ret == null) {
+			ret = new DataType();
+			ret.setZoneId(id);
+			data.add(ret);
+		}
+
+		return ret;
 	}
 
 	private static class RasterInfo {

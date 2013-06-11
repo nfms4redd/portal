@@ -89,12 +89,12 @@ public class StatsIndicatorTest {
 		// clean up before checks
 		assertTrue(!areaRaster.exists() || areaRaster.delete());
 
-		assertTrue(executions[0].equals(new Execution(areaRaster, new File(
-				mosaic, "data/snapshot_2000.tiff"), new File(layer,
-				"data/zones.shp"), "id", 5, 5)));
-		assertTrue(executions[1].equals(new Execution(areaRaster, new File(
-				mosaic, "data/snapshot_2001.tiff"), new File(layer,
-				"data/zones.shp"), "id", 5, 5)));
+		assertTrue(executions[0].equals(new Execution(areaRaster, "2000",
+				new File(mosaic, "data/snapshot_2000.tiff"), new File(layer,
+						"data/zones.shp"), "id", 5, 5)));
+		assertTrue(executions[1].equals(new Execution(areaRaster, "2001",
+				new File(mosaic, "data/snapshot_2001.tiff"), new File(layer,
+						"data/zones.shp"), "id", 5, 5)));
 	}
 
 	@Test
@@ -179,12 +179,12 @@ public class StatsIndicatorTest {
 		File areaRaster = new MosaicLayerFolder(temporalMosaic)
 				.getWorkFile(StatsIndicator.SAMPLE_AREAS_FILE_NAME);
 		try {
-			assertTrue(executions[0].equals(new Execution(areaRaster, new File(
-					temporalMosaic, "data/snapshot_2000.tiff"), new File(layer,
-					"data/zones.shp"), "id", 5, 5)));
-			assertTrue(executions[1].equals(new Execution(areaRaster, new File(
-					temporalMosaic, "data/snapshot_2001.tiff"), new File(layer,
-					"data/zones.shp"), "id", 5, 5)));
+			assertTrue(executions[0].equals(new Execution(areaRaster, "2000",
+					new File(temporalMosaic, "data/snapshot_2000.tiff"),
+					new File(layer, "data/zones.shp"), "id", 5, 5)));
+			assertTrue(executions[1].equals(new Execution(areaRaster, "2001",
+					new File(temporalMosaic, "data/snapshot_2001.tiff"),
+					new File(layer, "data/zones.shp"), "id", 5, 5)));
 		} finally {
 			File workFolder = new MosaicLayerFolder(temporalMosaic)
 					.getWorkFolder();
@@ -194,7 +194,6 @@ public class StatsIndicatorTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testOutputs() throws Exception {
 		LayerFactory layerFactory = mock(LayerFactory.class);

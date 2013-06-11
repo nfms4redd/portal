@@ -4,12 +4,17 @@
 	targetNamespace="http://www.nfms.unredd.fao.org/statistics-chart"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-	<xs:complexType name="ValueType">
-		<xs:simpleContent>
-			<xs:extension base="xs:double">
-				<xs:attribute type="xs:string" name="label" use="required" />
-			</xs:extension>
-		</xs:simpleContent>
+	<xs:complexType name="LabelType">
+		<xs:sequence>
+			<xs:element name="label" type="xs:string" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="DataType">
+		<xs:sequence>
+			<xs:element name="value" type="xs:double" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="zone-id" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:element name="statistics-chart-input">
@@ -22,7 +27,8 @@
 				<xs:element name="tooltipDecimals" type="xs:int" />
 				<xs:element name="hover" type="xs:string" />
 				<xs:element name="footer" type="xs:string" />
-				<xs:element name="value" type="ValueType" maxOccurs="unbounded" />
+				<xs:element name="labels" type="LabelType" maxOccurs="1"/>
+				<xs:element name="data" type="DataType" maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

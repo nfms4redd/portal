@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.fao.unredd.layers.Output;
+import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
 import org.junit.Test;
 
@@ -15,8 +15,7 @@ public class OutputTest {
 
 	@Test
 	public void testSerialization() throws Exception {
-		Outputs indicators = new Outputs(new Output("a", "b",
-				"application/json", "[{}]"));
+		Outputs indicators = new Outputs(new OutputDescriptor("a", "b", "c"));
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode tree = mapper.readTree(indicators.toJSON());
@@ -24,7 +23,9 @@ public class OutputTest {
 		JsonNode indicatorNode = tree.get(0);
 		assertEquals("a", indicatorNode.get("id").asText());
 		assertEquals("b", indicatorNode.get("name").asText());
+		assertEquals("c", indicatorNode.get("fieldId").asText());
 		Iterator<String> nameIterator = indicatorNode.getFieldNames();
+		nameIterator.next();
 		nameIterator.next();
 		nameIterator.next();
 		assertTrue(!nameIterator.hasNext());

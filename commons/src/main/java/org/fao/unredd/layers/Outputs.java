@@ -1,24 +1,27 @@
 package org.fao.unredd.layers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
-public class Outputs extends ArrayList<Output> {
+public class Outputs extends ArrayList<OutputDescriptor> {
 	private static final long serialVersionUID = 1L;
 
-	public Outputs(Output... indicators) {
-		for (Output indicator : indicators) {
-			add(indicator);
-		}
+	public Outputs(ArrayList<OutputDescriptor> outputDescriptors) {
+		this.addAll(outputDescriptors);
+	}
+
+	public Outputs(OutputDescriptor... outputDescriptors) {
+		Collections.addAll(this, outputDescriptors);
 	}
 
 	public String toJSON() {
 		StringBuilder ret = new StringBuilder("[");
 		String separator = "";
-		Iterator<Output> it = iterator();
+		Iterator<OutputDescriptor> it = iterator();
 		while (it.hasNext()) {
-			Output indicator = it.next();
-			ret.append(separator).append(indicator.toJSON());
+			OutputDescriptor outputDescriptor = it.next();
+			ret.append(separator).append(outputDescriptor.toJSON());
 			separator = ",";
 		}
 

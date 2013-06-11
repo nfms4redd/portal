@@ -5,8 +5,8 @@ import java.io.IOException;
 
 public class MockLayer implements Layer {
 
-	private Output output = new Output("zonal-stats", "Statistics",
-			"text/html", "These are the statistics maaaaan");
+	private OutputDescriptor output = new OutputDescriptor("zonal-stats",
+			"Statistics", "id");
 
 	@Override
 	public Outputs getOutputs() {
@@ -14,8 +14,8 @@ public class MockLayer implements Layer {
 	}
 
 	@Override
-	public Output getOutput(String outputId) {
-		return output;
+	public String getOutput(String outputId) {
+		return "These are the statistics maaaaan";
 	}
 
 	@Override
@@ -35,7 +35,8 @@ public class MockLayer implements Layer {
 	}
 
 	@Override
-	public void setOutput(String id, String content) throws IOException {
+	public void setOutput(String id, String fieldId, String content)
+			throws IOException {
 		throw new UnsupportedOperationException();
 	}
 
