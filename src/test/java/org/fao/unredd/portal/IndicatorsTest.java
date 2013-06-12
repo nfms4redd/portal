@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -82,7 +83,6 @@ public class IndicatorsTest {
 		verify(response).setContentType(contentTypeCaptor.capture());
 		assertTrue(contentTypeCaptor.getValue().contains("json"));
 		String output = responseWriter.getBuffer().toString();
-		System.out.println(output);
 		assertTrue(output.matches("\\[\\s*\\{.*"));
 	}
 
@@ -91,7 +91,7 @@ public class IndicatorsTest {
 		indicators.returnIndicator("1", "thelayerid", "id");
 
 		verify(response, never()).setStatus(anyInt());
-		verify(response).setContentType("text/html");
+		verify(response).setContentType(contains("text/html"));
 		assertTrue(responseWriter.getBuffer().toString().contains("html"));
 	}
 
