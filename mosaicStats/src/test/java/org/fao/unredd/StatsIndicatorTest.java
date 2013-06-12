@@ -12,12 +12,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchGeoserverLayerException;
+import org.fao.unredd.layers.OutputDescriptor;
+import org.fao.unredd.layers.Outputs;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.ConfigurationException;
 import org.fao.unredd.statsCalculator.StatsIndicator;
-import org.fao.unredd.statsCalculator.StatsIndicatorConstants;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -86,10 +87,12 @@ public class StatsIndicatorTest {
 		StatsIndicator statsIndicator = new StatsIndicator(layerFactory, layer);
 		try {
 			statsIndicator.run();
-			assertTrue(layer.getOutputs().size() == 1);
-			String output = layer.getOutput(StatsIndicatorConstants.OUTPUT_ID);
-			assertTrue(output != null);
-			assertTrue(StringUtils.countMatches(output, "<value>") == 6);
+			Outputs outputs = layer.getOutputs();
+			assertTrue(outputs.size() == 2);
+			for (OutputDescriptor outputDescriptor : outputs) {
+				String output = layer.getOutput(outputDescriptor.getId());
+				assertTrue(StringUtils.countMatches(output, "<value>") == 6);
+			}
 		} finally {
 			// Clean up
 			FileUtils.deleteDirectory(layer.getOutputFolder());

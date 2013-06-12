@@ -8,4 +8,5 @@
 	</presentation-data>
 	<zone-id-field>id</zone-id-field>
 	<variable layer="unredd:temporalMosaic" />
+	<variable layer="unredd:anotherTemporalMosaic" />
 </zonal-statistics>

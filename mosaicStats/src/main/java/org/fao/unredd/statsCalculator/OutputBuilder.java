@@ -108,11 +108,12 @@ public class OutputBuilder {
 		return ret;
 	}
 
-	public void writeResult() throws IOException {
+	public void writeResult(String mosaicLayerName) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JAXB.marshal(chartInput, baos);
-		layer.setOutput(StatsIndicatorConstants.OUTPUT_ID, zoneIdField,
-				new String(baos.toByteArray()));
+		mosaicLayerName = mosaicLayerName.replaceAll("\\W+", "_");
+		layer.setOutput(StatsIndicatorConstants.OUTPUT_ID_PREFIX + "_"
+				+ mosaicLayerName, zoneIdField, new String(baos.toByteArray()));
 	}
 
 }

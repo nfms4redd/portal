@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import javax.xml.bind.JAXB;
 
@@ -64,25 +63,6 @@ public class StatsIndicator {
 		return statisticsConfiguration;
 	}
 
-	private Iterable<MosaicLayer> getMosaicLayers(
-			ZonalStatistics statisticsConfiguration)
-			throws ConfigurationException {
-		ArrayList<MosaicLayer> ret = new ArrayList<MosaicLayer>();
-		for (VariableType variable : statisticsConfiguration.getVariable()) {
-			try {
-				MosaicLayer mosaicLayer = layerFactory.newMosaicLayer(variable
-						.getLayer());
-				ret.add(mosaicLayer);
-			} catch (NoSuchGeoserverLayerException e) {
-				throw new ConfigurationException(
-						"The layer specified in the configuration cannot be found in the geoserver instance: "
-								+ variable.getLayer(), e);
-			}
-		}
-
-		return ret;
-	}
-
 	/**
 	 * Executes the indicator on the associated layer. Analyzes the layer to
 	 * validate the contents prior to the execution of the indicator
@@ -101,7 +81,6 @@ public class StatsIndicator {
 			ProcessExecutionException {
 		ZonalStatistics configuration = readConfiguration();
 		SimpleDateFormat timeFormat = getTimeFormat(configuration);
-		Iterable<MosaicLayer> mosaicLayers = getMosaicLayers(configuration);
 		File dataFolder = layer.getDataFolder();
 		File shapefile = dataFolder.listFiles(new FilenameFilter() {
 
@@ -110,13 +89,21 @@ public class StatsIndicator {
 				return name.toLowerCase().endsWith(".shp");
 			}
 		})[0];
-		for (MosaicLayer mosaicLayer : mosaicLayers) {
+		for (VariableType variable : configuration.getVariable()) {
+			MosaicLayer mosaicLayer;
+			try {
+				mosaicLayer = layerFactory.newMosaicLayer(variable.getLayer());
+			} catch (NoSuchGeoserverLayerException e) {
+				throw new ConfigurationException(
+						"The layer specified in the configuration cannot be found in the geoserver instance: "
+								+ variable.getLayer(), e);
+			}
 			OutputBuilder outputBuilder = new OutputBuilder(layer,
 					configuration);
 			MosaicProcessor processor = new MosaicProcessor(outputBuilder,
 					mosaicLayer);
 			processor.process(shapefile, timeFormat, configuration);
-			outputBuilder.writeResult();
+			outputBuilder.writeResult(variable.getLayer());
 		}
 	}
 

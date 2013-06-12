@@ -35,4 +35,8 @@ public class OutputDescriptor {
 				"\"name\":\"" + name + "\"," + //
 				"\"fieldId\":\"" + fieldId + "\"" + "}";
 	}
+
+	public String getId() {
+		return id;
+	}
 }
