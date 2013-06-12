@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXB;
@@ -16,18 +18,20 @@ import org.fao.unredd.charts.generated.StatisticsChartInput;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.statsCalculator.generated.PresentationDataType;
-import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
+import org.fao.unredd.statsCalculator.generated.VariableType;
 
 public class OutputBuilder {
 
 	private Layer layer;
 	private StatisticsChartInput chartInput;
 	private String zoneIdField;
+	private SimpleDateFormat timeFormat;
+	private String indicatorName;
 
-	public OutputBuilder(Layer layer, ZonalStatistics statisticsConfiguration) {
+	public OutputBuilder(Layer layer, VariableType variable)
+			throws ConfigurationException {
 		this.layer = layer;
-		PresentationDataType presentationData = statisticsConfiguration
-				.getPresentationData();
+		PresentationDataType presentationData = variable.getPresentationData();
 		chartInput = new StatisticsChartInput();
 		chartInput.setTitle(presentationData.getTitle());
 		chartInput.setSubtitle(presentationData.getSubtitle());
@@ -38,14 +42,32 @@ public class OutputBuilder {
 		chartInput.setUnits("km<sup>2</sup>");
 		chartInput.setLabels(new LabelType());
 
-		zoneIdField = statisticsConfiguration.getZoneIdField();
+		zoneIdField = variable.getZoneIdField();
+		indicatorName = variable.getPresentationData().getTitle();
+		timeFormat = getTimeFormat(variable.getPresentationData());
 	}
 
-	public void addToOutput(File areaRaster, String timestampText,
+	private SimpleDateFormat getTimeFormat(PresentationDataType configuration)
+			throws ConfigurationException {
+		String dateFormat = configuration.getDateFormat();
+		if (dateFormat != null) {
+			try {
+				return new SimpleDateFormat(dateFormat);
+			} catch (IllegalArgumentException e) {
+				throw new ConfigurationException(
+						"The date format of the configuration is not valid: "
+								+ dateFormat, e);
+			}
+		} else {
+			return new SimpleDateFormat();
+		}
+	}
+
+	public void addToOutput(File areaRaster, Date timestamp,
 			File timestampFile, File zones, int width, int height)
 			throws IOException, ProcessExecutionException {
 
-		chartInput.getLabels().getLabel().add(timestampText);
+		chartInput.getLabels().getLabel().add(timeFormat.format(timestamp));
 		File tempRasterized = File.createTempFile("raster", ".tiff");
 		File tempMaskedAreaBands = File.createTempFile("masked_area_bands",
 				".tiff");
@@ -113,7 +135,8 @@ public class OutputBuilder {
 		JAXB.marshal(chartInput, baos);
 		mosaicLayerName = mosaicLayerName.replaceAll("\\W+", "_");
 		layer.setOutput(StatsIndicatorConstants.OUTPUT_ID_PREFIX + "_"
-				+ mosaicLayerName, zoneIdField, new String(baos.toByteArray()));
+				+ mosaicLayerName, indicatorName, zoneIdField,
+				new String(baos.toByteArray()));
 	}
 
 }

@@ -30,11 +30,12 @@ public interface Layer {
 	 * uniquely by the value of the field specified by fieldId.
 	 * 
 	 * @param id
+	 * @param outputName
 	 * @param fieldId
 	 * @param content
 	 * @throws IOException
 	 */
-	void setOutput(String id, String fieldId, String content)
+	void setOutput(String id, String outputName, String fieldId, String content)
 			throws IOException;
 
 	/**

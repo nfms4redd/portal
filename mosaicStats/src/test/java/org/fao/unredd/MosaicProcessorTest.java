@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.FileUtils;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
@@ -14,8 +13,7 @@ import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicProcessor;
 import org.fao.unredd.statsCalculator.OutputBuilder;
 import org.fao.unredd.statsCalculator.StatsIndicatorConstants;
-import org.fao.unredd.statsCalculator.generated.PresentationDataType;
-import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
+import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 import org.junit.Test;
 
 public class MosaicProcessorTest {
@@ -26,12 +24,9 @@ public class MosaicProcessorTest {
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(
 				mock(OutputBuilder.class),
 				new MosaicLayerFolder(temporalMosaic));
-		ZonalStatistics conf = new ZonalStatistics();
-		conf.setPresentationData(new PresentationDataType());
 		try {
 			mosaicProcessor.process(new File(
-					"src/test/resources/okZonesSHP/data/zones.shp"),
-					new SimpleDateFormat(), conf);
+					"src/test/resources/okZonesSHP/data/zones.shp"));
 			fail();
 		} catch (IOException e) {
 		}
@@ -44,12 +39,9 @@ public class MosaicProcessorTest {
 		MosaicLayerFolder mosaicLayer = new MosaicLayerFolder(temporalMosaic);
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(
 				mock(OutputBuilder.class), mosaicLayer);
-		ZonalStatistics conf = new ZonalStatistics();
-		conf.setPresentationData(new PresentationDataType());
 		try {
 			mosaicProcessor.process(new File(
-					"src/test/resources/okZonesSHP/data/zones.shp"),
-					new SimpleDateFormat(), conf);
+					"src/test/resources/okZonesSHP/data/zones.shp"));
 			fail();
 		} catch (MixedRasterGeometryException e) {
 		} finally {
@@ -64,18 +56,20 @@ public class MosaicProcessorTest {
 		OutputBuilder outputBuilder = mock(OutputBuilder.class);
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(outputBuilder,
 				mosaicLayer);
-		ZonalStatistics conf = mock(ZonalStatistics.class);
 		File zones = new File("src/test/resources/okZonesSHP/data/zones.shp");
 
-		mosaicProcessor.process(zones, new SimpleDateFormat("yyyy"), conf);
+		mosaicProcessor.process(zones);
 
 		try {
 			File areaRaster = new MosaicLayerFolder(temporalMosaic)
 					.getWorkFile(StatsIndicatorConstants.SAMPLE_AREAS_FILE_NAME);
-			verify(outputBuilder).addToOutput(areaRaster, "2000",
+			TimeParser timeParser = new TimeParser();
+			verify(outputBuilder).addToOutput(areaRaster,
+					timeParser.parse("2000").get(0),
 					new File(temporalMosaic, "data/snapshot_2000.tiff"), zones,
 					5, 5);
-			verify(outputBuilder).addToOutput(areaRaster, "2001",
+			verify(outputBuilder).addToOutput(areaRaster,
+					timeParser.parse("2001").get(0),
 					new File(temporalMosaic, "data/snapshot_2001.tiff"), zones,
 					5, 5);
 		} finally {

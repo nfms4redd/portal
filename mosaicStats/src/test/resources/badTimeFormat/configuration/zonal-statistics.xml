@@ -2,10 +2,11 @@
 <zonal-statistics xmlns="http://www.nfms.unredd.fao.org/zonal-statistics"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.nfms.unredd.fao.org/zonal-statistics ../../../../main/resources/zonal-statistics-configuration.xsd">
-	<presentation-data>
-		<title>Data evolution</title>
-		<date-format>ddffm</date-format>
-	</presentation-data>
-	<zone-id-field>id</zone-id-field>
-	<variable layer="unredd:temporalMosaic" />
+	<variable layer="unredd:temporalMosaic">
+		<zone-id-field>id</zone-id-field>
+		<presentation-data>
+			<title>Data evolution</title>
+			<date-format>ddffm</date-format>
+		</presentation-data>
+	</variable>
 </zonal-statistics>

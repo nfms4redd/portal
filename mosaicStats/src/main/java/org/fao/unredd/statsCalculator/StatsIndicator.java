@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import javax.xml.bind.JAXB;
 
@@ -80,7 +79,6 @@ public class StatsIndicator {
 			MixedRasterGeometryException, IOException,
 			ProcessExecutionException {
 		ZonalStatistics configuration = readConfiguration();
-		SimpleDateFormat timeFormat = getTimeFormat(configuration);
 		File dataFolder = layer.getDataFolder();
 		File shapefile = dataFolder.listFiles(new FilenameFilter() {
 
@@ -98,28 +96,11 @@ public class StatsIndicator {
 						"The layer specified in the configuration cannot be found in the geoserver instance: "
 								+ variable.getLayer(), e);
 			}
-			OutputBuilder outputBuilder = new OutputBuilder(layer,
-					configuration);
+			OutputBuilder outputBuilder = new OutputBuilder(layer, variable);
 			MosaicProcessor processor = new MosaicProcessor(outputBuilder,
 					mosaicLayer);
-			processor.process(shapefile, timeFormat, configuration);
+			processor.process(shapefile);
 			outputBuilder.writeResult(variable.getLayer());
-		}
-	}
-
-	private SimpleDateFormat getTimeFormat(ZonalStatistics configuration)
-			throws ConfigurationException {
-		String dateFormat = configuration.getPresentationData().getDateFormat();
-		if (dateFormat != null) {
-			try {
-				return new SimpleDateFormat(dateFormat);
-			} catch (IllegalArgumentException e) {
-				throw new ConfigurationException(
-						"The date format of the configuration is not valid: "
-								+ dateFormat, e);
-			}
-		} else {
-			return new SimpleDateFormat();
 		}
 	}
 

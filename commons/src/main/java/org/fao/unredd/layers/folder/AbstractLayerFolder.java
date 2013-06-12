@@ -143,8 +143,8 @@ public abstract class AbstractLayerFolder implements Layer {
 	}
 
 	@Override
-	public void setOutput(String id, String fieldId, String content)
-			throws IOException {
+	public void setOutput(String id, String outputName, String fieldId,
+			String content) throws IOException {
 		File outputFolder = new File(getOutputFolder(), id);
 		if (outputFolder.exists()) {
 			FileUtils.cleanDirectory(outputFolder);
@@ -166,6 +166,7 @@ public abstract class AbstractLayerFolder implements Layer {
 
 		Properties metadata = getMetadataProperties(outputFolder);
 		metadata.setProperty(METADATA_FIELD_ID_PROPERTY_NAME, fieldId);
+		metadata.setProperty(METADATA_INDICATOR_NAME_PROPERTY_NAME, outputName);
 		FileOutputStream metadataStream = new FileOutputStream(
 				getMetadataFile(outputFolder));
 		try {
