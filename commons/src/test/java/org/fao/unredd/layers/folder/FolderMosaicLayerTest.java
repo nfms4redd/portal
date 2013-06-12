@@ -1,4 +1,4 @@
-package org.fao.unredd;
+package org.fao.unredd.layers.folder;
 
 import static org.junit.Assert.assertTrue;
 

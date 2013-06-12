@@ -39,4 +39,12 @@ public class OutputDescriptor {
 	public String getId() {
 		return id;
 	}
+
+	public String getFieldId() {
+		return fieldId;
+	}
+
+	public String getName() {
+		return name;
+	}
 }

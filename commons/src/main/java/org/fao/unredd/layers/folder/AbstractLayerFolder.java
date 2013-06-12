@@ -26,7 +26,8 @@ import org.fao.unredd.layers.Outputs;
  */
 public abstract class AbstractLayerFolder implements Layer {
 
-	private static final String METADATA_FIELD_ID_PROERTY_NAME = "field-id";
+	private static final String METADATA_FIELD_ID_PROPERTY_NAME = "field-id";
+	private static final String METADATA_INDICATOR_NAME_PROPERTY_NAME = "indicator-name";
 	private static final String METADATA_PROPERTIES_FILE_NAME = "metadata.properties";
 	private static final String OUTPUT_FILE_NAME = "result.xml";
 	private static final String OUTPUT = "output";
@@ -100,11 +101,13 @@ public abstract class AbstractLayerFolder implements Layer {
 			File outputRoot = new File(getOutputFolder(), folderName);
 			Properties metadata = getMetadataProperties(outputRoot);
 			String fieldId = metadata
-					.getProperty(METADATA_FIELD_ID_PROERTY_NAME);
+					.getProperty(METADATA_FIELD_ID_PROPERTY_NAME);
+			String indicatorName = metadata
+					.getProperty(METADATA_INDICATOR_NAME_PROPERTY_NAME);
 			if (fieldId != null
 					&& new File(outputRoot, OUTPUT_FILE_NAME).exists()) {
 				outputDescriptors.add(new OutputDescriptor(folderName,
-						folderName, fieldId));
+						indicatorName, fieldId));
 			}
 		}
 
@@ -162,7 +165,7 @@ public abstract class AbstractLayerFolder implements Layer {
 		}
 
 		Properties metadata = getMetadataProperties(outputFolder);
-		metadata.setProperty(METADATA_FIELD_ID_PROERTY_NAME, fieldId);
+		metadata.setProperty(METADATA_FIELD_ID_PROPERTY_NAME, fieldId);
 		FileOutputStream metadataStream = new FileOutputStream(
 				getMetadataFile(outputFolder));
 		try {

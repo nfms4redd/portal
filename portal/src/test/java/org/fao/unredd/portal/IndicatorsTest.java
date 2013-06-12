@@ -51,8 +51,8 @@ public class IndicatorsTest {
 		when(response.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
 		Layer layer = mock(Layer.class);
-		OutputDescriptor indicator = new OutputDescriptor("id", "fieldId",
-				"name");
+		OutputDescriptor indicator = new OutputDescriptor("id", "name",
+				"fieldId");
 		when(layer.getOutputs()).thenReturn(new Outputs(indicator));
 		when(layer.getOutput("id")).thenReturn(CONTENT);
 		when(layer.getOutput(argThat(new BaseMatcher<String>() {
@@ -81,8 +81,9 @@ public class IndicatorsTest {
 				.forClass(String.class);
 		verify(response).setContentType(contentTypeCaptor.capture());
 		assertTrue(contentTypeCaptor.getValue().contains("json"));
-		assertTrue(responseWriter.getBuffer().toString()
-				.matches("\\[\\s*\\{.*"));
+		String output = responseWriter.getBuffer().toString();
+		System.out.println(output);
+		assertTrue(output.matches("\\[\\s*\\{.*"));
 	}
 
 	@Test
