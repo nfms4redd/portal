@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<statistics-chart-input xmlns="http://www.nfms.unredd.fao.org/statistics-chart">
+    <labels>
+        <label>2000</label>
+        <label>2001</label>
+    </labels>
+    <data zone-id="2">
+        <value>247.835904</value>
+        <value>247.834392</value>
+    </data>
+    <data zone-id="3">
+        <value>743.520168</value>
+        <value>743.520168</value>
+    </data>
+    <data zone-id="1">
+        <value>495.67707999999703</value>
+        <value>743.517136000002</value>
+    </data>
+</statistics-chart-input>

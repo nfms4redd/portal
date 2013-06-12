@@ -29,28 +29,33 @@ public class ChartGenerator {
 		inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
 	}
 
-	public void generate(String id, Writer writer) throws IOException {
+	public void generate(String objectId, Writer writer) throws IOException {
 		VelocityEngine engine = new VelocityEngine();
 		engine.setProperty("resource.loader", "class");
 		engine.setProperty("class.resource.loader.class",
 				"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 		engine.init();
 		VelocityContext context = new VelocityContext();
-		context.put("title", inputData.getTitle());
-		context.put("subtitle", inputData.getSubtitle());
+		context.put("title", nullToEmptyString(inputData.getTitle()));
+		context.put("subtitle", nullToEmptyString(inputData.getSubtitle()));
 		context.put("dates", inputData.getLabels().getLabel().iterator());
-		context.put("y-label", inputData.getYLabel());
-		context.put("units", inputData.getUnits());
-		context.put("tooltipDecimals", inputData.getTooltipDecimals());
-		context.put("data", getValues(id, inputData.getData()));
-		context.put("hover", inputData.getHover());
-		context.put("footer", inputData.getFooter());
+		context.put("y-label", nullToEmptyString(inputData.getYLabel()));
+		context.put("units", nullToEmptyString(inputData.getUnits()));
+		context.put("tooltipDecimals",
+				nullToEmptyString(inputData.getTooltipDecimals()));
+		context.put("data", getValues(objectId, inputData.getData()));
+		context.put("hover", nullToEmptyString(inputData.getHover()));
+		context.put("footer", nullToEmptyString(inputData.getFooter()));
 
 		Template t = engine
 				.getTemplate("/org/fao/unredd/charts/highcharts-template.vtl");
 
 		t.merge(context, writer);
 		writer.flush();
+	}
+
+	private Object nullToEmptyString(Object value) {
+		return value == null ? "" : value;
 	}
 
 	private Iterator<Double> getValues(String id, List<DataType> data) {
@@ -65,8 +70,10 @@ public class ChartGenerator {
 
 	public static void main(String[] args) throws Exception {
 		ChartGenerator chartGenerator = new ChartGenerator(
-				new FileInputStream(new File("/home/fergonco/java/nfms/nfms/"
-						+ "portal/testlayer/output/stats-indicator/result.xml")));
+				new FileInputStream(
+						new File(
+								"/home/fergonco/java/nfms/nfms/"
+										+ "portal/testlayer/output/stats-indicator_unredd_temporalMosaic/result.xml")));
 		chartGenerator.generate("2", new FileWriter(new File("/tmp/a.html")));
 	}
 
