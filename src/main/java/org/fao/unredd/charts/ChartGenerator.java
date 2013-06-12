@@ -78,7 +78,7 @@ public class ChartGenerator {
 	}
 
 	public String getContentType() {
-		return "text/html";
+		return "text/html;charset=UTF-8";
 	}
 
 }
