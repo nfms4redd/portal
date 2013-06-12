@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
+import org.apache.commons.io.FileUtils;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
 import org.junit.Test;
@@ -27,7 +28,10 @@ public class LayerTest {
 	@Test
 	public void testOutputMetadata() throws Exception {
 		File file = new File("src/test/resources/layer");
+		assertTrue(file.mkdirs());
 		LayerFolderImpl layer = new LayerFolderImpl(file);
+		layer.setOutput("indicator-id1", "Deforestation", "the_id", "");
+		layer.setOutput("indicator-id2", "Forestation", "id", "");
 		Outputs outputs = layer.getOutputs();
 		assertTrue(outputs.size() == 2);
 		for (OutputDescriptor outputDescriptor : outputs) {
@@ -43,5 +47,7 @@ public class LayerTest {
 				fail();
 			}
 		}
+
+		FileUtils.deleteDirectory(file);
 	}
 }
