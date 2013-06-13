@@ -34,9 +34,12 @@ public class MosaicLayerFolder extends AbstractLayerFolder implements
 	 *             mosaic
 	 * @throws IOException
 	 *             If there is any problem analyzing the folder
+	 * @throws IllegalArgumentException
+	 *             If the folder does not exist
 	 */
 	public MosaicLayerFolder(File folder)
-			throws InvalidFolderStructureException, IOException {
+			throws InvalidFolderStructureException, IOException,
+			IllegalArgumentException {
 		super(folder);
 
 		File[] snapshotFiles = getDataFolder().listFiles(new FilenameFilter() {

@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 import org.fao.unredd.charts.ChartGenerator;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.layers.NoSuchGeoserverLayerException;
 import org.fao.unredd.layers.NoSuchIndicatorException;
+import org.fao.unredd.layers.NoSuchLayerException;
 import org.fao.unredd.layers.Outputs;
 
 public class IndicatorsController {
@@ -42,14 +42,14 @@ public class IndicatorsController {
 			ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
 					.writeError(response);
 		} else {
-			String answer;
+			String answer = "[]";
 			try {
 				Layer layer = layerFactory.newLayer(layerId);
 				Outputs indicators = layer.getOutputs();
 				response.setContentType("application/json;charset=UTF-8");
 				answer = indicators.toJSON();
-			} catch (NoSuchGeoserverLayerException e1) {
-				answer = "[]";
+			} catch (NoSuchLayerException e) {
+				logger.debug("Layer not found", e);
 			}
 			try {
 				response.getWriter().print(answer);
@@ -83,7 +83,7 @@ public class IndicatorsController {
 			} catch (NoSuchIndicatorException e) {
 				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
 						.writeError(response);
-			} catch (NoSuchGeoserverLayerException e) {
+			} catch (NoSuchLayerException e) {
 				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
 						.writeError(response);
 			}

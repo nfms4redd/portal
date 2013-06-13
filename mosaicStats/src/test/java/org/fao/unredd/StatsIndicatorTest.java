@@ -11,7 +11,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.layers.NoSuchGeoserverLayerException;
+import org.fao.unredd.layers.NoSuchLayerException;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
@@ -48,8 +48,7 @@ public class StatsIndicatorTest {
 	}
 
 	private StatsIndicator newStatsIndicator(File file)
-			throws NoSuchGeoserverLayerException,
-			InvalidFolderStructureException {
+			throws NoSuchLayerException, InvalidFolderStructureException {
 		return new StatsIndicator(mock(LayerFactory.class),
 				new LayerFolderImpl(file));
 	}

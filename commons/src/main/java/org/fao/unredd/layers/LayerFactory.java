@@ -1,5 +1,8 @@
 package org.fao.unredd.layers;
 
+import java.io.IOException;
+
+import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 
 public interface LayerFactory {
 
@@ -10,18 +13,22 @@ public interface LayerFactory {
 	 * 
 	 * @param layerName
 	 * @return
-	 * @throws NoSuchGeoserverLayerException
-	 *             If the specified layer is not in the instance of geoserver
+	 * @throws NoSuchLayerException
+	 *             If the specified layer is not in the system
 	 */
-	Layer newLayer(String layerName) throws NoSuchGeoserverLayerException;
+	Layer newLayer(String layerName) throws NoSuchLayerException;
 
 	/**
 	 * @param layer
 	 * @return
-	 * @throws NoSuchGeoserverLayerException
-	 *             If the specified layer is not in the instance of geoserver
+	 * @throws NoSuchLayerException
+	 *             If the specified layer is not in the system
+	 * @throws IOException
+	 *             If there is any problem analyzing the folder
+	 * @throws InvalidFolderStructureException
+	 *             If the layer is not a mosaic layer
 	 */
-	MosaicLayer newMosaicLayer(String layer)
-			throws NoSuchGeoserverLayerException;
+	MosaicLayer newMosaicLayer(String layer) throws NoSuchLayerException,
+			InvalidFolderStructureException, IOException;
 
 }

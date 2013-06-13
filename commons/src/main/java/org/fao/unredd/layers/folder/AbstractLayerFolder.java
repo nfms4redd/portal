@@ -36,7 +36,7 @@ public abstract class AbstractLayerFolder implements Layer {
 	private static final String WORK = "work";
 	private File root;
 
-	public AbstractLayerFolder(File root) {
+	public AbstractLayerFolder(File root) throws IllegalArgumentException {
 		this.root = root;
 		if (!root.exists()) {
 			throw new IllegalArgumentException("The folder does not exist: "

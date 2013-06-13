@@ -18,7 +18,8 @@ import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
-import org.fao.unredd.layers.NoSuchGeoserverLayerException;
+import org.fao.unredd.layers.NoSuchLayerException;
+import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.statsCalculator.generated.VariableType;
@@ -36,7 +37,7 @@ public class StatsIndicator {
 	private LayerFactory layerFactory;
 
 	public StatsIndicator(LayerFactory layerFactory, Layer layer)
-			throws NoSuchGeoserverLayerException {
+			throws NoSuchLayerException {
 		if (!layer.getDataFolder().exists()) {
 			throw new IllegalArgumentException(
 					"The layer data folder does not exist");
@@ -91,9 +92,13 @@ public class StatsIndicator {
 			MosaicLayer mosaicLayer;
 			try {
 				mosaicLayer = layerFactory.newMosaicLayer(variable.getLayer());
-			} catch (NoSuchGeoserverLayerException e) {
+			} catch (NoSuchLayerException e) {
 				throw new ConfigurationException(
-						"The layer specified in the configuration cannot be found in the geoserver instance: "
+						"The layer specified in the configuration cannot be found: "
+								+ variable.getLayer(), e);
+			} catch (InvalidFolderStructureException e) {
+				throw new ConfigurationException(
+						"The layer specified in the configuration is not a mosaic: "
 								+ variable.getLayer(), e);
 			}
 			OutputBuilder outputBuilder = new OutputBuilder(layer, variable);

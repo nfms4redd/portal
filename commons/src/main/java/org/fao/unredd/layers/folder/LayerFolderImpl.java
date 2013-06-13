@@ -17,11 +17,8 @@ public class LayerFolderImpl extends AbstractLayerFolder {
 	 * @param folder
 	 * @throws IllegalArgumentException
 	 *             If the folder does not exist
-	 * @throws InvalidFolderStructureException
-	 *             If the layer does not follow the expected rules
 	 */
-	public LayerFolderImpl(File folder) throws IllegalArgumentException,
-			InvalidFolderStructureException {
+	public LayerFolderImpl(File folder) throws IllegalArgumentException {
 		super(folder);
 	}
 
