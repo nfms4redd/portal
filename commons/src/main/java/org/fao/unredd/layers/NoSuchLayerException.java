@@ -9,6 +9,6 @@ public class NoSuchLayerException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public NoSuchLayerException(String layerName) {
-		super(layerName);
+		super("Cannot find the layer: " + layerName);
 	}
 }

@@ -4,13 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXB;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Option;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -19,8 +21,8 @@ import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
 import org.fao.unredd.layers.NoSuchLayerException;
+import org.fao.unredd.layers.folder.FolderLayerFactory;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
-import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.statsCalculator.generated.VariableType;
 import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
@@ -33,6 +35,8 @@ import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
  */
 public class StatsIndicator {
 
+	private static final String LAYERNAME_PARAM_NAME = "l";
+	private static final String ROOT_PARAM_NAME = "r";
 	private Layer layer;
 	private LayerFactory layerFactory;
 
@@ -113,37 +117,49 @@ public class StatsIndicator {
 			IOException {
 		Options options = new Options();
 		OptionBuilder.hasArg();
-		OptionBuilder.withDescription("Folder with the temporal mosaic");
-		Option option = OptionBuilder.create("f");
-		options.addOption(option);
+		OptionBuilder
+				.withDescription("Name of the layer to use for the calculation of the stats indicators");
+		options.addOption(OptionBuilder.create(LAYERNAME_PARAM_NAME));
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("Root of the layer folder structure");
+		options.addOption(OptionBuilder.create(ROOT_PARAM_NAME));
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = null;
+		String cmdLineSyntax = "stats-indicator.sh -l <layer-name> -r <root-folder>";
 		try {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e1) {
-			printUsage();
+			new HelpFormatter().printHelp(cmdLineSyntax, options);
+			System.exit(-1);
+		}
+		if (!cmd.hasOption(LAYERNAME_PARAM_NAME)
+				|| !cmd.hasOption(ROOT_PARAM_NAME)) {
+			new HelpFormatter().printHelp(cmdLineSyntax, options);
 			System.exit(-1);
 		}
 
-		// Read folder as unique parameter
-		File folder = null;
-		if (cmd.hasOption("f")) {
-			folder = new File(cmd.getOptionValue("f"));
-		} else {
-			printUsage();
-			System.exit(-1);
-		}
+		String layerName = cmd.getOptionValue(LAYERNAME_PARAM_NAME);
+		File rootFolder = new File(cmd.getOptionValue(ROOT_PARAM_NAME));
+
 		try {
-			StatsIndicator statsIndicator = new StatsIndicator(null,
-					new LayerFolderImpl(folder));
+			LayerFactory layerFactory = new FolderLayerFactory(rootFolder);
+			Layer layer = layerFactory.newLayer(layerName);
+			StatsIndicator statsIndicator = new StatsIndicator(layerFactory,
+					layer);
 			statsIndicator.run();
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
+			System.err.println(getExceptionChainMessage(e));
 			System.exit(-1);
 		}
 	}
 
-	private static void printUsage() {
-		throw new UnsupportedOperationException("Print usage not supported yet");
+	private static List<String> getExceptionChainMessage(Throwable throwable) {
+		List<String> result = new ArrayList<String>();
+		while (throwable != null) {
+			result.add(throwable.getMessage());
+			throwable = throwable.getCause();
+		}
+		return result;
 	}
 }
