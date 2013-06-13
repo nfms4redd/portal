@@ -34,11 +34,11 @@ The JDK will be installed under ``jdk1.6.0_xx`` directory.
 
 Make a symbolic link to this installation. From ``/usr/lib/jvm``::
 
-  sudo ln -s jdk1.6.0.37 default-java
+  sudo ln -s jdk1.6.0.45 default-java
 
 Make it the default java alternative::
 
-  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0.37/bin/java" 1
+  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0.45/bin/java" 1
   sudo update-alternatives --config java
 
 Check the java version::

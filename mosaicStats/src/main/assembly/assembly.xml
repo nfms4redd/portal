@@ -7,6 +7,7 @@
 	<formats>
 		<format>zip</format>
 	</formats>
+	<baseDirectory>stats-indicator</baseDirectory>
 	<dependencySets>
 		<dependencySet>
 			<scope>runtime</scope>
@@ -15,6 +16,13 @@
 		</dependencySet>
 	</dependencySets>
 	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
 		<fileSet>
 			<directory>src/main/assembly</directory>
 			<outputDirectory></outputDirectory>
