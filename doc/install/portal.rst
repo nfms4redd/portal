@@ -5,7 +5,7 @@ Deploy and configure dissemination Portal
 
 Simply copy the application file ``unredd-portal.war`` to the tomcat webapps directory. For example::
 
-  $ sudo cp unredd-portal.war /var/tomcat/portal/webapps/portal.war
+  $ sudo cp unredd-portal.war /var/tomcat/webapps/portal.war
 
 This will install and run the portal with the default (sample) configuration, accessible in:
 
