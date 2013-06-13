@@ -6,7 +6,7 @@ import it.geosolutions.imageio.plugins.tiff.TIFFImageWriteParam;
 
 import java.io.File;
 
-import org.fao.unredd.statsCalculator.StatsCalculator;
+import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -31,7 +31,7 @@ public class TriggerTest {
 		assertTrue(folder.getRoot().setReadOnly());
 
 		File dummyReadTiff = new File("src/test/resources/"
-				+ "okThreeSnapshots/mosaic/snapshot_2000.tiff");
+				+ "temporalMosaic/data/snapshot_2000.tiff");
 		AbstractGridFormat format = GridFormatFinder.findFormat(dummyReadTiff);
 		AbstractGridCoverage2DReader reader = format.getReader(dummyReadTiff);
 
@@ -47,7 +47,7 @@ public class TriggerTest {
 			GeoTiffWriter writer = new GeoTiffWriter(file);
 			writer.write(coverage, new GeneralParameterValue[] { value });
 
-			new StatsCalculator(file);
+			new LayerFolderImpl(file);
 			fail("This code will fail when the GT "
 					+ "geotiff  writer will produce an IO "
 					+ "exception instead of a NPE when "

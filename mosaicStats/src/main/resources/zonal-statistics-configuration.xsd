@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified"
+	xmlns="http://www.nfms.unredd.fao.org/zonal-statistics"
+	targetNamespace="http://www.nfms.unredd.fao.org/zonal-statistics"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xs:complexType name="VariableType">
+		<xs:sequence>
+			<xs:element name="zone-id-field" type="xs:string" />
+			<xs:element name="presentation-data" type="PresentationDataType" />
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="layer" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="PresentationDataType">
+		<xs:sequence>
+			<xs:element name="title" type="xs:string" />
+			<xs:element name="subtitle" type="xs:string" minOccurs="0" />
+			<xs:element name="footer" type="xs:string" minOccurs="0" />
+			<xs:element name="hover" type="xs:string" minOccurs="0" />
+			<xs:element name="date-format" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="zonal-statistics">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="variable" maxOccurs="unbounded"
+					minOccurs="1" type="VariableType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
