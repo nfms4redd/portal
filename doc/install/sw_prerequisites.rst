@@ -13,7 +13,7 @@ Download the latest Java SE 6 JDK from Oracle site:
 
   http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-The file will be named, for example, ``jdk-6u35-linux-i586.bin`` for 32 bit Linux systems.
+The file will be named, for example, ``jdk-6u45-linux-i586.bin`` for 32 bit Linux systems.
 
 Create the directory ``/usr/lib/jvm`` if it doesn't exist::
 
@@ -21,24 +21,24 @@ Create the directory ``/usr/lib/jvm`` if it doesn't exist::
 
 Copy the file to ``/usr/lib/jvm``, make it executable, and run it as root::
 
-  chmod +x jdk-6u35-linux-i586.bin  
-  sudo cp jdk-6u35-linux-i586.bin /usr/lib/jvm
+  chmod +x jdk-6u45-linux-i586.bin  
+  sudo cp jdk-6u45-linux-i586.bin /usr/lib/jvm
   cd /usr/lib/jvm
-  sudo ./jdk-6u35-linux-i586.bin
+  sudo ./jdk-6u45-linux-i586.bin
 
-Delete the file ``jdk-6u35-linux-i586.bin``::
+Delete the file ``jdk-6u45-linux-i586.bin``::
 
-  sudo rm jdk-6u35-linux-i586.bin
+  sudo rm jdk-6u45-linux-i586.bin
 
 The JDK will be installed under ``jdk1.6.0_xx`` directory.
 
 Make a symbolic link to this installation. From ``/usr/lib/jvm``::
 
-  sudo ln -s jdk1.6.0_35 default-java
+  sudo ln -s jdk1.6.0.37 default-java
 
 Make it the default java alternative::
 
-  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0_35/bin/java" 1
+  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0.37/bin/java" 1
   sudo update-alternatives --config java
 
 Check the java version::
@@ -47,9 +47,9 @@ Check the java version::
 
 Should read::
 
-  java version "1.6.0_35"
-  Java(TM) SE Runtime Environment (build 1.6.0_35-b10)
-  Java HotSpot(TM) Client VM (build 20.10-b01, mixed mode, sharing)
+  java version "1.6.0_45"
+  Java(TM) SE Runtime Environment (build 1.6.0_45-b06)
+  Java HotSpot(TM) Client VM (build 20.45-b01, mixed mode, sharing)
 
 
 .. _unredd-install-tomcat6:
@@ -61,22 +61,22 @@ Tomcat is a web application container. In the context of the NFMS platform it wi
 
   http://tomcat.apache.org/download-60.cgi
 
-Select the core binary distribution. The file will be named, for example, ``apache-tomcat-6.0.35.tar.gz``.
+Select the core binary distribution. The file will be named, for example, ``apache-tomcat-6.0.37.tar.gz``.
 
 As superuser, move the file to ``/var/`` and uncompress it. Make a simpler ``tomcat`` link, so updates are easier in the future::
   
-  sudo mv apache-tomcat-6.0.35.tar.gz /var
+  sudo mv apache-tomcat-6.0.37.tar.gz /var
   cd /var
-  sudo tar -xvf apache-tomcat-6.0.35.tar.gz
-  sudo ln -s apache-tomcat-6.0.35 tomcat
+  sudo tar -xvf apache-tomcat-6.0.37.tar.gz
+  sudo ln -s apache-tomcat-6.0.37 tomcat
 
 The directory where tomcat binaries reside is known as ``CATALINA_HOME``. In our case::
 
   CATALINA_HOME=/var/tomcat
 
-Delete the file ``apache-tomcat-6.0.35.tar.gz``::
+Delete the file ``apache-tomcat-6.0.37.tar.gz``::
 
-  sudo rm apache-tomcat-6.0.35.tar.gz
+  sudo rm apache-tomcat-6.0.37.tar.gz
 
 Setting environment variables
 ..............................
@@ -99,7 +99,7 @@ Configuring tomcat as a service
 	
 #. Make all the server tree structure belong to the ``tomcat6`` user::
 
-	$ sudo chown -R tomcat6:tomcat6 /var/tomcat/
+	$ sudo chown -R tomcat6: /var/tomcat/
 	
    .. warning:: It is important to add a slash (/) at the end of ``/var/tomcat/`` because it is a symbolic link and if the slash is not added only the symbolic link gets its owner changed.
 
@@ -392,7 +392,7 @@ Configuring tomcat as a service
 
 #. Make the file created in ``/etc/init.d/`` executable::
 
-    $ sudo chmod +x ubuntuTomcatRunner.sh tomcat6
+    $ sudo chmod +x /etc/init.d/ubuntuTomcatRunner.sh /etc/init.d/tomcat6
 
 #. Launch tomcat::
 
