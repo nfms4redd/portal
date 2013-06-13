@@ -3,7 +3,7 @@
 Software prerequisites
 ======================
 
-The system needs some base applications: Oracle JDK 6, Tomcat 6, Apache 2 and PostGIS 1.5 on PostgreSQL 9.1.
+The system needs some base applications: Oracle JDK 6, Tomcat 6, Apache 2, PostGIS 2.0 on PostgreSQL 9.1 and Open Foris Geospatial Toolkit.
 
 
 JDK 6
