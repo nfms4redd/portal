@@ -215,6 +215,7 @@ public class ApplicationController {
 				layerFactory);
 
 		controller.returnIndicator(
+				request.getParameter(IndicatorsController.PARAM_OBJECT_ID),
 				request.getParameter(IndicatorsController.PARAM_LAYER_ID),
 				request.getParameter(IndicatorsController.PARAM_INDICATOR_ID));
 	}

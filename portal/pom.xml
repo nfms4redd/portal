@@ -60,6 +60,10 @@
 			<artifactId>commons</artifactId>
 			<version>2.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+		</dependency>
 		<!-- Geosolutions proxy + transitive dependencies. See issue #7 -->
 		<dependency>
 			<groupId>proxy</groupId>
