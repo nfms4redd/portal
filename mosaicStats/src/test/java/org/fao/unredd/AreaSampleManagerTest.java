@@ -51,8 +51,9 @@ public class AreaSampleManagerTest {
 
 	@Test
 	public void testOkExistingBadSampleAreasCannotBeDeleted() throws Exception {
-		File areaRaster = new File(
-				"src/test/resources/readonly/backup-sample-areas.tiff");
+		File readOnlyFolder = new File("src/test/resources/readonly");
+		readOnlyFolder.setReadOnly();
+		File areaRaster = new File(readOnlyFolder, "sample-areas.tiff");
 		RasterInfo referenceRasterInfo = mockNonMatchingRasterInfo();
 		AreaRasterManager areaRasterManager = new AreaRasterManager(areaRaster,
 				referenceRasterInfo);
@@ -60,13 +61,16 @@ public class AreaSampleManagerTest {
 			areaRasterManager.createCompatibleAreaRaster();
 			fail();
 		} catch (IOException e) {
+		} finally {
+			readOnlyFolder.setWritable(true);
 		}
 	}
 
 	@Test
 	public void testErrorCreatingAreaRaster() throws Exception {
-		File areaRaster = new File(
-				"src/test/resources/readonly/new-sample-areas.tiff");
+		File readOnlyFolder = new File("src/test/resources/readonly");
+		readOnlyFolder.setReadOnly();
+		File areaRaster = new File(readOnlyFolder, "new-sample-areas.tiff");
 		RasterInfo referenceRasterInfo = mockNonMatchingRasterInfo();
 		AreaRasterManager areaRasterManager = new AreaRasterManager(areaRaster,
 				referenceRasterInfo);
@@ -74,6 +78,8 @@ public class AreaSampleManagerTest {
 			areaRasterManager.createCompatibleAreaRaster();
 			fail();
 		} catch (IOException e) {
+		} finally {
+			readOnlyFolder.setWritable(true);
 		}
 	}
 
