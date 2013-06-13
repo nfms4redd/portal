@@ -614,3 +614,73 @@ Autostart
 Postgres does not start automatically by default. Activate it with the ``chkconfig`` command::
 
   sudo chkconfig -s postgresql on
+
+Open Foris Geospatial Toolkit
+-----------------------------------
+
+Open Foris Geospatial Toolkit (OFT) is a a collection of prototype command-line utilities for processing of geographical data that is used in the context of the NFMS portal to create statistics about the forest coverage along time, for example. More information can be found here: http://km.fao.org/OFwiki/index.php/Open_Foris_Toolkit.
+
+To install OFT it is necessary to install first some packages::
+
+	$ sudo apt-get install gdal-bin libgdal1-dev libgsl0-dev libgsl0ldbl python-gdal python-scipy python-tk perl
+	
+Then, download OFT::
+
+    $ wget http://foris.fao.org/static/geospatialtoolkit/releases/OpenForisToolkit.run
+
+Make it executable::
+
+    $ sudo chmod u+x OpenForisToolkit.run
+
+and execute it::
+
+    $ sudo ./OpenForisToolkit.run
+
+This last command will show a license and will ask for agreement::
+
+	Verifying archive integrity... All good.
+	Uncompressing Open Foris Toolkit installer...........................................................................................................................................
+	Installing new versions of OpenForis Toolkit tools and removing the old ones
+	=========================================================================
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+	DEALINGS IN THE SOFTWARE.
+	
+	I have read and accepted the license terms available at
+	http://km.fao.org/OFwiki/index.php/LICENSE
+	=========================================================================
+	1) Agree
+	2) Disagree
+	#? 1
+
+It is just necessary to type "1" and hit ENTER. After this, the rest of the installation will follow::
+
+	Checking for gcc compiler
+	Checking for g++ compiler
+	Creating log dir
+	/home/nfms/.of-toolkit/log.1.4
+	ok
+	Checking for gdal and gsl libs
+	
+	looking for GDAL libs
+	DEBUG
+	Using -L/usr/lib -lgdal
+	Looking for GSL libs
+	Using -L/usr/lib -lgsl -lgslcblas -lm
+	Installing new versions of bash scripts
+	Installing new versions of python scripts
+	Installing new versions of awk scripts
+	Installing new versions R scripts
+	Installing new versions of additional c and python libs
+	Installing new versions of executables
+	Compiled and installed 24/24 c programs
+	Copying licences
+	Done
+
+
+
+  
