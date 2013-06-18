@@ -43,7 +43,7 @@ public class AreaSampleManagerTest {
 		when(referenceRasterInfo.getHeight()).thenReturn(50);
 		when(referenceRasterInfo.getCRS()).thenReturn(CRS.decode("EPSG:4326"));
 		when(referenceRasterInfo.getEnvelope()).thenReturn(
-				new GeneralEnvelope(new Rectangle2D.Double(2, 2, 10, 10)));
+				new GeneralEnvelope(new Rectangle2D.Double(2, 4, 10, 10)));
 		when(referenceRasterInfo.matchesGeometry(any(RasterInfo.class)))
 				.thenReturn(false);
 		return referenceRasterInfo;

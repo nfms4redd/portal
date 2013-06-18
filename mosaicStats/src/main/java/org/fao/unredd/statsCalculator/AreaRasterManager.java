@@ -66,11 +66,15 @@ public class AreaRasterManager {
 				GeoTiffWriteParams params = new GeoTiffWriteParams();
 				params.setTilingMode(TIFFImageWriteParam.MODE_EXPLICIT);
 				params.setTiling(512, 512);
-				ParameterValue<GeoToolsWriteParams> value = GeoTiffFormat.GEOTOOLS_WRITE_PARAMS
+				ParameterValue<GeoToolsWriteParams> gtParams = GeoTiffFormat.GEOTOOLS_WRITE_PARAMS
 						.createValue();
-				value.setValue(params);
+				gtParams.setValue(params);
+				ParameterValue<Boolean> retainAxisOrderParam = GeoTiffFormat.RETAIN_AXES_ORDER
+						.createValue();
+				retainAxisOrderParam.setValue(true);
 				try {
-					writer.write(grid, new GeneralParameterValue[] { value });
+					writer.write(grid, new GeneralParameterValue[] { gtParams,
+							retainAxisOrderParam });
 				} catch (NullPointerException e) {
 					/**
 					 * if no permission, GT gives NPE, we have to report this to
