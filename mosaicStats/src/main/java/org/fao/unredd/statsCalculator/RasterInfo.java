@@ -31,6 +31,7 @@ public class RasterInfo {
 		envelope = reader.getOriginalEnvelope();
 		gridRange = reader.getOriginalGridRange();
 		crs = reader.getCrs();
+		reader.dispose();
 	}
 
 	public int getHeight() {
