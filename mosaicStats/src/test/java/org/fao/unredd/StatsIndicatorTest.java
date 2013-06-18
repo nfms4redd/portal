@@ -14,7 +14,6 @@ import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchLayerException;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
-import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.ConfigurationException;
@@ -48,7 +47,7 @@ public class StatsIndicatorTest {
 	}
 
 	private StatsIndicator newStatsIndicator(File file)
-			throws NoSuchLayerException, InvalidFolderStructureException {
+			throws NoSuchLayerException, IllegalArgumentException {
 		return new StatsIndicator(mock(LayerFactory.class),
 				new LayerFolderImpl(file));
 	}
