@@ -146,7 +146,6 @@ public class StatsIndicator {
 		InputStream log4jStream = StatsIndicator.class
 				.getResourceAsStream("/log4j.properties");
 		String statsIndicatorHome = System.getenv("STATS_INDICATOR_HOME");
-		System.out.println("STATS_INDICATOR_HOME_PROP=" + statsIndicatorHome);
 		if (statsIndicatorHome == null
 				|| statsIndicatorHome.trim().length() == 0) {
 			statsIndicatorHome = ".";
