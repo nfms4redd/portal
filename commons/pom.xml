@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-imagemosaic</artifactId>
-			<version>9.1</version>
+			<version>${geotools.version}</version>
 		</dependency>
 	</dependencies>
 	<properties>

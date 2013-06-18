@@ -31,17 +31,17 @@
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-process-raster</artifactId>
-			<version>9.1</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-geotiff</artifactId>
-			<version>9.1</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
-			<version>9.1</version>
+			<version>${geotools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
