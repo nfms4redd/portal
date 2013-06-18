@@ -11,20 +11,48 @@ import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.raster.AreaGridProcess;
+import org.geotools.referencing.CRS;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
-import com.vividsolutions.jts.geom.Envelope;
 
 public class AreaRasterManager {
+
+	private static CoordinateReferenceSystem epsg4326;
+
+	static {
+		try {
+			epsg4326 = CRS.decode("EPSG:4326");
+		} catch (NoSuchAuthorityCodeException e) {
+			throw new RuntimeException("bug", e);
+		} catch (FactoryException e) {
+			throw new RuntimeException("bug", e);
+		}
+	}
 
 	private RasterInfo referenceRasterInfo;
 	private File areaRaster;
 
-	public AreaRasterManager(File areaRaster, RasterInfo referenceRasterInfo) {
+	/**
+	 * @param areaRaster
+	 * @param referenceRasterInfo
+	 * @throws IllegalArgumentException
+	 *             If the reference raster information contains a CRS that is
+	 *             not in EPSG:4326
+	 */
+	public AreaRasterManager(File areaRaster, RasterInfo referenceRasterInfo)
+			throws IllegalArgumentException {
+		if (!referenceRasterInfo.getCRS().equals(epsg4326)) {
+			throw new IllegalArgumentException(
+					"Only raster in EPSG:4326 can be processed");
+		}
 		this.areaRaster = areaRaster;
 		this.referenceRasterInfo = referenceRasterInfo;
+
 	}
 
 	public void createCompatibleAreaRaster() throws IOException {
@@ -52,12 +80,12 @@ public class AreaRasterManager {
 			}
 			AreaGridProcess process = new AreaGridProcess();
 			GeneralEnvelope generalEnvelope = referenceRasterInfo.getEnvelope();
-			Envelope jtsEnvelope = new Envelope(generalEnvelope.getMinimum(0),
-					generalEnvelope.getMaximum(0),
+			// In EPSG:4326 we have first lat and then lon
+			ReferencedEnvelope envelope = new ReferencedEnvelope(
 					generalEnvelope.getMinimum(1),
-					generalEnvelope.getMaximum(1));
-			ReferencedEnvelope envelope = new ReferencedEnvelope(jtsEnvelope,
-					referenceRasterInfo.getCRS());
+					generalEnvelope.getMaximum(1),
+					generalEnvelope.getMinimum(0),
+					generalEnvelope.getMaximum(0), referenceRasterInfo.getCRS());
 			int width = referenceRasterInfo.getWidth();
 			int height = referenceRasterInfo.getHeight();
 			GridCoverage2D grid = process.execute(envelope, width, height);
@@ -71,7 +99,7 @@ public class AreaRasterManager {
 				gtParams.setValue(params);
 				ParameterValue<Boolean> retainAxisOrderParam = GeoTiffFormat.RETAIN_AXES_ORDER
 						.createValue();
-				retainAxisOrderParam.setValue(true);
+				retainAxisOrderParam.setValue(false);
 				try {
 					writer.write(grid, new GeneralParameterValue[] { gtParams,
 							retainAxisOrderParam });
