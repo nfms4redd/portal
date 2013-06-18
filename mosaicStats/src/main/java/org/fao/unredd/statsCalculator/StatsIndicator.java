@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.PropertyConfigurator;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
@@ -140,6 +142,18 @@ public class StatsIndicator {
 
 		String layerName = cmd.getOptionValue(LAYERNAME_PARAM_NAME);
 		File rootFolder = new File(cmd.getOptionValue(ROOT_PARAM_NAME));
+
+		InputStream log4jStream = StatsIndicator.class
+				.getResourceAsStream("/log4j.properties");
+		String statsIndicatorHome = System.getenv("STATS_INDICATOR_HOME");
+		System.out.println("STATS_INDICATOR_HOME_PROP=" + statsIndicatorHome);
+		if (statsIndicatorHome == null
+				|| statsIndicatorHome.trim().length() == 0) {
+			statsIndicatorHome = ".";
+		}
+		System.setProperty("app.root", statsIndicatorHome);
+		PropertyConfigurator.configure(log4jStream);
+		log4jStream.close();
 
 		try {
 			LayerFactory layerFactory = new FolderLayerFactory(rootFolder);
