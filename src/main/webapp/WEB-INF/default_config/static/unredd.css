@@ -100,48 +100,6 @@ a
   background:url(../static/img/logos.png) no-repeat 0 0;
 }
 
-#infona_logo {
-  position: absolute;
-  background: url(../static/img/logos.png) no-repeat 0 0;
-  background-position: 0px 0px;
-  width: 78px;
-  height: 55px;
-  right: 242px;
-  /*
-  top:148px;
-  left:10px;
-  z-index:1000
-  */
-}
-
-#fapi_logo {
-  position: absolute;
-  background: url(../static/img/logos.jpg) no-repeat 0 0;
-  background-position: -217px 0px;
-  width: 95px;
-  height: 55px;
-  right: 0;
-  /*
-  top:148px;
-  left:10px;
-  z-index:1000
-  */
-}
-
-#seam_logo {
-  position: absolute;
-  background: url(../static/img/logos.jpg) no-repeat 0 0;
-  background-position: -80px 0px;
-  width: 127px;
-  height: 55px;
-  right: 105px;
-  /*
-  top:148px;
-  left:10px;
-  z-index:1000
-  */
-}
-
 #dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
 #dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
 #icons {margin: 0; padding: 0;}
