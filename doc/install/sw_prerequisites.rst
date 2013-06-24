@@ -692,17 +692,21 @@ Choose the appropriate file:
   * *i586* for the 32 bit systems
   * *amd64* for the 64 bit ones
 
-Copy the .bin file into the directory containing the JDK/JRE and run it. For example, on an Ubuntu 32 bit system::
+In both cases chose the JDK version, not the JRE one. For example in case of a 32bit system::
 
-  sudo cp jai-1_1_3-lib-linux-i586-jdk.bin /usr/lib/jvm/default-java
-  cd /usr/lib/jvm/default-java
-  sudo sh jai-1_1_3-lib-linux-i586-jdk.bin
+	$ cd /tmp
+	$ wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-i586-jdk.bin
+
+Make the file executable with ``chmod`` and execute it from the directory containing the JDK ::
+
+	$ chmod u+x /tmp/jai-1_1_3-lib-linux-i586-jdk.bin 
+	$ sudo /tmp/jai-1_1_3-lib-linux-i586-jdk.bin 
 
 Accept the license
 
 Finally, remove the .bin file::
 
-  sudo rm /usr/lib/jvm/default-java/jai-1_1_3-lib-linux-i586-jdk.bin
+  sudo rm /tmp/jai-1_1_3-lib-linux-i586-jdk.bin
 
 
 Download JAI Image I/O from http://download.java.net/media/jai-imageio/builds/release/1.1.
@@ -712,24 +716,28 @@ As above, choose the appropriate file:
   * *i586* for the 32 bit systems
   * *amd64* for the 64 bit ones
 
-Copy the .bin file into the directory containing the JDK/JRE and run it. For example, on an Ubuntu 32 bit system::
+For example in case of a 32bit system::
 
-  sudo cp jai_imageio-1_1-lib-linux-i586-jdk.bin /usr/lib/jvm/default-java
-  cd /usr/lib/jvm/default-java
-  sudo sh jai_imageio-1_1-lib-linux-i586-jdk.bin
+	$ cd /tmp
+	$ wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-i586-jdk.bin
 
+Make the file executable with ``chmod`` and execute it from the directory containing the JDK ::
 
+	$ chmod u+x jai_imageio-1_1-lib-linux-i586-jdk.bin
+	$ cd /usr/lib/jvm/default-java
+	$ sudo /tmp/jai_imageio-1_1-lib-linux-i586-jdk.bin
+	 
 If you get the following error after the last command::
 
   tail: cannot open `+215' for reading: No such file or director
 
 execute the following two commands::
 
-  sudo sh -c 'sed s/+215/-n+215/ jai_imageio-1_1-lib-linux-amd64-jdk.bin > jai_imageio-1_1-lib-linux-amd64-jdk-fixed.bin'
-  sudo sh jai_imageio-1_1-lib-linux-amd64-jdk-fixed.bin
+	$ sed s/+215/-n+215/ /tmp/jai_imageio-1_1-lib-linux-amd64-jdk.bin > /tmp/jai_imageio-1_1-lib-linux-amd64-jdk-fixed.bin
+	$ chmod u+x /tmp/jai_imageio-1_1-lib-linux-i586-jdk-fixed.bin 
+	$ sudo /tmp/jai_imageio-1_1-lib-linux-i586-jdk-fixed.bin 
 
-Remove the .bin file::
+Remove the .bin files::
 
-  sudo rm /usr/lib/jvm/default-java/jai_imageio-1_1-lib-linux-i586-jdk.bin
-  # or
-  sudo rm /usr/lib/jvm/default-java/jai_imageio-1_1-lib-linux-amd64-jdk-fixed.bin
+	$ sudo rm /tmp/jai_imageio-1_1-lib-linux-i586-jdk.bin
+	$ sudo rm /tmp/jai_imageio-1_1-lib-linux-amd64-jdk-fixed.bin
