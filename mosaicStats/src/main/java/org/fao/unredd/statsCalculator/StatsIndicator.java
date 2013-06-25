@@ -25,6 +25,7 @@ import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.Location;
 import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
+import org.fao.unredd.layers.PasswordGetter;
 import org.fao.unredd.layers.folder.FolderLayerFactory;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.process.ProcessExecutionException;
@@ -77,6 +78,8 @@ public class StatsIndicator {
 	 * Executes the indicator on the associated layer. Analyzes the layer to
 	 * validate the contents prior to the execution of the indicator
 	 * 
+	 * @param passwordGetter
+	 * 
 	 * @throws ConfigurationException
 	 *             If the configuration of the zonal statistics is wrong
 	 * @throws MixedRasterGeometryException
@@ -89,10 +92,10 @@ public class StatsIndicator {
 	 * @throws NoSuchLayerException
 	 * @throws CannotFindLayerException
 	 */
-	public void run() throws ConfigurationException,
-			MixedRasterGeometryException, IOException,
-			ProcessExecutionException, InvalidFolderStructureException,
-			CannotFindLayerException {
+	public void run(PasswordGetter passwordGetter)
+			throws ConfigurationException, MixedRasterGeometryException,
+			IOException, ProcessExecutionException,
+			InvalidFolderStructureException, CannotFindLayerException {
 		ZonalStatistics configuration = readConfiguration();
 		for (VariableType variable : configuration.getVariable()) {
 			MosaicLayer mosaicLayer;
@@ -107,7 +110,7 @@ public class StatsIndicator {
 			MosaicProcessor processor = new MosaicProcessor(dataLocator,
 					outputBuilder, mosaicLayer);
 			Location location = dataLocator.locate(layer);
-			processor.process(location);
+			processor.process(location, passwordGetter);
 			outputBuilder.writeResult(variable.getLayer());
 		}
 	}
@@ -166,7 +169,13 @@ public class StatsIndicator {
 			Layer layer = layerFactory.newLayer(layerName);
 			StatsIndicator statsIndicator = new StatsIndicator(dataLocator,
 					layerFactory, layer);
-			statsIndicator.run();
+			statsIndicator.run(new PasswordGetter() {
+
+				@Override
+				public String getPassword() {
+					return "postgres";
+				}
+			});
 			System.out.println("The indicator was generated successfully");
 		} catch (Exception e) {
 			e.printStackTrace();

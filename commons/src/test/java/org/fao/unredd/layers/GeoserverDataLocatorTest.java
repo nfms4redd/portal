@@ -49,4 +49,14 @@ public class GeoserverDataLocatorTest {
 		assertEquals(location, new FileLocation(new File(geoserverDataDir,
 				"nfms/datos/ARG_rails.shp")));
 	}
+
+	@Test
+	public void testPostGIS() throws Exception {
+		File layerFolder = new File("src/test/resources/any_layer_conf_folder");
+		Location location = locator.locate(new MosaicLayerFolder(
+				"unredd_ws:admin", layerFolder));
+		FileUtils.deleteDirectory(layerFolder);
+		assertEquals(location, new DBLocation("localhost", "5432", "geoserver",
+				"gis", "admin1", "postgres"));
+	}
 }

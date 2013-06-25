@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.fao.unredd.layers.DataLocator;
 import org.fao.unredd.layers.FileLocation;
 import org.fao.unredd.layers.Location;
+import org.fao.unredd.layers.PasswordGetter;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.MixedRasterGeometryException;
 import org.fao.unredd.statsCalculator.MosaicProcessor;
@@ -35,7 +36,7 @@ public class MosaicProcessorTest {
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(dataLocator,
 				mock(OutputBuilder.class), mosaic);
 		try {
-			mosaicProcessor.process(null);
+			mosaicProcessor.process(null, mock(PasswordGetter.class));
 			fail();
 		} catch (IOException e) {
 		}
@@ -53,7 +54,7 @@ public class MosaicProcessorTest {
 		MosaicProcessor mosaicProcessor = new MosaicProcessor(dataLocator,
 				mock(OutputBuilder.class), mosaicLayer);
 		try {
-			mosaicProcessor.process(null);
+			mosaicProcessor.process(null, mock(PasswordGetter.class));
 			fail();
 		} catch (MixedRasterGeometryException e) {
 		} finally {
@@ -74,21 +75,22 @@ public class MosaicProcessorTest {
 				outputBuilder, mosaicLayer);
 		Location zones = new FileLocation(new File(
 				"src/test/resources/okZonesSHP/data/zones.shp"));
+		PasswordGetter passwordGetter = mock(PasswordGetter.class);
 
-		mosaicProcessor.process(zones);
+		mosaicProcessor.process(zones, passwordGetter);
 
 		try {
 			File areaRaster = new MosaicLayerFolder(LAYER_NAME, temporalMosaic)
 					.getWorkFile(StatsIndicatorConstants.SAMPLE_AREAS_FILE_NAME);
 			TimeParser timeParser = new TimeParser();
-			verify(outputBuilder)
-					.addToOutput(areaRaster, timeParser.parse("2000").get(0),
-							new File(temporalMosaic, "snapshot_2000.tiff"),
-							zones, 5, 5);
-			verify(outputBuilder)
-					.addToOutput(areaRaster, timeParser.parse("2001").get(0),
-							new File(temporalMosaic, "snapshot_2001.tiff"),
-							zones, 5, 5);
+			verify(outputBuilder).addToOutput(areaRaster,
+					timeParser.parse("2000").get(0),
+					new File(temporalMosaic, "snapshot_2000.tiff"), zones, 5,
+					5, passwordGetter);
+			verify(outputBuilder).addToOutput(areaRaster,
+					timeParser.parse("2001").get(0),
+					new File(temporalMosaic, "snapshot_2001.tiff"), zones, 5,
+					5, passwordGetter);
 		} finally {
 			File workFolder = mosaicLayer.getWorkFolder();
 			if (workFolder.exists()) {

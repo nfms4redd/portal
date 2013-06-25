@@ -11,6 +11,7 @@ import org.fao.unredd.layers.CannotFindLayerException;
 import org.fao.unredd.layers.DataLocator;
 import org.fao.unredd.layers.Location;
 import org.fao.unredd.layers.MosaicLayer;
+import org.fao.unredd.layers.PasswordGetter;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.process.ProcessExecutionException;
 
@@ -27,9 +28,10 @@ public class MosaicProcessor {
 		this.mosaicLayer = mosaicLayer;
 	}
 
-	public void process(Location zonesLocation) throws IOException,
-			MixedRasterGeometryException, ProcessExecutionException,
-			InvalidFolderStructureException, CannotFindLayerException {
+	public void process(Location zonesLocation, PasswordGetter passwordGetter)
+			throws IOException, MixedRasterGeometryException,
+			ProcessExecutionException, InvalidFolderStructureException,
+			CannotFindLayerException {
 
 		// Get a hashmap with the association between timestamps and files
 		TreeMap<Date, File> files = mosaicLayer.getTimestamps(dataLocator
@@ -63,7 +65,7 @@ public class MosaicProcessor {
 
 			outputBuilder.addToOutput(areaRaster, timestamp, timestampFile,
 					zonesLocation, firstSnapshotInfo.getWidth(),
-					firstSnapshotInfo.getHeight());
+					firstSnapshotInfo.getHeight(), passwordGetter);
 		}
 	}
 

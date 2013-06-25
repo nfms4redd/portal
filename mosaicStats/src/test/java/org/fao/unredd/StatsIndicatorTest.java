@@ -17,6 +17,7 @@ import org.fao.unredd.layers.FileLocation;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
+import org.fao.unredd.layers.PasswordGetter;
 import org.fao.unredd.layers.folder.FolderLayerFactory;
 import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
@@ -53,7 +54,7 @@ public class StatsIndicatorTest {
 		File file = new File("src/test/resources/noConfigurationDir");
 		try {
 			StatsIndicator indicator = newStatsIndicator(file);
-			indicator.run();
+			indicator.run(mock(PasswordGetter.class));
 			fail();
 		} catch (ConfigurationException e) {
 		}
@@ -64,7 +65,7 @@ public class StatsIndicatorTest {
 		try {
 			StatsIndicator indicator = newStatsIndicator(new File(
 					"src/test/resources/badTimeFormat"));
-			indicator.run();
+			indicator.run(mock(PasswordGetter.class));
 			fail();
 		} catch (ConfigurationException e) {
 		}
@@ -83,7 +84,7 @@ public class StatsIndicatorTest {
 						"src/test/resources/data/temporalMosaic")));
 		StatsIndicator statsIndicator = new StatsIndicator(dataLocator,
 				layerFactory, layerFactory.newLayer("unredd:vector"));
-		statsIndicator.run();
+		statsIndicator.run(mock(PasswordGetter.class));
 		File temporalMosaic1 = new File(layerFolderRoot,
 				"unredd/temporalMosaic1");
 		File temporalMosaic2 = new File(layerFolderRoot,
@@ -115,7 +116,7 @@ public class StatsIndicatorTest {
 		StatsIndicator statsIndicator = new StatsIndicator(dataLocator,
 				layerFactory, layer);
 		try {
-			statsIndicator.run();
+			statsIndicator.run(mock(PasswordGetter.class));
 			Outputs outputs = layer.getOutputs();
 			assertTrue(outputs.size() == 2);
 			for (OutputDescriptor outputDescriptor : outputs) {

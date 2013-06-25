@@ -22,7 +22,6 @@ import com.sun.jndi.toolkit.url.Uri;
 
 public class GeoserverDataLocator implements DataLocator {
 
-	private static final String URL_XPATH = "/dataStore/connectionParameters/entry[@key='url']";
 	private File geoserverDataDir;
 
 	public GeoserverDataLocator(File geoserverDataDir) {
@@ -59,17 +58,34 @@ public class GeoserverDataLocator implements DataLocator {
 			} else if (dataStore.exists()) {
 				String type = xpath(dataStore, "/dataStore/type");
 				if (type.equals("Shapefile")) {
-					String url = xpath(dataStore, URL_XPATH);
+					String url = xpath(dataStore,
+							getDatastoreXPathConnectionParameter("url"));
 					File file = getFile(url);
 					return new FileLocation(file);
 				} else if (type
 						.equals("Directory of spatial files (shapefiles)")) {
-					String url = xpath(dataStore, URL_XPATH);
+					String url = xpath(dataStore,
+							getDatastoreXPathConnectionParameter("url"));
 					String fileName = xpath(new File(layerFolder,
 							"featuretype.xml"), "/featureType/nativeName");
 					fileName = fileName + ".shp";
 					File file = new File(getFile(url), fileName);
 					return new FileLocation(file);
+				} else if (type.equals("PostGIS")) {
+					String host = xpath(dataStore,
+							getDatastoreXPathConnectionParameter("host"));
+					String port = xpath(dataStore,
+							getDatastoreXPathConnectionParameter("port"));
+					String user = xpath(dataStore,
+							getDatastoreXPathConnectionParameter("user"));
+					String schema = xpath(dataStore,
+							getDatastoreXPathConnectionParameter("schema"));
+					String database = xpath(dataStore,
+							getDatastoreXPathConnectionParameter("database"));
+					String tableName = xpath(new File(layerFolder,
+							"featuretype.xml"), "/featureType/nativeName");
+					return new DBLocation(host, port, database, schema,
+							tableName, user);
 				} else {
 					throw new UnsupportedOperationException(
 							"Unsupported type: " + type);
@@ -85,6 +101,10 @@ public class GeoserverDataLocator implements DataLocator {
 		} catch (SAXException e) {
 			throw new IOException("Cannot parse the geoserver data files", e);
 		}
+	}
+
+	private String getDatastoreXPathConnectionParameter(String key) {
+		return "/dataStore/connectionParameters/entry[@key='" + key + "']";
 	}
 
 	private File getFile(String url) throws MalformedURLException {

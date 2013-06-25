@@ -3,7 +3,7 @@ package org.fao.unredd.layers;
 import java.io.File;
 
 public interface Location {
-	String getGDALString();
+	String getGDALString(PasswordGetter passwordGetter);
 
 	String getGDALFeatureName();
 

@@ -10,7 +10,7 @@ public class FileLocation implements Location {
 	}
 
 	@Override
-	public String getGDALString() {
+	public String getGDALString(PasswordGetter passwordGetter) {
 		return file.getAbsolutePath();
 	}
 
