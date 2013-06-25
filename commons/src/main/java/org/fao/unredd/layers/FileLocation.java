@@ -29,4 +29,18 @@ public class FileLocation implements Location {
 	public String toString() {
 		return "File: " + file.getAbsolutePath();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof FileLocation) {
+			FileLocation that = (FileLocation) obj;
+			return that.file.equals(this.file);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return file.hashCode();
+	}
 }

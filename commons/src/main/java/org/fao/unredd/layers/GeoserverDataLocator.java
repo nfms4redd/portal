@@ -22,6 +22,7 @@ import com.sun.jndi.toolkit.url.Uri;
 
 public class GeoserverDataLocator implements DataLocator {
 
+	private static final String URL_XPATH = "/dataStore/connectionParameters/entry[@key='url']";
 	private File geoserverDataDir;
 
 	public GeoserverDataLocator(File geoserverDataDir) {
@@ -31,7 +32,8 @@ public class GeoserverDataLocator implements DataLocator {
 	@Override
 	public Location locate(final Layer layer) throws CannotFindLayerException,
 			IOException {
-		File layerFolder = find(geoserverDataDir, new FileFilter() {
+		final File workspacesFolder = new File(geoserverDataDir, "workspaces");
+		File layerFolder = find(workspacesFolder, new FileFilter() {
 
 			@Override
 			public boolean accept(File file) {
@@ -39,7 +41,7 @@ public class GeoserverDataLocator implements DataLocator {
 				return file.isDirectory()
 						&& file.getName().equals(layer.getName())
 						&& workspace.getName().equals(layer.getWorkspace())
-						&& workspace.getParentFile().equals(geoserverDataDir);
+						&& workspace.getParentFile().equals(workspacesFolder);
 			}
 
 		});
@@ -57,9 +59,16 @@ public class GeoserverDataLocator implements DataLocator {
 			} else if (dataStore.exists()) {
 				String type = xpath(dataStore, "/dataStore/type");
 				if (type.equals("Shapefile")) {
-					String url = xpath(dataStore,
-							"/dataStore/connectionParameters/entry[@key='url']");
+					String url = xpath(dataStore, URL_XPATH);
 					File file = getFile(url);
+					return new FileLocation(file);
+				} else if (type
+						.equals("Directory of spatial files (shapefiles)")) {
+					String url = xpath(dataStore, URL_XPATH);
+					String fileName = xpath(new File(layerFolder,
+							"featuretype.xml"), "/featureType/nativeName");
+					fileName = fileName + ".shp";
+					File file = new File(getFile(url), fileName);
 					return new FileLocation(file);
 				} else {
 					throw new UnsupportedOperationException(
