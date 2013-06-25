@@ -167,8 +167,10 @@ public class StatsIndicator {
 			StatsIndicator statsIndicator = new StatsIndicator(dataLocator,
 					layerFactory, layer);
 			statsIndicator.run();
+			System.out.println("The indicator was generated successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.err.println("Error executing the indicator");
 			System.err.println(getExceptionChainMessage(e));
 			System.exit(-1);
 		}
