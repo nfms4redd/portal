@@ -7,24 +7,33 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.fao.unredd.layers.CannotFindLayerException;
+import org.fao.unredd.layers.DataLocator;
+import org.fao.unredd.layers.Location;
 import org.fao.unredd.layers.MosaicLayer;
+import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.process.ProcessExecutionException;
 
 public class MosaicProcessor {
 
+	private DataLocator dataLocator;
 	private MosaicLayer mosaicLayer;
 	private OutputBuilder outputBuilder;
 
-	public MosaicProcessor(OutputBuilder outputBuilder, MosaicLayer mosaicLayer) {
+	public MosaicProcessor(DataLocator dataLocator,
+			OutputBuilder outputBuilder, MosaicLayer mosaicLayer) {
+		this.dataLocator = dataLocator;
 		this.outputBuilder = outputBuilder;
 		this.mosaicLayer = mosaicLayer;
 	}
 
-	public void process(File shapefile) throws IOException,
-			MixedRasterGeometryException, ProcessExecutionException {
+	public void process(Location zonesLocation) throws IOException,
+			MixedRasterGeometryException, ProcessExecutionException,
+			InvalidFolderStructureException, CannotFindLayerException {
 
 		// Get a hashmap with the association between timestamps and files
-		TreeMap<Date, File> files = mosaicLayer.getTimestamps();
+		TreeMap<Date, File> files = mosaicLayer.getTimestamps(dataLocator
+				.locate(mosaicLayer));
 
 		// Obtain the raster info from first tiff
 		Entry<Date, File> firstSnapshot = files.firstEntry();
@@ -53,7 +62,7 @@ public class MosaicProcessor {
 			areaRasterManager.createCompatibleAreaRaster();
 
 			outputBuilder.addToOutput(areaRaster, timestamp, timestampFile,
-					shapefile, firstSnapshotInfo.getWidth(),
+					zonesLocation, firstSnapshotInfo.getWidth(),
 					firstSnapshotInfo.getHeight());
 		}
 	}

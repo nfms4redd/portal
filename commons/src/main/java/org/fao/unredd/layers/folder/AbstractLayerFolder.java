@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -31,21 +32,44 @@ public abstract class AbstractLayerFolder implements Layer {
 	private static final String METADATA_PROPERTIES_FILE_NAME = "metadata.properties";
 	private static final String OUTPUT_FILE_NAME = "result.xml";
 	private static final String OUTPUT = "output";
-	private static final String DATA = "data";
 	private static final String CONFIGURATION = "configuration";
 	private static final String WORK = "work";
 	private File root;
+	private String workspaceName;
+	private String layerName;
+	private String qName;
 
-	public AbstractLayerFolder(File root) throws IllegalArgumentException {
+	public AbstractLayerFolder(String layerName, File root) throws IOException {
+		String[] workspaceAndName = layerName.split(Pattern.quote(":"));
+		if (workspaceAndName.length != 2) {
+			throw new IllegalArgumentException(
+					"The layer name must have the form workspaceName:layerName");
+		}
+		this.workspaceName = workspaceAndName[0];
+		this.layerName = workspaceAndName[1];
+		this.qName = layerName;
 		this.root = root;
 		if (!root.exists()) {
-			throw new IllegalArgumentException("The folder does not exist: "
-					+ root.getAbsolutePath());
+			if (!root.mkdirs()) {
+				throw new IOException(
+						"Layer folder doesn't exist and could not be created: "
+								+ root);
+			}
 		}
 	}
 
-	public File getDataFolder() {
-		return new File(root, DATA);
+	@Override
+	public String getWorkspace() {
+		return workspaceName;
+	}
+
+	@Override
+	public String getName() {
+		return layerName;
+	}
+
+	public String getQualifiedName() {
+		return qName;
 	}
 
 	public File getWorkFolder() {

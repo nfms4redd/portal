@@ -48,12 +48,11 @@ public interface Layer {
 	 */
 	File getWorkFile(String id);
 
-	/**
-	 * Returns the folder where the data of this layer is stored as shapefiles.
-	 * 
-	 * @return
-	 */
-	File getDataFolder();
+	String getWorkspace();
+
+	String getName();
+
+	String getQualifiedName();
 
 	/**
 	 * Gets the contents of a configuration item

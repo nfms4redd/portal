@@ -16,6 +16,7 @@ import org.fao.unredd.charts.generated.DataType;
 import org.fao.unredd.charts.generated.LabelType;
 import org.fao.unredd.charts.generated.StatisticsChartInput;
 import org.fao.unredd.layers.Layer;
+import org.fao.unredd.layers.Location;
 import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.statsCalculator.generated.PresentationDataType;
 import org.fao.unredd.statsCalculator.generated.VariableType;
@@ -64,7 +65,7 @@ public class OutputBuilder {
 	}
 
 	public void addToOutput(File areaRaster, Date timestamp,
-			File timestampFile, File zones, int width, int height)
+			File timestampFile, Location zonesLocation, int width, int height)
 			throws IOException, ProcessExecutionException {
 
 		chartInput.getLabels().getLabel().add(timeFormat.format(timestamp));
@@ -82,9 +83,8 @@ public class OutputBuilder {
 		script.setParameter("field", zoneIdField);
 		script.setParameter("width", width);
 		script.setParameter("height", height);
-		script.setParameter("layerName",
-				zones.getName().substring(0, zones.getName().length() - 4));
-		script.setParameter("rasterizeInput", zones.getAbsolutePath());
+		script.setParameter("layerName", zonesLocation.getGDALFeatureName());
+		script.setParameter("rasterizeInput", zonesLocation.getGDALString());
 		script.setParameter("rasterizeOutput", tempRasterized.getAbsolutePath());
 		script.setParameter("areaRaster", areaRaster.getAbsolutePath());
 		script.setParameter("maskedAreaBands",

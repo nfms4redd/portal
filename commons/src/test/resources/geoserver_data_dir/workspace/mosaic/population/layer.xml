@@ -1,0 +1,16 @@
+<layer>
+  <name>population</name>
+  <id>LayerInfoImpl-293846c6:13f623fe3fe:-7fec</id>
+  <type>RASTER</type>
+  <defaultStyle>
+    <id>StyleInfoImpl-4180e788:13f42aa2432:-7ffd</id>
+  </defaultStyle>
+  <resource class="coverage">
+    <id>CoverageInfoImpl-293846c6:13f623fe3fe:-7fed</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

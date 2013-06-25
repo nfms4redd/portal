@@ -2,7 +2,6 @@ package org.fao.unredd.statsCalculator;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,11 +17,14 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.PropertyConfigurator;
+import org.fao.unredd.layers.CannotFindLayerException;
+import org.fao.unredd.layers.DataLocator;
+import org.fao.unredd.layers.GeoserverDataLocator;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
+import org.fao.unredd.layers.Location;
 import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
-import org.fao.unredd.layers.NoSuchLayerException;
 import org.fao.unredd.layers.folder.FolderLayerFactory;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.process.ProcessExecutionException;
@@ -38,16 +40,18 @@ import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
 public class StatsIndicator {
 
 	private static final String LAYERNAME_PARAM_NAME = "l";
-	private static final String ROOT_PARAM_NAME = "r";
+	private static final String LAYERNAME_PARAM_LONG_NAME = "layer";
+	private static final String CONF_PARAM_NAME = "c";
+	private static final String CONF_PARAM_LONG_NAME = "conf";
+	private static final String GS_DATA_PARAM_NAME = "gs";
+	private static final String GS_DATA_PARAM_LONG_NAME = "gsdata";
 	private Layer layer;
 	private LayerFactory layerFactory;
+	private DataLocator dataLocator;
 
-	public StatsIndicator(LayerFactory layerFactory, Layer layer)
-			throws NoSuchLayerException {
-		if (!layer.getDataFolder().exists()) {
-			throw new IllegalArgumentException(
-					"The layer data folder does not exist");
-		}
+	public StatsIndicator(DataLocator dataLocator, LayerFactory layerFactory,
+			Layer layer) {
+		this.dataLocator = dataLocator;
 		this.layerFactory = layerFactory;
 		this.layer = layer;
 	}
@@ -81,36 +85,29 @@ public class StatsIndicator {
 	 * @throws IOException
 	 *             If a general IO error takes place during the calculation
 	 * @throws ProcessExecutionException
+	 * @throws InvalidFolderStructureException
+	 * @throws NoSuchLayerException
+	 * @throws CannotFindLayerException
 	 */
 	public void run() throws ConfigurationException,
 			MixedRasterGeometryException, IOException,
-			ProcessExecutionException {
+			ProcessExecutionException, InvalidFolderStructureException,
+			CannotFindLayerException {
 		ZonalStatistics configuration = readConfiguration();
-		File dataFolder = layer.getDataFolder();
-		File shapefile = dataFolder.listFiles(new FilenameFilter() {
-
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".shp");
-			}
-		})[0];
 		for (VariableType variable : configuration.getVariable()) {
 			MosaicLayer mosaicLayer;
 			try {
 				mosaicLayer = layerFactory.newMosaicLayer(variable.getLayer());
-			} catch (NoSuchLayerException e) {
-				throw new ConfigurationException(
-						"The layer specified in the configuration cannot be found: "
-								+ variable.getLayer(), e);
 			} catch (InvalidFolderStructureException e) {
 				throw new ConfigurationException(
 						"The layer specified in the configuration is not a mosaic: "
 								+ variable.getLayer(), e);
 			}
 			OutputBuilder outputBuilder = new OutputBuilder(layer, variable);
-			MosaicProcessor processor = new MosaicProcessor(outputBuilder,
-					mosaicLayer);
-			processor.process(shapefile);
+			MosaicProcessor processor = new MosaicProcessor(dataLocator,
+					outputBuilder, mosaicLayer);
+			Location location = dataLocator.locate(layer);
+			processor.process(location);
 			outputBuilder.writeResult(variable.getLayer());
 		}
 	}
@@ -121,13 +118,20 @@ public class StatsIndicator {
 		OptionBuilder.hasArg();
 		OptionBuilder
 				.withDescription("Name of the layer to use for the calculation of the stats indicators");
+		OptionBuilder.withLongOpt(LAYERNAME_PARAM_LONG_NAME);
 		options.addOption(OptionBuilder.create(LAYERNAME_PARAM_NAME));
 		OptionBuilder.hasArg();
-		OptionBuilder.withDescription("Root of the layer folder structure");
-		options.addOption(OptionBuilder.create(ROOT_PARAM_NAME));
+		OptionBuilder
+				.withDescription("Root of the layer configuration folder structure");
+		OptionBuilder.withLongOpt(CONF_PARAM_LONG_NAME);
+		options.addOption(OptionBuilder.create(CONF_PARAM_NAME));
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("GeoServer data folder");
+		OptionBuilder.withLongOpt(GS_DATA_PARAM_LONG_NAME);
+		options.addOption(OptionBuilder.create(GS_DATA_PARAM_NAME));
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = null;
-		String cmdLineSyntax = "stats-indicator.sh -l <layer-name> -r <root-folder>";
+		String cmdLineSyntax = "stats-indicator.sh -layer <layer-name> -conf <configuration-folder> -gsdata <geoserver-data-dir>";
 		try {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e1) {
@@ -135,13 +139,15 @@ public class StatsIndicator {
 			System.exit(-1);
 		}
 		if (!cmd.hasOption(LAYERNAME_PARAM_NAME)
-				|| !cmd.hasOption(ROOT_PARAM_NAME)) {
+				|| !cmd.hasOption(CONF_PARAM_NAME)
+				|| !cmd.hasOption(GS_DATA_PARAM_NAME)) {
 			new HelpFormatter().printHelp(cmdLineSyntax, options);
 			System.exit(-1);
 		}
 
 		String layerName = cmd.getOptionValue(LAYERNAME_PARAM_NAME);
-		File rootFolder = new File(cmd.getOptionValue(ROOT_PARAM_NAME));
+		File rootFolder = new File(cmd.getOptionValue(CONF_PARAM_NAME));
+		File gsDataFolder = new File(cmd.getOptionValue(GS_DATA_PARAM_NAME));
 
 		InputStream log4jStream = StatsIndicator.class
 				.getResourceAsStream("/log4j.properties");
@@ -156,9 +162,10 @@ public class StatsIndicator {
 
 		try {
 			LayerFactory layerFactory = new FolderLayerFactory(rootFolder);
+			DataLocator dataLocator = new GeoserverDataLocator(gsDataFolder);
 			Layer layer = layerFactory.newLayer(layerName);
-			StatsIndicator statsIndicator = new StatsIndicator(layerFactory,
-					layer);
+			StatsIndicator statsIndicator = new StatsIndicator(dataLocator,
+					layerFactory, layer);
 			statsIndicator.run();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -69,6 +69,7 @@ public class IndicatorsTest {
 			}
 		}))).thenThrow(new NoSuchIndicatorException(""));
 		layerFactory = mock(LayerFactory.class);
+		when(layerFactory.exists(anyString())).thenReturn(true);
 		when(layerFactory.newLayer(anyString())).thenReturn(layer);
 		indicators = new IndicatorsController(response, layerFactory);
 	}
@@ -110,6 +111,13 @@ public class IndicatorsTest {
 	}
 
 	@Test
+	public void testIndicatorsUnexistantLayer() throws Exception {
+		when(layerFactory.exists(anyString())).thenReturn(false);
+		indicators.returnIndicators("");
+		verify(layerFactory, never()).newLayer(anyString());
+	}
+
+	@Test
 	public void testIndicatorNullLayerId() throws Exception {
 		indicators.returnIndicator("1", null, "indicatorId");
 		verify(response).setStatus(
@@ -130,4 +138,10 @@ public class IndicatorsTest {
 				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT.getStatus());
 	}
 
+	@Test
+	public void testIndicatorUnexistantLayer() throws Exception {
+		when(layerFactory.exists(anyString())).thenReturn(false);
+		indicators.returnIndicator("1", "layerId", "indicatorId");
+		verify(layerFactory, never()).newLayer(anyString());
+	}
 }

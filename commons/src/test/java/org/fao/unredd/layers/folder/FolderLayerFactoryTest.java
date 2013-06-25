@@ -6,7 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import org.fao.unredd.layers.NoSuchLayerException;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 public class FolderLayerFactoryTest {
@@ -30,14 +30,17 @@ public class FolderLayerFactoryTest {
 	}
 
 	@Test
-	public void testUnexistantLayer() throws Exception {
-		FolderLayerFactory factory = new FolderLayerFactory(
-				new File("src/test"));
-		try {
-			factory.newLayer("resources:unexistant");
-			fail();
-		} catch (NoSuchLayerException e) {
-		}
+	public void testUnexistantLayerIsCreated() throws Exception {
+		File root = new File("src/test");
+		FolderLayerFactory factory = new FolderLayerFactory(root);
+		String layerName = "resources:unexistant";
+		assertFalse(factory.exists(layerName));
+		factory.newLayer(layerName);
+		assertTrue(factory.exists(layerName));
+
+		File layerFolder = new File(root, "resources/unexistant");
+		assertTrue(layerFolder.exists());
+		FileUtils.deleteDirectory(layerFolder);
 	}
 
 	@Test
@@ -48,13 +51,16 @@ public class FolderLayerFactoryTest {
 	}
 
 	@Test
-	public void testUnexistantMosaicLayer() throws Exception {
-		FolderLayerFactory factory = new FolderLayerFactory(
-				new File("src/test"));
-		try {
-			factory.newMosaicLayer("resources:unexistant");
-			fail();
-		} catch (NoSuchLayerException e) {
-		}
+	public void testUnexistantMosaicLayerIsCreated() throws Exception {
+		File root = new File("src/test");
+		FolderLayerFactory factory = new FolderLayerFactory(root);
+		String layerName = "resources:unexistant";
+		assertFalse(factory.exists(layerName));
+		factory.newMosaicLayer(layerName);
+		assertTrue(factory.exists(layerName));
+
+		File layerFolder = new File(root, "resources/unexistant");
+		assertTrue(layerFolder.exists());
+		FileUtils.deleteDirectory(layerFolder);
 	}
 }
