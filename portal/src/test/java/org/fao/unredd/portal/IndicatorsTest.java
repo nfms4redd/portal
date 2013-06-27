@@ -115,6 +115,7 @@ public class IndicatorsTest {
 		when(layerFactory.exists(anyString())).thenReturn(false);
 		indicators.returnIndicators("");
 		verify(layerFactory, never()).newLayer(anyString());
+		verify(response, never()).setStatus(anyInt());
 	}
 
 	@Test
