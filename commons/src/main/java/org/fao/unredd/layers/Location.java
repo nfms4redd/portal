@@ -1,9 +1,10 @@
 package org.fao.unredd.layers;
 
 import java.io.File;
+import java.io.IOException;
 
 public interface Location {
-	String getGDALString(PasswordGetter passwordGetter);
+	String getGDALString(PasswordGetter passwordGetter) throws IOException;
 
 	String getGDALFeatureName();
 

@@ -26,6 +26,7 @@ import org.fao.unredd.layers.Location;
 import org.fao.unredd.layers.MosaicLayer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
 import org.fao.unredd.layers.PasswordGetter;
+import org.fao.unredd.layers.PasswordGetterFactory;
 import org.fao.unredd.layers.folder.FolderLayerFactory;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.process.ProcessExecutionException;
@@ -169,13 +170,7 @@ public class StatsIndicator {
 			Layer layer = layerFactory.newLayer(layerName);
 			StatsIndicator statsIndicator = new StatsIndicator(dataLocator,
 					layerFactory, layer);
-			statsIndicator.run(new PasswordGetter() {
-
-				@Override
-				public String getPassword() {
-					return "postgres";
-				}
-			});
+			statsIndicator.run(PasswordGetterFactory.newPasswordGetter());
 			System.out.println("The indicator was generated successfully");
 		} catch (Exception e) {
 			e.printStackTrace();

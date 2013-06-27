@@ -1,6 +1,7 @@
 package org.fao.unredd.layers;
 
 import java.io.File;
+import java.io.IOException;
 
 public class DBLocation implements Location {
 
@@ -22,10 +23,15 @@ public class DBLocation implements Location {
 	}
 
 	@Override
-	public String getGDALString(PasswordGetter passwordGetter) {
+	public String getGDALString(PasswordGetter passwordGetter)
+			throws IOException {
+		return getConnectionInfo() + " password="
+				+ passwordGetter.getPassword(getConnectionInfo()) + "\"";
+	}
+
+	private String getConnectionInfo() {
 		return "PG:\"host=" + host + " port=" + port + " dbname=" + database
-				+ " user=" + user + " password=" + passwordGetter.getPassword()
-				+ "\"";
+				+ " user=" + user;
 	}
 
 	@Override
@@ -40,14 +46,7 @@ public class DBLocation implements Location {
 
 	@Override
 	public String toString() {
-		return getGDALFeatureName() + "->"
-				+ getGDALString(new PasswordGetter() {
-
-					@Override
-					public String getPassword() {
-						return "?";
-					}
-				});
+		return getConnectionInfo();
 	}
 
 	@Override
