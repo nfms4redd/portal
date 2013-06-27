@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXB;
 
+import org.apache.log4j.Logger;
 import org.fao.unredd.charts.generated.DataType;
 import org.fao.unredd.charts.generated.LabelType;
 import org.fao.unredd.charts.generated.StatisticsChartInput;
@@ -23,6 +24,8 @@ import org.fao.unredd.statsCalculator.generated.PresentationDataType;
 import org.fao.unredd.statsCalculator.generated.VariableType;
 
 public class OutputBuilder {
+
+	private Logger logger = Logger.getLogger(OutputBuilder.class);
 
 	private Layer layer;
 	private StatisticsChartInput chartInput;
@@ -82,19 +85,30 @@ public class OutputBuilder {
 		Script script = new Script(scriptStream);
 		scriptStream.close();
 
-		script.setParameter("field", zoneIdField);
-		script.setParameter("width", width);
-		script.setParameter("height", height);
-		script.setParameter("layerName", zonesLocation.getGDALFeatureName());
+		setParameterAndLog(script, "field", zoneIdField);
+		setParameterAndLog(script, "width", width);
+		setParameterAndLog(script, "height", height);
+		setParameterAndLog(script, "layerName",
+				zonesLocation.getGDALFeatureName());
 		script.setParameter("rasterizeInput",
 				zonesLocation.getGDALString(passwordGetter));
-		script.setParameter("rasterizeOutput", tempRasterized.getAbsolutePath());
-		script.setParameter("areaRaster", areaRaster.getAbsolutePath());
-		script.setParameter("maskedAreaBands",
+		logger.debug(zonesLocation.getGDALString(new PasswordGetter() {
+
+			@Override
+			public String getPassword(String connectionInfo) throws IOException {
+				return "";
+			}
+		}));
+		setParameterAndLog(script, "rasterizeOutput",
+				tempRasterized.getAbsolutePath());
+		setParameterAndLog(script, "areaRaster", areaRaster.getAbsolutePath());
+		setParameterAndLog(script, "maskedAreaBands",
 				tempMaskedAreaBands.getAbsolutePath());
-		script.setParameter("maskedArea", tempMaskedArea.getAbsolutePath());
-		script.setParameter("forestMask", timestampFile.getAbsolutePath());
-		script.setParameter("tempStats", tempStats.getAbsolutePath());
+		setParameterAndLog(script, "maskedArea",
+				tempMaskedArea.getAbsolutePath());
+		setParameterAndLog(script, "forestMask",
+				timestampFile.getAbsolutePath());
+		setParameterAndLog(script, "tempStats", tempStats.getAbsolutePath());
 
 		script.run();
 
@@ -114,6 +128,11 @@ public class OutputBuilder {
 		tempMaskedAreaBands.delete();
 		tempRasterized.delete();
 		tempStats.delete();
+	}
+
+	public void setParameterAndLog(Script script, String paramName, Object value) {
+		script.setParameter(paramName, value);
+		logger.debug("Setting parameter '" + paramName + "': " + value);
 	}
 
 	private DataType getData(String id, List<DataType> data) {

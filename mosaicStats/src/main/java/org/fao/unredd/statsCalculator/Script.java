@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
@@ -13,8 +12,6 @@ import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.process.ProcessRunner;
 
 public class Script {
-
-	private Logger logger = Logger.getLogger(Script.class);
 
 	private String content;
 	private VelocityContext context;
@@ -40,7 +37,6 @@ public class Script {
 			throw new ProcessExecutionException(
 					"Cannot execute the indicator shell script");
 		}
-		logger.debug("Executing script:\n" + finalContent);
 		new ProcessRunner("bash", "-c", finalContent.toString()).run();
 	}
 }
