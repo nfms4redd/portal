@@ -47,17 +47,13 @@ public class IndicatorsController {
 				Outputs indicators = layer.getOutputs();
 				response.setContentType("application/json;charset=UTF-8");
 				answer = indicators.toJSON();
-				try {
-					response.getWriter().print(answer);
-					response.flushBuffer();
-				} catch (IOException e) {
-					logger.error("Error returning the indicators", e);
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				}
-			} else {
-				logger.error("the layer does not exist");
-				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
-						.writeError(response);
+			}
+			try {
+				response.getWriter().print(answer);
+				response.flushBuffer();
+			} catch (IOException e) {
+				logger.error("Error returning the indicators", e);
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
