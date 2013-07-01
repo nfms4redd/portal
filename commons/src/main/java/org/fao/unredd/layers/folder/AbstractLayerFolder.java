@@ -21,7 +21,7 @@ import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
 
 /**
- * Abstract class with the common folder structure
+ * Abstract {@link Layer} folder based implementation
  * 
  * @author fergonco
  */

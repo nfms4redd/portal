@@ -20,6 +20,11 @@ import org.xml.sax.SAXException;
 
 import com.sun.jndi.toolkit.url.Uri;
 
+/**
+ * Implementation based on GeoServer
+ * 
+ * @author fergonco
+ */
 public class GeoserverDataLocator implements DataLocator {
 
 	private File geoserverDataDir;

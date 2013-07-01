@@ -1,5 +1,12 @@
 package org.fao.unredd.layers;
 
+import java.io.Console;
+
+/**
+ * Implementation when there is a {@link Console} instance
+ * 
+ * @author fergonco
+ */
 public class ConsolePasswordGetter implements PasswordGetter {
 
 	@Override

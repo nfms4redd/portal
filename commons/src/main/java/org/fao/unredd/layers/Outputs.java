@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * A collection of {@link OutputDescriptor}s
+ * 
+ * @author fergonco
+ */
 public class Outputs extends ArrayList<OutputDescriptor> {
 	private static final long serialVersionUID = 1L;
 

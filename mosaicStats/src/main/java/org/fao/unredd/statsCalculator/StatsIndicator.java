@@ -99,14 +99,8 @@ public class StatsIndicator {
 			InvalidFolderStructureException, CannotFindLayerException {
 		ZonalStatistics configuration = readConfiguration();
 		for (VariableType variable : configuration.getVariable()) {
-			MosaicLayer mosaicLayer;
-			try {
-				mosaicLayer = layerFactory.newMosaicLayer(variable.getLayer());
-			} catch (InvalidFolderStructureException e) {
-				throw new ConfigurationException(
-						"The layer specified in the configuration is not a mosaic: "
-								+ variable.getLayer(), e);
-			}
+			MosaicLayer mosaicLayer = layerFactory.newMosaicLayer(variable
+					.getLayer());
 			OutputBuilder outputBuilder = new OutputBuilder(layer, variable);
 			MosaicProcessor processor = new MosaicProcessor(dataLocator,
 					outputBuilder, mosaicLayer);

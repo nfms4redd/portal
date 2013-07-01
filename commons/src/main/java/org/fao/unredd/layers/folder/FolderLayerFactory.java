@@ -8,6 +8,11 @@ import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
 
+/**
+ * Folder based implementation of {@link LayerFactory}
+ * 
+ * @author fergonco
+ */
 public class FolderLayerFactory implements LayerFactory {
 
 	private File layerFolderRoot;
@@ -43,8 +48,7 @@ public class FolderLayerFactory implements LayerFactory {
 	}
 
 	@Override
-	public MosaicLayer newMosaicLayer(String layerName)
-			throws InvalidFolderStructureException, IOException {
+	public MosaicLayer newMosaicLayer(String layerName) throws IOException {
 		return new MosaicLayerFolder(layerName,
 				getConfigurationFolder(layerName));
 	}

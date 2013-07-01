@@ -17,7 +17,7 @@ import org.fao.unredd.layers.MosaicLayer;
 import org.geotools.gce.imagemosaic.properties.time.TimeParser;
 
 /**
- * Manages a layer folder containing a time mosaic
+ * Manages the configuration of image mosaic layers
  * 
  * @author fergonco
  */

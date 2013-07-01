@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.fao.unredd.layers.Layer;
 
 /**
- * Basic concrete implementation of the {@link Layer} interface based on folders
+ * Concrete implementation of the {@link Layer} interface based on folders
  * 
  * @author fergonco
  */
