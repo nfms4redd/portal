@@ -2,8 +2,8 @@ package org.fao.unredd.statsCalculator;
 
 /**
  * Signals that two rasters of a set that were supposed to have the same
- * geometry (width, height, cell size, origin, etc.) does not staisfy this
- * condition
+ * georeferencing information and raster size (width, height, cell size, origin,
+ * etc.) does not satisfy this condition
  * 
  * @author fergonco
  */

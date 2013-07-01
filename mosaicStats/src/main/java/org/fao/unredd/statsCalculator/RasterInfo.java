@@ -11,12 +11,24 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+/**
+ * Gathers information about a raster
+ * 
+ * @author fergonco
+ */
 public class RasterInfo {
 
 	private GeneralEnvelope envelope;
 	private GridEnvelope gridRange;
 	private CoordinateReferenceSystem crs;
 
+	/**
+	 * Creates a new instance. Reads the raster and keeps its georeferencing and
+	 * size information
+	 * 
+	 * @param raster
+	 * @throws IOException
+	 */
 	public RasterInfo(File raster) throws IOException {
 		AbstractGridFormat format = GridFormatFinder.findFormat(raster);
 		if (format instanceof UnknownFormat) {

@@ -34,8 +34,7 @@ import org.fao.unredd.statsCalculator.generated.VariableType;
 import org.fao.unredd.statsCalculator.generated.ZonalStatistics;
 
 /**
- * Calculates the statistics on a GeoServer layer. Receives as input the layer
- * instance.
+ * Calculates the statistics on a layer.
  * 
  * @author fergonco
  */

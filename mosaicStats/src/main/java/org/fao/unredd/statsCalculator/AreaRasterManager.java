@@ -20,6 +20,13 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.sun.media.imageio.plugins.tiff.TIFFImageWriteParam;
 
+/**
+ * Class that manages the area raster created to hold the areas of the pixels of
+ * an hypothetical raster whose georeferencing information is passed as
+ * parameter in the constructor
+ * 
+ * @author fergonco
+ */
 public class AreaRasterManager {
 
 	private static CoordinateReferenceSystem epsg4326;
@@ -38,6 +45,9 @@ public class AreaRasterManager {
 	private File areaRaster;
 
 	/**
+	 * Builds a new manager specifying the file of the raster to build and the
+	 * georeferencing information used as reference
+	 * 
 	 * @param areaRaster
 	 * @param referenceRasterInfo
 	 * @throws IllegalArgumentException
@@ -55,6 +65,15 @@ public class AreaRasterManager {
 
 	}
 
+	/**
+	 * Ensures the raster file pointed by {@link #areaRaster} has the same size
+	 * and is georeferenced in the same place as {@link #referenceRasterInfo}.
+	 * This method will check if there is already a raster with the requirements
+	 * and if it does not exist or the raster information does not match it will
+	 * create a new raster
+	 * 
+	 * @throws IOException
+	 */
 	public void createCompatibleAreaRaster() throws IOException {
 		/*
 		 * Remove the area-raster if it does not match the snapshots geometry

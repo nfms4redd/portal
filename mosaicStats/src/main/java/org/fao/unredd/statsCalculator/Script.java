@@ -11,6 +11,12 @@ import org.apache.velocity.app.VelocityEngine;
 import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.process.ProcessRunner;
 
+/**
+ * Wraps a text file, allos performing replacements on $variables and executes
+ * it
+ * 
+ * @author fergonco
+ */
 public class Script {
 
 	private String content;

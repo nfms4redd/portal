@@ -2,6 +2,11 @@ package org.fao.unredd.process;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * The native process failed
+ * 
+ * @author fergonco
+ */
 public class ProcessExecutionException extends Exception {
 	private static final long serialVersionUID = 1L;
 
