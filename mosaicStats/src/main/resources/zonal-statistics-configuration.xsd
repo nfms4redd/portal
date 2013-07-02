@@ -4,14 +4,19 @@
 	targetNamespace="http://www.nfms.unredd.fao.org/zonal-statistics"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
+	<!-- Defines the creation of an output for the layer -->
 	<xs:complexType name="VariableType">
 		<xs:sequence>
+			<!-- Name of the field that identifies uniquely the objects in the layer 
+				this configuration belongs to -->
 			<xs:element name="zone-id-field" type="xs:string" />
 			<xs:element name="presentation-data" type="PresentationDataType" />
 		</xs:sequence>
+		<!-- Reference to the layer that contains the variable to measure -->
 		<xs:attribute type="xs:string" name="layer" use="required" />
 	</xs:complexType>
 
+	<!-- Data for the presentation of the chart -->
 	<xs:complexType name="PresentationDataType">
 		<xs:sequence>
 			<xs:element name="title" type="xs:string" />
@@ -22,6 +27,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<!-- Main element -->
 	<xs:element name="zonal-statistics">
 		<xs:complexType>
 			<xs:sequence>

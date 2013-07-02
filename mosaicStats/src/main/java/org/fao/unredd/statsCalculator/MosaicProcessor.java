@@ -1,3 +1,18 @@
+/**
+ * nfms4redd Portal Interface - http://nfms4redd.org/
+ *
+ * (C) 2012, FAO Forestry Department (http://www.fao.org/forestry/)
+ *
+ * This application is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
+ * version 3.0 of the License.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ */
 package org.fao.unredd.statsCalculator;
 
 import java.io.File;
@@ -15,12 +30,27 @@ import org.fao.unredd.layers.PasswordGetter;
 import org.fao.unredd.layers.folder.InvalidFolderStructureException;
 import org.fao.unredd.process.ProcessExecutionException;
 
+/**
+ * Class to perform the calculation of statistics process
+ * 
+ * @author fergonco
+ */
 public class MosaicProcessor {
 
 	private DataLocator dataLocator;
 	private MosaicLayer mosaicLayer;
 	private OutputBuilder outputBuilder;
 
+	/**
+	 * Builds a new instance
+	 * 
+	 * @param dataLocator
+	 *            instance necessary to resolve the location of the layers
+	 * @param outputBuilder
+	 *            instance necessary to build the output expected by the portal
+	 * @param mosaicLayer
+	 *            Mosaic to process
+	 */
 	public MosaicProcessor(DataLocator dataLocator,
 			OutputBuilder outputBuilder, MosaicLayer mosaicLayer) {
 		this.dataLocator = dataLocator;
@@ -28,6 +58,31 @@ public class MosaicProcessor {
 		this.mosaicLayer = mosaicLayer;
 	}
 
+	/**
+	 * Main loop to calculate the statistics for a {@link MosaicLayer}. Iterates
+	 * through each of the timestamps of the mosaic layer, checks the rasters
+	 * are referenced in the same spot, the area raster exists and is also
+	 * referenced in the same spot and delegates the building of the output to
+	 * {@link #outputBuilder}
+	 * 
+	 * Processes the specified location containing the objects for which the
+	 * 
+	 * @param zonesLocation
+	 * @param passwordGetter
+	 * @throws IOException
+	 *             If there is any problem accessing the different files used in
+	 *             the calculation
+	 * @throws MixedRasterGeometryException
+	 *             If the timestamps in the layer mosaic have a different
+	 *             structure or are georeferenced in different places
+	 * @throws ProcessExecutionException
+	 *             If any native process could not be executed properly
+	 * @throws InvalidFolderStructureException
+	 *             If the mosaic layer has not the expected structure
+	 * @throws CannotFindLayerException
+	 *             If the {@link #dataLocator} cannot resolve any of the
+	 *             involved layers
+	 */
 	public void process(Location zonesLocation, PasswordGetter passwordGetter)
 			throws IOException, MixedRasterGeometryException,
 			ProcessExecutionException, InvalidFolderStructureException,

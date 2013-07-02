@@ -1,3 +1,18 @@
+/**
+ * nfms4redd Portal Interface - http://nfms4redd.org/
+ *
+ * (C) 2012, FAO Forestry Department (http://www.fao.org/forestry/)
+ *
+ * This application is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
+ * version 3.0 of the License.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ */
 package org.fao.unredd.statsCalculator;
 
 import java.io.BufferedReader;
@@ -23,6 +38,12 @@ import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.statsCalculator.generated.PresentationDataType;
 import org.fao.unredd.statsCalculator.generated.VariableType;
 
+/**
+ * Builds the output of the statistics calculation in the format the portal
+ * expects: {@link StatisticsChartInput}
+ * 
+ * @author fergonco
+ */
 public class OutputBuilder {
 
 	private Logger logger = Logger.getLogger(OutputBuilder.class);
@@ -43,7 +64,7 @@ public class OutputBuilder {
 		chartInput.setFooter(presentationData.getFooter());
 		chartInput.setHover(presentationData.getHover());
 		chartInput.setTooltipDecimals(0);
-		chartInput.setYLabel("Área");
+		chartInput.setYLabel("Area");
 		chartInput.setUnits("km<sup>2</sup>");
 		chartInput.setLabels(new LabelType());
 
@@ -68,6 +89,29 @@ public class OutputBuilder {
 		}
 	}
 
+	/**
+	 * Adds the statistics of coverage for the specified timestamp and adds the
+	 * result to the {@link #chartInput} global result
+	 * 
+	 * @param areaRaster
+	 *            Raster containing the areas of the samples
+	 * @param timestamp
+	 *            Date of the timestampFile
+	 * @param timestampFile
+	 *            Raster containing the variable to measure coverage
+	 * @param zonesLocation
+	 *            Location of the vector layer to calculate the
+	 * @param width
+	 *            Width of the rasters
+	 * @param height
+	 *            Height of the rasters
+	 * @param passwordGetter
+	 *            instance to obtain passwords from the user
+	 * @throws IOException
+	 *             Internal problem related to IO
+	 * @throws ProcessExecutionException
+	 *             The process with the statistics failed
+	 */
 	public void addToOutput(File areaRaster, Date timestamp,
 			File timestampFile, Location zonesLocation, int width, int height,
 			PasswordGetter passwordGetter) throws IOException,
@@ -117,7 +161,7 @@ public class OutputBuilder {
 		while ((line = br.readLine()) != null) {
 			String[] parts = line.split("\\s+");
 			String id = parts[0];
-			DataType data = getData(id, chartInput.getData());
+			DataType data = getOrCreateData(id, chartInput.getData());
 			data.getValue().add(
 					Double.parseDouble(parts[1]) * Double.parseDouble(parts[2])
 							/ 1000000.0);
@@ -130,12 +174,13 @@ public class OutputBuilder {
 		tempStats.delete();
 	}
 
-	public void setParameterAndLog(Script script, String paramName, Object value) {
+	private void setParameterAndLog(Script script, String paramName,
+			Object value) {
 		script.setParameter(paramName, value);
 		logger.debug("Setting parameter '" + paramName + "': " + value);
 	}
 
-	private DataType getData(String id, List<DataType> data) {
+	private DataType getOrCreateData(String id, List<DataType> data) {
 		DataType ret = null;
 		for (DataType dataType : data) {
 			if (dataType.getZoneId().equals(id)) {

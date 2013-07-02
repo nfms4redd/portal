@@ -1,12 +1,25 @@
+/**
+ * nfms4redd Portal Interface - http://nfms4redd.org/
+ *
+ * (C) 2012, FAO Forestry Department (http://www.fao.org/forestry/)
+ *
+ * This application is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
+ * version 3.0 of the License.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ */
 package org.fao.unredd.layers;
 
 import java.io.IOException;
 
-import org.fao.unredd.layers.folder.InvalidFolderStructureException;
-
 /**
  * Builds instances to manage the layer configurations. Layer names are
- * qualified with the workspace name, like this: workspace_name:layer_name
+ * qualified with the workspace name like this: workspace_name:layer_name
  * 
  * @author fergonco
  */
@@ -14,7 +27,7 @@ public interface LayerFactory {
 
 	/**
 	 * Returns an instance to manage the layer configuration, building the
-	 * folder for it's configuration if necessary
+	 * folder for its configuration if necessary
 	 * 
 	 * @param layerName
 	 * @return
@@ -32,13 +45,12 @@ public interface LayerFactory {
 	 * @throws IOException
 	 *             If the layer configuration does not exist and cannot be
 	 *             created or there is any problem analyzing it
-	 * @throws InvalidFolderStructureException
-	 *             If the layer is not a mosaic layer
 	 */
-	MosaicLayer newMosaicLayer(String layer)
-			throws InvalidFolderStructureException, IOException;
+	MosaicLayer newMosaicLayer(String layer) throws IOException;
 
 	/**
+	 * Checks if the layer configuration exists
+	 * 
 	 * @param layerName
 	 * @return true if there is an entry for this layer, false otherwise
 	 */
