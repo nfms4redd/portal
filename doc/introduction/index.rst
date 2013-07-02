@@ -20,11 +20,11 @@ The system includes:
 	
 The system makes use well known open source projects, as GeoServer and OpenLayers, as well as of OGC standards in order to guarantee the technological independence of the users that deploy the system and to provide them with a tool that can seamlessly interoperate with other systems.
 
-The following video gives an overview of the functionalities of the dissemination portal:
+The following video gives an overview of the functionalities of the dissemination portal: TODO
 
 .. raw:: html
 
-        <iframe width="420" height="315" src="http://www.youtube.com/embed/7Ifpji6QUz8" frameborder="0" allowfullscreen></iframe> 
+        <iframe width="420" height="315" src="http://www.youtube.com/embed/" frameborder="0" allowfullscreen></iframe> 
 
 System Architecture
 -------------------
@@ -41,7 +41,7 @@ The dissemination subsystem can be split into several blocks:
 #. management of the data flows (Admin interface)
 
 
-.. figure:: img/introduction2.png
+.. figure:: ../workshop_es/_static/deployment.png
    :align: center
    :scale: 75 %
 

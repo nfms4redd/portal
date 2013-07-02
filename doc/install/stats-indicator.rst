@@ -19,14 +19,9 @@ After the decompression it should be possible to execute the ``stats-indicator.s
 	            indicators
 	 -r <arg>   Root of the layer folder structure
 
-In order to be able of executing the indicator without the need to specify the full path to the script it is necessary to modify a file called ``.bashrc`` in the *home* folder of the user. At the end of the file add the following lines::
+In order to verify that the indicator has been correctly installed it can be executed. In order to execute it is necessary to invoke the full path and with admin privileges::
 
-	PATH=$PATH:/var/stats-indicator
-	export PATH
-	 
-In order for this change to be taken into account it is necessary to log out and log in again. After this, it will be possible to execute from any directory the script directly::
-
-	$ stats-indicator.sh
+	$ sudo /var/stats-indicator/stats-indicator.sh
 	usage: stats-indicator.sh -l <layer-name> -r <root-folder>
 	 -l         Name of the layer to use for the calculation of the stats
 	            indicators
