@@ -15,5 +15,6 @@ Contents:
    admin/index
    portal/index
    developer/index
+   workshop_es/index
 
 .. * :ref:`search`
