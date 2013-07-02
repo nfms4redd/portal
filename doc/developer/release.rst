@@ -7,16 +7,12 @@ Releasing a new version
 	[modifications]
 	$ git push -u origin release-[NUMBER]
 
-#. Prepare the release with maven::
+#. Once the development for the release is finished: prepare the release with maven::
 
 	$ mvn release:prepare
 
-   .. warning:: Note that during the execution of maven you will have to enter several times your github credentials.
+   Note that during the execution of maven you will have to enter several times your github credentials::
    
-   .. warning:: Also note that a new tag will be done on the release-[NUMBER] branch, which will be deleted. This tag should be removed when tagging in master after merging the release branch.
-   
-   
-
 	[INFO] Scanning for projects...
 	[INFO] Reactor build order:
 	[INFO]   National Forest Monitoring System
@@ -120,3 +116,8 @@ Releasing a new version
 	[INFO] Final Memory: 27M/350M
 	[INFO] ------------------------------------------------------------------------
 
+#. Last step creates new tag version-[NUMBER], but we want the tag in the master branch just after the merge so first we delete the tag.
+
+#. Then we merge release back to develop and to master.
+
+#. Then we add the tag to the head of master.
