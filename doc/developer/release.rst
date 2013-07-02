@@ -11,6 +11,8 @@ Releasing a new version
 
 	$ mvn release:prepare
 
+   Note that the repository will finish in a unstable state since maven pushes to the repo but leaves the local repo unsinchronized. Therefore it is advisable to clone in a temporary directory to execute this step and discard that local repo.
+
    Note that during the execution of maven you will have to enter several times your github credentials::
    
 	[INFO] Scanning for projects...
@@ -116,7 +118,11 @@ Releasing a new version
 	[INFO] Final Memory: 27M/350M
 	[INFO] ------------------------------------------------------------------------
 
-#. Last step creates new tag version-[NUMBER], but we want the tag in the master branch just after the merge so first we delete the tag.
+#. Last step creates new tag version-[NUMBER], but we want the tag in the master branch just after the merge so first we delete the tag. We clone the repo again and delete::
+
+	$ git clone git@github.com:nfms4redd/nfms.git
+	$ git tag -d version-2.0
+	$ git push origin :refs/tags/version-2.0
 
 #. Then we merge release back to develop and to master.
 
