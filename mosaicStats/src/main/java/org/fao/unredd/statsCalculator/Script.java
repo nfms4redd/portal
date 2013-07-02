@@ -12,7 +12,7 @@ import org.fao.unredd.process.ProcessExecutionException;
 import org.fao.unredd.process.ProcessRunner;
 
 /**
- * Wraps a text file, allos performing replacements on $variables and executes
+ * Wraps a text file, allows performing replacements on $variables and executes
  * it
  * 
  * @author fergonco
