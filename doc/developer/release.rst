@@ -124,6 +124,17 @@ Releasing a new version
 	$ git tag -d version-2.0
 	$ git push origin :refs/tags/version-2.0
 
-#. Then we merge release back to develop and to master.
+#. Then we merge release back to master:
+
+	$ git checkout master 
+	$ git merge --no-ff release-2.0 
+	$ git tag -a version-2.0
+	$ git push
+
+#. Merge release back to develop:
+
+	$ git checkout develop 
+	$ git merge --no-ff release-2.0 
+	$ git push
 
 #. Then we add the tag to the head of master.
