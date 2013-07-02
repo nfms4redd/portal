@@ -18,7 +18,6 @@ import org.fao.unredd.charts.generated.DataType;
 import org.fao.unredd.charts.generated.StatisticsChartInput;
 
 /**
- * Hello world!
  * 
  */
 public class ChartGenerator {
