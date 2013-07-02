@@ -33,3 +33,4 @@ In this module you will see:
    geoserver
    admin
    portal
+   stats-indicator

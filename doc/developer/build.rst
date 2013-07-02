@@ -13,7 +13,16 @@ Branching model
 
 The branching model followed by the project is the on described here: http://nvie.com/posts/a-successful-git-branching-model/
 
-Roughly, it means that the developments are done on the ``develop`` branch and they are only merged back in ``master`` when they are stable. 
+Roughly, it means that the developments are done on the ``develop`` branch and they are only merged back in ``master`` when they are stable.
+
+.. warning:: When creating a release, note that the goal ``prepare`` of the Maven release plugin will create two commits, one with the current version without the SNAPSHOT and another with the next version with the SNAPSHOT suffix. Therefore, it is the first commit the one that should be merged in ``master``, while the second one should be merged in ``develop``.
+
+Naming
+......
+
+Additionally to ``develop`` and ``master`` we are working on branches to perform the releases that have the "release-" prefix and the number of the version that is being released (e.g.: release-1.0).
+
+Once the release branch is finished and merged in ``master`` a tag is created with the prefix "version-" and the number of the version (e.g.: version-1.0).
 
 Building
 --------

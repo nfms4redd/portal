@@ -73,8 +73,7 @@
         <c:forEach items="${config.languages}" var="lang">
           <a href="?lang=${lang.key}" class="blue_button lang_button <c:if test="${lang.key == pageContext.response.locale}">selected</c:if>" id="button_${lang.key}">${lang.value}</a>
         </c:forEach>
-        <a href="#" class="blue_button" id="button_feedback"><spring:message code="feedback" /></a>
-        <a href="#" class="blue_button" id="button_statistics"><spring:message code="statistics" /></a>
+<!--         <a href="#" class="blue_button" id="button_feedback"><spring:message code="feedback" /></a> -->
         <div id="time_slider_pane">
           <div id="time_slider"></div>
           <div id="time_slider_label"></div>

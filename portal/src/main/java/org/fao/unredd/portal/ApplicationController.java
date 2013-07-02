@@ -35,6 +35,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.fao.unredd.layers.LayerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +55,9 @@ public class ApplicationController {
 
 	@Autowired
 	net.tanesha.recaptcha.ReCaptchaImpl reCaptcha;
+
+	@Autowired
+	private LayerFactory layerFactory;
 
 	/**
 	 * A collection of the possible error causes.
@@ -192,6 +196,28 @@ public class ApplicationController {
 			logger.error("Error reading file", e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@RequestMapping(value = "/indicators.json", method = RequestMethod.GET)
+	public void getLayerIndicators(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		IndicatorsController controller = new IndicatorsController(response,
+				layerFactory);
+
+		controller.returnIndicators(request
+				.getParameter(IndicatorsController.PARAM_LAYER_ID));
+	}
+
+	@RequestMapping(value = "/indicator.json", method = RequestMethod.GET)
+	public void getLayerIndicatorOutput(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		IndicatorsController controller = new IndicatorsController(response,
+				layerFactory);
+
+		controller.returnIndicator(
+				request.getParameter(IndicatorsController.PARAM_OBJECT_ID),
+				request.getParameter(IndicatorsController.PARAM_LAYER_ID),
+				request.getParameter(IndicatorsController.PARAM_INDICATOR_ID));
 	}
 
 	@RequestMapping("/charts.json")

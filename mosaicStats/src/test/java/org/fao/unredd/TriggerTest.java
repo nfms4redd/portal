@@ -1,3 +1,18 @@
+/**
+ * nfms4redd Portal Interface - http://nfms4redd.org/
+ *
+ * (C) 2012, FAO Forestry Department (http://www.fao.org/forestry/)
+ *
+ * This application is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation;
+ * version 3.0 of the License.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ */
 package org.fao.unredd;
 
 import static org.junit.Assert.assertTrue;
@@ -6,7 +21,7 @@ import it.geosolutions.imageio.plugins.tiff.TIFFImageWriteParam;
 
 import java.io.File;
 
-import org.fao.unredd.statsCalculator.StatsCalculator;
+import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -31,7 +46,7 @@ public class TriggerTest {
 		assertTrue(folder.getRoot().setReadOnly());
 
 		File dummyReadTiff = new File("src/test/resources/"
-				+ "okThreeSnapshots/mosaic/snapshot_2000.tiff");
+				+ "data/temporalMosaic/snapshot_2000.tiff");
 		AbstractGridFormat format = GridFormatFinder.findFormat(dummyReadTiff);
 		AbstractGridCoverage2DReader reader = format.getReader(dummyReadTiff);
 
@@ -47,7 +62,7 @@ public class TriggerTest {
 			GeoTiffWriter writer = new GeoTiffWriter(file);
 			writer.write(coverage, new GeneralParameterValue[] { value });
 
-			new StatsCalculator(file);
+			new LayerFolderImpl("workspace:layer", file);
 			fail("This code will fail when the GT "
 					+ "geotiff  writer will produce an IO "
 					+ "exception instead of a NPE when "

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified"
+	xmlns="http://www.nfms.unredd.fao.org/statistics-chart"
+	targetNamespace="http://www.nfms.unredd.fao.org/statistics-chart"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<!-- Contains the list of labels that will be printed in the x axis -->
+	<xs:complexType name="LabelType">
+		<xs:sequence>
+			<xs:element name="label" type="xs:string" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Contains the values for a point in the x-axis for every object in the 
+		layer this chart refers to -->
+	<xs:complexType name="DataType">
+		<xs:sequence>
+			<xs:element name="value" type="xs:double" maxOccurs="unbounded" /> <!-- Value to show -->
+		</xs:sequence>
+		<!-- Value to identify the object in the layer this chart refers to -->
+		<xs:attribute name="zone-id" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<!-- Main element -->
+	<xs:element name="statistics-chart-input">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="title" type="xs:string" /> <!-- Title of the chart -->
+				<xs:element name="subtitle" type="xs:string" /> <!-- Subtitle of the chart -->
+				<xs:element name="y-label" type="xs:string" /> <!-- Name that appears on the y axis -->
+				<xs:element name="units" type="xs:string" /> <!-- Units of the magnitud represented in the chart -->
+				<xs:element name="tooltipDecimals" type="xs:int" /> <!-- Number of decimals to show in the tooltip -->
+				<xs:element name="hover" type="xs:string" /> <!-- Text to be shown when the mouse hovers over the chart -->
+				<xs:element name="footer" type="xs:string" /> <!-- Text to be shown in the footer of the chart -->
+				<xs:element name="labels" type="LabelType" maxOccurs="1" />
+				<xs:element name="data" type="DataType" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

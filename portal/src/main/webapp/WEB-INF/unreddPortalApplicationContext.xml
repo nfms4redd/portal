@@ -65,4 +65,8 @@
 		<property name="publicKey" value="#{config.properties.getProperty('recaptcha.publickey')}" />
 		<property name="includeNoscript" value="false" />
 	</bean>
+	
+	<bean id="layerFactory" class="org.fao.unredd.layers.folder.FolderLayerFactory">
+		<constructor-arg type="java.io.File" value="#{config.properties.getProperty('layers.rootFolder')}"/>
+	</bean>
 </beans>

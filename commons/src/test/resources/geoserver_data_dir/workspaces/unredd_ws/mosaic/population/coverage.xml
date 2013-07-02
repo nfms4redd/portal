@@ -1,0 +1,137 @@
+<coverage>
+  <id>CoverageInfoImpl-293846c6:13f623fe3fe:-7fed</id>
+  <name>population</name>
+  <nativeName>mask_population</nativeName>
+  <namespace>
+    <id>NamespaceInfoImpl-293846c6:13f623fe3fe:-7ff9</id>
+  </namespace>
+  <title>mask_population</title>
+  <description>Generated from ImageMosaic</description>
+  <keywords>
+    <string>WCS</string>
+    <string>ImageMosaic</string>
+    <string>mask_population</string>
+  </keywords>
+  <nativeCRS>GEOGCS[&quot;WGS 84&quot;, 
+  DATUM[&quot;World Geodetic System 1984&quot;, 
+    SPHEROID[&quot;WGS 84&quot;, 6378137.0, 298.257223563, AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]], 
+    AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]], 
+  PRIMEM[&quot;Greenwich&quot;, 0.0, AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]], 
+  UNIT[&quot;degree&quot;, 0.017453292519943295], 
+  AXIS[&quot;Geodetic longitude&quot;, EAST], 
+  AXIS[&quot;Geodetic latitude&quot;, NORTH], 
+  AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</nativeCRS>
+  <srs>EPSG:4326</srs>
+  <nativeBoundingBox>
+    <minx>-75.0</minx>
+    <maxx>-51.9999999999816</maxx>
+    <miny>-57.0</miny>
+    <maxy>-19.999999999970402</maxy>
+    <crs>EPSG:4326</crs>
+  </nativeBoundingBox>
+  <latLonBoundingBox>
+    <minx>-75.0</minx>
+    <maxx>-51.9999999999816</maxx>
+    <miny>-57.0</miny>
+    <maxy>-19.999999999970402</maxy>
+    <crs>EPSG:4326</crs>
+  </latLonBoundingBox>
+  <projectionPolicy>REPROJECT_TO_DECLARED</projectionPolicy>
+  <enabled>true</enabled>
+  <metadata>
+    <entry key="dirName">mosaic_mask_population</entry>
+  </metadata>
+  <store class="coverageStore">
+    <id>CoverageStoreInfoImpl-293846c6:13f623fe3fe:-7fee</id>
+  </store>
+  <nativeFormat>ImageMosaic</nativeFormat>
+  <grid dimension="2">
+    <range>
+      <low>0 0</low>
+      <high>552 888</high>
+    </range>
+    <transform>
+      <scaleX>0.0416666666667</scaleX>
+      <scaleY>-0.0416666666667</scaleY>
+      <shearX>0.0</shearX>
+      <shearY>0.0</shearY>
+      <translateX>-74.97916666666664</translateX>
+      <translateY>-20.020833333303752</translateY>
+    </transform>
+    <crs>EPSG:4326</crs>
+  </grid>
+  <supportedFormats>
+    <string>GEOTIFF</string>
+    <string>ImageMosaic</string>
+    <string>ArcGrid</string>
+    <string>Gtopo30</string>
+    <string>GIF</string>
+    <string>PNG</string>
+    <string>JPEG</string>
+    <string>TIFF</string>
+  </supportedFormats>
+  <interpolationMethods>
+    <string>nearest neighbor</string>
+    <string>bilinear</string>
+    <string>bicubic</string>
+  </interpolationMethods>
+  <defaultInterpolationMethod>nearest neighbor</defaultInterpolationMethod>
+  <dimensions>
+    <coverageDimension>
+      <name>GRAY_INDEX</name>
+      <description>GridSampleDimension[0.0,0.0]</description>
+      <range>
+        <min>0.0</min>
+        <max>0.0</max>
+      </range>
+    </coverageDimension>
+  </dimensions>
+  <requestSRS>
+    <string>EPSG:4326</string>
+  </requestSRS>
+  <responseSRS>
+    <string>EPSG:4326</string>
+  </responseSRS>
+  <parameters>
+    <entry>
+      <string>AllowMultithreading</string>
+      <string>false</string>
+    </entry>
+    <entry>
+      <string>MergeBehavior</string>
+      <string>FLAT</string>
+    </entry>
+    <entry>
+      <string>Filter</string>
+      <null/>
+    </entry>
+    <entry>
+      <string>MaxAllowedTiles</string>
+      <string>-1</string>
+    </entry>
+    <entry>
+      <string>SORTING</string>
+      <null/>
+    </entry>
+    <entry>
+      <string>InputTransparentColor</string>
+      <string></string>
+    </entry>
+    <entry>
+      <string>OutputTransparentColor</string>
+      <string></string>
+    </entry>
+    <entry>
+      <string>SUGGESTED_TILE_SIZE</string>
+      <string>512,512</string>
+    </entry>
+    <entry>
+      <string>USE_JAI_IMAGEREAD</string>
+      <string>true</string>
+    </entry>
+    <entry>
+      <string>BackgroundValues</string>
+      <null/>
+    </entry>
+  </parameters>
+</coverage>

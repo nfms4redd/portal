@@ -3,7 +3,7 @@
 Software prerequisites
 ======================
 
-The system needs some base applications: Oracle JDK 6, Tomcat 6, Apache 2 and PostGIS 1.5 on PostgreSQL 9.1.
+The system needs some base applications: Oracle JDK 6, Tomcat 6, Apache 2, PostGIS 2.0 on PostgreSQL 9.1 and Open Foris Geospatial Toolkit.
 
 
 JDK 6
@@ -13,7 +13,7 @@ Download the latest Java SE 6 JDK from Oracle site:
 
   http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-The file will be named, for example, ``jdk-6u35-linux-i586.bin`` for 32 bit Linux systems.
+The file will be named, for example, ``jdk-6u45-linux-i586.bin`` for 32 bit Linux systems.
 
 Create the directory ``/usr/lib/jvm`` if it doesn't exist::
 
@@ -21,24 +21,24 @@ Create the directory ``/usr/lib/jvm`` if it doesn't exist::
 
 Copy the file to ``/usr/lib/jvm``, make it executable, and run it as root::
 
-  chmod +x jdk-6u35-linux-i586.bin  
-  sudo cp jdk-6u35-linux-i586.bin /usr/lib/jvm
+  chmod +x jdk-6u45-linux-i586.bin  
+  sudo cp jdk-6u45-linux-i586.bin /usr/lib/jvm
   cd /usr/lib/jvm
-  sudo ./jdk-6u35-linux-i586.bin
+  sudo ./jdk-6u45-linux-i586.bin
 
-Delete the file ``jdk-6u35-linux-i586.bin``::
+Delete the file ``jdk-6u45-linux-i586.bin``::
 
-  sudo rm jdk-6u35-linux-i586.bin
+  sudo rm jdk-6u45-linux-i586.bin
 
 The JDK will be installed under ``jdk1.6.0_xx`` directory.
 
 Make a symbolic link to this installation. From ``/usr/lib/jvm``::
 
-  sudo ln -s jdk1.6.0_35 default-java
+  sudo ln -s jdk1.6.0.45 default-java
 
 Make it the default java alternative::
 
-  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0_35/bin/java" 1
+  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0.45/bin/java" 1
   sudo update-alternatives --config java
 
 Check the java version::
@@ -47,9 +47,9 @@ Check the java version::
 
 Should read::
 
-  java version "1.6.0_35"
-  Java(TM) SE Runtime Environment (build 1.6.0_35-b10)
-  Java HotSpot(TM) Client VM (build 20.10-b01, mixed mode, sharing)
+  java version "1.6.0_45"
+  Java(TM) SE Runtime Environment (build 1.6.0_45-b06)
+  Java HotSpot(TM) Client VM (build 20.45-b01, mixed mode, sharing)
 
 
 .. _unredd-install-tomcat6:
@@ -61,22 +61,22 @@ Tomcat is a web application container. In the context of the NFMS platform it wi
 
   http://tomcat.apache.org/download-60.cgi
 
-Select the core binary distribution. The file will be named, for example, ``apache-tomcat-6.0.35.tar.gz``.
+Select the core binary distribution. The file will be named, for example, ``apache-tomcat-6.0.37.tar.gz``.
 
 As superuser, move the file to ``/var/`` and uncompress it. Make a simpler ``tomcat`` link, so updates are easier in the future::
   
-  sudo mv apache-tomcat-6.0.35.tar.gz /var
+  sudo mv apache-tomcat-6.0.37.tar.gz /var
   cd /var
-  sudo tar -xvf apache-tomcat-6.0.35.tar.gz
-  sudo ln -s apache-tomcat-6.0.35 tomcat
+  sudo tar -xvf apache-tomcat-6.0.37.tar.gz
+  sudo ln -s apache-tomcat-6.0.37 tomcat
 
 The directory where tomcat binaries reside is known as ``CATALINA_HOME``. In our case::
 
   CATALINA_HOME=/var/tomcat
 
-Delete the file ``apache-tomcat-6.0.35.tar.gz``::
+Delete the file ``apache-tomcat-6.0.37.tar.gz``::
 
-  sudo rm apache-tomcat-6.0.35.tar.gz
+  sudo rm apache-tomcat-6.0.37.tar.gz
 
 Setting environment variables
 ..............................
@@ -99,7 +99,7 @@ Configuring tomcat as a service
 	
 #. Make all the server tree structure belong to the ``tomcat6`` user::
 
-	$ sudo chown -R tomcat6:tomcat6 /var/tomcat/
+	$ sudo chown -R tomcat6: /var/tomcat/
 	
    .. warning:: It is important to add a slash (/) at the end of ``/var/tomcat/`` because it is a symbolic link and if the slash is not added only the symbolic link gets its owner changed.
 
@@ -392,7 +392,7 @@ Configuring tomcat as a service
 
 #. Make the file created in ``/etc/init.d/`` executable::
 
-    $ sudo chmod +x ubuntuTomcatRunner.sh tomcat6
+    $ sudo chmod +x /etc/init.d/ubuntuTomcatRunner.sh /etc/init.d/tomcat6
 
 #. Launch tomcat::
 
@@ -452,9 +452,9 @@ Create the file ``/etc/apache2/mods-available/proxy_ajp.conf`` and define the re
   ProxyPreserveHost on
 
   # Staging and dissemination proxy rules
-  ProxyPass        /stg_geoserver   ajp://localhost:8009/stg_geoserver
-  ProxyPassReverse /stg_geoserver   ajp://localhost:8009/stg_geoserver
-  ProxyPassReverse /stg_geoserver/  ajp://localhost:8009/stg_geoserver/
+  ProxyPass        /geoserver   ajp://localhost:8009/geoserver
+  ProxyPassReverse /geoserver   ajp://localhost:8009/geoserver
+  ProxyPassReverse /geoserver/  ajp://localhost:8009/geoserver/
 
   # Proxy rules for the staging area
   ProxyPass        /admin   ajp://localhost:8009/admin
@@ -614,3 +614,130 @@ Autostart
 Postgres does not start automatically by default. Activate it with the ``chkconfig`` command::
 
   sudo chkconfig -s postgresql on
+
+Open Foris Geospatial Toolkit
+-----------------------------------
+
+Open Foris Geospatial Toolkit (OFT) is a a collection of prototype command-line utilities for processing of geographical data that is used in the context of the NFMS portal to create statistics about the forest coverage along time, for example. More information can be found here: http://km.fao.org/OFwiki/index.php/Open_Foris_Toolkit.
+
+To install OFT it is necessary to install first some packages::
+
+	$ sudo apt-get install gdal-bin libgdal1-dev libgsl0-dev libgsl0ldbl python-gdal python-scipy python-tk perl
+	
+Then, download OFT::
+
+    $ wget http://foris.fao.org/static/geospatialtoolkit/releases/OpenForisToolkit.run
+
+Make it executable::
+
+    $ sudo chmod u+x OpenForisToolkit.run
+
+and execute it::
+
+    $ sudo ./OpenForisToolkit.run
+
+This last command will show a license and will ask for agreement::
+
+	Verifying archive integrity... All good.
+	Uncompressing Open Foris Toolkit installer...........................................................................................................................................
+	Installing new versions of OpenForis Toolkit tools and removing the old ones
+	=========================================================================
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+	DEALINGS IN THE SOFTWARE.
+	
+	I have read and accepted the license terms available at
+	http://km.fao.org/OFwiki/index.php/LICENSE
+	=========================================================================
+	1) Agree
+	2) Disagree
+	#? 1
+
+It is just necessary to type "1" and hit ENTER. After this, the rest of the installation will follow::
+
+	Checking for gcc compiler
+	Checking for g++ compiler
+	Creating log dir
+	/home/nfms/.of-toolkit/log.1.4
+	ok
+	Checking for gdal and gsl libs
+	
+	looking for GDAL libs
+	DEBUG
+	Using -L/usr/lib -lgdal
+	Looking for GSL libs
+	Using -L/usr/lib -lgsl -lgslcblas -lm
+	Installing new versions of bash scripts
+	Installing new versions of python scripts
+	Installing new versions of awk scripts
+	Installing new versions R scripts
+	Installing new versions of additional c and python libs
+	Installing new versions of executables
+	Compiled and installed 24/24 c programs
+	Copying licences
+	Done
+
+
+Native JAI
+----------
+
+Download JAI from the JAI download page: http://download.java.net/media/jai/builds/release/1_1_3/.
+
+Choose the appropriate file:
+
+  * *i586* for the 32 bit systems
+  * *amd64* for the 64 bit ones
+
+In both cases chose the JDK version, not the JRE one. For example in case of a 32bit system::
+
+	$ cd /tmp
+	$ wget http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib-linux-i586-jdk.bin
+
+Make the file executable with ``chmod`` and execute it from the directory containing the JDK ::
+
+	$ chmod u+x /tmp/jai-1_1_3-lib-linux-i586-jdk.bin 
+	$ sudo /tmp/jai-1_1_3-lib-linux-i586-jdk.bin 
+
+Accept the license
+
+Finally, remove the .bin file::
+
+  sudo rm /tmp/jai-1_1_3-lib-linux-i586-jdk.bin
+
+
+Download JAI Image I/O from http://download.java.net/media/jai-imageio/builds/release/1.1.
+
+As above, choose the appropriate file:
+
+  * *i586* for the 32 bit systems
+  * *amd64* for the 64 bit ones
+
+For example in case of a 32bit system::
+
+	$ cd /tmp
+	$ wget http://download.java.net/media/jai-imageio/builds/release/1.1/jai_imageio-1_1-lib-linux-i586-jdk.bin
+
+Make the file executable with ``chmod`` and execute it from the directory containing the JDK ::
+
+	$ chmod u+x jai_imageio-1_1-lib-linux-i586-jdk.bin
+	$ cd /usr/lib/jvm/default-java
+	$ sudo /tmp/jai_imageio-1_1-lib-linux-i586-jdk.bin
+	 
+If you get the following error after the last command::
+
+  tail: cannot open `+215' for reading: No such file or director
+
+execute the following two commands::
+
+	$ sed s/+215/-n+215/ /tmp/jai_imageio-1_1-lib-linux-amd64-jdk.bin > /tmp/jai_imageio-1_1-lib-linux-amd64-jdk-fixed.bin
+	$ chmod u+x /tmp/jai_imageio-1_1-lib-linux-i586-jdk-fixed.bin 
+	$ sudo /tmp/jai_imageio-1_1-lib-linux-i586-jdk-fixed.bin 
+
+Remove the .bin files::
+
+	$ sudo rm /tmp/jai_imageio-1_1-lib-linux-i586-jdk.bin
+	$ sudo rm /tmp/jai_imageio-1_1-lib-linux-amd64-jdk-fixed.bin
