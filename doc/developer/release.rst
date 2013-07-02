@@ -138,3 +138,7 @@ Releasing a new version
 	$ git push
 
 #. Then we add the tag to the head of master.
+
+	$ git checkout master
+	$ git tag version-2.0 
+	$ git push --tags
