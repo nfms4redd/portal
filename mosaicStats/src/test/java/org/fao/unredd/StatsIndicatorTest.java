@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.fao.unredd.layers.DataLocator;
 import org.fao.unredd.layers.FileLocation;
 import org.fao.unredd.layers.LayerFactory;
@@ -38,13 +39,18 @@ import org.fao.unredd.layers.folder.LayerFolderImpl;
 import org.fao.unredd.layers.folder.MosaicLayerFolder;
 import org.fao.unredd.statsCalculator.ConfigurationException;
 import org.fao.unredd.statsCalculator.StatsIndicator;
+import org.fao.unredd.testcommons.TestConditions;
+import org.fao.unredd.testcommons.TestRequirements;
+import org.fao.unredd.testcommons.RequirementsChecker;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class StatsIndicatorTest {
+public class StatsIndicatorTest extends RequirementsChecker{
 
+        private static final Logger LOGGER = Logger.getLogger(RequirementsChecker.class);
+        
 	private static final String LAYER_NAME = "workspace:layer";
-
+	
 	@Ignore
 	@Test
 	public void testNonExistentFieldId() throws Exception {
@@ -87,6 +93,7 @@ public class StatsIndicatorTest {
 	}
 
 	@Test
+	@TestRequirements(conditions = {TestConditions.GDAL,TestConditions.UNIX})
 	public void testMosaicLayerCreatedIfNotExisting() throws Exception {
 		File layerFolderRoot = new File("src/test/resources/portal_data_dir");
 		LayerFactory layerFactory = new FolderLayerFactory(layerFolderRoot);
@@ -113,6 +120,7 @@ public class StatsIndicatorTest {
 	}
 
 	@Test
+	@TestRequirements(conditions = {TestConditions.GDAL,TestConditions.UNIX})
 	public void testOutputs() throws Exception {
 		LayerFactory layerFactory = mock(LayerFactory.class);
 		File temporalMosaicFile = new File(

@@ -124,8 +124,21 @@ public class StatsIndicator {
 		}
 	}
 
+	/**
+	 * @param args
+	 * @throws IllegalArgumentException
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IllegalArgumentException,
 			IOException {
+//
+//	       Parse the input params using the Apache library org.apache.commons.cli, the syntax is:
+//                      stats-indicator.sh -layer <layer-name> -conf <configuration-folder> -gsdata <geoserver-data-dir>
+//	       Where:
+//	                -l,--layer           Name of the layer to use for the calculation of the stats indicators (TODO with workspace ???)
+//                      -c,--conf <arg>      Root of the layer configuration folder structure (TODO Absolute path ???)
+//                      -gs,--gsdata <arg>   GeoServer data folder (TODO Absolute path ???)
+//                      
 		Options options = new Options();
 		OptionBuilder.hasArg();
 		OptionBuilder
@@ -157,6 +170,7 @@ public class StatsIndicator {
 			System.exit(-1);
 		}
 
+		// Obtain the resources provided by command line
 		String layerName = cmd.getOptionValue(LAYERNAME_PARAM_NAME);
 		File rootFolder = new File(cmd.getOptionValue(CONF_PARAM_NAME));
 		File gsDataFolder = new File(cmd.getOptionValue(GS_DATA_PARAM_NAME));
@@ -170,14 +184,20 @@ public class StatsIndicator {
 		}
 		System.setProperty("app.root", statsIndicatorHome);
 		PropertyConfigurator.configure(log4jStream);
+	        // TODO the stream should be closed in a finally block...
 		log4jStream.close();
 
 		try {
+		        // Instantiate the layer factory to obtain a the creational object for a FolderLayer specialization  
 			LayerFactory layerFactory = new FolderLayerFactory(rootFolder);
+			// Instantiate a locator for Geoserver objects
 			DataLocator dataLocator = new GeoserverDataLocator(gsDataFolder);
+			// Instantiate the Layer object that holds all the stats stuff TODO what are the Layer obj responsabilities???
 			Layer layer = layerFactory.newLayer(layerName);
+			// wrap all in a StatIndicator obj TODO what are the stat obj responsabilities???
 			StatsIndicator statsIndicator = new StatsIndicator(dataLocator,
 					layerFactory, layer);
+			// Run the indicator providing the password
 			statsIndicator.run(PasswordGetterFactory.newPasswordGetter());
 			System.out.println("The indicator was generated successfully");
 		} catch (Exception e) {

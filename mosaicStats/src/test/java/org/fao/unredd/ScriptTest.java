@@ -23,11 +23,15 @@ import java.io.FileInputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.statsCalculator.Script;
+import org.fao.unredd.testcommons.RequirementsChecker;
+import org.fao.unredd.testcommons.TestConditions;
+import org.fao.unredd.testcommons.TestRequirements;
 import org.junit.Test;
 
-public class ScriptTest {
+public class ScriptTest extends RequirementsChecker{
 
 	@Test
+	@TestRequirements(conditions = {TestConditions.UNIX})
 	public void testFullWords() throws Exception {
 		Script script = new Script(new ByteArrayInputStream(
 				"echo '$subAAA' > $sub".getBytes()));
