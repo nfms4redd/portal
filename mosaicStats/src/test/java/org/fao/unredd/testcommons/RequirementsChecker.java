@@ -30,6 +30,17 @@ import org.junit.rules.TestName;
 /**
  * Classes that inherit from this perform a check for one or more condition that must be satisfied, otherwise the test is skipped without failures.
  * 
+ * Just annotate a method with ``TestRequirements`` and specify which condition must be satisfied, 
+ * before the test starts that requirements will be checked.
+ * 
+ * example:
+ * 
+ * @TestRequirements(conditions = {TestConditions.UNIX})
+ * public void someTest(){ ... }
+ *  
+ * Actually are presents the UNIX (checks if the OS is unix) and GDAL (check if GDAL is installed on the system).
+ * In order to Add new condition, add a method (as ) add its name to the TestConditions enum and the case in the switch.
+ * 
  * @author DamianoG
  * 
  */
