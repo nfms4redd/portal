@@ -78,7 +78,7 @@ public abstract class RequirementsChecker {
      * Some Tests need GDAL to work.
      * Check if GDAL is avaiable in the system .
      */
-    private void performGDALChecks() {
+    private void performUNIXChecks() {
         if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
             LOGGER.warn(testName.getMethodName()
                     + " :: this test can't run on windows, skipping...");
@@ -90,7 +90,7 @@ public abstract class RequirementsChecker {
      * Some tests run just on unix system
      * Check if the SO is Unix
      */
-    private void performUNIXChecks() {
+    private void performGDALChecks() {
         try {
             Runtime run = Runtime.getRuntime();
             run.exec("gdalinfo");
