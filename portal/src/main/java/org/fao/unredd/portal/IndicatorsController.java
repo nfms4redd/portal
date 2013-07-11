@@ -85,7 +85,7 @@ public class IndicatorsController {
 					try {
 						ChartGenerator chartGenerator = new ChartGenerator(
 								new ByteArrayInputStream(layer.getOutput(
-										indicatorId).getBytes("UTF-8")));
+										indicatorId).getBytes()));
 						response.setContentType(chartGenerator.getContentType());
 						chartGenerator.generate(objectId, response.getWriter());
 						response.flushBuffer();
