@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Capacitación Portal del Sistema Nacional de Monitoreo de Bosques'
-copyright = u'2013, FAO Forestry Department (http://www.fao.org/forestry/)'
+copyright = u'Excepto donde quede reflejado de otra manera, la presente documentación se halla bajo licencia : Creative Commons (Creative Commons - Attribution - Share Alike: http://creativecommons.org/licenses/by-sa/3.0/deed.es)'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
