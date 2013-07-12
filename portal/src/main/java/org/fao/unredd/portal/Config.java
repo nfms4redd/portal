@@ -79,25 +79,35 @@ public class Config implements ServletContextAware {
 	
 	public File getDir() {
 		if (dir == null) {
-			String default_dir = context.getRealPath("/") + "/WEB-INF/default_config/";
-
-			String property = System.getProperty("PORTAL_CONFIG_DIR");
-			if (property == null) {
+			String defaultDir = context.getRealPath("/") + File.separator + "WEB-INF" + File.separator + "default_config";
+			
+			// Get the portal config dir property from Java system properties
+			String portalConfigDir = System.getProperty("PORTAL_CONFIG_DIR");
+			
+			// If not set in the system properties, get it from the Servlet context parameters (web.xml)
+			if (portalConfigDir == null)
+				portalConfigDir = context.getInitParameter("PORTAL_CONFIG_DIR");
+			
+			// Otherwise:
+			if (portalConfigDir == null) {
+				// if not set already, use the default portal config dir
 				logger.warn("PORTAL_CONFIG_DIR property not found. Using default config.");
-				dir = new File(default_dir);
+				dir = new File(defaultDir);
 			} else {
-				dir = new File(property);
+				// if set but not existing, use the default portal config dir
+				dir = new File(portalConfigDir);
 				if (!dir.exists()) {
 					logger.warn("PORTAL_CONFIG_DIR is set to " + dir.getAbsolutePath() +
 							", but it doesn't exist. Using default config.");
-					dir = new File(default_dir);
+					dir = new File(defaultDir);
 				}
-			} 
-			logger.info("PORTAL_CONFIG_DIR:");
+			}
+				
 			logger.info("============================================================================");
-			logger.info(dir.getAbsolutePath());
+			logger.info("PORTAL_CONFIG_DIR: " + dir.getAbsolutePath());
 			logger.info("============================================================================");
 		}
+		
 		return dir;
 	}
 	
