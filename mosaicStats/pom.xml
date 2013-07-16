@@ -74,7 +74,7 @@
 						<configuration>
 							<!-- Changes the default schema directory -->
 							<schemaDirectory>src/main/resources</schemaDirectory>
-							<generateDirectory>src/main/jaxb</generateDirectory>
+							<!--<generateDirectory>src/main/jaxb</generateDirectory>-->
 							<generatePackage>org.fao.unredd.statsCalculator.generated</generatePackage>
 							<addCompileSourceRoot>true</addCompileSourceRoot>
 						</configuration>

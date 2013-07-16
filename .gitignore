@@ -10,3 +10,7 @@ target/
 .Trashes
 mosaicStats/src/main/jaxb/
 commons/src/main/jaxb/
+.idea
+*.iml
+velocity.log
+sample-areas.tiff

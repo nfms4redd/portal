@@ -104,7 +104,6 @@ public class StatsIndicator {
 	 *             If a general IO error takes place during the calculation
 	 * @throws ProcessExecutionException
 	 * @throws InvalidFolderStructureException
-	 * @throws NoSuchLayerException
 	 * @throws CannotFindLayerException
 	 */
 	public void run(PasswordGetter passwordGetter)
@@ -136,8 +135,8 @@ public class StatsIndicator {
 //                      stats-indicator.sh -layer <layer-name> -conf <configuration-folder> -gsdata <geoserver-data-dir>
 //	       Where:
 //	                -l,--layer           Name of the layer to use for the calculation of the stats indicators (TODO with workspace ???)
-//                      -c,--conf <arg>      Root of the layer configuration folder structure (TODO Absolute path ???)
-//                      -gs,--gsdata <arg>   GeoServer data folder (TODO Absolute path ???)
+//                  -c,--conf <arg>      Root of the layer configuration folder structure (TODO Absolute path ???)
+//                  -gs,--gsdata <arg>   GeoServer data folder (TODO Absolute path ???)
 //                      
 		Options options = new Options();
 		OptionBuilder.hasArg();
@@ -188,7 +187,7 @@ public class StatsIndicator {
 		log4jStream.close();
 
 		try {
-		        // Instantiate the layer factory to obtain a the creational object for a FolderLayer specialization  
+		    // Instantiate the layer factory to obtain a the creational object for a FolderLayer specialization
 			LayerFactory layerFactory = new FolderLayerFactory(rootFolder);
 			// Instantiate a locator for Geoserver objects
 			DataLocator dataLocator = new GeoserverDataLocator(gsDataFolder);
