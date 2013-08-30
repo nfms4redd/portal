@@ -1282,9 +1282,8 @@ proalog('open');
           "text":      $('#feedback_').val(),
           "geo":       UNREDD.fb_toolbar.getFeaturesAsWKT()
         };
-        if (layerDate) {
-          params.layerDate = Math.round(new Date(layerDate).getTime() / 1000);
-        };
+        if (layerDate)
+          params.layer_date = Math.round(new Date(layerDate).getTime());
 
         // Do submit
         $.ajax({
