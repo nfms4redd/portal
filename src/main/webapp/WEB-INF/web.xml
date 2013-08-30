@@ -25,7 +25,7 @@
         <url-pattern>/index.do</url-pattern>
         <url-pattern>*.json</url-pattern>   
         <url-pattern>/static/*</url-pattern>
-        <url-pattern>/feedback</url-pattern>
+        <url-pattern>/feedback/*</url-pattern>
     </servlet-mapping>
 
 	<!--

@@ -1,7 +1,7 @@
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.ResourceBundle"%>
-<%@page import="net.tanesha.recaptcha.ReCaptchaImpl"%>
+<%--page import="net.tanesha.recaptcha.ReCaptchaImpl"--%>
 <%@page session="true"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -73,7 +73,7 @@
         <c:forEach items="${config.languages}" var="lang">
           <a href="?lang=${lang.key}" class="blue_button lang_button <c:if test="${lang.key == pageContext.response.locale}">selected</c:if>" id="button_${lang.key}">${lang.value}</a>
         </c:forEach>
-<!--         <a href="#" class="blue_button" id="button_feedback"><spring:message code="feedback" /></a> -->
+        <a href="#" class="blue_button" id="button_feedback"><spring:message code="feedback" /></a>
         <div id="time_slider_pane">
           <div id="time_slider"></div>
           <div id="time_slider_label"></div>

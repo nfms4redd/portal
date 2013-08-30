@@ -821,9 +821,7 @@ $(window).load(function () {
         // Don't reposition the dialog if already open
         if (!infoPopup.dialog('isOpen')) {
           infoPopup.dialog('option', 'position', [x, y]);
-
-          // Finally open the dialog
-          infoPopup.dialog('open');
+proalog('open');
         }
       }
     };
@@ -1258,9 +1256,8 @@ $(window).load(function () {
 
   // Feedback form
   function activateFeedback() {
-
     $("#button_feedback").addClass('selected');
-    Recaptcha.reload();
+    //Recaptcha.reload();
 
     $("#feedback_submit").button();
     $("#feedback_submit").click(function () {
@@ -1277,11 +1274,13 @@ $(window).load(function () {
         var olLayer = UNREDD.allLayers[$("#fb_layers").val()].olLayer;
         var layerDate = (olLayer.params && olLayer.params.TIME);
         var params = {
-          "recaptcha_challenge": $("#recaptcha_challenge_field").val(),
-          "recaptcha_response": $("#recaptcha_response_field").val(),
-          "LayerName": (olLayer.params && olLayer.params.LAYERS) || olLayer.name,
-          "UserName": $('#fb_name_').val(),
-          "UserMail": $('#fb_email_').val()
+          //"recaptcha_challenge": $("#recaptcha_challenge_field").val(),
+          //"recaptcha_response": $("#recaptcha_response_field").val(),
+          "layer_name": (olLayer.params && olLayer.params.LAYERS) || olLayer.name,
+          "user_name": $('#fb_name_').val(),
+          "user_mail": $('#fb_email_').val(),
+          "text":      $('#feedback_').val(),
+          "geo":       UNREDD.fb_toolbar.getFeaturesAsWKT()
         };
         if (layerDate) {
           params.layerDate = Math.round(new Date(layerDate).getTime() / 1000);
@@ -1290,19 +1289,19 @@ $(window).load(function () {
         // Do submit
         $.ajax({
           type: 'POST',
-          contentType: 'application/json',
-          url: 'feedback?' + $.param(params),
-          data: JSON.stringify({
-            "text": $('#feedback_').val(),
-            "geo": UNREDD.fb_toolbar.getFeaturesAsGeoJson()
-          }),
+          //contentType: 'application/json',
+          url: 'feedback', // + $.param(params),
+//          data: JSON.stringify({
+//            "geo": UNREDD.fb_toolbar.getFeaturesAsGeoJson()
+//          }),
+          data: params,
           dataType: "json",
           success: function(data, textStatus, jqXHR) {
             alert(messages[data.message]);
             $("#feedback_popup").dialog('close');
           },
           error: function(jqXHR) {
-            Recaptcha.reload();
+            //Recaptcha.reload();
             try {
               var response = $.parseJSON(jqXHR.responseText);
             } catch(e) {}
@@ -1443,7 +1442,7 @@ function unsupported() {
 }
 
 function genericInfoContent(feature) {
-	var ret = "<div><table>";
+	var ret = "<div><xy>";
 	$.each(feature.attributes, function(index, attribute) {
 		ret += "<tr><td>" + index + "</td><td>" + attribute + "</td></tr>";
 		return true;
