@@ -15,24 +15,7 @@
  */
 package org.fao.unredd.portal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.FileNameMap;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBException;
-
 import net.sf.json.JSONObject;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.fao.unredd.layers.LayerFactory;
@@ -44,6 +27,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
+import java.io.*;
+import java.net.FileNameMap;
+import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Controller
 public class ApplicationController {
 
@@ -53,8 +47,8 @@ public class ApplicationController {
 	@Autowired
 	org.fao.unredd.portal.Config config;
 
-	@Autowired
-	net.tanesha.recaptcha.ReCaptchaImpl reCaptcha;
+//	@Autowired
+//	net.tanesha.recaptcha.ReCaptchaImpl reCaptcha;
 
 	@Autowired
 	private LayerFactory layerFactory;
@@ -131,8 +125,8 @@ public class ApplicationController {
 	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
 	public ModelAndView index(Model model) {
 		ModelAndView mv = new ModelAndView();
-		model.addAttribute("captchaHtml",
-				reCaptcha.createRecaptchaHtml(null, null));
+		//model.addAttribute("captchaHtml",
+		//		reCaptcha.createRecaptchaHtml(null, null));
 		mv.setViewName("index");
 		return mv;
 	}
@@ -277,22 +271,12 @@ public class ApplicationController {
 		// } catch (ReportException e) {
 		// // Will send the errorCause whose name equals the
 		// // RealTimeStatsException.Code name
-		// ErrorCause cause = ErrorCause.valueOf(e.getCode().name());
+		// ErrorCause cause = ErrorCause.valueOf(e.getCode().name(//;
 		// response.setStatus(cause.status);
-		// response.getWriter().write(cause.getJson());
+		// response.getWriter().//ite(cause.getJson());
 		// }
 		//
-		// response.flushBuffer();
-	}
-
-	@RequestMapping(value = "/feedback", method = RequestMethod.POST)
-	public void postFeedback(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
-		FeedbackController controller = new FeedbackController(request,
-				response, reCaptcha);
-
-		controller.postFeedback();
+		// response.flushB//fer();
 	}
 
 	private String getCharts() throws UnsupportedEncodingException,
