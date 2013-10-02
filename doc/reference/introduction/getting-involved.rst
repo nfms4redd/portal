@@ -3,9 +3,9 @@ Getting involved
 
 For any doubt or problem related to the usage or configuration of the platform it is possible to get help on the following forums:
 
-* Spanish: https://groups.google.com/forum/?fromgroups&hl=en#!forum/nfms4redd-usuarios
+* Spanish: https://groups.google.com/group/nfms4redd-usuarios
 
-* English: https://groups.google.com/forum/?fromgroups&hl=en#!forum/nfms4redd-users
+* English: https://groups.google.com/group/nfms4redd-users
 
 Reporting bugs
 --------------
@@ -25,7 +25,7 @@ Following and participating in the development
 
 In order to follow the activity of these issues it is necessary to register in this forum, where all the relevant exchanges related to the development process take place:
 
-* https://groups.google.com/forum/?fromgroups&hl=en#!forum/nfms4redd-admin
+* https://groups.google.com/group/nfms4redd-admin
 
 In this last forum, there are regular calls for planning where the issues are scheduled for the next version and where it is possible to participate just by sending any message. Any constructive contribution is welcome.
 
