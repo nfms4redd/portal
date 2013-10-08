@@ -37,7 +37,8 @@
       "visible": true,
       "sourceLink": "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
       "sourceLabel": "WRI",
-      "queryable": true
+      "queryable": true,
+      "wmsTime": "2007-03-01,2008-05-11"
     }
   ],
   

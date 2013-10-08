@@ -1,0 +1,36 @@
+html,body {
+	margin: 0px;
+	height: 100%;
+	cursor: default;
+	font: 100% "Trebuchet MS",sans-serif;
+}
+
+#center {
+	height: 100%;
+}
+
+#header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 142px;
+	z-index: 1001;
+}
+
+#map {
+	height: auto;
+	width: 100%;
+	position: absolute;
+	top: 142px;
+	bottom: 0px;
+}
+
+#layers_container {
+	font-size: 10px;
+	left: 10px;
+	position: absolute;
+	top: 215px;
+	width: 250px;
+	z-index: 1100;
+}

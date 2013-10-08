@@ -18,76 +18,56 @@ package org.fao.unredd.portal;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONObject;
-
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * Utility class to access the custom resources placed in PORTAL_CONFIG_DIR.
  * 
  * @author Oscar Fonts
  */
-@Component("config")
-public class Config implements ServletContextAware {
+public class Config {
 
-	static Logger logger = Logger.getLogger(Config.class);
+	private static Logger logger = Logger.getLogger(Config.class);
 
-	ServletContext context;
-	HttpServletRequest request;
-	HttpServletResponse response;
-	
-	File dir = null;
-	Properties properties = null;
-    
-    @Autowired
-    BundleMessage messageSource;
-	
-	public void setServletContext(ServletContext servletContext) {
-		this.context = servletContext;
+	private File dir = null;
+	private Properties properties = null;
+
+	private String rootPath;
+	private String configInitParameter;
+	private HashMap<Locale, ResourceBundle> localeBundles = new HashMap<Locale, ResourceBundle>();
+
+	public Config(String rootPath, String configInitParameter) {
+		this.rootPath = rootPath;
+		this.configInitParameter = configInitParameter;
 	}
 
-    public void setServletRequest(HttpServletRequest request) {
-        this.request = request;
-    }
-    
-    public void setServletResponse(HttpServletResponse response) {
-        this.response = response;
-    }
-	
-	@PostConstruct
-    public void init() {
-        context.setAttribute("config", this);
-    }
-	
 	public File getDir() {
 		if (dir == null) {
-			String defaultDir = context.getRealPath("/") + File.separator + "WEB-INF" + File.separator + "default_config";
-			
+			String defaultDir = rootPath + File.separator + "WEB-INF"
+					+ File.separator + "default_config";
+
 			// Get the portal config dir property from Java system properties
 			String portalConfigDir = System.getProperty("PORTAL_CONFIG_DIR");
-			
-			// If not set in the system properties, get it from the Servlet context parameters (web.xml)
+
+			// If not set in the system properties, get it from the Servlet
+			// context parameters (web.xml)
 			if (portalConfigDir == null)
-				portalConfigDir = context.getInitParameter("PORTAL_CONFIG_DIR");
-			
+				portalConfigDir = configInitParameter;
+
 			// Otherwise:
 			if (portalConfigDir == null) {
 				// if not set already, use the default portal config dir
@@ -97,68 +77,100 @@ public class Config implements ServletContextAware {
 				// if set but not existing, use the default portal config dir
 				dir = new File(portalConfigDir);
 				if (!dir.exists()) {
-					logger.warn("PORTAL_CONFIG_DIR is set to " + dir.getAbsolutePath() +
-							", but it doesn't exist. Using default config.");
+					logger.warn("PORTAL_CONFIG_DIR is set to "
+							+ dir.getAbsolutePath()
+							+ ", but it doesn't exist. Using default config.");
 					dir = new File(defaultDir);
 				}
 			}
-				
+
 			logger.info("============================================================================");
 			logger.info("PORTAL_CONFIG_DIR: " + dir.getAbsolutePath());
 			logger.info("============================================================================");
 		}
-		
+
 		return dir;
 	}
-	
+
 	public boolean isMinifiedJs() {
-		return Boolean.parseBoolean(System.getProperty("MINIFIED_JS", "true"));
+		return Boolean.parseBoolean(System.getProperty("MINIFIED_JS", "false"));
 	}
-	
+
 	public Properties getProperties() {
 		if (properties == null) {
-			String location = getDir()+"/portal.properties";
-			logger.debug("Reading portal properties file "+location);
+			String location = getDir() + "/portal.properties";
+			logger.debug("Reading portal properties file " + location);
 			properties = new Properties();
 			try {
-			    properties.load(new FileInputStream(location));
+				properties.load(new FileInputStream(location));
 			} catch (IOException e) {
 				logger.error("Error reading portal properties file", e);
 			}
 		}
 		return properties;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public Map<String, String> getLanguages() {
-	    String json = getProperties().getProperty("languages", "{\"en\": \"English\"}");
-		return (Map<String, String>)JSONObject.toBean(JSONObject.fromObject(json), java.util.HashMap.class);
+
+	public ArrayList<String> getLanguages() {
+		File translationFolder = getTranslationFolder();
+		final Pattern pattern = Pattern.compile("messages_(..)\\.properties");
+		File[] translationFiles = translationFolder.listFiles();
+		ArrayList<String> locales = new ArrayList<String>();
+		if (translationFiles != null) {
+			for (File translationFile : translationFiles) {
+				Matcher matcher = pattern.matcher(translationFile.getName());
+				if (matcher.matches()) {
+					String localeString = matcher.group(1);
+					locales.add(localeString);
+				}
+			}
+		}
+
+		return locales;
 	}
-	
-	public Map<String, String> getMessages() {
-		return messageSource.getMessages(RequestContextUtils.getLocale(request));
+
+	private File getTranslationFolder() {
+		return new File(getDir(), "messages");
 	}
-	
-	public String getHeader() {
-		return getLocalizedFileContents(new File(getDir()+"/header.tpl"));
+
+	public String getLayers(Locale locale) throws IOException {
+		return getLocalizedFileContents(new File(getDir() + "/layers.json"),
+				locale);
 	}
-	
-	public String getFooter() {
-		return getLocalizedFileContents(new File(getDir()+"/footer.tpl"));
+
+	public ResourceBundle getMessages(Locale locale) {
+		ResourceBundle bundle = localeBundles.get(locale);
+		if (bundle == null) {
+			URLClassLoader urlClassLoader;
+			try {
+				urlClassLoader = new URLClassLoader(
+						new URL[] { getTranslationFolder().toURI().toURL() });
+			} catch (MalformedURLException e) {
+				logger.error(
+						"Something is wrong with the configuration directory",
+						e);
+				throw new RuntimeException(e);
+			}
+			bundle = ResourceBundle.getBundle("messages", locale,
+					urlClassLoader);
+			localeBundles.put(locale, bundle);
+		}
+
+		return bundle;
 	}
-	
-	public String getLayers() {
-		return getLocalizedFileContents(new File(getDir()+"/layers.json"));
-	}
-	
-	String getLocalizedFileContents(File file) {
+
+	public String getLocalizedFileContents(File file, Locale locale)
+			throws IOException {
 		try {
-			String template = new String(getFileContents(file), "UTF-8");
+			BufferedInputStream bis = new BufferedInputStream(
+					new FileInputStream(file));
+			String template = IOUtils.toString(bis, "UTF-8");
+			bis.close();
 			Pattern patt = Pattern.compile("\\$\\{([\\w.]*)\\}");
 			Matcher m = patt.matcher(template);
 			StringBuffer sb = new StringBuffer(template.length());
+			ResourceBundle messages = getMessages(locale);
 			while (m.find()) {
-				String text = getMessages().get(m.group(1));
+				String text = messages.getString(m.group(1));
 				if (text != null) {
 					m.appendReplacement(sb, text);
 				}
@@ -170,31 +182,5 @@ public class Config implements ServletContextAware {
 			return "";
 		}
 	}
-	
-	byte[] getFileContents(File file) {
-		byte[] result = new byte[(int) file.length()];
-		try {
-			InputStream input = null;
-			try {
-				int totalBytesRead = 0;
-				input = new BufferedInputStream(new FileInputStream(file));
-				while (totalBytesRead < result.length) {
-					int bytesRemaining = result.length - totalBytesRead;
-					// input.read() returns -1, 0, or more :
-					int bytesRead = input.read(result, totalBytesRead,
-							bytesRemaining);
-					if (bytesRead > 0) {
-						totalBytesRead = totalBytesRead + bytesRead;
-					}
-				}
-			} finally {
-				input.close();
-			}
-		} catch (FileNotFoundException ex) {
-			logger.error("File not found.", ex);
-		} catch (IOException ex) {
-			logger.error("Error reading file contents.", ex);
-		}
-		return result;
-	}
+
 }
