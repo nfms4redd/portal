@@ -3,6 +3,15 @@
     <listener>
         <listener-class>org.fao.unredd.AppContextListener</listener-class>
     </listener>
+    
+	<filter>
+		<filter-name>lang-filter</filter-name>
+		<filter-class>org.fao.unredd.portal.LangFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>lang-filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
     <servlet>
         <servlet-name>customization-servlet</servlet-name>
