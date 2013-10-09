@@ -21,7 +21,7 @@ public class CustomizationServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// Find languages
 		Config config = (Config) getServletContext().getAttribute("config");
-		Locale locale = Locale.getDefault();
+		Locale locale = (Locale) req.getAttribute("locale");
 
 		HashMap<String, String> messages = new HashMap<String, String>();
 		ResourceBundle bundle = config.getMessages(locale);
