@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-    <listener>
-        <listener-class>org.fao.unredd.AppContextListener</listener-class>
-    </listener>
-    
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<listener>
+		<listener-class>org.fao.unredd.AppContextListener</listener-class>
+	</listener>
+
 	<filter>
 		<filter-name>lang-filter</filter-name>
 		<filter-class>org.fao.unredd.portal.LangFilter</filter-class>
@@ -13,33 +15,58 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-    <servlet>
-        <servlet-name>customization-servlet</servlet-name>
-        <servlet-class>org.fao.unredd.portal.CustomizationServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>customization-servlet</servlet-name>
-        <url-pattern>/customization</url-pattern>
-    </servlet-mapping>
+	<!-- customization call -->
+	<servlet>
+		<servlet-name>customization-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.CustomizationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>customization-servlet</servlet-name>
+		<url-pattern>/customization</url-pattern>
+	</servlet-mapping>
 
-    <!-- GeoSolution's Proxy Servlet -->
-    <context-param>
-        <param-name>proxyPropPath</param-name>
-        <param-value>/proxy.properties</param-value>
-    </context-param>
-    <servlet>
-        <servlet-name>HttpProxy</servlet-name>
-        <servlet-class>it.geosolutions.httpproxy.HTTPProxy</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>HttpProxy</servlet-name>
-        <url-pattern>/proxy</url-pattern>
-    </servlet-mapping>
-    
-    <session-config>
-        <session-timeout>30</session-timeout>
-    </session-config>
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
+	<!-- layers call -->
+	<servlet>
+		<servlet-name>layers-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.LayersServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>layers-servlet</servlet-name>
+		<url-pattern>/layers</url-pattern>
+	</servlet-mapping>
+
+	<!-- Error management -->
+	<servlet>
+		<servlet-name>error-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.ErrorServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>error-servlet</servlet-name>
+		<url-pattern>/error</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error</location>
+	</error-page>
+
+	<!-- GeoSolution's Proxy Servlet -->
+	<context-param>
+		<param-name>proxyPropPath</param-name>
+		<param-value>/proxy.properties</param-value>
+	</context-param>
+	<servlet>
+		<servlet-name>HttpProxy</servlet-name>
+		<servlet-class>it.geosolutions.httpproxy.HTTPProxy</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HttpProxy</servlet-name>
+		<url-pattern>/proxy</url-pattern>
+	</servlet-mapping>
+
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
 </web-app>

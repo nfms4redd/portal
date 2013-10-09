@@ -26,6 +26,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -170,9 +171,12 @@ public class Config {
 			StringBuffer sb = new StringBuffer(template.length());
 			ResourceBundle messages = getMessages(locale);
 			while (m.find()) {
-				String text = messages.getString(m.group(1));
-				if (text != null) {
+				String text;
+				try {
+					text = messages.getString(m.group(1));
 					m.appendReplacement(sb, text);
+				} catch (MissingResourceException e) {
+					// do not replace
 				}
 			}
 			m.appendTail(sb);

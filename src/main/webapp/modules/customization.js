@@ -28,7 +28,7 @@ define([ "jquery" ], function() {
 				}
 			}
 			document.title = customizationInfo.title;
-			$(document).trigger("customization-received");
+			$(document).trigger("customization-received", customizationInfo);
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			$(document).trigger("error", "Cannot initialize application: " + textStatus + "->" + errorThrown);
