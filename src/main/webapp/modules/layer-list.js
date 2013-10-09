@@ -34,7 +34,12 @@ define([ "jquery", "fancy-box" ], function($) {
 		divLayers.addClass("ui-accordion-icons");
 		divLayers.accordion({
 			"animate" : false,
-			"collapsible" : true
+			/*
+			 * Collapse all content since otherwise the accordion sets the
+			 * 'display' to 'block' instead than to 'table'
+			 */
+			"collapsible" : true,
+			"active" : false
 		});
 		divLayersContainer.append(divLayers);
 	});
@@ -101,6 +106,7 @@ define([ "jquery", "fancy-box" ], function($) {
 			trLayer.append(tdInfo);
 
 			tblLayerGroup.append(trLayer);
+			divLayers.append(tblLayerGroup).accordion("refresh");
 		}
 	});
 

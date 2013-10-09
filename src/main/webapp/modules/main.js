@@ -11,59 +11,72 @@ require.config({
 
 require([ "jquery" ], function($) {
 
+	var getValueOrDefault = function(object, value, defaultValue) {
+		var objectValue = object[value];
+		if (objectValue !== undefined) {
+			return objectValue;
+		} else {
+			return defaultValue;
+		}
+	};
+
 	require([ "customization" ]);
 
-	$(document).bind("customization-received", function(event, customization) {
-		
-		var languageCode = customization.languageCode;
-		require([ "jquery", "iso8601", "css-loader", "layout", "error-management" ], function($) {
-			$(document).trigger("css-load", "styles/jquery-ui-1.8.16.custom.css");
-			$(document).trigger("css-load", "styles/jquery.fancybox.css");
+	$(document).bind(
+			"customization-received",
+			function(event, customization) {
 
-			$.ajax({
-				dataType : "json",
-				url : "layers",
-				data : "lang=" + languageCode,
-				success : function(data, textStatus, jqXHR) {
-					console.log("here are the layers");
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-					$(document).trigger("error", jqXHR.responseText);
-				}
-			});
+				var languageCode = customization.languageCode;
+				require([ "jquery", "iso8601", "css-loader", "layout", "error-management" ], function($) {
+					$(document).trigger("css-load", "styles/jquery-ui-1.8.16.custom.css");
+					$(document).trigger("css-load", "styles/jquery.fancybox.css");
 
-			/*
-			 * Queries the server and launches add-group and add-layer events
-			 */
-			$(document).trigger("add-group", {
-				"id" : "basic",
-				"name" : "Basic layers"
-			});
-			$(document).trigger("add-group", {
-				"id" : "drc",
-				"name" : "République Démocratique du Congo"
-			});
-			$(document).trigger("add-layer", {
-				"id" : "blumarble",
-				"groupId" : "basic",
-				"url" : "http://rdc-snsf.org/diss_geoserver/wms",
-				"wmsName" : "common:blue_marble",
-				"name" : "Blue marble",
-				"infoLink" : "http://rdc-snsf.org/static/loc/en/html/bluemarble_def.html",
-				"visible" : "true"
-			});
-			$(document).trigger("add-layer", {
-				"id" : "forest_classification",
-				"groupId" : "drc",
-				"url" : "http://rdc-snsf.org/diss_geoserver/wms",
-				"wmsName" : "drc:facet_forest_classification",
-				"name" : "FACET Forest Classification",
-				"timestamps" : [ "2001-2-23", "2003-5-12" ],
-				"visible" : false
-			});
+					$.ajax({
+						dataType : "json",
+						url : "layers",
+						data : "lang=" + languageCode,
+						success : function(data, textStatus, jqXHR) {
+							var groups = data.groups;
+							for (var i = 0; i < groups.length; i++) {
+								var group = groups[i];
+								$(document).trigger("add-group", {
+									"id" : group.id,
+									"name" : group.label
+								});
 
-			$(document).trigger("initial-zoom");
-		});
+								var items = group.items;
+								for (var j = 0; j < items.length; j++) {
+									var matches = $.grep(data.portalLayers, function(l) {
+										return l.id == items[j];
+									});
+									if (matches.length == 0) {
+										$(document).trigger("trigger", "error",
+												"No portal layer with id '" + items[j] + "', referenced by group " + group.id);
+									} else if (matches.length > 1) {
+										$(document).trigger("trigger", "error", "Two portal layers with id '" + items[j]);
+									} else {
+										var portalLayer = matches[0];
+										$(document).trigger("add-layer", {
+											"id" : portalLayer.id,
+											"groupId" : group.id,
+											"url" : "http://rdc-snsf.org/diss_geoserver/wms",
+											"wmsName" : "common:blue_marble",
+											"name" : portalLayer.label,
+											"infoLink" : "http://rdc-snsf.org/static/loc/en/html/bluemarble_def.html",
+											"timestamps" : [ "2001-2-23", "2003-5-12" ],
+											"visible" : getValueOrDefault(portalLayer, "active", true)
+										});
+									}
+								}
+							}
+						},
+						error : function(jqXHR, textStatus, errorThrown) {
+							$(document).trigger("error", jqXHR.responseText);
+						}
+					});
 
-	});
+					$(document).trigger("initial-zoom");
+				});
+
+			});
 });
