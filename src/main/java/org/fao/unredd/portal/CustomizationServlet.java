@@ -19,7 +19,6 @@ public class CustomizationServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// Find languages
 		Config config = (Config) getServletContext().getAttribute("config");
 		Locale locale = (Locale) req.getAttribute("locale");
 
