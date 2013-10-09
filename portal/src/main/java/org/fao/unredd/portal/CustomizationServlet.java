@@ -21,7 +21,7 @@ public class CustomizationServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// Find languages
 		Config config = (Config) getServletContext().getAttribute("config");
-		Locale locale = req.getLocale();
+		Locale locale = Locale.getDefault();
 
 		HashMap<String, String> messages = new HashMap<String, String>();
 		ResourceBundle bundle = config.getMessages(locale);
@@ -35,8 +35,8 @@ public class CustomizationServlet extends HttpServlet {
 				.element("messages", messages);
 
 		resp.setContentType("application/json");
+		resp.setCharacterEncoding("utf8");
 		PrintWriter writer = resp.getWriter();
 		configurationObject.write(writer);
 	}
-
 }

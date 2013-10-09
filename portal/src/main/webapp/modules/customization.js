@@ -5,9 +5,22 @@ define([ "jquery" ], function() {
 
 	var customizationInfo = {};
 
+	/*
+	 * The language code is in the answer to this call, so at this moment we can
+	 * only get it from the URL
+	 */
+	var data = "";
+	var langParameter = decodeURIComponent((new RegExp('[?|&]lang=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [ , "" ])[1]
+			.replace(/\+/g, '%20'))
+			|| null;
+	if (langParameter !== null) {
+		data = "lang=" + langParameter;
+	}
+
 	$.ajax({
 		dataType : "json",
 		url : "customization",
+		data : data,
 		success : function(data, textStatus, jqXHR) {
 			for ( var attr in data) {
 				if (data.hasOwnProperty(attr)) {
@@ -21,24 +34,6 @@ define([ "jquery" ], function() {
 			$(document).trigger("error", "Cannot initialize application: " + textStatus + "->" + errorThrown);
 		}
 	});
-
-	// var customizationInfo = {
-	// "title" : "Portal del SNMB del país de ejemplo",
-	// "languages" : [ "en", "fr", "es" ],
-	// "languageCode" : "en",
-	// "messages" : {
-	// "title" : "Portal del SNMB del país de ejemplo",
-	// "en" : "English",
-	// "fr" : "Français",
-	// "es" : "Español",
-	// "legend_button" : "Legend",
-	// "sustainable_management" : "Sustainable Forest Management",
-	// "redd_plus_registry" : "REDD+ Registry",
-	// "changes" : "Changes",
-	// "months" : '["Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July",
-	// "Aug.", "Sep.", "Oct.", "Nov.", "Dec."]'
-	// }
-	// };
 
 	return customizationInfo;
 });
