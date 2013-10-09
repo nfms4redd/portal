@@ -10,13 +10,28 @@ require.config({
 });
 
 require([ "jquery" ], function($) {
-	
+
 	require([ "customization" ]);
-	
-	$(document).bind("customization-received", function() {
+
+	$(document).bind("customization-received", function(event, customization) {
+		
+		var languageCode = customization.languageCode;
 		require([ "jquery", "iso8601", "css-loader", "layout", "error-management" ], function($) {
 			$(document).trigger("css-load", "styles/jquery-ui-1.8.16.custom.css");
 			$(document).trigger("css-load", "styles/jquery.fancybox.css");
+
+			$.ajax({
+				dataType : "json",
+				url : "layers",
+				data : "lang=" + languageCode,
+				success : function(data, textStatus, jqXHR) {
+					console.log("here are the layers");
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					$(document).trigger("error", jqXHR.responseText);
+				}
+			});
+
 			/*
 			 * Queries the server and launches add-group and add-layer events
 			 */
