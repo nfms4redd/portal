@@ -20,11 +20,13 @@ public class LangFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		String lang = request.getParameter("lang");
+		Locale locale;
 		if (lang != null && lang.trim().length() > 0) {
-			Locale.setDefault(new Locale(lang));
+			locale = new Locale(lang);
 		} else {
-			Locale.setDefault(request.getLocale());
+			locale = request.getLocale();
 		}
+		request.setAttribute("locale", locale);
 		chain.doFilter(request, response);
 	}
 
