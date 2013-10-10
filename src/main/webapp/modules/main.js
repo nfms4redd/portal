@@ -67,6 +67,7 @@ require([ "jquery" ], function($) {
 										"name" : portalLayer.label,
 										"infoLink" : "http://rdc-snsf.org/static/loc/en/html/bluemarble_def.html",
 										"timestamps" : [ "2001-2-23", "2003-5-12" ],
+										"queryable" : wmsLayer.queryable,
 										"visible" : getValueOrDefault(portalLayer, "active", true)
 									});
 								} else {
