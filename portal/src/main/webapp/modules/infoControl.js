@@ -29,11 +29,14 @@ define([ "olmap" ], function(map) {
 	map.addControl(control);
 	control.activate();
 
-	$(document).bind("add-layer", function(event, layerData) {
-		if (layerData.queriable) {
-			control.layers.push(layerData.wmsName);
+	$(document).bind("maplayer-added", function(event, layer, layerInfo) {
+		if (layerInfo.queryable) {
+			if (control.layers == null) {
+				control.layers = new Array();
+			}
+			control.layers.push(layer);
 			if (control.url == null) {
-				control.url = url;
+				control.url = layerInfo.url;
 			}
 		}
 	});

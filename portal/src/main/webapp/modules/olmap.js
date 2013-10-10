@@ -21,6 +21,7 @@ define([ "jquery", "layout", "openlayers" ], function($, layout) {
 		if (map !== null) {
 			map.addLayer(layer);
 		}
+		$(document).trigger("maplayer-added", [ layer, layerInfo ]);
 	});
 
 	$(document).bind("layer-visibility", function(event, layerId, visibility) {
