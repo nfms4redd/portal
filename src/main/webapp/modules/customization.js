@@ -1,26 +1,13 @@
 /*
  * Queries the server and launches an "customization" event
  */
-define([ "jquery" ], function() {
+define([ "jquery", "communication" ], function() {
 
 	var customizationInfo = {};
 
-	/*
-	 * The language code is in the answer to this call, so at this moment we can
-	 * only get it from the URL
-	 */
-	var data = "";
-	var langParameter = decodeURIComponent((new RegExp('[?|&]lang=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [ , "" ])[1]
-			.replace(/\+/g, '%20'))
-			|| null;
-	if (langParameter !== null) {
-		data = "lang=" + langParameter;
-	}
-
-	$.ajax({
+	$(document).trigger("ajax", {
 		dataType : "json",
 		url : "customization",
-		data : data,
 		success : function(data, textStatus, jqXHR) {
 			for ( var attr in data) {
 				if (data.hasOwnProperty(attr)) {
@@ -30,9 +17,7 @@ define([ "jquery" ], function() {
 			document.title = customizationInfo.title;
 			$(document).trigger("customization-received", customizationInfo);
 		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			$(document).trigger("error", "Cannot initialize application: " + textStatus + "->" + errorThrown);
-		}
+		errorMsg : "Cannot initialize application"
 	});
 
 	return customizationInfo;

@@ -33,17 +33,15 @@ require([ "jquery" ], function($) {
 
 	require([ "customization" ]);
 
-	$(document).bind("customization-received", function(event, customization) {
+	$(document).bind("customization-received", function(event) {
 
-		var languageCode = customization.languageCode;
-		require([ "jquery", "iso8601", "css-loader", "layout", "error-management" ], function($) {
+		require([ "jquery", "communication", "iso8601", "css-loader", "layout", "error-management" ], function($) {
 			$(document).trigger("css-load", "styles/jquery-ui-1.8.16.custom.css");
 			$(document).trigger("css-load", "styles/jquery.fancybox.css");
 
-			$.ajax({
+			$(document).trigger("ajax", {
 				dataType : "json",
 				url : "layers",
-				data : "lang=" + languageCode,
 				success : function(data, textStatus, jqXHR) {
 					var groups = data.groups;
 					for (var i = 0; i < groups.length; i++) {
@@ -79,13 +77,11 @@ require([ "jquery" ], function($) {
 								$(document).trigger("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
 							}
 						}
-						
+
 						$(document).trigger("initial-zoom");
 					}
 				},
-				error : function(jqXHR, textStatus, errorThrown) {
-					$(document).trigger("error", jqXHR.responseText);
-				}
+				errorMsg : "Cannot obtain layers from the server"
 			});
 
 		});
