@@ -1,16 +1,25 @@
-define([ "jquery", "banner", "toolbar", "layer-list", "olmap" ], function($) {
+define([ "jquery" ], function() {
 	var body = $("body");
-	
-	var header = $("<div/>").attr("id", "header");
-	body.append(header);
-	$(document).trigger("init-banner", [ header ]);
-	$(document).trigger("init-toolbar", [ header ]);
 
-	var map = $("<div/>").attr("id", "center");
-	body.append(map);
-	$(document).trigger("init-map", [ map ]);
-	
-	var divLayersContainer = $("<div/>").attr("id", "layers_container");
-	body.append(divLayersContainer);
-	$(document).trigger("init-layerlist", [ divLayersContainer ]);
+	var divHeader = $("<div/>").attr("id", "header");
+	var divBanner = $("<div/>").attr("id", "banner");
+	divHeader.append(divBanner);
+	var divToolbar = $("<div/>").attr("id", "toolbar");
+	divHeader.append(divToolbar);
+	body.append(divHeader);
+
+	var divCenter = $("<div/>").attr("id", "center");
+	var divMap = $("<div/>").attr("id", "map");
+	divCenter.append(divMap);
+	body.append(divCenter);
+
+	var divLayerList = $("<div/>").attr("id", "layers_container");
+	body.append(divLayerList);
+
+	return {
+		"bannerId" : divBanner.attr("id"),
+		"toolbarId" : divToolbar.attr("id"),
+		"mapId" : divMap.attr("id"),
+		"layersId" : divLayerList.attr("id")
+	};
 });
