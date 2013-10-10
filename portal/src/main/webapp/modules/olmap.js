@@ -1,14 +1,10 @@
-define([ "openlayers", "jquery" ], function(ol, $) {
+define([ "jquery", "layout", "openlayers" ], function($, layout) {
 	var map = null;
 
-	$(document).bind("init-map", function(event, div) {
-		var divMap = $("<div/>").attr("id", "map");
-		div.append(divMap);
-
-		map = new OpenLayers.Map("map", {
-			"allOverlays" : true
-		});
+	map = new OpenLayers.Map(layout.mapId, {
+		"allOverlays" : true
 	});
+
 	$(document).bind("initial-zoom", function(event, layerInfo) {
 		map.zoomToMaxExtent();
 	});
@@ -32,4 +28,5 @@ define([ "openlayers", "jquery" ], function(ol, $) {
 		layer.setVisibility(visibility);
 	});
 
+	return map;
 });

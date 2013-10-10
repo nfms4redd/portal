@@ -1,48 +1,50 @@
-define([ "jquery", "fancy-box" ], function($) {
+define([ "jquery", "layout", "jquery-ui", "fancy-box" ], function($, layout) {
 
 	var divLayers = null;
 
+	// Should go in layout
+	// var divLayerListSelector = $("<div/>").attr("id",
+	// "layer_list_selector");
+	//
+	// var rdoAllLayers = $("<input/>").attr("id",
+	// "all_layers").attr("type", "radio")//
+	// .attr("name", "layer_list_selector").attr("checked", "checked");
+	// var rdoAllLayersLabel = $("<label/>").attr("for",
+	// "all_layers").html(i18n.layers);
+	// rdoAllLayers.append(rdoAllLayersLabel);
+	// divLayerListSelector.append(rdoAllLayers);
+	//
+	// var rdoSelectedLayers = $("<input/>").attr("id",
+	// "active_layers").attr("type", "radio")//
+	// .attr("name", "layer_list_selector");
+	// var rdoSelectedLayersLabel = $("<label/>").attr("for",
+	// "active_layers").html(i18n.selected_layers);
+	// rdoSelectedLayers.append(rdoSelectedLayersLabel);
+	// divLayerListSelector.append(rdoSelectedLayers);
+
+	var divLayersContainer = $("#" + layout.layersId);
+	$("body").append(divLayersContainer);
+
+	var divActiveLayers = $("<div/>").attr("id", "active_layers");
+	var h3Title = $("<h3/>").html("Selected layers");
+	divActiveLayers.append(h3Title);
+	divLayersContainer.append(divActiveLayers);
+
+	divLayers = $("<div/>").attr("id", "all_layers");
+	divLayers.addClass("ui-accordion-icons");
+	divLayers.accordion({
+		"animate" : false,
+		/*
+		 * Collapse all content since otherwise the accordion sets the 'display'
+		 * to 'block' instead than to 'table'
+		 */
+		"collapsible" : true,
+		"active" : false
+	});
+	divLayersContainer.append(divLayers);
+
 	$(document).trigger("css-load", "modules/layer-list.css");
 
-	$(document).bind("init-layerlist", function(event, divLayersContainer) {
-		// Should go in layout
-		// var divLayerListSelector = $("<div/>").attr("id",
-		// "layer_list_selector");
-		//
-		// var rdoAllLayers = $("<input/>").attr("id",
-		// "all_layers").attr("type", "radio")//
-		// .attr("name", "layer_list_selector").attr("checked", "checked");
-		// var rdoAllLayersLabel = $("<label/>").attr("for",
-		// "all_layers").html(i18n.layers);
-		// rdoAllLayers.append(rdoAllLayersLabel);
-		// divLayerListSelector.append(rdoAllLayers);
-		//
-		// var rdoSelectedLayers = $("<input/>").attr("id",
-		// "active_layers").attr("type", "radio")//
-		// .attr("name", "layer_list_selector");
-		// var rdoSelectedLayersLabel = $("<label/>").attr("for",
-		// "active_layers").html(i18n.selected_layers);
-		// rdoSelectedLayers.append(rdoSelectedLayersLabel);
-		// divLayerListSelector.append(rdoSelectedLayers);
-
-		var divActiveLayers = $("<div/>").attr("id", "active_layers");
-		var h3Title = $("<h3/>").html("Selected layers");
-		divActiveLayers.append(h3Title);
-		divLayersContainer.append(divActiveLayers);
-
-		divLayers = $("<div/>").attr("id", "all_layers");
-		divLayers.addClass("ui-accordion-icons");
-		divLayers.accordion({
-			"animate" : false,
-			/*
-			 * Collapse all content since otherwise the accordion sets the
-			 * 'display' to 'block' instead than to 'table'
-			 */
-			"collapsible" : true,
-			"active" : false
-		});
-		divLayersContainer.append(divLayers);
-	});
 	$(document).bind("add-group", function(event, groupInfo) {
 		var divTitle = $("<div/>");
 		aTitle = $("<a/>").attr("href", "#").html(groupInfo.name).disableSelection();
@@ -110,4 +112,5 @@ define([ "jquery", "fancy-box" ], function($) {
 		}
 	});
 
+	return divLayersContainer;
 });

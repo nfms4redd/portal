@@ -1,5 +1,10 @@
 {
 	"wmsLayers" : [ {
+		"id" : "blue-marble",
+		"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
+		"wmsName" : "common:blue_marble",
+		"visible" : true
+	}, {
 		"id" : "forestClassification",
 		"label" : "${facet_forest_classification}",
 		"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
@@ -36,11 +41,17 @@
 		"visible" : true,
 		"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
 		"sourceLabel" : "WRI",
-		"queryable" : true,
+		"queriable" : true,
 		"wmsTime" : "2007-03-01,2008-05-11"
 	} ],
 
 	"portalLayers" : [
+			{
+				"id" : "blue-marble",
+				"active" : true,
+				"label" : "Blue marble",
+				"layers" : [ "blue-marble" ]
+			},
 			{
 				"id" : "forestClassification",
 				"active" : true,
@@ -72,13 +83,13 @@
 	"groups" : [ {
 		"id" : "base",
 		"label" : "${base_layers}",
-		"items" : [ "forestClassification" ]
+		"items" : [ "blue-marble", "forestClassification" ]
 	}, {
 		"id" : "admin",
 		"label" : "${admin_areas}",
 		"items" : [ "countryBoundaries", "provinces" ]
 	}, {
-		"id": "landcover",
+		"id" : "landcover",
 		"label" : "${land_cover_maps}",
 		"items" : [ "forest_mask" ]
 	} ]
