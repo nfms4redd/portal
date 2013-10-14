@@ -1,4 +1,4 @@
-define([ "jquery", "olmap" ], function($, map) {
+define([ "olmap", "message-bus" ], function(map, bus) {
 
 	var control = new OpenLayers.Control.WMSGetFeatureInfo({
 		url : null,
@@ -17,7 +17,7 @@ define([ "jquery", "olmap" ], function($, map) {
 		eventListeners : {
 			getfeatureinfo : function(evt) {
 				if (evt.features && evt.features.length) {
-					$(document).trigger("info-features", [ evt.features, evt.xy.x, evt.xy.y ]);
+					bus.publish("info-features", [ evt.features, evt.xy.x, evt.xy.y ]);
 				}
 			}
 		},
@@ -30,7 +30,7 @@ define([ "jquery", "olmap" ], function($, map) {
 	map.addControl(control);
 	control.activate();
 
-	$(document).bind("maplayer-added", function(event, layer, layerInfo) {
+	bus.subscribe("maplayer-added", function(event, layer, layerInfo) {
 		if (layerInfo.queryable) {
 			if (control.layers == null) {
 				control.layers = new Array();

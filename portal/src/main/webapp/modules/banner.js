@@ -1,5 +1,5 @@
-define([ "jquery", "layout", "i18n" ], function($, layout, i18n) {
-	$(document).trigger("css-load", "modules/banner.css");
+define([ "jquery", "layout", "i18n", "message-bus" ], function($, layout, i18n, bus) {
+	bus.publish("css-load", "modules/banner.css");
 
 	var divBanner = $("#" + layout.bannerId);
 

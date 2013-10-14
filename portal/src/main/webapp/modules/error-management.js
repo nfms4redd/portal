@@ -1,5 +1,5 @@
-define([ "jquery" ], function($) {
-	$(document).bind("error", function(event, msg) {
+define([ "message-bus" ], function(bus) {
+	bus.subscribe("error", function(event, msg) {
 		window.alert(msg);
 	});
 });

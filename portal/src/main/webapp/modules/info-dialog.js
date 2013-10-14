@@ -1,7 +1,7 @@
-define([ "jquery" ], function($) {
-	$(document).trigger("css-load", "modules/info-dialog.css");
+define([ "jquery", "message-bus" ], function($, bus) {
+	bus.publish("css-load", "modules/info-dialog.css");
 
-	$(document).bind(
+	bus.subscribe(
 			"info-features",
 			function(event, features, x, y) {
 				// re-project to Google projection
@@ -42,10 +42,10 @@ define([ "jquery" ], function($) {
 					tr1.append(td1);
 					table.append(tr1);
 					table.mouseover(function() {
-						$(document).trigger("highlight-feature", [ feature ]);
+						bus.publish("highlight-feature", [ feature ]);
 					});
 					table.mouseout(function() {
-						$(document).trigger("clear-highlighted-features");
+						bus.publish("clear-highlighted-features");
 					});
 
 					var info = $("<table/>");

@@ -1,4 +1,4 @@
-define([ "jquery" ], function() {
+define([ "jquery" ], function($) {
 	var body = $("body");
 
 	var divHeader = $("<div/>").attr("id", "header");

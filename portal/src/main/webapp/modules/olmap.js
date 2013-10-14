@@ -1,4 +1,4 @@
-define([ "jquery", "layout", "openlayers" ], function($, layout) {
+define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	var map = null;
 	
 	OpenLayers.ProxyHost = "proxy?url=";
@@ -7,11 +7,11 @@ define([ "jquery", "layout", "openlayers" ], function($, layout) {
 		"allOverlays" : true
 	});
 
-	$(document).bind("initial-zoom", function(event, layerInfo) {
+	bus.subscribe("initial-zoom", function(event, layerInfo) {
 		map.zoomToMaxExtent();
 	});
 
-	$(document).bind("add-layer", function(event, layerInfo) {
+	bus.subscribe("add-layer", function(event, layerInfo) {
 		var layer = new OpenLayers.Layer.WMS("WMS layer", layerInfo.url, {
 			layers : layerInfo.wmsName,
 			transparent : true
@@ -23,10 +23,10 @@ define([ "jquery", "layout", "openlayers" ], function($, layout) {
 		if (map !== null) {
 			map.addLayer(layer);
 		}
-		$(document).trigger("maplayer-added", [ layer, layerInfo ]);
+		bus.publish("maplayer-added", [ layer, layerInfo ]);
 	});
 
-	$(document).bind("layer-visibility", function(event, layerId, visibility) {
+	bus.subscribe("layer-visibility", function(event, layerId, visibility) {
 		var layer = map.getLayer(layerId);
 		layer.setVisibility(visibility);
 	});

@@ -4,8 +4,8 @@
  * 
  * This is more modular, but the CSS may take time to load.
  */
-define([ "jquery" ], function($) {
-	$(document).bind("css-load", function(event, cssURL) {
+define([ "message-bus" ], function(bus) {
+	bus.subscribe("css-load", function(event, cssURL) {
 		var link = document.createElement("link");
 		link.type = "text/css";
 		link.rel = "stylesheet";

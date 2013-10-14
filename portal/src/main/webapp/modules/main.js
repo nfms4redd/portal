@@ -1,5 +1,6 @@
 require.config({
 	baseUrl : "modules",
+	urlArgs : "bust=" + (new Date()).getTime(),
 	paths : {
 		"jquery" : "http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min",
 		"jquery-ui" : "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
@@ -9,7 +10,7 @@ require.config({
 	}
 });
 
-require([ "jquery" ], function($) {
+require([ "jquery", "message-bus" ], function($, bus) {
 
 	var getValueOrDefault = function(object, value, defaultValue) {
 		var objectValue = object[value];
@@ -33,20 +34,20 @@ require([ "jquery" ], function($) {
 
 	require([ "customization" ]);
 
-	$(document).bind("customization-received", function(event) {
+	bus.subscribe("customization-received", function(event) {
 
 		require([ "jquery", "communication", "iso8601", "css-loader", "ui", "error-management" ], function($) {
-			$(document).trigger("css-load", "styles/jquery-ui-1.10.3.custom.css");
-			$(document).trigger("css-load", "styles/jquery.fancybox.css");
+			bus.publish("css-load", "styles/jquery-ui-1.10.3.custom.css");
+			bus.publish("css-load", "styles/jquery.fancybox.css");
 
-			$(document).trigger("ajax", {
+			bus.publish("ajax", {
 				dataType : "json",
 				url : "layers",
 				success : function(data, textStatus, jqXHR) {
 					var groups = data.groups;
 					for (var i = 0; i < groups.length; i++) {
 						var group = groups[i];
-						$(document).trigger("add-group", {
+						bus.publish("add-group", {
 							"id" : group.id,
 							"name" : group.label
 						});
@@ -59,7 +60,7 @@ require([ "jquery" ], function($) {
 								if (wmsLayer != null) {
 									var url = wmsLayer.baseUrl;
 									var wmsName = wmsLayer.wmsName;
-									$(document).trigger("add-layer", {
+									bus.publish("add-layer", {
 										"id" : portalLayer.id,
 										"groupId" : group.id,
 										"url" : url,
@@ -71,15 +72,15 @@ require([ "jquery" ], function($) {
 										"visible" : getValueOrDefault(portalLayer, "active", true)
 									});
 								} else {
-									$(document).trigger("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
+									bus.publish("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
 								}
 
 							} else {
-								$(document).trigger("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
+								bus.publish("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
 							}
 						}
 
-						$(document).trigger("initial-zoom");
+						bus.publish("initial-zoom");
 					}
 				},
 				errorMsg : "Cannot obtain layers from the server"
