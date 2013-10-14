@@ -1,0 +1,44 @@
+#info_popup table {
+	border: 2px solid black;
+	color: #fff;
+	width: 100%;
+	font-size: 12px;
+}
+
+#info_popup table td {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+#info_popup table a {
+	text-decoration: none;
+}
+
+#info_popup>table:hover {
+	border: 2px solid #cc7722;
+	/*filter: alpha(opacity=75);
+	opacity: 0.75;*/
+}
+
+#info_popup td.area_name {
+	text-transform: capitalize;
+}
+
+div#info_popup a:focus,div#info_popup a:active {
+	outline: 0;
+}
+
+.feature_link {
+	background: #234;
+	padding: 4px;
+	width: 100px;
+	text-align: center;
+}
+
+.td_left {
+	text-align: left;
+}
+
+.td_right {
+	text-align: right;
+}
