@@ -1,5 +1,7 @@
 define([ "jquery", "layout", "openlayers" ], function($, layout) {
 	var map = null;
+	
+	OpenLayers.ProxyHost = "proxy?url=";
 
 	map = new OpenLayers.Map(layout.mapId, {
 		"allOverlays" : true
