@@ -2,7 +2,7 @@ html,body {
 	margin: 0px;
 	height: 100%;
 	cursor: default;
-	font: 100% "Trebuchet MS",sans-serif;
+	font: 100% "Trebuchet MS", sans-serif;
 }
 
 #center {
@@ -33,4 +33,14 @@ html,body {
 	top: 215px;
 	width: 250px;
 	z-index: 1100;
+}
+
+.ui-front {
+	/* 
+	Apparently it is possible to put the dialogs on top
+	without messing with the z-index css property in jquery 1.10 but I
+	haven't been able to do it:
+	http://jqueryui.com/upgrade-guide/1.10/#removed-zindex-option
+	*/
+	z-index: 3000 !important;
 }

@@ -36,7 +36,7 @@ require([ "jquery" ], function($) {
 	$(document).bind("customization-received", function(event) {
 
 		require([ "jquery", "communication", "iso8601", "css-loader", "ui", "error-management" ], function($) {
-			$(document).trigger("css-load", "styles/jquery-ui-1.8.16.custom.css");
+			$(document).trigger("css-load", "styles/jquery-ui-1.10.3.custom.css");
 			$(document).trigger("css-load", "styles/jquery.fancybox.css");
 
 			$(document).trigger("ajax", {
