@@ -1,11 +1,11 @@
 /*
  * Queries the server and launches an "customization" event
  */
-define([ "jquery", "communication" ], function() {
+define([ "message-bus", "communication" ], function(bus) {
 
 	var customizationInfo = {};
 
-	$(document).trigger("ajax", {
+	bus.publish("ajax", {
 		dataType : "json",
 		url : "customization",
 		success : function(data, textStatus, jqXHR) {
@@ -15,7 +15,7 @@ define([ "jquery", "communication" ], function() {
 				}
 			}
 			document.title = customizationInfo.title;
-			$(document).trigger("customization-received", customizationInfo);
+			bus.publish("customization-received", customizationInfo);
 		},
 		errorMsg : "Cannot initialize application"
 	});

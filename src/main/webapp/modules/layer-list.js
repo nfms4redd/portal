@@ -1,4 +1,4 @@
-define([ "jquery", "layout", "jquery-ui", "fancy-box" ], function($, layout) {
+define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function($, bus, layout) {
 
 	var divLayers = null;
 
@@ -43,9 +43,9 @@ define([ "jquery", "layout", "jquery-ui", "fancy-box" ], function($, layout) {
 	});
 	divLayersContainer.append(divLayers);
 
-	$(document).trigger("css-load", "modules/layer-list.css");
+	bus.publish("css-load", "modules/layer-list.css");
 
-	$(document).bind("add-group", function(event, groupInfo) {
+	bus.subscribe("add-group", function(event, groupInfo) {
 		var divTitle = $("<div/>");
 		aTitle = $("<a/>").attr("href", "#").html(groupInfo.name).disableSelection();
 		divTitle.append(aTitle);
@@ -55,10 +55,10 @@ define([ "jquery", "layout", "jquery-ui", "fancy-box" ], function($, layout) {
 		tblLayerGroup.addClass("group-content-table");
 		divLayers.append(tblLayerGroup).accordion("refresh");
 	});
-	$(document).bind("add-layer", function(event, layerInfo) {
+	bus.subscribe("add-layer", function(event, layerInfo) {
 		var tblLayerGroup = $("#group-content-table-" + layerInfo.groupId);
 		if (tblLayerGroup.length == 0) {
-			$(document).trigger("error", "Layer " + layerInfo.name + " references nonexistent group: " + layerInfo.groupId);
+			bus.publish("error", "Layer " + layerInfo.name + " references nonexistent group: " + layerInfo.groupId);
 		} else {
 			var trLayer = $("<tr/>").addClass("layer_row");
 
@@ -81,7 +81,7 @@ define([ "jquery", "layout", "jquery-ui", "fancy-box" ], function($, layout) {
 			}).click(function() {
 				divCheckbox.toggleClass("checked");
 				var checked = divCheckbox.hasClass("checked");
-				$(document).trigger("layer-visibility", [ layerInfo.id, checked ]);
+				bus.publish("layer-visibility", [ layerInfo.id, checked ]);
 			});
 
 			tdVisibility.append(divCheckbox);
