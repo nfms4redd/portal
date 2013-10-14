@@ -29,8 +29,14 @@ define([ "jquery", "jquery-ui", "i18n" ], function($, ui, i18n) {
 		div.append(divTimeSliderLabel);
 
 		$(document).bind("time-slider.add-timestamp." + id, function(event, timestamp) {
-			var d = new Date();
-			if (d.setISO8601(timestamp)) {
+			var exists = false;
+			for (var i = 0; i < timestamps.length; i++) {
+				if (timestamps[i] === timestamp) {
+					exists = true;
+					break;
+				}
+			}
+			if (!exists) {
 				timestamps.push(timestamp);
 				timestamps.sort();
 			}
