@@ -40,8 +40,14 @@ public class ErrorServlet extends HttpServlet {
 			PrintWriter out = resp.getWriter();
 			out.println("<h2>Error information is missing</h2>");
 		} else {
-			resp.setStatus(500);
-			resp.getWriter().write(errorMsg);
+			if (throwable instanceof IllegalUsageServletException) {
+				resp.setStatus(400);
+			} else {
+				resp.setStatus(500);
+			}
+			resp.setContentType("application/json");
+			resp.setCharacterEncoding("utf8");
+			resp.getWriter().write("{\"message\":\"" + errorMsg + "\"}");
 		}
 	}
 }

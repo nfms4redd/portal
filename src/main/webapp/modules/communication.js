@@ -25,7 +25,21 @@ define([ "jquery", "message-bus" ], function($, bus) {
 		ajaxParams.data += langParameter;
 
 		ajaxParams.error = function(jqXHR, textStatus, errorThrown) {
-			bus.publish("error", ajaxParams.errorMsg + ". " + jqXHR.responseText + ".");
+			var message = ajaxParams.errorMsg + ". ";
+			var unrecognized = "Unrecognized error from server.";
+			try {
+				var messageObject = $.parseJSON(jqXHR.responseText);
+				if (messageObject.hasOwnProperty("message")) {
+					message += messageObject.message + ".";
+				} else {
+					message += unrecognized;
+				}
+			} catch (e) {
+				console.log(e);
+				// Answer may not be json
+				message = jqXHR.status + ": " + unrecognized;
+			}
+			bus.publish("error", message);
 		};
 
 		$.ajax(ajaxParams);

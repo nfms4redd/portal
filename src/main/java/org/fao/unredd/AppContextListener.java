@@ -1,9 +1,14 @@
 package org.fao.unredd;
 
+import java.io.File;
+import java.util.Properties;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.fao.unredd.layers.LayerFactory;
+import org.fao.unredd.layers.folder.FolderLayerFactory;
 import org.fao.unredd.portal.Config;
 
 public class AppContextListener implements ServletContextListener {
@@ -16,6 +21,13 @@ public class AppContextListener implements ServletContextListener {
 				.getInitParameter("PORTAL_CONFIG_DIR");
 		Config config = new Config(rootPath, configInitParameter);
 		servletContext.setAttribute("config", config);
+
+		Properties configurationProperties = config.getProperties();
+		String indicatorsFolder = configurationProperties
+				.getProperty("layers.rootFolder");
+		LayerFactory layerFactory = new FolderLayerFactory(new File(
+				indicatorsFolder));
+		servletContext.setAttribute("layer-factory", layerFactory);
 	}
 
 	@Override
