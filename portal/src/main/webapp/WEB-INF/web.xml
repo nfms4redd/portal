@@ -35,6 +35,16 @@
 		<url-pattern>/layers</url-pattern>
 	</servlet-mapping>
 
+	<!-- indicators -->
+	<servlet>
+		<servlet-name>indicator-list-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.IndicatorListServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>indicator-list-servlet</servlet-name>
+		<url-pattern>/indicators</url-pattern>
+	</servlet-mapping>
+
 	<!-- Error management -->
 	<servlet>
 		<servlet-name>error-servlet</servlet-name>
