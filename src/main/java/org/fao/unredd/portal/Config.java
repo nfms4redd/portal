@@ -24,7 +24,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -41,6 +43,8 @@ import org.apache.log4j.Logger;
  * @author Oscar Fonts
  */
 public class Config {
+
+	private static final String PROPERTY_CLIENT_MODULES_GENERAL = "client.modules.general";
 
 	private static Logger logger = Logger.getLogger(Config.class);
 
@@ -133,12 +137,14 @@ public class Config {
 		return new File(getDir(), "messages");
 	}
 
-	public String getLayers(Locale locale) throws IOException {
+	public String getLayers(Locale locale) throws IOException,
+			ConfigurationException {
 		return getLocalizedFileContents(new File(getDir() + "/layers.json"),
 				locale);
 	}
 
-	public ResourceBundle getMessages(Locale locale) {
+	public ResourceBundle getMessages(Locale locale)
+			throws ConfigurationException {
 		ResourceBundle bundle = localeBundles.get(locale);
 		if (bundle == null) {
 			URLClassLoader urlClassLoader;
@@ -149,7 +155,7 @@ public class Config {
 				logger.error(
 						"Something is wrong with the configuration directory",
 						e);
-				throw new RuntimeException(e);
+				throw new ConfigurationException(e);
 			}
 			bundle = ResourceBundle.getBundle("messages", locale,
 					urlClassLoader);
@@ -160,7 +166,7 @@ public class Config {
 	}
 
 	public String getLocalizedFileContents(File file, Locale locale)
-			throws IOException {
+			throws IOException, ConfigurationException {
 		try {
 			BufferedInputStream bis = new BufferedInputStream(
 					new FileInputStream(file));
@@ -184,6 +190,21 @@ public class Config {
 		} catch (UnsupportedEncodingException e) {
 			logger.error("Unsupported encoding", e);
 			return "";
+		}
+	}
+
+	public List<String> getGeneralModules() throws ConfigurationException {
+		String moduleString = getProperties().getProperty(
+				PROPERTY_CLIENT_MODULES_GENERAL);
+		if (moduleString != null) {
+			String[] strings = moduleString.split(",");
+			List<String> ret = new ArrayList<String>();
+			Collections.addAll(ret, strings);
+			return ret;
+		} else {
+			throw new ConfigurationException("No \""
+					+ PROPERTY_CLIENT_MODULES_GENERAL
+					+ "\" property in configuration");
 		}
 	}
 
