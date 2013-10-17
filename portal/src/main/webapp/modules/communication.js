@@ -35,8 +35,8 @@ define([ "jquery", "message-bus" ], function($, bus) {
 					message += unrecognized;
 				}
 			} catch (e) {
-				console.log(e);
 				// Answer may not be json
+				console.log(e);
 				message = jqXHR.status + ": " + unrecognized;
 			}
 			bus.publish("error", message);
