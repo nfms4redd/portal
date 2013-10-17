@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.fao.unredd.servlet.StatusServletException;
 
 public class ErrorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -40,8 +41,8 @@ public class ErrorServlet extends HttpServlet {
 			PrintWriter out = resp.getWriter();
 			out.println("<h2>Error information is missing</h2>");
 		} else {
-			if (throwable instanceof IllegalUsageServletException) {
-				resp.setStatus(400);
+			if (throwable instanceof StatusServletException) {
+				resp.setStatus(((StatusServletException) throwable).getStatus());
 			} else {
 				resp.setStatus(500);
 			}
