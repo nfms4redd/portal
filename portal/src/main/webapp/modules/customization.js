@@ -3,8 +3,10 @@
  */
 define([ "message-bus", "communication" ], function(bus) {
 
+	// module variables
 	var customizationInfo = {};
 
+	// initialization code	
 	bus.publish("ajax", {
 		dataType : "json",
 		url : "customization",
@@ -20,5 +22,6 @@ define([ "message-bus", "communication" ], function(bus) {
 		errorMsg : "Cannot initialize application"
 	});
 
+	// module return value
 	return customizationInfo;
 });

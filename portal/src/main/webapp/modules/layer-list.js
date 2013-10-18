@@ -23,8 +23,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	// divLayerListSelector.append(rdoSelectedLayers);
 
 	var divLayersContainer = $("#" + layout.layersId);
-	$("body").append(divLayersContainer);
-
+	
 	var divActiveLayers = $("<div/>").attr("id", "active_layers");
 	var h3Title = $("<h3/>").html("Selected layers");
 	divActiveLayers.append(h3Title);
