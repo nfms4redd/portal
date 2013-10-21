@@ -27,11 +27,17 @@ public class CustomizationServlet extends HttpServlet {
 		for (String key : bundle.keySet()) {
 			messages.put(key, bundle.getString(key));
 		}
+
+		String title = bundle.getString("title");
+
+		String[] modules = config.getModules();
+
 		JSONObject configurationObject = new JSONObject()//
-				.element("title", bundle.getString("title"))//
+				.element("title", title)//
 				.element("languages", config.getLanguages())//
 				.element("languageCode", locale.getLanguage())//
-				.element("messages", messages);
+				.element("messages", messages)//
+				.element("modules", modules);
 
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf8");

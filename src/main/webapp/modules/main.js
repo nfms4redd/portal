@@ -1,7 +1,7 @@
 require.config({
 	baseUrl : "modules",
 	// uncomment this line for debugging purposes in order to bust cache
-	// urlArgs : "bust=" + (new Date()).getTime(),
+	urlArgs : "bust=" + (new Date()).getTime(),
 	paths : {
 		"jquery" : "http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min",
 		"jquery-ui" : "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
@@ -35,9 +35,8 @@ require([ "jquery", "message-bus" ], function($, bus) {
 
 	require([ "customization" ]);
 
-	bus.subscribe("customization-received", function(event) {
-
-		require([ "jquery", "communication", "iso8601", "css-loader", "ui", "error-management" ], function($) {
+	bus.subscribe("customization-received", function(event, customization) {
+		require(customization.modules, function() {
 			bus.publish("css-load", "styles/jquery-ui-1.10.3.custom.css");
 			bus.publish("css-load", "styles/jquery.fancybox.css");
 
