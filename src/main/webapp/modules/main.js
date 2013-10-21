@@ -36,7 +36,7 @@ require([ "jquery", "message-bus" ], function($, bus) {
 	require([ "customization" ]);
 
 	bus.subscribe("customization-received", function(event, customization) {
-		require(customization.generalModules, function() {
+		require(customization.modules, function() {
 			bus.publish("css-load", "styles/jquery-ui-1.10.3.custom.css");
 			bus.publish("css-load", "styles/jquery.fancybox.css");
 

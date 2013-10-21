@@ -24,9 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -44,7 +42,7 @@ import org.apache.log4j.Logger;
  */
 public class Config {
 
-	private static final String PROPERTY_CLIENT_MODULES_GENERAL = "client.modules.general";
+	private static final String PROPERTY_CLIENT_MODULES = "client.modules";
 
 	private static Logger logger = Logger.getLogger(Config.class);
 
@@ -193,17 +191,14 @@ public class Config {
 		}
 	}
 
-	public List<String> getGeneralModules() throws ConfigurationException {
+	public String[] getModules() throws ConfigurationException {
 		String moduleString = getProperties().getProperty(
-				PROPERTY_CLIENT_MODULES_GENERAL);
+				PROPERTY_CLIENT_MODULES);
 		if (moduleString != null) {
-			String[] strings = moduleString.split(",");
-			List<String> ret = new ArrayList<String>();
-			Collections.addAll(ret, strings);
-			return ret;
+			return moduleString.split(",");
 		} else {
 			throw new ConfigurationException("No \""
-					+ PROPERTY_CLIENT_MODULES_GENERAL
+					+ PROPERTY_CLIENT_MODULES
 					+ "\" property in configuration");
 		}
 	}

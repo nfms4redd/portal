@@ -3,7 +3,6 @@ package org.fao.unredd.portal;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -31,15 +30,14 @@ public class CustomizationServlet extends HttpServlet {
 
 		String title = bundle.getString("title");
 
-		List<String> modules = config.getGeneralModules();
-		modules.add("ui");
+		String[] modules = config.getModules();
 
 		JSONObject configurationObject = new JSONObject()//
 				.element("title", title)//
 				.element("languages", config.getLanguages())//
 				.element("languageCode", locale.getLanguage())//
 				.element("messages", messages)//
-				.element("generalModules", modules);
+				.element("modules", modules);
 
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("utf8");
