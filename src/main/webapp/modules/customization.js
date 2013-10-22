@@ -7,7 +7,7 @@ define([ "message-bus", "communication" ], function(bus) {
 	var customizationInfo = {};
 
 	// initialization code	
-	bus.publish("ajax", {
+	bus.send("ajax", {
 		dataType : "json",
 		url : "customization",
 		success : function(data, textStatus, jqXHR) {
@@ -17,7 +17,7 @@ define([ "message-bus", "communication" ], function(bus) {
 				}
 			}
 			document.title = customizationInfo.title;
-			bus.publish("customization-received", customizationInfo);
+			bus.send("customization-received", customizationInfo);
 		},
 		errorMsg : "Cannot initialize application"
 	});

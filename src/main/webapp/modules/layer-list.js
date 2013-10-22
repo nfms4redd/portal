@@ -42,9 +42,9 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	});
 	divLayersContainer.append(divLayers);
 
-	bus.publish("css-load", "modules/layer-list.css");
+	bus.send("css-load", "modules/layer-list.css");
 
-	bus.subscribe("add-group", function(event, groupInfo) {
+	bus.listen("add-group", function(event, groupInfo) {
 		var divTitle = $("<div/>");
 		aTitle = $("<a/>").attr("href", "#").html(groupInfo.name).disableSelection();
 		divTitle.append(aTitle);
@@ -54,10 +54,10 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		tblLayerGroup.addClass("group-content-table");
 		divLayers.append(tblLayerGroup).accordion("refresh");
 	});
-	bus.subscribe("add-layer", function(event, layerInfo) {
+	bus.listen("add-layer", function(event, layerInfo) {
 		var tblLayerGroup = $("#group-content-table-" + layerInfo.groupId);
 		if (tblLayerGroup.length == 0) {
-			bus.publish("error", "Layer " + layerInfo.name + " references nonexistent group: " + layerInfo.groupId);
+			bus.send("error", "Layer " + layerInfo.name + " references nonexistent group: " + layerInfo.groupId);
 		} else {
 			var trLayer = $("<tr/>").addClass("layer_row");
 
@@ -80,7 +80,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			}).click(function() {
 				divCheckbox.toggleClass("checked");
 				var checked = divCheckbox.hasClass("checked");
-				bus.publish("layer-visibility", [ layerInfo.id, checked ]);
+				bus.send("layer-visibility", [ layerInfo.id, checked ]);
 			});
 
 			tdVisibility.append(divCheckbox);

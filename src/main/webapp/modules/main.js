@@ -1,7 +1,7 @@
 require.config({
 	baseUrl : "modules",
 	// uncomment this line for debugging purposes in order to bust cache
-//	urlArgs : "bust=" + (new Date()).getTime(),
+	urlArgs : "bust=" + (new Date()).getTime(),
 	paths : {
 		"jquery" : "http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min",
 		"jquery-ui" : "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
@@ -35,19 +35,19 @@ require([ "jquery", "message-bus" ], function($, bus) {
 
 	require([ "customization" ]);
 
-	bus.subscribe("customization-received", function(event, customization) {
+	bus.listen("customization-received", function(event, customization) {
 		require(customization.modules, function() {
-			bus.publish("css-load", "styles/jquery-ui-1.10.3.custom.css");
-			bus.publish("css-load", "styles/jquery.fancybox.css");
+			bus.send("css-load", "styles/jquery-ui-1.10.3.custom.css");
+			bus.send("css-load", "styles/jquery.fancybox.css");
 
-			bus.publish("ajax", {
+			bus.send("ajax", {
 				dataType : "json",
 				url : "layers",
 				success : function(data, textStatus, jqXHR) {
 					var groups = data.groups;
 					for (var i = 0; i < groups.length; i++) {
 						var group = groups[i];
-						bus.publish("add-group", {
+						bus.send("add-group", {
 							"id" : group.id,
 							"name" : group.label
 						});
@@ -60,7 +60,7 @@ require([ "jquery", "message-bus" ], function($, bus) {
 								if (wmsLayer != null) {
 									var url = wmsLayer.baseUrl;
 									var wmsName = wmsLayer.wmsName;
-									bus.publish("add-layer", {
+									bus.send("add-layer", {
 										"id" : portalLayer.id,
 										"groupId" : group.id,
 										"url" : url,
@@ -72,15 +72,15 @@ require([ "jquery", "message-bus" ], function($, bus) {
 										"visible" : getValueOrDefault(portalLayer, "active", true)
 									});
 								} else {
-									bus.publish("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
+									bus.send("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
 								}
 
 							} else {
-								bus.publish("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
+								bus.send("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
 							}
 						}
 
-						bus.publish("initial-zoom");
+						bus.send("initial-zoom");
 					}
 				},
 				errorMsg : "Cannot obtain layers from the server"

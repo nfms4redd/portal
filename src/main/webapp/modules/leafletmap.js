@@ -1,6 +1,6 @@
 define([ "jquery", "message-bus", "leaflet" ], function($, bus, L) {
-	bus.subscribe("init-map", function(event, div) {
-		bus.publish("css-load", "http://cdn.leafletjs.com/" + "leaflet-0.6.4/leaflet.css");
+	bus.listen("init-map", function(event, div) {
+		bus.send("css-load", "http://cdn.leafletjs.com/" + "leaflet-0.6.4/leaflet.css");
 
 		var divMap = $("<div/>").css("width", "100%").css("height", "100%").attr("id", "map");
 		div.append(divMap);
@@ -14,7 +14,7 @@ define([ "jquery", "message-bus", "leaflet" ], function($, bus, L) {
 		}).addTo(map);
 	});
 
-	bus.subscribe("add-layer", function(event, url, layerName) {
+	bus.listen("add-layer", function(event, url, layerName) {
 		if (map !== null) {
 			new L.TileLayer.WMS(url, {
 				layers : layerName,
