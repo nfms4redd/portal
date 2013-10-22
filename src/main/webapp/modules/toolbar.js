@@ -1,11 +1,7 @@
-define([ "jquery", "message-bus", "layout", "time-slider", "customization", "i18n" ], function($, bus, layout, timeSlider, customization, i18n) {
+define([ "jquery", "message-bus", "layout", "customization", "i18n" ], function($, bus, layout, customization, i18n) {
 	bus.send("css-load", "modules/toolbar.css");
 
 	var divToolbar = $("#" + layout.toolbarId);
-
-	var divTimeSlider = $("<div/>").attr("id", "time_slider_pane");
-	timeSlider("unique-slider", divTimeSlider);
-	divToolbar.append(divTimeSlider);
 
 	for (var i = 0; i < customization.languages.length; i++) {
 		var language = customization.languages[i];
@@ -16,15 +12,6 @@ define([ "jquery", "message-bus", "layout", "time-slider", "customization", "i18
 		}
 		divToolbar.append(btnLanguage);
 	}
-
-	bus.listen("add-layer", function(event, layerInfo) {
-		if (layerInfo.hasOwnProperty("timestamps")) {
-			var timestamps = layerInfo.timestamps;
-			for (var i = 0; i < timestamps.length; i++) {
-				bus.send("time-slider.add-timestamp.unique-slider", timestamps[i]);
-			}
-		}
-	});
-
+	
 	return divToolbar;
 });
