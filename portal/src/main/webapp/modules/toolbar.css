@@ -44,22 +44,3 @@
 	height: 30px;
 	background-color: #456;
 }
-
-#time_slider_label {
-	position: absolute;
-	color: #fff;
-	padding: 0;
-	margin: 0;
-	left: 10px;
-	top: 8px;
-	font-size: 11px;
-}
-
-#time_slider {
-	position: absolute;
-	left: 100px;
-	top: 10px;
-	width: 60px;
-	padding: 0;
-	margin: 0;
-}
