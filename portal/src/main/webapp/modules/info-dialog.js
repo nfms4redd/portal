@@ -1,7 +1,7 @@
 define([ "jquery", "message-bus" ], function($, bus) {
-	bus.publish("css-load", "modules/info-dialog.css");
+	bus.send("css-load", "modules/info-dialog.css");
 
-	bus.subscribe("info-features", function(event, features, x, y) {
+	bus.listen("info-features", function(event, features, x, y) {
 		// re-project to Google projection
 		var epsg4326 = new OpenLayers.Projection("EPSG:4326");
 		var epsg900913 = new OpenLayers.Projection("EPSG:900913");
@@ -40,10 +40,10 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			tr1.append(td1);
 			table.append(tr1);
 			table.mouseover(function() {
-				bus.publish("highlight-feature", [ feature ]);
+				bus.send("highlight-feature", [ feature ]);
 			});
 			table.mouseout(function() {
-				bus.publish("clear-highlighted-features");
+				bus.send("clear-highlighted-features");
 			});
 
 			var info = $("<table/>");
@@ -61,7 +61,7 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			table.append(tr2);
 
 			td2.append("<img src=\"styles/images/ajax-loader.gif\" alt=\"wait\"/>");
-			bus.publish("ajax", {
+			bus.send("ajax", {
 				url : 'indicators?layerId=' + qualifiedLayerId,
 				success : function(indicators, textStatus, jqXHR) {
 					for (i = 0; i < indicators.length; i++) {

@@ -7,11 +7,11 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		"allOverlays" : true
 	});
 
-	bus.subscribe("initial-zoom", function(event, layerInfo) {
+	bus.listen("initial-zoom", function(event, layerInfo) {
 		map.zoomToMaxExtent();
 	});
 
-	bus.subscribe("add-layer", function(event, layerInfo) {
+	bus.listen("add-layer", function(event, layerInfo) {
 		var layer = new OpenLayers.Layer.WMS("WMS layer", layerInfo.url, {
 			layers : layerInfo.wmsName,
 			transparent : true
@@ -23,10 +23,10 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		if (map !== null) {
 			map.addLayer(layer);
 		}
-		bus.publish("maplayer-added", [ layer, layerInfo ]);
+		bus.send("maplayer-added", [ layer, layerInfo ]);
 	});
 
-	bus.subscribe("layer-visibility", function(event, layerId, visibility) {
+	bus.listen("layer-visibility", function(event, layerId, visibility) {
 		var layer = map.getLayer(layerId);
 		layer.setVisibility(visibility);
 	});

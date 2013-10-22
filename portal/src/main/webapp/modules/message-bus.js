@@ -3,10 +3,10 @@ define([ "jquery" ], function($) {
 	var messageBus = {};
 	
 	return {
-		publish : function(name, parameters) {
+		send : function(name, parameters) {
 			$(messageBus).trigger(name, parameters);
 		},
-		subscribe : function(name, callBack) {
+		listen : function(name, callBack) {
 			$(messageBus).bind(name, callBack);
 		}
 	};

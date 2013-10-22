@@ -17,7 +17,7 @@ define([ "olmap", "message-bus" ], function(map, bus) {
 		eventListeners : {
 			getfeatureinfo : function(evt) {
 				if (evt.features && evt.features.length) {
-					bus.publish("info-features", [ evt.features, evt.xy.x, evt.xy.y ]);
+					bus.send("info-features", [ evt.features, evt.xy.x, evt.xy.y ]);
 				}
 			}
 		},
@@ -30,7 +30,7 @@ define([ "olmap", "message-bus" ], function(map, bus) {
 	map.addControl(control);
 	control.activate();
 
-	bus.subscribe("maplayer-added", function(event, layer, layerInfo) {
+	bus.listen("maplayer-added", function(event, layer, layerInfo) {
 		if (layerInfo.queryable) {
 			if (control.layers == null) {
 				control.layers = new Array();

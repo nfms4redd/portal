@@ -4,7 +4,7 @@
  */
 define([ "jquery", "message-bus" ], function($, bus) {
 
-	bus.subscribe("ajax", function(event, ajaxParams) {
+	bus.listen("ajax", function(event, ajaxParams) {
 		/*
 		 * The language code is not always available, so we can only get it from
 		 * the URL
@@ -39,7 +39,7 @@ define([ "jquery", "message-bus" ], function($, bus) {
 				console.log(e);
 				message = jqXHR.status + ": " + unrecognized;
 			}
-			bus.publish("error", message);
+			bus.send("error", message);
 		};
 
 		$.ajax(ajaxParams);

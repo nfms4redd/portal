@@ -19,7 +19,7 @@ define([ "jquery", "message-bus", "jquery-ui", "i18n" ], function($, bus, ui, i1
 				var d = new Date();
 				d.setISO8601(timestamps[ui.value]);
 				divTimeSliderLabel.text(getLocalizedDate(timestamps[ui.value]));
-				bus.publish("time-slider.selection." + id, d);
+				bus.send("time-slider.selection." + id, d);
 			}
 		});
 		divTimeSlider.slider("option", "min", 0);
@@ -28,7 +28,7 @@ define([ "jquery", "message-bus", "jquery-ui", "i18n" ], function($, bus, ui, i1
 		var divTimeSliderLabel = $("<div/>").attr("id", "time_slider_label_" + id);
 		div.append(divTimeSliderLabel);
 
-		bus.subscribe("time-slider.add-timestamp." + id, function(event, timestamp) {
+		bus.listen("time-slider.add-timestamp." + id, function(event, timestamp) {
 			var exists = false;
 			for (var i = 0; i < timestamps.length; i++) {
 				if (timestamps[i] === timestamp) {
