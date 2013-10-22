@@ -5,6 +5,8 @@ define([ "jquery" ], function($) {
 	var divBanner = $("<div/>").attr("id", "banner");
 	divHeader.append(divBanner);
 	var divToolbar = $("<div/>").attr("id", "toolbar");
+	var divTimeSlider = $("<div/>").attr("id", "time_slider_pane");
+	divToolbar.append(divTimeSlider);
 	divHeader.append(divToolbar);
 	body.append(divHeader);
 
@@ -19,6 +21,7 @@ define([ "jquery" ], function($) {
 	return {
 		"bannerId" : divBanner.attr("id"),
 		"toolbarId" : divToolbar.attr("id"),
+		"timeSliderId" : divTimeSlider.attr("id"),
 		"mapId" : divMap.attr("id"),
 		"layersId" : divLayerList.attr("id")
 	};
