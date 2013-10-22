@@ -1,1 +1,0 @@
-define([ "jquery", "olmap", "banner", "toolbar", "layer-list", "info-control", "info-dialog" ]);
