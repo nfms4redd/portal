@@ -1,0 +1,147 @@
+Repaso servlets
+===============
+
+TODO
+
+Comentar las dos versiones existentes: Servlet 2.x y Servlet 3.x
+
+Repaso jQuery
+=============
+
+Cómo crear componentes por programación. Cómo seleccionarlos.
+
+Getting started
+===============
+
+* Descarga e instalación de Eclipse IDE for Java EE Developers
+
+* Arrancar eclipse
+
+* Clonado del proyecto e importación en eclipse.
+
+Right click - import - git - specify url
+
+Use the New Project wizard -> Cancel
+
+New Project - Import existing maven project and select the cloned repository (may require installation of some plugins on eclipse that are not necessary for the development of the portal and are done automatically)
+
+Team - Switch to - New branch
+
+Cerrar el proyecto padre
+
+* Ejecución
+
+Descarga e instalación de tomcat
+
+Botón derecho -> Debug on server -> Apache Tomcat 7
+
+Open firefox to take a look
+
+Architecture
+============
+
+Arquitectura cliente servidor, donde hay una página web programada en javascript que realiza peticiones al servidor, éste responde generalmente con contenido en JSON y el cliente procesa ese contenido.
+
+Ejemplo: Carga de la aplicación con FireBug y observación en console de las dos llamadas.
+
+	Advertencia: El contenido de las llamadas o incluso las llamadas pueden cambiar porque el proyecto está en desarrollo, lo importante es entender la arquitectura y las llamadas utilizadas.
+
+Vamos a ver el código del servidor. ¿dónde podemos ver qué clase es la que implementa la llamada a customization? -> web.xml
+
+Vemos también la llamada a layers (notamos la excepción).
+
+Exploración del resto de web.xml
+	Context Listener
+	Lang filter: procesa el parametro "lang" de cualquier petición y lo transforma en el atributo "locale" de la request.
+	Indicators: Devuelve los indicadores que hay en el sistema para una capa dada.
+	Error management: Veremos con más detalle cómo utilizarlo. Servlet para gestionar los errores.
+	Proxy: Lo veremos cuando veamos OpenLayers.
+
+¿Qué hay en el cliente?
+
+	src/main/webapp
+
+	RequireJS
+	
+	modules
+	
+	index.html referencia a main.js y a partir de este momento, la aplicación cliente se compone sólo de módulos javascript.
+	
+	Configuración de modulos referencia el directorio "modules"
+	
+	Dentro de este directorio va a haber un grafo de modulos, dependiendo unos de otros. Algunos los hemos desarrollado nosotros y otros son librerías externas. Se puede ver en la configuración que hay que especificarle dónde están las librerías externas
+	
+	La configuración se sigue de una serie de llamadas "require" que lo que hacen es cargar módulos. Veremos en la parte del cliente cómo se cargan y definen estos módulos.
+	
+	En general, un módulo se compone de:
+		- dependencias (nombre y variable con el valor de retorno)
+		- variables locales del módulo
+		- funciones privadas
+		- inicialización
+		- valor de retorno
+	
+	Ejemplos
+		- Show toolbar initializing graphic components and listening for add-layer events
+		- Show map creating the component and listening for events that other components will send
+		- Show layout creating the HTML and returning an object
+		- Show layer-list reacting to the add-layer event
+		- Show main asking the server for the layers and triggering add-layer events
+		- Show communication adding the "lang" parameter to every call and managing the errors
+
+Open Layers
+============
+
+1) Create the HTML structure
+	- Create a folder in portal and access it through the HTTP protocol
+
+2) Create a map
+	- Usamos 900913 porque es la que se usa en el portal
+	
+3) Add some layers
+	- Las de tasmania funcionan siempre, las de ecuador se quedaron en 503 durante un tiempo
+
+4) Focus the map in the layers
+	
+Ejercicio: add the layers of ecuador and focus on Ecuador
+
+5) Show coordinates in lat/lon
+	- Easy way to get the coordinates to center
+	
+6) Algún otro control chulo (layer switcher, scale)
+
+7) Control para consultar información de la capa y mostrarla por la consola
+
+Ejercicio (si no funciona, tiramos de catastro):
+
+	function newIEELayer(name, wmsName) {
+		return new OpenLayers.Layer.WMS(name, "http://www.geoportaligm.gob.ec/nacional/wms", {
+			layers : wmsName,
+			transparent : true
+		}, {
+			"attribution" : "Información del Instituto Espacial Ecuatoriano"
+		})
+	}
+		map.addLayer(newIEELayer("Límite costanero", "igm:lim_costanero"));
+		map.addLayer(newIEELayer("Límite continental", "igm:limite"));
+		map.addLayer(newIEELayer("Provincias", "igm:provincias"));
+		map.addLayer(newIEELayer("Represas", "igm:represas"));
+		map.addLayer(newIEELayer("Ríos", "igm:rio_doble"));
+		map.addLayer(newIEELayer("Ferrocarril", "igm:ferrocarril"));
+		map.addLayer(newIEELayer("Vías", "igm:vias"));
+		map.addLayer(newIEELayer("Poblados", "igm:poblados"));
+		map.addLayer(newIEELayer("Aeropuertos", "igm:aeropuertos"));
+		map.addLayer(newIEELayer("Islas", "igm:islas"));
+
+Más información: http://xeoinquedos.wordpress.com/2011/05/20/material-para-el-curso-de-openlayers/
+
+Modulo en el cliente
+=====================
+
+Creación de un módulo que añada la atribución al mapa. En general: Hacer los mismos ejercicios de OpenLayers pero en el contexto de requirejs
+
+Módulo en el servidor
+=====================
+
+Lanzamiento de excepciones
+
+

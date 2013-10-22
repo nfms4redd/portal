@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet"
+	href="http://openlayers.org/dev/theme/default/style.css"
+	type="text/css">
+<script src="http://openlayers.org/dev/OpenLayers.js"></script>
+<script type="text/javascript">
+	function init() {
+		var mapCRS = new OpenLayers.Projection("EPSG:900913");
+		var epsg4326 = new OpenLayers.Projection("EPSG:4326");
+
+		var map = new OpenLayers.Map("map", {
+			theme : null,
+			projection : mapCRS,
+			units : "m",
+			allOverlays : true,
+			controls : []
+		});
+
+		map.addLayer(new OpenLayers.Layer.WMS("OpenLayers WMS", "http://vmap0.tiles.osgeo.org/wms/vmap0?", {
+			layers : "basic"
+		}, {
+			"attribution" : "Provided by osgeo"
+		}));
+		map.addLayer(new OpenLayers.Layer.WMS("Límites", "http://demo.opengeo.org/geoserver/wms", {
+			layers : "topp:tasmania_state_boundaries",
+			transparent : true
+		}));
+		map.addLayer(new OpenLayers.Layer.WMS("Carreteras", "http://demo.opengeo.org/geoserver/wms", {
+			layers : "topp:tasmania_roads",
+			transparent : true
+		}));
+		map.addLayer(new OpenLayers.Layer.WMS("Ciudades", "http://demo.opengeo.org/geoserver/wms", {
+			layers : "topp:tasmania_cities",
+			transparent : true
+		}));
+		map.addLayer(new OpenLayers.Layer.WMS("Zonas de agua", "http://demo.opengeo.org/geoserver/wms", {
+			layers : "topp:tasmania_water_bodies",
+			transparent : true
+		}));
+
+		map.addControl(new OpenLayers.Control.Navigation({
+			documentDrag : true,
+			zoomWheelEnabled : true
+		}));
+		map.addControl(new OpenLayers.Control.Attribution());
+		map.zoomToMaxExtent();
+	}
+</script>
+<style type="text/css">
+#map {
+	width: 500px;
+	height: 400px;
+	border: 1px solid black;
+}
+</style>
+</head>
+<body onLoad="init()">
+	<div id="map"></div>
+	<div id="info"></div>
+</body>
+</html>
+
