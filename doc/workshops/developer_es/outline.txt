@@ -164,7 +164,11 @@ Ejercicio:
 
 Ejercicio:
 
-Un módulo que instala una herramienta para obtener la temperatura de la API: http://openweathermap.org/api (example: http://api.openweathermap.org/data/2.5/weather?lat=0&lon=-99)
+* Un módulo que instala una herramienta para obtener la temperatura de la API: http://openweathermap.org/api (example: http://api.openweathermap.org/data/2.5/weather?lat=0&lon=-99)
+
+* Creación de un botón que instalar una capa fija creando un grupo fijo
+
+* Información personalizada para una capa en concreto
 
 Módulo en el servidor
 =====================
