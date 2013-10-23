@@ -10,6 +10,12 @@ Repaso jQuery
 
 Cómo crear componentes por programación. Cómo seleccionarlos.
 
+Introducción a Maven
+====================
+
+Introducción a requirejs y al message bus
+==========================================
+
 Getting started
 ===============
 
@@ -37,6 +43,11 @@ Botón derecho -> Debug on server -> Apache Tomcat 7
 
 Open firefox to take a look
 
+Arquitectura general
+====================
+
+PostGIS + Tomcat que contiene (GeoServer + frontend + backend)
+
 Architecture
 ============
 
@@ -48,7 +59,7 @@ Ejemplo: Carga de la aplicación con FireBug y observación en console de las do
 
 Vamos a ver el código del servidor. ¿dónde podemos ver qué clase es la que implementa la llamada a customization? -> web.xml
 
-Vemos también la llamada a layers (notamos la excepción).
+Vemos también la llamada a layers (hacemos notar la excepción).
 
 Exploración del resto de web.xml
 	Context Listener
@@ -91,8 +102,7 @@ Exploración del resto de web.xml
 Open Layers
 ============
 
-1) Create the HTML structure
-	- Create a folder in portal and access it through the HTTP protocol
+1) Create the HTML structure on any folder and access through file:// protocol
 
 2) Create a map
 	- Usamos 900913 porque es la que se usa en el portal
@@ -110,6 +120,7 @@ Ejercicio: add the layers of ecuador and focus on Ecuador
 6) Algún otro control chulo (layer switcher, scale)
 
 7) Control para consultar información de la capa y mostrarla por la consola
+	- Explicar el problem de cross domain: Create a folder in portal and access it through the HTTP protocol
 
 Ejercicio (si no funciona, tiramos de catastro):
 
@@ -132,16 +143,70 @@ Ejercicio (si no funciona, tiramos de catastro):
 		map.addLayer(newIEELayer("Aeropuertos", "igm:aeropuertos"));
 		map.addLayer(newIEELayer("Islas", "igm:islas"));
 
-Más información: http://xeoinquedos.wordpress.com/2011/05/20/material-para-el-curso-de-openlayers/
+Más información: 
+
+	- Web de OpenLayers
+	- http://xeoinquedos.wordpress.com/2011/05/20/material-para-el-curso-de-openlayers/
 
 Modulo en el cliente
 =====================
 
-Creación de un módulo que añada la atribución al mapa. En general: Hacer los mismos ejercicios de OpenLayers pero en el contexto de requirejs
+Creación de un módulo que añada la escala
+Creación de un módulo que añada la posición del mapa.
+
+Ejercicio: 
+- Creación de un módulo que añada un mapa overview
+
+Creación de un módulo que instala un botón que abre un diálogo con una URL, un nombre de capa y un grupo en el que añadir la capa.
+
+Ejercicio:
+- Botón para ocultar todas las capas
+
+Ejercicio:
+
+Un módulo que instala una herramienta para obtener la temperatura de la API: http://openweathermap.org/api (example: http://api.openweathermap.org/data/2.5/weather?lat=0&lon=-99)
 
 Módulo en el servidor
 =====================
 
-Lanzamiento de excepciones
+- Filtro: Logging filter (Check accessing with firefox)
+
+- Servlet Context: Configuration read that tells if we should filter or not. (Check accessing with firefox) 
+
+- Servlet: Eliminación de un módulo (modificando el Config para que refresque)
+
+	Explicar el Lanzamiento de excepciones
+	
+Ejercicio: Listado de las capas disponibles en la base de datos PostGIS
+
+Ejercicio completo
+===================
+
+Personalización de indicadores
+-------------------------------
+
+Creación de un indicador HTML
+
+Creación de un indicador dinámico
+----------------------------------
+
+Creación de un servicio que saca información de la base de datos y muestra algúnos datos
+
+Alertas tala fuera de licencias
+--------------------------------
+
+Creación de herramienta para notificar tala
+
+Validación vía QGIS
+
+Creación de la vista con las alertas de las talas fuera de las zonas de licencias que han sido validadas
+
+Creación de la vista con las alertas por validar que están fuera de una zona de licencia
+
+Carga de las vistas en el sistema
+
+Consulta de estadísticas en el evento mouse over
+
+
 
 
