@@ -23,7 +23,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	// divLayerListSelector.append(rdoSelectedLayers);
 
 	var divLayersContainer = $("#" + layout.layersId);
-	
+
 	var divActiveLayers = $("<div/>").attr("id", "active_layers");
 	var h3Title = $("<h3/>").html("Selected layers");
 	divActiveLayers.append(h3Title);
@@ -33,6 +33,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	divLayers.addClass("ui-accordion-icons");
 	divLayers.accordion({
 		"animate" : false,
+		"heightStyle" : "content",
 		/*
 		 * Collapse all content since otherwise the accordion sets the 'display'
 		 * to 'block' instead than to 'table'
@@ -107,7 +108,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			trLayer.append(tdInfo);
 
 			tblLayerGroup.append(trLayer);
-			divLayers.append(tblLayerGroup).accordion("refresh");
+			divLayers.accordion("refresh");
 		}
 	});
 
