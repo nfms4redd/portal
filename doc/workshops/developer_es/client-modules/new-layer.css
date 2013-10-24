@@ -1,0 +1,8 @@
+#new-layer-button {
+	position: absolute;
+	left: 10px;
+}
+
+input, select {
+	width: 95%;
+}
