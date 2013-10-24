@@ -27,8 +27,8 @@ define([ "olmap", "message-bus" ], function(map, bus) {
 		}
 	});
 
-	map.addControl(control);
-	control.activate();
+	bus.send("set-default-exclusive-control", [control]);
+	bus.send("activate-default-exclusive-control");
 
 	bus.listen("maplayer-added", function(event, layer, layerInfo) {
 		if (layerInfo.queryable) {

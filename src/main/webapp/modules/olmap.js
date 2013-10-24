@@ -1,6 +1,20 @@
 define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	var map = null;
-	
+	var currentControl = null;
+	var defaultExclusiveControl = null;
+
+	var activateExclusiveControl = function(event, control) {
+		if (currentControl != null) {
+			currentControl.deactivate();
+			map.removeControl(currentControl);
+		}
+
+		map.addControl(control);
+		control.activate();
+
+		currentControl = control;
+	};
+
 	OpenLayers.ProxyHost = "proxy?url=";
 
 	map = new OpenLayers.Map(layout.mapId, {
@@ -29,6 +43,18 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	bus.listen("layer-visibility", function(event, layerId, visibility) {
 		var layer = map.getLayer(layerId);
 		layer.setVisibility(visibility);
+	});
+
+	bus.listen("activate-exclusive-control", function(event, control) {
+		activateExclusiveControl(event, control);
+	});
+
+	bus.listen("activate-default-exclusive-control", function(event) {
+		activateExclusiveControl(event, defaultExclusiveControl);
+	});
+
+	bus.listen("set-default-exclusive-control", function(event, control) {
+		defaultExclusiveControl = control;
 	});
 
 	return map;
