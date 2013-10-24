@@ -1,23 +1,15 @@
-Repaso servlets
-===============
+Monday 1.5 + 2.5
+=================
 
-TODO
+Instalar el proyecto en eclipse y entender su estructura interna y su arquitectura
 
-Comentar las dos versiones existentes: Servlet 2.x y Servlet 3.x
+Architecture general
+---------------------
 
-Repaso jQuery
-=============
+* PostGIS + Tomcat que contiene (GeoServer + frontend + backend)
 
-Cómo crear componentes por programación. Cómo seleccionarlos.
-
-Introducción a Maven
-====================
-
-Introducción a requirejs y al message bus
-==========================================
-
-Getting started
-===============
+Instalación frontend
+-----------------------
 
 * Descarga e instalación de Eclipse IDE for Java EE Developers
 
@@ -43,13 +35,8 @@ Botón derecho -> Debug on server -> Apache Tomcat 7
 
 Open firefox to take a look
 
-Arquitectura general
-====================
-
-PostGIS + Tomcat que contiene (GeoServer + frontend + backend)
-
-Architecture
-============
+Arquitectura del frontend
+-----------------------------
 
 Arquitectura cliente servidor, donde hay una página web programada en javascript que realiza peticiones al servidor, éste responde generalmente con contenido en JSON y el cliente procesa ese contenido.
 
@@ -99,8 +86,35 @@ Exploración del resto de web.xml
 		- Show main asking the server for the layers and triggering add-layer events
 		- Show communication adding the "lang" parameter to every call and managing the errors
 
-Open Layers
-============
+Estructura del proyecto
+------------------------
+
+	Explicación de los distintos proyectos
+	
+	Explicación de la arquitectura típica de un proyecto maven
+
+Introducción a maven
+---------------------
+
+Ejercicio: Crear un proyecto maven
+
+Ejercicio: Usar una dependencia
+
+Ejercicio: Instalar la plataforma
+
+Tuesday 2.5 + 2.5
+==================
+
+Repaso interactivo día anterior
+---------------------------------
+
+Intro JQuery
+-------------
+
+Cómo crear componentes por programación. Cómo seleccionarlos.
+
+Intro OpenLayers
+-----------------
 
 1) Create the HTML structure on any folder and access through file:// protocol
 
@@ -121,6 +135,8 @@ Ejercicio: add the layers of ecuador and focus on Ecuador
 
 7) Control para consultar información de la capa y mostrarla por la consola
 	- Explicar el problem de cross domain: Create a folder in portal and access it through the HTTP protocol
+	
+8) Custom click
 
 Ejercicio (si no funciona, tiramos de catastro):
 
@@ -148,8 +164,19 @@ Más información:
 	- Web de OpenLayers
 	- http://xeoinquedos.wordpress.com/2011/05/20/material-para-el-curso-de-openlayers/
 
+Wednesday and Thursday 2.5 + 2.5 + 2.5 + 2.5
+==============================================
+
+El primer día va desde el cliente al servidor y el segundo al revés.
+
 Modulo en el cliente
-=====================
+---------------------
+
+Intro a requirejs y al event bus
+.................................
+
+Creación de módulos en el portal
+......................................
 
 Creación de un módulo que añada la escala
 Creación de un módulo que añada la posición del mapa.
@@ -160,18 +187,19 @@ Ejercicio:
 Creación de un módulo que instala un botón que abre un diálogo con una URL, un nombre de capa y un grupo en el que añadir la capa.
 
 Ejercicio:
-- Botón para ocultar todas las capas
+* Creación de un botón que instalar una capa fija creando un grupo fijo
 
 Ejercicio:
 
-* Un módulo que instala una herramienta para obtener la temperatura de la API: http://openweathermap.org/api (example: http://api.openweathermap.org/data/2.5/weather?lat=0&lon=-99)
-
-* Creación de un botón que instalar una capa fija creando un grupo fijo
+* Un módulo que instala una herramienta para obtener la temperatura de la API: http://openweathermap.org/api
+	- Preguntar si es a esto a lo que se refieren con sensores
 
 * Información personalizada para una capa en concreto
 
 Módulo en el servidor
-=====================
+----------------------
+
+Comentar las dos versiones existentes: Servlet 2.x y Servlet 3.x
 
 - Filtro: Logging filter (Check accessing with firefox)
 
@@ -183,21 +211,24 @@ Módulo en el servidor
 	
 Ejercicio: Listado de las capas disponibles en la base de datos PostGIS
 
-Ejercicio completo
-===================
+Friday 2.5 + 1.5
+================
+
+Ejercicios completos
+--------------------
 
 Personalización de indicadores
--------------------------------
+................................
 
 Creación de un indicador HTML
 
 Creación de un indicador dinámico
-----------------------------------
+...................................
 
 Creación de un servicio que saca información de la base de datos y muestra algúnos datos
 
 Alertas tala fuera de licencias
---------------------------------
+................................
 
 Creación de herramienta para notificar tala
 
