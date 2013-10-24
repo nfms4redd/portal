@@ -6,23 +6,26 @@ define([ "jquery", "message-bus" ], function($, bus) {
 
 	bus.listen("ajax", function(event, ajaxParams) {
 		/*
-		 * The language code is not always available, so we can only get it from
-		 * the URL
+		 * Add "lang" parameter to calls to our server
 		 */
-		var langParameter = "";
-		var langParameterValue = decodeURIComponent((new RegExp('[?|&]lang=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [ , "" ])[1].replace(
-				/\+/g, '%20'))
-				|| null;
-		if (langParameterValue !== null) {
-			langParameter = "lang=" + langParameterValue;
-		}
+		if (ajaxParams.url.indexOf("proxy") !== 0) {
+			/*
+			 * The language code is not always available, so we can only get it
+			 * from the URL
+			 */
+			var langParameter = "";
+			var langParameterValue = decodeURIComponent((new RegExp('[?|&]lang=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [ , "" ])[1].replace(/\+/g, '%20')) || null;
+			if (langParameterValue !== null) {
+				langParameter = "lang=" + langParameterValue;
+			}
 
-		if (ajaxParams.hasOwnProperty("data")) {
-			ajaxParams.data += "&";
-		} else {
-			ajaxParams.data = "";
+			if (ajaxParams.hasOwnProperty("data")) {
+				ajaxParams.data += "&";
+			} else {
+				ajaxParams.data = "";
+			}
+			ajaxParams.data += langParameter;
 		}
-		ajaxParams.data += langParameter;
 
 		ajaxParams.error = function(jqXHR, textStatus, errorThrown) {
 			var message = ajaxParams.errorMsg + ". ";
