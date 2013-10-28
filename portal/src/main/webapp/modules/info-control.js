@@ -1,4 +1,4 @@
-define([ "olmap", "message-bus" ], function(map, bus) {
+define([ "map", "message-bus" ], function(map, bus) {
 
 	var control = new OpenLayers.Control.WMSGetFeatureInfo({
 		url : null,
