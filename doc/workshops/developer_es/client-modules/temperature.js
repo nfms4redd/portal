@@ -1,8 +1,9 @@
-define([ "message-bus", "layout", "olmap", "jquery", "jquery-ui", "toolbar" ], function(bus, layout, map, $) {
+define([ "message-bus", "layout", "map", "jquery", "jquery-ui", "toolbar" ], function(bus, layout, map, $) {
 	bus.send("css-load", "modules/temperature.css");
 
 	var getTemperature = function(e) {
 		var lonlat = map.getLonLatFromPixel(e.xy);
+		lonlat.transform(map.projection, new OpenLayers.Projection("EPSG:4326"));
 		var requestData = {
 			url : "http://api.openweathermap.org/data/2.5/weather?lat=" + //
 			lonlat.lat + "&lon=" + lonlat.lon
