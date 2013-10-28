@@ -17,21 +17,23 @@ Instalación frontend
 
 * Clonado del proyecto e importación en eclipse.
 
-Right click - import - git - specify url
+Right click - import - git - specify url: git@github.com:nfms4redd/nfms.git
+
+Local destination: The one of the repository
 
 Use the New Project wizard -> Cancel
 
-New Project - Import existing maven project and select the cloned repository (may require installation of some plugins on eclipse that are not necessary for the development of the portal and are done automatically)
+New Project - Import existing maven project and select the cloned repository (may require installation of some plugins on eclipse that are not necessary for the development of the portal and are done automatically (no es grave si fallan))
 
-Team - Switch to - New branch
+Team - Switch to - New branch (simplification)
 
-Cerrar el proyecto padre
+Cerrar el proyecto raíz
 
 * Ejecución
 
 Descarga e instalación de tomcat
 
-Botón derecho -> Debug on server -> Apache Tomcat 7
+Botón derecho en "portal" -> Debug on server -> Apache Tomcat 7
 
 Open firefox to take a look
 
@@ -65,9 +67,9 @@ Exploración del resto de web.xml
 	
 	index.html referencia a main.js y a partir de este momento, la aplicación cliente se compone sólo de módulos javascript.
 	
-	Configuración de modulos referencia el directorio "modules"
+	La configuración de módulos en requirejs referencia el directorio "modules"
 	
-	Dentro de este directorio va a haber un grafo de modulos, dependiendo unos de otros. Algunos los hemos desarrollado nosotros y otros son librerías externas. Se puede ver en la configuración que hay que especificarle dónde están las librerías externas
+	Dentro de este directorio va a haber un conjunto de módulos que cuyas dependencias de unos en otros forman un grafo. Algunos los hemos desarrollado nosotros y otros son librerías externas. Se puede ver en la configuración que hay que especificarle dónde están las librerías externas
 	
 	La configuración se sigue de una serie de llamadas "require" que lo que hacen es cargar módulos. Veremos en la parte del cliente cómo se cargan y definen estos módulos.
 	
@@ -121,24 +123,16 @@ Intro OpenLayers
 2) Create a map
 	- Usamos 900913 porque es la que se usa en el portal
 	
+- Ejercicio: cambiar la proyección a 4326
+- Ejercicio: eliminar algunos controles y ver cuáles son los cambios que operan en el mapa
+
 3) Add some layers
 	- Las de tasmania funcionan siempre, las de ecuador se quedaron en 503 durante un tiempo
 
 4) Focus the map in the layers
+	- Comment the zoom levels
 	
-Ejercicio: add the layers of ecuador and focus on Ecuador
-
-5) Show coordinates in lat/lon
-	- Easy way to get the coordinates to center
-	
-6) Algún otro control chulo (layer switcher, scale)
-
-7) Control para consultar información de la capa y mostrarla por la consola
-	- Explicar el problem de cross domain: Create a folder in portal and access it through the HTTP protocol
-	
-8) Custom click
-
-Ejercicio (si no funciona, tiramos de catastro):
+Ejercicio: add the layers of ecuador and focus on Ecuador: http://www.geoportaligm.gob.ec/nacional/wms y igm:lim_costanero, igm:limite, igm:provincias, igm:represas, igm:rio_doble, igm:ferrocarril, igm:vias, igm:poblados, igm:aeropuertos, igm:islas
 
 	function newIEELayer(name, wmsName) {
 		return new OpenLayers.Layer.WMS(name, "http://www.geoportaligm.gob.ec/nacional/wms", {
@@ -158,6 +152,19 @@ Ejercicio (si no funciona, tiramos de catastro):
 		map.addLayer(newIEELayer("Poblados", "igm:poblados"));
 		map.addLayer(newIEELayer("Aeropuertos", "igm:aeropuertos"));
 		map.addLayer(newIEELayer("Islas", "igm:islas"));
+
+5) Show coordinates
+	
+6) Show coordinates in lat/lon
+	- Easy way to get the coordinates to center
+	- Ejercicio: centrar en Italia
+
+7) Algún otro control chulo (layer switcher, scale)
+
+8) Control para consultar información de la capa y mostrarla por la consola
+	- Explicar el problem de cross domain: Create a folder in portal and access it through the HTTP protocol
+	
+9) Custom click con temperatura
 
 Más información: 
 

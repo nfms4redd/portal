@@ -56,29 +56,6 @@
 		map.addControl(new OpenLayers.Control.LayerSwitcher());
 		map.addControl(new OpenLayers.Control.Scale());
 		map.addControl(new OpenLayers.Control.Attribution());
-		var infoControl = new OpenLayers.Control.WMSGetFeatureInfo({
-			title : 'Identify features by clicking',
-			layers : null,
-			queryVisible : true,
-			infoFormat : 'application/vnd.ogc.gml',
-			hover : false,
-			eventListeners : {
-				getfeatureinfo : function(evt) {
-					var text = "Found " + evt.features.length + " results<br/>";
-					for (var i = 0; i < evt.features.length; i++) {
-						var feature = evt.features[i];
-						text += "Feature " + i + ": ";
-						for ( var attribute in feature.attributes) {
-							text += attribute + "=" + feature.attributes[attribute] + ";";
-						}
-						text += "<br/>";
-					}
-					document.getElementById('info').innerHTML = text;
-				}
-			}
-		});
-		map.addControl(infoControl);
-		infoControl.activate();
 		map.setCenter(new OpenLayers.LonLat(145, -43).transform(epsg4326, mapCRS), 5);
 	}
 </script>
