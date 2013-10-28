@@ -44,8 +44,7 @@
 		<module>admin-portal</module>
 		<module>mosaicStats</module>
 		<module>commons</module>
-    <module>webmodules</module>
-  </modules>
+  	</modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
