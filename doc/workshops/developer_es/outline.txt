@@ -127,7 +127,7 @@ Ejemplo "atributos": con .attr podemos cambiar los atributos de los elementos de
 
 	Ejercicio: Cambiar la dirección del enlace
 	
-	Ejemplo: ¿Y si en lugar de cambiar el atributo lo queremos  
+	Ejemplo: ¿Y si en lugar de cambiar el atributo lo queremos es leer su valor?
 	
 	Pregunta: ¿Y si quisiéramos cambiar el texto del enlace?
 
