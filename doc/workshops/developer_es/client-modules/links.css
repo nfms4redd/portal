@@ -1,0 +1,17 @@
+#link-bar {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	background-color: #000;
+	padding: 0.5em;
+	z-index: 2000;
+}
+
+#link-bar a {
+	color: #FFF;
+	text-decoration: none;
+	font-size: 12px;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	margin-left: 0.5em;
+}
