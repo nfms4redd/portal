@@ -18,9 +18,14 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	OpenLayers.ProxyHost = "proxy?url=";
 
 	map = new OpenLayers.Map(layout.mapId, {
-		"allOverlays" : true
+		theme : null,
+		projection : new OpenLayers.Projection("EPSG:900913"),
+		displayProjection : new OpenLayers.Projection("EPSG:4326"),
+		units : "m",
+		allOverlays : true,
+		controls : []
 	});
-
+	map.addControl(new OpenLayers.Control.Navigation());
 	bus.listen("initial-zoom", function(event, layerInfo) {
 		map.zoomToMaxExtent();
 	});
@@ -28,6 +33,10 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	bus.listen("add-layer", function(event, layerInfo) {
 		var layer = new OpenLayers.Layer.WMS("WMS layer", layerInfo.url, {
 			layers : layerInfo.wmsName,
+			buffer : 0,
+			transitionEffect : "resize",
+			removeBackBufferDelay : 0,
+			isBaseLayer : false,
 			transparent : true
 		});
 		layer.id = layerInfo.id;
