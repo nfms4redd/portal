@@ -6,15 +6,15 @@ define([ "message-bus", "layout", "jquery", "toolbar" ], function(bus, layout, $
 	btnNewLayer.addClass("blue_button lang_button");
 	btnNewLayer.click(function() {
 		bus.send("add-group", {
-			"id" : "spain",
-			"name" : "Datos de España"
+			"id" : "meteo",
+			"name" : "Datos meteorológicos"
 		});
 		bus.send("add-layer", {
-			"id" : "spain-catastro",
-			"groupId" : "spain",
-			"url" : "http://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx",
-			"wmsName" : "Catastro",
-			"name" : "Catastro",
+			"id" : "meteo-eeuu",
+			"groupId" : "meteo",
+			"url" : "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi",
+			"wmsName" : "nexrad-n0r-wmst",
+			"name" : "EEUU",
 			"visible" : "true"
 		});
 	});
