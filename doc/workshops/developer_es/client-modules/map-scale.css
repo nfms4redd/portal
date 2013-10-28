@@ -1,0 +1,9 @@
+.olControlScale {
+    background-color: #222222;
+    bottom: 0;
+    color: #FFFFFF;
+    padding: 10px;
+    position: absolute;
+    right: 0;
+    z-index: 1003;
+}
