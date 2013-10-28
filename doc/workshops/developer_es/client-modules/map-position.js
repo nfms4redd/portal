@@ -1,4 +1,6 @@
-define([ "olmap", "i18n" ], function(map, i18n) {
+define([ "map", "message-bus", "i18n" ], function(map, bus, i18n) {
+	bus.send("css-load", "modules/map-position.css");
+
 	map.addControl(new OpenLayers.Control.MousePosition({
 		prefix : "<a target='_blank' " + //
 		"href='http://spatialreference.org/ref/epsg/4326/'>" + // 
