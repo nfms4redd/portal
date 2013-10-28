@@ -113,7 +113,41 @@ Repaso interactivo día anterior
 Intro JQuery
 -------------
 
-Cómo crear componentes por programación. Cómo seleccionarlos.
+(El objetivo es que se entienda, no aprender a usarlo. Se aprenderá a utilizar durante el curso viendo muchos ejemplos. Es importante que si algo se olvida durante el curso se comente para poder seguir durante el mismo entendiendo los ejemplos.)
+
+JQuery nos proporciona:
+
+- selección y manipulación del dom $()
+- utilidades varias $.xxx() 
+	- llamadas ajax
+
+Ejemplo "seleccion": Nos permite obtener un objeto jquery para actuar sobre el objeto que se pasa como parámetro
+
+Ejemplo "atributos": con .attr podemos cambiar los atributos de los elementos del documento.
+
+	Ejercicio: Cambiar la dirección del enlace
+	
+	Ejemplo: ¿Y si en lugar de cambiar el atributo lo queremos  
+	
+	Pregunta: ¿Y si quisiéramos cambiar el texto del enlace?
+
+Ejemplo "contenido": con .html podemos establecer el contenido
+
+	Ejercicio: Cambiar el contenido del span
+	
+	Ejercicio: Cambiar el contenido del segundo div
+	
+	Normalmente se suele hacer la selección por id o por clase (mostrar ejemplos)
+	
+Ejemplo "nuevos": con .append y .appendTo podemos anidar elementos (mostrar ambas posibilidades)
+
+	Ejemplo: Mostrar todo en una línea
+	
+	Ejercicio: Ponerlo todo en una línea usando body.append en lugar de div.appendTo
+
+	Ejercicio: Eliminar todos los elementos y dejar en el body sólo el texto "esta página está vacía" (se pretende mostrar la dinámica de buscar en internet)
+	
+	Ejercicio: Crear la página inicial (hola mundo y el enlace) únicamente por programación
 
 Intro OpenLayers
 -----------------
@@ -182,14 +216,29 @@ Modulo en el cliente
 Intro a requirejs y al event bus
 .................................
 
+Aprender a crear nuevos módulos
+
+Desarrollar teniendo esto en cuenta:
+	* Concepto de aplicación como módulos escuchando eventos
+	* Carga de los CSS
+
 Creación de módulos en el portal
 ......................................
 
-Creación de un módulo que añada la escala
+Explicación de los módulos actuales
+
+- i18n
+
+	Ejemplo: título
+	
+	Ejercicio: Poner abajo a la izquierda enlaces traducidos
+
+- documentación sobre los eventos escuchados
+
 Creación de un módulo que añada la posición del mapa.
 
 Ejercicio: 
-- Creación de un módulo que añada un mapa overview
+- Creación de un módulo que añada la escala
 
 Creación de un módulo que instala un botón que abre un diálogo con una URL, un nombre de capa y un grupo en el que añadir la capa.
 
@@ -200,8 +249,6 @@ Ejercicio:
 
 * Un módulo que instala una herramienta para obtener la temperatura de la API: http://openweathermap.org/api
 	- Preguntar si es a esto a lo que se refieren con sensores
-
-* Información personalizada para una capa en concreto
 
 Módulo en el servidor
 ----------------------
