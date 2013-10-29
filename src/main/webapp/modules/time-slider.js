@@ -10,7 +10,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		if (arr[1]) {
 			arr[1] = months[arr[1] - 1];
 		}
-		return arr.reverse().join(" ");
+		return arr[1] + " " + arr[0];
 	};
 
 	var div = $("#" + layout.timeSliderId);

@@ -59,17 +59,20 @@ require([ "jquery", "message-bus" ], function($, bus) {
 								if (wmsLayer != null) {
 									var url = wmsLayer.baseUrl;
 									var wmsName = wmsLayer.wmsName;
-									bus.send("add-layer", {
+									var layerInfo = {
 										"id" : portalLayer.id,
 										"groupId" : group.id,
 										"url" : url,
 										"wmsName" : wmsName,
 										"name" : portalLayer.label,
 										"infoLink" : "http://rdc-snsf.org/static/loc/en/html/bluemarble_def.html",
-										"timestamps" : [ "2001-2-23", "2003-5-12" ],
 										"queryable" : wmsLayer.queryable,
 										"visible" : getValueOrDefault(portalLayer, "active", true)
-									});
+									};
+									if (wmsLayer.hasOwnProperty("wmsTime")) {
+										layerInfo.timestamps = wmsLayer.wmsTime.split(",");
+									}
+									bus.send("add-layer", layerInfo);
 								} else {
 									bus.send("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
 								}

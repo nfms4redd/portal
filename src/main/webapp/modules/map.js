@@ -2,6 +2,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	var map = null;
 	var currentControl = null;
 	var defaultExclusiveControl = null;
+	var timeDependentLayers = [];
 
 	var activateExclusiveControl = function(event, control) {
 		if (currentControl != null) {
@@ -43,6 +44,9 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		if (!layerInfo.visible) {
 			layer.setVisibility(false);
 		}
+		if (layerInfo.hasOwnProperty("timestamps")) {
+			timeDependentLayers.push(layer);
+		}
 		if (map !== null) {
 			map.addLayer(layer);
 		}
@@ -64,6 +68,15 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 
 	bus.listen("set-default-exclusive-control", function(event, control) {
 		defaultExclusiveControl = control;
+	});
+
+	bus.listen("time-slider.selection", function(event, date) {
+		for (var i = 0; i < timeDependentLayers.length; i++) {
+			var timeDependentLayer = timeDependentLayers[i];
+			timeDependentLayer.mergeNewParams({
+				"time" : date.toISO8601String()
+			});
+		}
 	});
 
 	return map;
