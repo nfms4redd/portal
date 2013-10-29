@@ -47,7 +47,7 @@ public class Config {
 	private static Logger logger = Logger.getLogger(Config.class);
 
 	private File dir = null;
-	private Properties properties = null;
+	private CachedProperties cachedProperties;
 
 	private String rootPath;
 	private String configInitParameter;
@@ -56,6 +56,9 @@ public class Config {
 	public Config(String rootPath, String configInitParameter) {
 		this.rootPath = rootPath;
 		this.configInitParameter = configInitParameter;
+
+		cachedProperties = new CachedProperties(new File(getDir()
+				+ "/portal.properties"));
 	}
 
 	public File getDir() {
@@ -100,17 +103,7 @@ public class Config {
 	}
 
 	public Properties getProperties() {
-		if (properties == null) {
-			String location = getDir() + "/portal.properties";
-			logger.debug("Reading portal properties file " + location);
-			properties = new Properties();
-			try {
-				properties.load(new FileInputStream(location));
-			} catch (IOException e) {
-				logger.error("Error reading portal properties file", e);
-			}
-		}
-		return properties;
+		return cachedProperties.getProperties();
 	}
 
 	public ArrayList<String> getLanguages() {
@@ -197,8 +190,7 @@ public class Config {
 		if (moduleString != null) {
 			return moduleString.split(",");
 		} else {
-			throw new ConfigurationException("No \""
-					+ PROPERTY_CLIENT_MODULES
+			throw new ConfigurationException("No \"" + PROPERTY_CLIENT_MODULES
 					+ "\" property in configuration");
 		}
 	}
