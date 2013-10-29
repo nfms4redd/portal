@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Demo</title>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var hola = $("<div/>");
+		hola.html("hola").appendTo("body");
+		hola.click(function() {
+			hola.hide("slow");
+		});
+		
+		var mundo = $("<div/>");
+		mundo.html("mundo").appendTo("body");
+		mundo.mouseover(function() {
+			mundo.css("background", "yellow");
+		});
+		mundo.mouseout(function() {
+			mundo.css("background", "white");
+			hola.show("slow");
+		});
+	});
+</script>
+</head>
+<body>
+</body>
+</html>

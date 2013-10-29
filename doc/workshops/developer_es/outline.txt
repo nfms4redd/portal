@@ -148,6 +148,10 @@ Ejemplo "nuevos": con .append y .appendTo podemos anidar elementos (mostrar amba
 	Ejercicio: Eliminar todos los elementos y dejar en el body sólo el texto "esta página está vacía" (se pretende mostrar la dinámica de buscar en internet)
 	
 	Ejercicio: Crear la página inicial (hola mundo y el enlace) únicamente por programación
+	
+Ejemplo "estilos":
+
+Ejemplo "eventos": 
 
 Intro OpenLayers
 -----------------
