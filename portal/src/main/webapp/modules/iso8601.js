@@ -1,6 +1,7 @@
 define(function() {
 	Date.prototype.setISO8601 = function(str) {
-		var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" + "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\\.([0-9]+))?)?" + "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?";
+		var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" + "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\\.([0-9]+))?)?"
+				+ "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?";
 		var d = str.match(new RegExp(regexp));
 		if (d) {
 			var date = new Date(d[1], 0, 1), offset = 0, time;
@@ -37,5 +38,17 @@ define(function() {
 			return false;
 		}
 	};
-
+	
+	Date.prototype.toISO8601String = function() {
+		function pad(n) {
+			return n < 10 ? '0' + n : n;
+		}
+		return this.getUTCFullYear() + '-'//
+				+ pad(this.getUTCMonth() + 1) + '-'//
+				+ pad(this.getUTCDate()) + 'T'//
+				+ pad(this.getUTCHours()) + ':'//
+				+ pad(this.getUTCMinutes()) + ':'//
+				+ pad(this.getUTCSeconds()) + '.'//
+				+ pad(this.getUTCMilliseconds()) + 'Z';
+	};
 });

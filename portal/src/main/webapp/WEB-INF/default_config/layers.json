@@ -19,7 +19,6 @@
 		"label" : "${forest_mask}",
 		"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
 		"wmsName" : "unredd:drc_forest_mask_mosaic",
-		"wmsTime" : "${time.drc_forest_mask_mosaic}",
 		"imageFormat" : "image/png8",
 		"visible" : true,
 		"legend" : "forest_mask.png",
@@ -42,7 +41,7 @@
 		"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
 		"sourceLabel" : "WRI",
 		"queryable" : true,
-		"wmsTime" : "2007-03-01,2008-05-11"
+		"wmsTime" : "2007-03-01T00:00,2008-05-11T00:00"
 	} ],
 
 	"portalLayers" : [
