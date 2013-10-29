@@ -155,6 +155,10 @@ Ejemplo "eventos":
 
 	Ejercicio: Crear una página que contenga img1.jpg y que mientras el ratón está en ella se cambie por img2
 
+Ejemplo "ajax": Nos permite realizar llamadas al servidor y obtener la respuesta sin necesidad de recargar la página. JQuery pone a disposición el método $.ajax() y versiones de conveniencia más simples: $.get(), $.getScript(), $.getJSON(), $.post() y $().load().
+	
+	Comentar la restricción de dominio y decir que la veremos cuando tengamos un mapa y pidamos información, o consultando algún servicio externo
+
 Intro OpenLayers
 -----------------
 
