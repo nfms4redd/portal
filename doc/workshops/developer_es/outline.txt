@@ -151,7 +151,9 @@ Ejemplo "nuevos": con .append y .appendTo podemos anidar elementos (mostrar amba
 	
 Ejemplo "estilos":
 
-Ejemplo "eventos": 
+Ejemplo "eventos":
+
+	Ejercicio: Crear una página que contenga img1.jpg y que mientras el ratón está en ella se cambie por img2
 
 Intro OpenLayers
 -----------------
