@@ -1,5 +1,4 @@
 define([ "jquery", "message-bus", "layout", "customization", "i18n" ], function($, bus, layout, customization, i18n) {
-	bus.send("css-load", "modules/toolbar.css");
 
 	var divToolbar = $("#" + layout.toolbarId);
 

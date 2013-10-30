@@ -36,9 +36,6 @@ require([ "jquery", "message-bus" ], function($, bus) {
 
 	bus.listen("customization-received", function(event, customization) {
 		require(customization.modules, function() {
-			bus.send("css-load", "styles/jquery-ui-1.10.3.custom.css");
-			bus.send("css-load", "styles/jquery.fancybox.css");
-
 			bus.send("ajax", {
 				dataType : "json",
 				url : "layers",

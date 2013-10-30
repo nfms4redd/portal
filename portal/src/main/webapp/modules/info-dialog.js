@@ -1,5 +1,4 @@
 define([ "jquery", "message-bus" ], function($, bus) {
-	bus.send("css-load", "modules/info-dialog.css");
 
 	bus.listen("info-features", function(event, features, x, y) {
 		// re-project to Google projection
