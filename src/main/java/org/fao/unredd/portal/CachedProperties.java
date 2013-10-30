@@ -22,8 +22,6 @@ public class CachedProperties {
 	public Properties getProperties() {
 		long lastModified = propertyFile.lastModified();
 		if (lastModified > lastRead) {
-			System.out.println("reading: " + propertyFile);
-			new RuntimeException().printStackTrace();
 			logger.debug("Reading portal properties file " + propertyFile);
 			properties = new Properties();
 			try {
