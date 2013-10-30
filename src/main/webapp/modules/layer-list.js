@@ -43,8 +43,6 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	});
 	divLayersContainer.append(divLayers);
 
-	bus.send("css-load", "modules/layer-list.css");
-
 	bus.listen("add-group", function(event, groupInfo) {
 		var divTitle = $("<div/>");
 		aTitle = $("<a/>").attr("href", "#").html(groupInfo.name).disableSelection();

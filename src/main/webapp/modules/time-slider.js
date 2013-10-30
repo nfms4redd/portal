@@ -1,5 +1,4 @@
 define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, bus, layout, ui, i18n) {
-	bus.send("css-load", "modules/time-slider.css");
 
 	var timestamps = [];
 
