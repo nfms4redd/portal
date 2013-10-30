@@ -1,3 +1,3 @@
-define([ "customization" ], function(customization) {
-	return customization.messages;
+define([ "module" ], function(module) {
+	return module.config();
 });
