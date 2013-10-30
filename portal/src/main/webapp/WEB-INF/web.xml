@@ -15,14 +15,24 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<!-- customization call -->
+	<!-- index call -->
 	<servlet>
-		<servlet-name>customization-servlet</servlet-name>
-		<servlet-class>org.fao.unredd.portal.CustomizationServlet</servlet-class>
+		<servlet-name>index-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.IndexHTMLServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>customization-servlet</servlet-name>
-		<url-pattern>/customization</url-pattern>
+		<servlet-name>index-servlet</servlet-name>
+		<url-pattern>/index.html</url-pattern>
+	</servlet-mapping>
+
+	<!-- config call -->
+	<servlet>
+		<servlet-name>config-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.ConfigServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>config-servlet</servlet-name>
+		<url-pattern>/config.js</url-pattern>
 	</servlet-mapping>
 
 	<!-- layers call -->

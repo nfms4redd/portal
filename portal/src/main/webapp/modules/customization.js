@@ -1,27 +1,9 @@
-/*
- * Queries the server and launches an "customization" event
- */
-define([ "message-bus", "communication" ], function(bus) {
+define([ "module" ], function(module) {
+	var customizationInfo = module.config();
 
-	// module variables
-	var customizationInfo = {};
-
-	// initialization code	
-	bus.send("ajax", {
-		dataType : "json",
-		url : "customization",
-		success : function(data, textStatus, jqXHR) {
-			for ( var attr in data) {
-				if (data.hasOwnProperty(attr)) {
-					customizationInfo[attr] = data[attr];
-				}
-			}
-			document.title = customizationInfo.title;
-			bus.send("customization-received", customizationInfo);
-		},
-		errorMsg : "Cannot initialize application"
+	require(customizationInfo.modules, function(){
+		require([ "layers" ]);
 	});
 
-	// module return value
 	return customizationInfo;
 });
