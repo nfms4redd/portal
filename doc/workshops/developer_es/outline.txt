@@ -224,13 +224,42 @@ Modulo en el cliente
 ---------------------
 
 Intro a requirejs y al event bus
-.................................
+................................
 
-Aprender a crear nuevos módulos
+Vamos a mover los componentes que hemos programado en OpenLayers a una aplicación modular similar a la que se está desarrollando en FAO.
 
-Desarrollar teniendo esto en cuenta:
-	* Concepto de aplicación como módulos escuchando eventos
-	* Carga de los CSS
+Ejemplo "base": Ejercicio ol1 pero creando los dos divs con un módulo main
+
+Variante -jquery: Cargamos jquery y creamos los módulos a continuación
+
+Variante -layout: Dejamos sólo la configuración en main y el layout se mete en el mapa
+
+Ejemplo "mapa": Creamos un módulo que crea un mapa con una capa
+
+Ejercicio: qué pasa si alguien cambia en layour el id del mapa? -> Hacerlo!
+
+	Solución: layout puede devolver un valor -> mapa-id
+	
+Resumen: Nuevo módulo = crear fichero y añadirlo en la instrucción require de "main"
+
+Ejercicio: Añadir un módulo con los controles de navegación (mapa-nav)
+
+Ejercicio: Añadir un módulo que centre en Ecuador
+
+Ejercicio: Añadir un módulo que ponga en el div de información los controles para añadir una capa (url y nombre)
+
+
+
+
+Ejercicio: Añadir un control que liste las capas que hay en el mapa
+
+Ejercicio: Añadir un control que alerte cuando se añadan más de 3 capas
+
+Ejemplo de simplificación con message-bus
+
+¿Y los eventos? ¿¿¡¡Y LOS EVENTOOOOOOOS!!??
+
+
 
 Creación de módulos en el portal
 ......................................
