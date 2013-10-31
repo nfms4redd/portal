@@ -1,4 +1,4 @@
-define([ "layout", "jquery", "map" ], function(layout, $, map) {
+define([ "layout", "jquery", "map", "layer-list", "limit"], function(layout, $, map, layerList, limit) {
 
 	var info = $("#" + layout.infoId);
 
@@ -24,7 +24,9 @@ define([ "layout", "jquery", "map" ], function(layout, $, map) {
 			layers : layerName.val(),
 			transparent : true
 		});
+		limit.addLayer(layer);
 		map.addLayer(layer);
+		layerList.addLayer(layerName.val());
 	}).html("Añadir").appendTo(info);
 
 });

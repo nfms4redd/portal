@@ -1,4 +1,4 @@
-define([ "layout", "jquery", "map" ], function(layout, $, map) {
+define([ "layout", "jquery", "map", "layer-list" ], function(layout, $, map, layerList) {
 
 	var info = $("#" + layout.infoId);
 
@@ -25,6 +25,7 @@ define([ "layout", "jquery", "map" ], function(layout, $, map) {
 			transparent : true
 		});
 		map.addLayer(layer);
+		layerList.addLayer(layerName.val());
 	}).html("Añadir").appendTo(info);
 
 });

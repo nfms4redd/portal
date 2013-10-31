@@ -1,4 +1,4 @@
-define([ "layout", "jquery", "map" ], function(layout, $, map) {
+define([ "layout", "jquery", "message-bus" ], function(layout, $, bus) {
 
 	var info = $("#" + layout.infoId);
 
@@ -20,11 +20,10 @@ define([ "layout", "jquery", "map" ], function(layout, $, map) {
 	}).appendTo(info);
 
 	$("<button/>").click(function() {
-		var layer = new OpenLayers.Layer.WMS(name, url.val(), {
-			layers : layerName.val(),
-			transparent : true
-		});
-		map.addLayer(layer);
+		bus.send("layer", [ {
+			url : url.val(),
+			name : layerName.val()
+		} ]);
 	}).html("Añadir").appendTo(info);
 
 });

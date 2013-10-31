@@ -244,22 +244,21 @@ Resumen: Nuevo módulo = crear fichero y añadirlo en la instrucción require de
 
 Ejercicio: Añadir un módulo con los controles de navegación (mapa-nav)
 
-Ejercicio: Añadir un módulo que centre en Ecuador
+Ejercicio: Añadir un módulo que centre en Ecuador (mapa-center)
 
-Ejercicio: Añadir un módulo que ponga en el div de información los controles para añadir una capa (url y nombre)
+Ejercicio: Añadir un módulo que ponga en el div de información los controles para añadir una capa (url y nombre) (nueva-capa)
 
+Ejercicio: Añadir un módulo que liste las capas que hay en el mapa (nueva-capa-lista)
 
+Ejercicio: Añadir un control que alerte cuando se añadan más de 3 capas (nueva-capa-limite)
 
+Ejemplo de simplificación con message-bus (nueva-capa-limite)
 
-Ejercicio: Añadir un control que liste las capas que hay en el mapa
+	- Ejercicio: MOdificar la lista de capas para que ponga el nombre del servidor entre paréntesis
 
-Ejercicio: Añadir un control que alerte cuando se añadan más de 3 capas
+	- ¿Qué ficheros tenemos que modificar si queremos quitar la lista de capas? 
 
-Ejemplo de simplificación con message-bus
-
-¿Y los eventos? ¿¿¡¡Y LOS EVENTOOOOOOOS!!??
-
-
+	- Ejemplo: añadimos otro mapa 
 
 Creación de módulos en el portal
 ......................................
