@@ -37,6 +37,8 @@ Botón derecho en "portal" -> Debug on server -> Apache Tomcat 7
 
 Open firefox to take a look
 
+* Remarcar, tenemos ahora dos portales, el que está en desarrollo y el que está en "producción"
+
 Arquitectura del frontend
 -----------------------------
 
@@ -273,12 +275,12 @@ Explicación de los módulos actuales
 
 - documentación sobre los eventos escuchados
 
-Creación de un módulo que añada la posición del mapa.
+Ejemplo: Creación de un módulo que añada la posición del mapa.
 
 Ejercicio: 
 - Creación de un módulo que añada la escala
 
-Creación de un módulo que instala un botón que abre un diálogo con una URL, un nombre de capa y un grupo en el que añadir la capa.
+Ejemplo: Creación de un módulo que instala un botón que abre un diálogo con una URL, un nombre de capa y un grupo en el que añadir la capa.
 
 Ejercicio:
 * Creación de un botón que instalar una capa fija creando un grupo fijo
@@ -293,15 +295,25 @@ Módulo en el servidor
 
 Comentar las dos versiones existentes: Servlet 2.x y Servlet 3.x
 
-- Filtro: Logging filter (Check accessing with firefox)
+Comentar los objetos que tenemos en el ambiente del servidor
 
-- Servlet Context: Configuration read that tells if we should filter or not. (Check accessing with firefox) 
+	- Filters: autenticación, gestión de parámetros, codificación de resultados (conversión a json), etc.
+	- Servlets: Manejo de las llamadas.
+	- ContextListeners: Inicialización y liberación de recursos.
+
+- Ejemplo filtro: lang + communication on the client side
+
+- Ejercicio filtro: sysout logging filter
+	(request.getRemoteAddr() + " está accediendo a " + ((HttpServletRequest) request).getRequestURL().toString())
+
+- Servlet: Listado de módulos
+	Comentar al final que esto lo hace ya el ConfigServlet
 
 - Servlet: Eliminación de un módulo (modificando el Config para que refresque)
 
-	Explicar el Lanzamiento de excepciones
-	
-Ejercicio: Listado de las capas disponibles en la base de datos PostGIS
+- Ejercicio: Poner una capa no "active" por defecto.
+
+- Servlet Context: Configuración actual.
 
 Friday 2.5 + 1.5
 ================
@@ -334,6 +346,13 @@ Carga de las vistas en el sistema
 
 Consulta de estadísticas en el evento mouse over
 
+Conclusiones
+=============
 
+¿Cómo seguimos?
+
+ - Soporte técnico desde Roma por skype
+ - Demos online con los últimos avances de la plataforma
+ - ¿Interesados en hacer algunos de los componentes que faltan por hacer?
 
 
