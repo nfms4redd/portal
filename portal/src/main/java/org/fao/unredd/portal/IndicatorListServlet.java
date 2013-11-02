@@ -28,11 +28,11 @@ public class IndicatorListServlet extends HttpServlet {
 			if (layerFactory.exists(layerId)) {
 				Layer layer = layerFactory.newLayer(layerId);
 				Outputs indicators = layer.getOutputs();
-				resp.setContentType("application/json");
-				resp.setCharacterEncoding("utf8");
 				answer = indicators.toJSON();
 			}
 			try {
+				resp.setContentType("application/json");
+				resp.setCharacterEncoding("utf8");
 				resp.getWriter().print(answer);
 			} catch (IOException e) {
 				throw new ServletException(
