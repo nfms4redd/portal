@@ -8,30 +8,49 @@ Architecture general
 
 * PostGIS + Tomcat que contiene (GeoServer + frontend + backend)
 
-Instalación frontend
------------------------
+* Repaso por los componentes
 
-* Descarga e instalación de Eclipse IDE for Java EE Developers
+	- echar un vistazo al directorio de tomcat
+	- ver el directorio de datos de geoserver
+	- conectar a la base de datos de postgresql
 
-* Arrancar eclipse
+* Comentar que en este caso vamos a tener otra instancia de tomcat para realizar los desarrollos (es una configuración especial del curso, normalmente se desarrollará en una máquina en local)
 
-* Clonado del proyecto e importación en eclipse.
+Instalación frontend (demo, porque ya está instalado)
+-----------------------------------------------------------
 
-Right click - import - git - specify url: git@github.com:nfms4redd/nfms.git
+Comentar dónde está instalado y hacer una demo de cómo se hace. Se utiliza git y maven
 
-Local destination: The one of the repository
+- GIT es como subversion pero mucho más potente. En un futuro podemos hacer un pequeño curso de GIT.
 
-Use the New Project wizard -> Cancel
+- Maven tiene un objetivo parecido a Ant, pero la aproximación es distinta.
 
-New Project - Import existing maven project and select the cloned repository (may require installation of some plugins on eclipse that are not necessary for the development of the portal and are done automatically (no es grave si fallan))
+- Demo
 
-Team - Switch to - New branch (simplification)
-
-Cerrar el proyecto raíz
+	* Descarga e instalación de Eclipse IDE for Java EE Developers
+	
+	* Arrancar eclipse
+	
+	* Clonado del proyecto e importación en eclipse.
+	
+	Right click - import - git - specify 
+	
+		url: git@github.com:nfms4redd/nfms.git
+		Protocol: https
+	
+	Local destination: The one of the repository
+	
+	(Mientras descarga explicar: Dónde está tomcat, dónde está geoserver, conexión a postgis e introducción a Maven)
+	
+	Use the New Project wizard -> Cancel
+	
+	New Project - Import existing maven project and select the cloned repository (may require installation of some plugins on eclipse that are not necessary for the development of the portal and are done automatically (no es grave si fallan))
+	
+	Team - Switch to - New branch (simplification)
+	
+	Cerrar el proyecto raíz
 
 * Ejecución
-
-Descarga e instalación de tomcat
 
 Botón derecho en "portal" -> Debug on server -> Apache Tomcat 7
 
