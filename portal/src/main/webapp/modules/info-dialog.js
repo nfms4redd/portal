@@ -55,7 +55,7 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			td1.append(info);
 
 			tr2 = $("<tr/>");
-			var td2 = $("<td class=\"td_left\" id=\"loader_container_" + layerId + "\"/>");
+			var td2 = $("<td class=\"td_left\" id=\"indicator_buttons_container_" + layerId + "\"/>");
 			tr2.append(td2);
 			table.append(tr2);
 
@@ -65,7 +65,7 @@ define([ "jquery", "message-bus" ], function($, bus) {
 				success : function(indicators, textStatus, jqXHR) {
 					for (i = 0; i < indicators.length; i++) {
 						id = "stats_link_" + layerId + "_" + indicators[i].id;
-						td2.append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"" + id + "\" href=\"indicator?objectId=" + feature.attributes[indicators[i].fieldId] + "&layerId=" + qualifiedLayerId + "&indicatorId=" + indicators[i].id + "\">" + indicators[i].name + "</a>");
+						$("#indicator_buttons_container_" + layerId).append("<a style=\"color:white\" class=\"feature_link fancybox.iframe\" id=\"" + id + "\" href=\"indicator?objectId=" + feature.attributes[indicators[i].fieldId] + "&layerId=" + qualifiedLayerId + "&indicatorId=" + indicators[i].id + "\">" + indicators[i].name + "</a>");
 						$('#' + id).fancybox({
 							maxWidth : 840,
 							maxHeight : 600,
@@ -81,7 +81,7 @@ define([ "jquery", "message-bus" ], function($, bus) {
 				},
 				errorMsg : "Could not obtain the indicator",
 				complete : function() {
-					$("#loader_container_" + layerId).empty();
+					$("#indicator_buttons_container_" + layerId).children("img").remove();
 				}
 			});
 
