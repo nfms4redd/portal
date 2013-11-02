@@ -57,8 +57,11 @@ public class Config {
 		this.rootPath = rootPath;
 		this.configInitParameter = configInitParameter;
 
-		cachedProperties = new CachedProperties(new File(getDir()
-				+ "/portal.properties"));
+		cachedProperties = new CachedProperties(getPortalPropertiesFile());
+	}
+
+	public File getPortalPropertiesFile() {
+		return new File(getDir() + "/portal.properties");
 	}
 
 	public File getDir() {
@@ -130,8 +133,11 @@ public class Config {
 
 	public String getLayers(Locale locale) throws IOException,
 			ConfigurationException {
-		return getLocalizedFileContents(new File(getDir() + "/layers.json"),
-				locale);
+		return getLocalizedFileContents(getLayersFile(), locale);
+	}
+
+	public File getLayersFile() {
+		return new File(getDir() + "/layers.json");
 	}
 
 	public ResourceBundle getMessages(Locale locale)
