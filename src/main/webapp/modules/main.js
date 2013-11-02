@@ -7,7 +7,10 @@ require.config({
 		"jquery-ui" : "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
 		"fancy-box" : "../js/jquery.fancybox.pack",
 		"openlayers" : "../js/OpenLayers/OpenLayers.debug"
+	},
+	shim : {
+		"fancy-box" : [ "jquery" ]
 	}
 });
 
-require([ "jquery", "customization" ]);
+require([ "customization" ]);
