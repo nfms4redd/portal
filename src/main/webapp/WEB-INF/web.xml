@@ -44,6 +44,14 @@
 		<servlet-name>indicator-list-servlet</servlet-name>
 		<url-pattern>/indicators</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>indicator-data-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.IndicatorDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>indicator-data-servlet</servlet-name>
+		<url-pattern>/indicator</url-pattern>
+	</servlet-mapping>
 
 	<!-- Error management -->
 	<servlet>
