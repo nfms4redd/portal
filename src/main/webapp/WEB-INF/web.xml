@@ -35,16 +35,6 @@
 		<url-pattern>/config.js</url-pattern>
 	</servlet-mapping>
 
-	<!-- layers call -->
-	<servlet>
-		<servlet-name>layers-servlet</servlet-name>
-		<servlet-class>org.fao.unredd.portal.LayersServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>layers-servlet</servlet-name>
-		<url-pattern>/layers</url-pattern>
-	</servlet-mapping>
-
 	<!-- indicators -->
 	<servlet>
 		<servlet-name>indicator-list-servlet</servlet-name>

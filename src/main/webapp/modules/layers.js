@@ -1,4 +1,4 @@
-define([ "message-bus"], function(bus) {
+define([ "jquery", "message-bus", "module" ], function($, bus, module) {
 
 	var getValueOrDefault = function(object, value, defaultValue) {
 		var objectValue = object[value];
@@ -19,52 +19,46 @@ define([ "message-bus"], function(bus) {
 			return null;
 		}
 	};
-	bus.send("ajax", {
-		dataType : "json",
-		url : "layers",
-		success : function(data, textStatus, jqXHR) {
-			var groups = data.groups;
-			for (var i = 0; i < groups.length; i++) {
-				var group = groups[i];
-				bus.send("add-group", {
-					"id" : group.id,
-					"name" : group.label
-				});
+	var layerRoot = module.config();
+	var groups = layerRoot.groups;
+	for ( var i = 0; i < groups.length; i++) {
+		var group = groups[i];
+		bus.send("add-group", {
+			"id" : group.id,
+			"name" : group.label
+		});
 
-				var items = group.items;
-				for (var j = 0; j < items.length; j++) {
-					var portalLayer = findById(data.portalLayers, items[j]);
-					if (portalLayer != null) {
-						var wmsLayer = findById(data.wmsLayers, portalLayer.layers[0]);
-						if (wmsLayer != null) {
-							var url = wmsLayer.baseUrl;
-							var wmsName = wmsLayer.wmsName;
-							var layerInfo = {
-								"id" : portalLayer.id,
-								"groupId" : group.id,
-								"url" : url,
-								"wmsName" : wmsName,
-								"name" : portalLayer.label,
-								"infoLink" : "http://rdc-snsf.org/static/loc/en/html/bluemarble_def.html",
-								"queryable" : wmsLayer.queryable,
-								"visible" : getValueOrDefault(portalLayer, "active", true)
-							};
-							if (wmsLayer.hasOwnProperty("wmsTime")) {
-								layerInfo.timestamps = wmsLayer.wmsTime.split(",");
-							}
-							bus.send("add-layer", layerInfo);
-						} else {
-							bus.send("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
-						}
-
-					} else {
-						bus.send("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
+		var items = group.items;
+		for ( var j = 0; j < items.length; j++) {
+			var portalLayer = findById(layerRoot.portalLayers, items[j]);
+			if (portalLayer != null) {
+				var wmsLayer = findById(layerRoot.wmsLayers, portalLayer.layers[0]);
+				if (wmsLayer != null) {
+					var url = wmsLayer.baseUrl;
+					var wmsName = wmsLayer.wmsName;
+					var layerInfo = {
+						"id" : portalLayer.id,
+						"groupId" : group.id,
+						"url" : url,
+						"wmsName" : wmsName,
+						"name" : portalLayer.label,
+						"infoLink" : "http://rdc-snsf.org/static/loc/en/html/bluemarble_def.html",
+						"queryable" : wmsLayer.queryable,
+						"visible" : getValueOrDefault(portalLayer, "active", true)
+					};
+					if (wmsLayer.hasOwnProperty("wmsTime")) {
+						layerInfo.timestamps = wmsLayer.wmsTime.split(",");
 					}
+					bus.send("add-layer", layerInfo);
+				} else {
+					bus.send("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
 				}
 
-				bus.send("initial-zoom");
+			} else {
+				bus.send("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
 			}
-		},
-		errorMsg : "Cannot obtain layers from the server"
-	});
+		}
+
+		bus.send("initial-zoom");
+	}
 });

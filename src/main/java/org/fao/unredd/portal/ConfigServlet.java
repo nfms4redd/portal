@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 public class ConfigServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -30,7 +31,8 @@ public class ConfigServlet extends HttpServlet {
 		moduleConfig.element("customization",
 				buildCustomizationObject(config, locale, title));
 		moduleConfig.element("i18n", buildI18NObject(bundle));
-		moduleConfig.element("layers", config.getLayers(locale));
+		moduleConfig.element("layers",
+				JSONSerializer.toJSON(config.getLayers(locale)));
 
 		String json = new JSONObject().element("config", moduleConfig)
 				.toString();
