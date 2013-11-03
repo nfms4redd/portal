@@ -322,6 +322,8 @@ Ejercicio:
 Módulo en el servidor
 ----------------------
 
+Vamos a hacer los ejercicios en la misma aplicación. luego vemos cómo crear un proyecto con todas nuestras modificaciones.
+
 Comentar las dos versiones existentes: Servlet 2.x y Servlet 3.x
 
 Comentar los objetos que tenemos en el ambiente del servidor
@@ -342,7 +344,11 @@ Comentar los objetos que tenemos en el ambiente del servidor
 
 - Ejercicio: Poner una capa no "active" por defecto.
 
-- Servlet Context: Configuración actual.
+Pregunta: ¿Cómo desplegaríamos todo esto en el servidor? -> Crear un proyecto aaparte, empaquetarlo y desplegarlo.
+
+- Servlet Context: Visualizar la configuración actual.
+
+- Creación de un proyecto maven war en eclipse con todos los ejercicios y despliegue en el servidor
 
 Friday 2.5 + 1.5
 ================
