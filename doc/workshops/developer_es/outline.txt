@@ -52,31 +52,22 @@ Comentar dónde está instalado y hacer una demo de cómo se hace. Se utiliza gi
 
 * Ejecución
 
-Botón derecho en "portal" -> Debug on server -> Apache Tomcat 7
+Botón derecho en "portal" -> Debug on server -> Apache Tomcat
 
 Open firefox to take a look
-
-* Remarcar, tenemos ahora dos portales, el que está en desarrollo y el que está en "producción"
 
 Arquitectura del frontend
 -----------------------------
 
 Arquitectura cliente servidor, donde hay una página web programada en javascript que realiza peticiones al servidor, éste responde generalmente con contenido en JSON y el cliente procesa ese contenido.
 
-Ejemplo: Carga de la aplicación con FireBug y observación en console de las dos llamadas.
+Ejemplo: Carga de la aplicación con FireBug y observación en consola de las llamadas (config e indicadores)
 
 	Advertencia: El contenido de las llamadas o incluso las llamadas pueden cambiar porque el proyecto está en desarrollo, lo importante es entender la arquitectura y las llamadas utilizadas.
 
-Vamos a ver el código del servidor. ¿dónde podemos ver qué clase es la que implementa la llamada a customization? -> web.xml
+Vamos a ver el código del servidor. ¿dónde podemos ver qué clase es la que implementa config.js? -> web.xml
 
-Vemos también la llamada a layers (hacemos notar la excepción).
-
-Exploración del resto de web.xml
-	Context Listener
-	Lang filter: procesa el parametro "lang" de cualquier petición y lo transforma en el atributo "locale" de la request.
-	Indicators: Devuelve los indicadores que hay en el sistema para una capa dada.
-	Error management: Veremos con más detalle cómo utilizarlo. Servlet para gestionar los errores.
-	Proxy: Lo veremos cuando veamos OpenLayers.
+Vemos también la llamada a los indicadores (hacemos notar la excepción).
 
 ¿Qué hay en el cliente?
 
@@ -94,21 +85,6 @@ Exploración del resto de web.xml
 	
 	La configuración se sigue de una serie de llamadas "require" que lo que hacen es cargar módulos. Veremos en la parte del cliente cómo se cargan y definen estos módulos.
 	
-	En general, un módulo se compone de:
-		- dependencias (nombre y variable con el valor de retorno)
-		- variables locales del módulo
-		- funciones privadas
-		- inicialización
-		- valor de retorno
-	
-	Ejemplos
-		- Show toolbar initializing graphic components and listening for add-layer events
-		- Show map creating the component and listening for events that other components will send
-		- Show layout creating the HTML and returning an object
-		- Show layer-list reacting to the add-layer event
-		- Show main asking the server for the layers and triggering add-layer events
-		- Show communication adding the "lang" parameter to every call and managing the errors
-
 Estructura del proyecto
 ------------------------
 
@@ -116,8 +92,8 @@ Estructura del proyecto
 	
 	Explicación de la arquitectura típica de un proyecto maven
 
-Introducción a maven
----------------------
+(Si fuera necesario) Introducción a maven
+------------------------------------------
 
 Ejercicio: Crear un proyecto maven
 
@@ -125,14 +101,8 @@ Ejercicio: Usar una dependencia
 
 Ejercicio: Instalar la plataforma
 
-Tuesday 2.5 + 2.5
-==================
-
-Repaso interactivo día anterior
----------------------------------
-
-Intro JQuery
--------------
+Intro JQuery (a caballo entre lunes y martes)
+----------------------------------------------------
 
 (El objetivo es que se entienda, no aprender a usarlo. Se aprenderá a utilizar durante el curso viendo muchos ejemplos. Es importante que si algo se olvida durante el curso se comente para poder seguir durante el mismo entendiendo los ejemplos.)
 
@@ -142,9 +112,17 @@ JQuery nos proporciona:
 - utilidades varias $.xxx() 
 	- llamadas ajax
 
-Ejemplo "seleccion": Nos permite obtener un objeto jquery para actuar sobre el objeto que se pasa como parámetro
+Ejemplo "seleccion"
 
-Ejemplo "atributos": con .attr podemos cambiar los atributos de los elementos del documento.
+	Cargar con protocolo file y preguntar: ¿Quién sabe qué hace el código?
+
+	Explicar: nos permite obtener un objeto jquery para actuar sobre el objeto que se pasa como parámetro
+
+Ejemplo "atributos": 
+
+	Preguntar quién sabe qué hace el código.
+
+	Explicar: con .attr podemos cambiar los atributos de los elementos del documento.
 
 	Ejercicio: Cambiar la dirección del enlace
 	
@@ -158,7 +136,7 @@ Ejemplo "contenido": con .html podemos establecer el contenido
 	
 	Ejercicio: Cambiar el contenido del segundo div
 	
-	Normalmente se suele hacer la selección por id o por clase (mostrar ejemplos)
+		Normalmente se suele hacer la selección por id o por clase (mostrar ejemplos)
 	
 Ejemplo "nuevos": con .append y .appendTo podemos anidar elementos (mostrar ambas posibilidades)
 
@@ -180,8 +158,40 @@ Ejemplo "ajax": Nos permite realizar llamadas al servidor y obtener la respuesta
 	
 	Comentar la restricción de dominio y decir que la veremos cuando tengamos un mapa y pidamos información, o consultando algún servicio externo
 
-Intro OpenLayers
------------------
+Tuesday 2.5 + 2.5
+==================
+
+Repaso interactivo día anterior
+---------------------------------
+
+* Exploración del resto de web.xml
+	Context Listener
+	Lang filter: procesa el parametro "lang" de cualquier petición y lo transforma en el atributo "locale" de la request.
+	Indicators: Devuelve los indicadores que hay en el sistema para una capa dada.
+	Error management: Veremos con más detalle cómo utilizarlo. Servlet para gestionar los errores.
+	Proxy: Lo veremos cuando veamos OpenLayers.
+
+* Repaso módulos
+
+	En general, un módulo se compone de:
+		- dependencias (nombre y variable con el valor de retorno)
+		- variables locales del módulo
+		- funciones privadas
+		- inicialización
+		- valor de retorno
+	
+	Ejemplos
+		- Show toolbar initializing graphic components and listening for add-layer events
+		- Show map creating the component and listening for events that other components will send
+		- Show layout creating the HTML and returning an object
+		- Show layer-list reacting to the add-layer event
+		- Show main asking the server for the layers and triggering add-layer events
+		- Show communication adding the "lang" parameter to every call and managing the errors
+
+* Repaso jquery
+
+Intro OpenLayers (dar tiempo a ver requirejs y poder así repasarlo el miércoles)
+-----------------------------------------------------------------------------------
 
 1) Create the HTML structure on any folder and access through file:// protocol
 
