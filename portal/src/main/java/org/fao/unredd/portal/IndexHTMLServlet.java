@@ -36,7 +36,7 @@ public class IndexHTMLServlet extends HttpServlet {
 
 		ServletContext servletContext = getServletContext();
 		ArrayList<String> styleSheets = getStyleSheets(servletContext,
-				"modules/styles");
+				"modules");
 		styleSheets.addAll(getStyleSheets(servletContext, "styles"));
 		context.put("styleSheets", styleSheets);
 
