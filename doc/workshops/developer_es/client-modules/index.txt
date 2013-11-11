@@ -1,0 +1,11 @@
+links: Sitúa abajo a la izquierda unos enlaces externos. Es necesario modificar los ficheros messages_xx.properties de la manera especificada en los comentarios en el código para que los links tengan texto
+
+map-position: Muestra la posición actual en el mapa
+
+map-scale: Muestra la escala del mapa
+
+new-layer: Añade un botón a la barra de herramientas que permite añadir una capa en cualquier grupo mediante un diálogo.
+
+new-group-layer: Añade un grupo y una capa fijas
+
+temperature: Añade una herramienta a la barra de herramientas que permite consultar la temperatura en lugar de la información del visor

@@ -1,5 +1,4 @@
 define([ "message-bus", "layout", "jquery", "toolbar" ], function(bus, layout, $) {
-	bus.send("css-load", "modules/new-layer.css");
 
 	var groups = [];
 

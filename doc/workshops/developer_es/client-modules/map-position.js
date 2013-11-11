@@ -1,5 +1,4 @@
 define([ "map", "message-bus", "i18n" ], function(map, bus, i18n) {
-	bus.send("css-load", "modules/map-position.css");
 
 	map.addControl(new OpenLayers.Control.MousePosition({
 		prefix : "<a target='_blank' " + //

@@ -1,0 +1,7 @@
+deactivate-layer: Permite poner una capa desactivada por defecto al iniciar el mapa. Edita el fichero layers.json para realizar este cambio.
+
+logging-filter: Ejemplo de filtro que escribe información sobre cada petición por consola.
+
+module-management/ModuleListServlet: Muestra la lista de módulos del cliente.
+
+module-management/ModuleRemovalServlet: Permite la eliminación de un módulo del cliente.

@@ -1,5 +1,4 @@
 define([ "message-bus", "layout", "map", "jquery", "jquery-ui", "toolbar" ], function(bus, layout, map, $) {
-	bus.send("css-load", "modules/temperature.css");
 
 	var getTemperature = function(e) {
 		var lonlat = map.getLonLatFromPixel(e.xy);

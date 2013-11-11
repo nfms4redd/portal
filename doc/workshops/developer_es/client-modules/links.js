@@ -1,6 +1,4 @@
 define([ "jquery", "message-bus", "i18n" ], function($, bus, i18n) {
-	bus.send("css-load", "modules/links.css");
-
 	var linkBar = $("<div/>");
 	linkBar.attr("id", "link-bar");
 	
