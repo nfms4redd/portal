@@ -27,9 +27,6 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		controls : []
 	});
 	map.addControl(new OpenLayers.Control.Navigation());
-	bus.listen("initial-zoom", function(event, layerInfo) {
-		map.zoomToMaxExtent();
-	});
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var layer = new OpenLayers.Layer.WMS("WMS layer", layerInfo.url, {

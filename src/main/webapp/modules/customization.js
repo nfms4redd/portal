@@ -1,8 +1,8 @@
-define([ "module" ], function(module) {
+define([ "module", "message-bus" ], function(module, bus) {
 	var customizationInfo = module.config();
 
 	require(customizationInfo.modules, function() {
-		require([ "layers" ]);
+		bus.send("modules-loaded");
 	});
 
 	return customizationInfo;
