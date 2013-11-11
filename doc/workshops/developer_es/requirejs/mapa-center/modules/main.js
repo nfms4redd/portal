@@ -9,4 +9,4 @@ require.config({
 	}
 });
 
-require([ "jquery", "layout", "map", "nav", "center" ]);
+require([ "layout", "map", "nav", "center" ]);

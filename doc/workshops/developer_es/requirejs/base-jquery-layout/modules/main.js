@@ -9,4 +9,4 @@ require.config({
 	}
 });
 
-require([ "jquery", "layout" ]);
+require([ "layout" ]);

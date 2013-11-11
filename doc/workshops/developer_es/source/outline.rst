@@ -9,7 +9,6 @@ Architecture general
 * PostGIS + Tomcat que contiene (GeoServer + frontend + backend)
 
 * Repaso por los componentes
-
 	- echar un vistazo al directorio de tomcat
 	- ver el directorio de datos de geoserver
 	- conectar a la base de datos de postgresql
@@ -108,8 +107,8 @@ Intro JQuery (a caballo entre lunes y martes)
 
 JQuery nos proporciona:
 
-- selección y manipulación del dom $()
-- utilidades varias $.xxx() 
+- selección y manipulación del dom: $()
+- utilidades varias: $.xxx() 
 	- llamadas ajax
 
 Ejemplo "seleccion"
@@ -144,6 +143,8 @@ Ejemplo "nuevos": con .append y .appendTo podemos anidar elementos (mostrar amba
 	
 	Ejercicio: Ponerlo todo en una línea usando body.append en lugar de div.appendTo
 
+	Explicar la diferencia entre $("div"), $("<div/>") y $(document)
+	
 	Ejercicio: Eliminar todos los elementos y dejar en el body sólo el texto "esta página está vacía" (se pretende mostrar la dinámica de buscar en internet)
 	
 	Ejercicio: Crear la página inicial (hola mundo y el enlace) únicamente por programación
@@ -277,13 +278,16 @@ Ejercicio: Añadir un módulo con los controles de navegación (mapa-nav)
 
 Ejercicio: Añadir un módulo que centre en Ecuador (mapa-center)
 
+Event-bus demo (se puede hacer como ejercicio si hay tiempo)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Ejercicio: Añadir un módulo que ponga en el div de información los controles para añadir una capa (url y nombre) (nueva-capa)
 
 Ejercicio: Añadir un módulo que liste las capas que hay en el mapa (nueva-capa-lista)
 
 Ejercicio: Añadir un control que alerte cuando se añadan más de 3 capas (nueva-capa-limite)
 
-Ejemplo de simplificación con message-bus (nueva-capa-limite)
+Ejemplo de simplificación con message-bus (nueva-capa-bus)
 
 	- Ejercicio: MOdificar la lista de capas para que ponga el nombre del servidor entre paréntesis
 

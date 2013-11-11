@@ -9,4 +9,4 @@ require.config({
 	}
 });
 
-require([ "jquery", "message-bus", "layout", "map", "nav", "center", "nueva-capa", "layer-list", "limit" ]);
+require([ "message-bus", "layout", "map", "nav", "center", "nueva-capa", "layer-list", "limit" ]);

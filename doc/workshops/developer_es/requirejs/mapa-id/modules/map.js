@@ -2,7 +2,7 @@ define([ "layout", "openlayers" ], function(layout, ol) {
 
 	var mapCRS = new OpenLayers.Projection("EPSG:900913");
 
-	var map = new OpenLayers.Map("map", {
+	var map = new OpenLayers.Map(layout.mapId, {
 		theme : null,
 		projection : mapCRS,
 		units : "m",
