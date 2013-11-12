@@ -1,0 +1,21 @@
+base: Ejercicio ol1 pero creando los dos divs con un módulo main
+
+base-jquery: Igual que base, pero creamos los divs usando jquery
+
+base-layout: Metemos un módulo layout que llamamos desde el módulo principal con "require". Con "define" definimos las dependencias, mientras que con require las cargamos. Generalmente sólo se usa "define" y es main el único que "requiere" la carga.
+
+mapa: Creamos un mapa OpenLayers en el div "map".
+
+mapa-id: Layout puede devolver el id del mapa y el modulo "map" leerlo y usarlo.
+	
+mapa-nav: Añade un módulo con controles de navegación
+
+mapa-center: Añadir un módulo que centre en Ecuador
+
+nueva-capa: Añade un módulo que pone en el div de información los controles para añadir una capa (url y nombre)
+
+nueva-capa-lista: Añade un control que lista las capas que se añaden al mapa
+
+nueva-capa-limite: Añadir un control que alerta cuando se añaden capas duplicadas
+
+nueva-capa-bus: Simplificación de los ejemplos "nueva-capa" mediante un message-bus

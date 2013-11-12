@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Demo</title>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var img = $("<img/>").appendTo("body");
+		img.attr("src", "img1.jpg");
+		img.click(function() {
+			img.attr("src", "img2.jpg");
+		});
+		img.mouseout(function() {
+			img.attr("src", "img1.jpg");
+		});
+	});
+</script>
+</head>
+<body>
+</body>
+</html>

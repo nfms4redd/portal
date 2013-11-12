@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Demo</title>
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var get = $("<div/>");
+		get.html("Pincha aquí para hacer una llamada al servidor").appendTo("body");
+		get.click(function() {
+			var requestData = {
+				url : "http://api.openweathermap.org/data/2.5/weather?lat=40&lon=0"
+			};
+			$.ajax({
+				url : "/unredd-portal/proxy",
+				// parametros
+				data : $.param(requestData),
+				// El tipo de datos que esperamos de retorno
+				contentType : "application/json",
+				// funcion a ejecutar en caso de éxito
+				success : function(data) {
+					var resultDiv = $("<div/>").html("Temperatura en: " + data.name + //
+							": " + (data.main.temp - 273.15));
+					$("body").append(resultDiv);
+				},
+				// funcion a ejecutar en caso de fallo
+				error : function(xhr, status) {
+					console.log(xhr);
+					console.log("Sorry, there was a problem!");
+				},
+				// funcion a ejecutar cuando la llamada termina, sea con fallo o éxito
+				complete : function(xhr, status) {
+					console.log("The request is complete!");
+				}
+			})
+		});
+	});
+</script>
+</head>
+<body>
+</body>
+</html>

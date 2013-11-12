@@ -1,0 +1,31 @@
+
+seleccion: Nos permite obtener un objeto jquery para actuar sobre el objeto que se pasa como parámetro
+
+atributos:
+	index.html: con .attr podemos cambiar los atributos de los elementos del documento.
+	ej-lectura.html: en lugar de cambiar el valor del atributo, lo leemos
+
+contenido: 
+	index.html: con .html podemos especificar el contenido del tag. Ej.: <div>contenido</div>
+	ej-2do-div.html: Cambio el contenido del segundo div
+	ej-seleccion-clase.html: Cambio de contenido basado en selección por clase
+	ej-seleccion-id.html: Cambio de contenido basado en selección por identificadpr
+	
+nuevos
+	index.html: con .append y .appendTo podemos anidar elementos
+	ej-unalinea.html: Muestra cómo jquery permite encadenar las llamadas en una única línea
+	ej-unalinea-append.html: Igual que el anterior pero usando .append en lugar de .appendTo
+	ej-eliminar-todo.html: Eliminar todos los elementos y dejar en el body sólo el texto "esta página está vacía"
+	ej-solo-codigo.html: Crea la página inicial (hola mundo y el enlace) únicamente por programación
+
+estilos
+	index.html: Cómo cambiar los estilos de un componente por programación
+
+eventos
+	index.html: Muestra algunos eventos sobre los divs
+	ej-imagen.html: Crea una página que contenga img1.jpg y que cuando se pinche en ella se cambie por img2, y que cuando se quita el ratón de esta vuelve a img1
+
+ajax
+	index.html: Nos permite realizar llamadas al servidor y obtener la respuesta sin necesidad de recargar la página. JQuery pone a disposición el método $.ajax() y versiones de conveniencia más simples: $.get(), $.getScript(), $.getJSON(), $.post() y $().load().
+	xss-fallo.html: Intento de acceder a un servidor distinto de aquel del que nos hemos descargado la página da fallo (en firefox no hay mensaje de error, la llamada se ignora).
+	xss-proxy.html: Versión que sí que funciona llamando al servidor distinto a través de un proxy en "/proxy?url=@". Se puede usar el del portal copiando el fichero al directorio "webapp"

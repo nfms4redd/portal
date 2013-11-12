@@ -1,0 +1,36 @@
+ol1: base para los siguientes ejercicios
+
+ol2: creación de un mapa básico con OpenLayers
+
+ol3: Añadimos algunas capas de Tasmania. Se pueden añadir capas del IGM de Ecuador con este código:
+
+	function newIEELayer(name, wmsName) {
+		return new OpenLayers.Layer.WMS(name, "http://www.geoportaligm.gob.ec/nacional/wms", {
+			layers : wmsName,
+			transparent : true
+		}, {
+			"attribution" : "Información del Instituto Espacial Ecuatoriano"
+		})
+	}
+		map.addLayer(newIEELayer("Límite costanero", "igm:lim_costanero"));
+		map.addLayer(newIEELayer("Límite continental", "igm:limite"));
+		map.addLayer(newIEELayer("Provincias", "igm:provincias"));
+		map.addLayer(newIEELayer("Represas", "igm:represas"));
+		map.addLayer(newIEELayer("Ríos", "igm:rio_doble"));
+		map.addLayer(newIEELayer("Ferrocarril", "igm:ferrocarril"));
+		map.addLayer(newIEELayer("Vías", "igm:vias"));
+		map.addLayer(newIEELayer("Poblados", "igm:poblados"));
+		map.addLayer(newIEELayer("Aeropuertos", "igm:aeropuertos"));
+		map.addLayer(newIEELayer("Islas", "igm:islas"));
+
+ol4: Centrado del mapa a un nivel de zoom apropiado
+
+ol5: Mostrar coordenadas
+
+ol6: Mostrar las coordenadas en latitud y longitud
+
+ol7: Algunos controles adicionales
+
+ol8: Control para consultar la información de la capa y mostrarla por consola. Intento de acceder a un servidor distinto de aquel del que nos hemos descargado la página da fallo (en firefox no hay mensaje de error, la llamada se ignora). Se llama al servidor que alberga la capa (distinto a aquél del que aloja la página html) a través de un proxy en "/proxy?url=@". Se puede usar el del portal copiando el fichero al directorio "webapp"
+
+ol9: Control personalizado que responde al evento "click" y consulta la temperatura
