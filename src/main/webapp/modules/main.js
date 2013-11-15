@@ -6,10 +6,12 @@ require.config({
 		"jquery" : "http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min",
 		"jquery-ui" : "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min",
 		"fancy-box" : "../js/jquery.fancybox.pack",
-		"openlayers" : "../js/OpenLayers/OpenLayers.debug"
+		"openlayers" : "../js/OpenLayers/OpenLayers.debug",
+	  "mustache" : "../js/jquery.mustache.js"
 	},
 	shim : {
-		"fancy-box" : [ "jquery" ]
+		"fancy-box" : [ "jquery" ],
+		"mustache" : [ "jquery" ]
 	}
 });
 

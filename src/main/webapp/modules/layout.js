@@ -1,4 +1,6 @@
 define([ "jquery" ], function($) {
+    //var template = '<body><div id="header"><div id="banner"></div><div id="toolbar"><div id="time_slider_pane"></div></div></div><div id="layers_container"></div></body>'
+
 	var body = $("body");
 
 	var divHeader = $("<div/>").attr("id", "header");
