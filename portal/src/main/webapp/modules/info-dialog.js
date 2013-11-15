@@ -91,24 +91,6 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			tr2.append(td3);
 			infoPopup.append(table);
 
-			// if (info.info && info.info()) {
-			// tr3 = $("<tr/>");
-			// td3 = $("<td class=\"td_left\" colspan=\"2\"/>");
-			// tr3.append(td3);
-			// table.append(tr3);
-			// td3.append(info.info());
-			// }
-			//
-			// $('#drivers_data_link').fancybox({
-			// 'autoScale' : false,
-			// 'type' : 'iframe',
-			// 'scrolling' : 'no',
-			// 'width' : 500,
-			// 'height' : 600,map
-			// 'openEffect' : 'none',
-			// 'closeEffect' : 'fade'
-			// });
-
 			$("#zoom_to_feature_" + layerId).click(function() {
 				map.zoomToExtent(feature.geometry.getBounds().scale(1.2));
 			});
