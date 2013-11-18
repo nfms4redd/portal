@@ -21,10 +21,10 @@ define([ "jquery" ], function($) {
 	body.append(divLayerList);
 
 	return {
-		"bannerId" : divBanner.attr("id"),
-		"toolbarId" : divToolbar.attr("id"),
-		"timeSliderId" : divTimeSlider.attr("id"),
-		"mapId" : divMap.attr("id"),
-		"layersId" : divLayerList.attr("id")
+		"banner":     divBanner,
+		"toolbar":    divToolbar,
+		"timeSlider": divTimeSlider,
+		"map":        divMap,
+		"layers":     divLayerList
 	};
 });

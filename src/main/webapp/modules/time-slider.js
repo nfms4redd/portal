@@ -12,7 +12,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		return arr[1] + " " + arr[0];
 	};
 
-	var div = $("#" + layout.timeSliderId);
+	var div = layout.timeSlider;
 	var divTimeSlider = $("<div/>").attr("id", "time_slider");
 	div.append(divTimeSlider);
 	divTimeSlider.slider({
