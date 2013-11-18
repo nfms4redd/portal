@@ -1,6 +1,6 @@
 define([ "jquery", "message-bus", "layout", "customization", "i18n" ], function($, bus, layout, customization, i18n) {
 
-	var divToolbar = $("#" + layout.toolbarId);
+	var divToolbar = layout.toolbar;
 
 	for (var i = 0; i < customization.languages.length; i++) {
 		var language = customization.languages[i];

@@ -18,7 +18,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 
 	OpenLayers.ProxyHost = "proxy?url=";
 
-	map = new OpenLayers.Map(layout.mapId, {
+	map = new OpenLayers.Map(layout.map.attr("id"), {
 		theme : null,
 		projection : new OpenLayers.Projection("EPSG:900913"),
 		displayProjection : new OpenLayers.Projection("EPSG:4326"),
