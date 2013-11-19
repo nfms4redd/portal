@@ -41,7 +41,7 @@ The dissemination subsystem can be split into several blocks:
 #. management of the data flows (Admin interface)
 
 
-.. figure:: ../workshop_es/_static/deployment.png
+.. figure:: ../../workshops/es/_static/deployment.png
    :align: center
    :scale: 75 %
 
