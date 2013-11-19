@@ -34,11 +34,11 @@ The JDK will be installed under ``jdk1.6.0_xx`` directory.
 
 Make a symbolic link to this installation. From ``/usr/lib/jvm``::
 
-  sudo ln -s jdk1.6.0.45 default-java
+  sudo ln -s jdk1.6.0_45 default-java
 
 Make it the default java alternative::
 
-  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0.45/bin/java" 1
+  sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0_45/bin/java" 1
   sudo update-alternatives --config java
 
 Check the java version::
@@ -54,29 +54,29 @@ Should read::
 
 .. _unredd-install-tomcat6:
 
-Tomcat 6
+Tomcat 7
 --------
 
-Tomcat is a web application container. In the context of the NFMS platform it will contain the administrative interface, the dissemination portal and geoserver. In order to install Tomcat, download the latest tomcat 6 version from:
+Tomcat is a web application container. In the context of the NFMS platform it will contain the administrative interface, the dissemination portal and geoserver. In order to install Tomcat, download the latest tomcat 7 version from:
 
-  http://tomcat.apache.org/download-60.cgi
+  http://tomcat.apache.org/download-70.cgi
 
-Select the core binary distribution. The file will be named, for example, ``apache-tomcat-6.0.37.tar.gz``.
+Select the core binary distribution. The file will be named, for example, ``apache-tomcat-7.0.47.tar.gz``.
 
 As superuser, move the file to ``/var/`` and uncompress it. Make a simpler ``tomcat`` link, so updates are easier in the future::
   
-  sudo mv apache-tomcat-6.0.37.tar.gz /var
+  sudo mv apache-tomcat-7.0.47.tar.gz /var
   cd /var
-  sudo tar -xvf apache-tomcat-6.0.37.tar.gz
-  sudo ln -s apache-tomcat-6.0.37 tomcat
+  sudo tar -xvf apache-tomcat-7.0.47.tar.gz
+  sudo ln -s apache-tomcat-7.0.47 tomcat
 
 The directory where tomcat binaries reside is known as ``CATALINA_HOME``. In our case::
 
   CATALINA_HOME=/var/tomcat
 
-Delete the file ``apache-tomcat-6.0.37.tar.gz``::
+Delete the file ``apache-tomcat-7.0.47.tar.gz``::
 
-  sudo rm apache-tomcat-6.0.37.tar.gz
+  sudo rm apache-tomcat-7.0.47.tar.gz
 
 Setting environment variables
 ..............................
@@ -93,13 +93,13 @@ The different applications that are contained in Tomcat require some custom conf
 Configuring tomcat as a service
 ................................
 
-#. Create ``tomcat6`` user::
+#. Create ``tomcat7`` user::
 
-	$ sudo useradd tomcat6
+	$ sudo useradd tomcat7
 	
-#. Make all the server tree structure belong to the ``tomcat6`` user::
+#. Make all the server tree structure belong to the ``tomcat7`` user::
 
-	$ sudo chown -R tomcat6: /var/tomcat/
+	$ sudo chown -R tomcat7: /var/tomcat/
 	
    .. warning:: It is important to add a slash (/) at the end of ``/var/tomcat/`` because it is a symbolic link and if the slash is not added only the symbolic link gets its owner changed.
 
@@ -109,7 +109,7 @@ Configuring tomcat as a service
 
      #!/bin/sh
      #
-     # /etc/init.d/tomcat6 -- startup script for the Tomcat 6 servlet engine
+     # /etc/init.d/tomcat7 -- startup script for the Tomcat 7 servlet engine
      #
      # Written by Miquel van Smoorenburg <miquels@cistron.nl>.
      # Modified for Debian GNU/Linux  by Ian Murdock <imurdock@gnu.ai.mit.edu>.
@@ -150,9 +150,9 @@ Configuring tomcat as a service
      
      # The following variables can be overwritten in $DEFAULT
      
-     # Run Tomcat 6 as this user ID and group ID
-     TOMCAT6_USER=tomcat6
-     TOMCAT6_GROUP=tomcat6
+     # Run Tomcat as this user ID and group ID
+     TOMCAT7_USER=tomcat7
+     TOMCAT7_GROUP=tomcat7
      
      # The first existing directory is used for JAVA_HOME (if JAVA_HOME is not
      # defined in $DEFAULT)
@@ -170,7 +170,7 @@ Configuring tomcat as a service
      CATALINA_HOME=/var/tomcat
      
      # Use the Java security manager? (yes/no)
-     TOMCAT6_SECURITY=no
+     TOMCAT7_SECURITY=no
      
      # Default Java options
      # Set java.awt.headless=true if JAVA_OPTS is not set so the
@@ -199,13 +199,13 @@ Configuring tomcat as a service
         CATALINA_TMPDIR="$JVM_TMP"
      fi
      
-     # Set the JSP compiler if set in the tomcat6.default file
+     # Set the JSP compiler if set in the tomcat7.default file
      if [ -n "$JSP_COMPILER" ]; then
         JAVA_OPTS="$JAVA_OPTS -Dbuild.compiler=\"$JSP_COMPILER\""
      fi
      
      SECURITY="no"
-     if [ "$TOMCAT6_SECURITY" = "yes" ]; then
+     if [ "$TOMCAT7_SECURITY" = "yes" ]; then
         SECURITY="-security"
      fi
      
@@ -247,10 +247,10 @@ Configuring tomcat as a service
         # Run the catalina.sh script as a daemon
         set +e
         touch "$CATALINA_PID" "$CATALINA_BASE"/logs/catalina.out
-        #chown -R $TOMCAT6_USER:$TOMCAT6_USER $CATALINA_BASE
-        chown $TOMCAT6_USER "$CATALINA_PID" "$CATALINA_BASE"/logs/catalina.out
-        start-stop-daemon --start -b -u "$TOMCAT6_USER" -g "$TOMCAT6_GROUP" \
-           -c "$TOMCAT6_USER" -d "$CATALINA_TMPDIR" -p "$CATALINA_PID" \
+        #chown -R $TOMCAT7_USER:$TOMCAT7_USER $CATALINA_BASE
+        chown $TOMCAT7_USER "$CATALINA_PID" "$CATALINA_BASE"/logs/catalina.out
+        start-stop-daemon --start -b -u "$TOMCAT7_USER" -g "$TOMCAT7_GROUP" \
+           -c "$TOMCAT7_USER" -d "$CATALINA_TMPDIR" -p "$CATALINA_PID" \
            -x /bin/bash -- -c "$AUTHBIND_COMMAND $TOMCAT_SH"
         status="$?"
         set +a -e
@@ -271,12 +271,12 @@ Configuring tomcat as a service
      
         log_daemon_msg "Starting $DESC" "$SERVICE"
         if start-stop-daemon --test --start --pidfile "$CATALINA_PID" \
-           --user $TOMCAT6_USER --exec "$JAVA_HOME/bin/java" \
+           --user $TOMCAT7_USER --exec "$JAVA_HOME/bin/java" \
            >/dev/null; then
      
            # Regenerate POLICY_CACHE file
      #     umask 022
-     #     echo "// AUTO-GENERATED FILE from /etc/tomcat6/policy.d/" \
+     #     echo "// AUTO-GENERATED FILE from /etc/tomcat7/policy.d/" \
      #        > "$POLICY_CACHE"
      #     echo ""  >> "$POLICY_CACHE"
      #     cat $CATALINA_BASE/conf/policy.d/*.policy \
@@ -288,11 +288,11 @@ Configuring tomcat as a service
               log_failure_msg "could not create JVM temporary directory"
               exit 1
            }
-           chown $TOMCAT6_USER "$JVM_TMP"
+           chown $TOMCAT7_USER "$JVM_TMP"
      
            catalina_sh start $SECURITY
            sleep 5
-              if start-stop-daemon --test --start --pidfile "$CATALINA_PID" --user $TOMCAT6_USER --exec "$JAVA_HOME/bin/java" \
+              if start-stop-daemon --test --start --pidfile "$CATALINA_PID" --user $TOMCAT7_USER --exec "$JAVA_HOME/bin/java" \
               >/dev/null; then
               echo $?
               if [ -f "$CATALINA_PID" ]; then
@@ -313,7 +313,7 @@ Configuring tomcat as a service
         set +e
         if [ -f "$CATALINA_PID" ]; then
            start-stop-daemon --stop --pidfile "$CATALINA_PID" \
-              --user "$TOMCAT6_USER" \
+              --user "$TOMCAT7_USER" \
               --retry=TERM/20/KILL/5 >/dev/null
            if [ $? -eq 1 ]; then
               log_progress_msg "$SERVICE is not running but pid file exists, cleaning up"
@@ -333,7 +333,7 @@ Configuring tomcat as a service
         status)
         set +e
         start-stop-daemon --test --start --pidfile "$CATALINA_PID" \
-           --user "$TOMCAT6_USER" \
+           --user "$TOMCAT7_USER" \
            >/dev/null 2>&1
         if [ "$?" = "0" ]; then
      
@@ -358,7 +358,7 @@ Configuring tomcat as a service
         ;;
        try-restart)
              if start-stop-daemon --test --start --pidfile "$CATALINA_PID" \
-           --user $TOMCAT6_USER --exec "$JAVA_HOME/bin/java" \
+           --user $TOMCAT7_USER --exec "$JAVA_HOME/bin/java" \
            >/dev/null; then
            $0 start
         fi
@@ -372,31 +372,31 @@ Configuring tomcat as a service
      exit 0
 
 
-#. Create the file ``/etc/init.d/tomcat6``. It will contain the INIT block, the service name, and a description. The file contents would be:
+#. Create the file ``/etc/init.d/tomcat7``. It will contain the INIT block, the service name, and a description. The file contents would be:
 
      .. code-block:: sh
 
       #!/bin/sh
       ### BEGIN INIT INFO
-      # Provides:          tomcat6
+      # Provides:          tomcat7
       # Required-Start:    $local_fs $remote_fs $network
       # Required-Stop:     $local_fs $remote_fs $network
       # Should-Start:      $named
       # Should-Stop:       $named
       # Default-Start:     2 3 4 5
       # Default-Stop:      0 1 6
-      # Description:       Start Tomcat6.
+      # Description:       Start Tomcat7.
       ### END INIT INFO
 
       . /etc/init.d/ubuntuTomcatRunner.sh
 
 #. Make the file created in ``/etc/init.d/`` executable::
 
-    $ sudo chmod +x /etc/init.d/ubuntuTomcatRunner.sh /etc/init.d/tomcat6
+    $ sudo chmod +x /etc/init.d/ubuntuTomcatRunner.sh /etc/init.d/tomcat7
 
 #. Launch tomcat::
 
-	$ sudo service tomcat6 start
+	$ sudo service tomcat7 start
 	
 #. Check tomcat is up visiting ``http://localhost:8080/`` with a web browser.
 
@@ -414,7 +414,7 @@ Hack to make chkconfig work under ubuntu 12.04::
 
 Add all of the services::
 
-  $ sudo chkconfig -s tomcat6 on
+  $ sudo chkconfig -s tomcat7 on
 
 Check their status::
 
@@ -471,7 +471,7 @@ Create a link in mods-enabled::
 
   $ sudo ln -s /etc/apache2/mods-available/proxy_ajp.conf /etc/apache2/mods-enabled/proxy_ajp.conf
 
-Restart Apache server:
+Restart Apache server::
 
   $ sudo service apache2 restart
 
@@ -532,12 +532,6 @@ PostGIS
 In Ubuntu, use the package manager to install PostgreSQL 9.1 and other prerequisites needed for PostGIS building::
 
   sudo apt-get install build-essential postgresql-9.1 postgresql-server-dev-9.1 libxml2-dev libgeos-dev proj postgresql-9.1-postgis
-  
-Finally, create a postgis template, useful to create spatially enabled databases from it::
-
-  sudo -u postgres createdb template_postgis
-  sudo -u postgres psql -d template_postgis -c "UPDATE pg_database SET datistemplate=true WHERE datname='template_postgis'"
-  sudo -u postgres psql -d template_postgis -c "CREATE EXTENSION postgis;"
 
 .. note:: References:
 
@@ -558,17 +552,13 @@ Create users
 
 Different users will be used for the various databases. Use the following instructions in psql console, setting the passwords as needed. Again, the *app* user is only necessary in dissemination.
 
-To enter the psql console, run::
+app (replace ``------`` for the password for the user ``app``)::
 
-  sudo -u postgres psql
-
-app::
-
-  CREATE USER app LOGIN PASSWORD '------' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE;
+  $ sudo -u postgres psql -c "CREATE USER app LOGIN PASSWORD '------' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE"
   
-geoserver::
+geoserver (replace ``------`` for the password for the user ``geoserver``)::
 
-  CREATE USER geoserver LOGIN PASSWORD '------' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE;
+  $ sudo -u postgres psql -c "CREATE USER geoserver LOGIN PASSWORD '------' NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE"
 
 
 Create databases
@@ -582,7 +572,9 @@ app::
 
 geoserver::
 
-    $ sudo -u postgres createdb -O geoserver -T template_postgis geoserver
+	$ sudo -u postgres createdb -O geoserver
+	$ sudo -u postgres psql -d geoserver -c "CREATE EXTENSION postgis;"
+	
 
 
 Configure PostgreSQL access
