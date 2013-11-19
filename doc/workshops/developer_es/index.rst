@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to curso_desarrollo's documentation!
-============================================
+Taller de desarrollo sobre portal de diseminación
+===================================================
 
 Contents:
 

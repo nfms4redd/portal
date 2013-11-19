@@ -392,6 +392,6 @@ Conclusiones
 
  - Soporte técnico desde Roma por skype
  - Demos online con los últimos avances de la plataforma
- - ¿Interesados en hacer algunos de los componentes que faltan por hacer?
+ - ¿Interesados en hacer algunos componentes generales?
 
 
