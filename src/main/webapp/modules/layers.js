@@ -53,15 +53,15 @@ define([ "jquery", "message-bus", "module" ], function($, bus, module) {
 						}
 						bus.send("add-layer", layerInfo);
 					} else {
-						bus.send("trigger", "error", "One (and only one) wms layer with id '" + id + "' expected");
+						bus.send("error", "One (and only one) wms layer with id '" + id + "' expected");
 					}
 
 				} else {
-					bus.send("trigger", "error", "One (and only one) portal layer with id '" + id + "' expected");
+					bus.send("error", "One (and only one) portal layer with id '" + id + "' expected");
 				}
 			}
 		}
-		
+
 		bus.send("layers-loaded");
 	});
 });
