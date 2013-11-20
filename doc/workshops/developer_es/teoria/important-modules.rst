@@ -9,24 +9,18 @@ Entre los módulos más importantes existentes en la plataforma podemos destacar
 - layout: Crea el layout de la página
 - i18n: Contiene las cadenas de los ficheros de traducción .properties
 - map: Crea el mapa principal
-
-Se pasa a continuación a detallar el funcionamiento de estos módulos con más detalle.
+- layers: Lee la configuración de capas y lanza eventos ``add-layer`` y ``add-group``
+- customization: Carga el resto de módulos
 
 Message-bus
 -----------
 
-Función principal: Ofrecer dos métodos para mandar mensajes al bus y para escuchar los mensajes que suceden en el mismo:
+De los módulos anteriores, el más importante es ``message-bus``
 
-TODO
-Documentar el proceso "escuchar un módulo con nombre XXX", ver que sólo se escucha dicho evento. 
-Documentar el objeto retornado, en especial las funciones en el código. Referenciar el código?
+**Función principal:** Ofrecer dos métodos para mandar y escuchar mensajes al/del bus. La documentación de las dos funciones puede encontrarse en el código fuente: https://github.com/nfms4redd/nfms/blob/develop/portal/src/main/webapp/modules/message-bus.js
 
+**Valor de retorno:** Un objeto con dos propiedades ``send`` y ``listen`` que permiten respectivamente enviar y escuchar mensajes.
 
-Patrón:
+**Mensajes enviados:** Ninguno. El módulo se encarga de procesar y canalizar los eventos, pero no inicia ni escucha ninguno. 
 
-Funcion principal:
-Valor de retorno:
-Eventos escuchados:
-Ejemplos:
- 
-/TODO
+**Mensajes escuchados:** Ninguno.

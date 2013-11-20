@@ -9,6 +9,6 @@ Contents:
    prerequisites
    frontend-architecture
    important-modules
-   events
+   messages
    advanced-topics
    backend
