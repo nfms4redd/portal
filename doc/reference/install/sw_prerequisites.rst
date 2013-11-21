@@ -487,9 +487,9 @@ The second alternative is to manually buildg and install from the GDAL sources, 
 A. Using UbuntuGIS repository
 .............................
 
-Add the ubuntugis-unstable repository, and update packages::
+Add the ubuntugis-stable repository, and update packages::
 
-  sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+  sudo add-apt-repository ppa:ubuntugis/ppa
   sudo apt-get update
 
 Install gdal binaries and python utilities::
