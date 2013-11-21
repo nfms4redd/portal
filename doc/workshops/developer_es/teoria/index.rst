@@ -10,5 +10,7 @@ Contents:
    frontend-architecture
    important-modules
    messages
-   advanced-topics
    backend
+   client-plugins
+   server-plugins
+   advanced-topics

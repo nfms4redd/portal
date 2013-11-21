@@ -1,7 +1,7 @@
 Mensajes relevantes
 ======================
 
-
+.. _modules-loaded:
 
 **modules-loaded**
 
@@ -16,6 +16,8 @@ Más información:
 * :ref:`bootstrap`
 
 
+
+.. _layers-loaded:
 
 **layers-loaded**
 
@@ -146,6 +148,8 @@ Más información:
 
 
 
+.. _add-group:
+
 **add-group**
 
 Indica que se debe añadir un grupo al árbol de capas
@@ -165,6 +169,8 @@ Ejemplo de uso::
 Más información:
 
 
+
+.. _add-layer:
 
 **add-layer**
 
