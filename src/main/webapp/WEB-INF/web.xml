@@ -24,7 +24,17 @@
 		<servlet-name>index-servlet</servlet-name>
 		<url-pattern>/index.html</url-pattern>
 	</servlet-mapping>
-
+	
+	<!-- static folder content -->
+	<servlet>
+		<servlet-name>static-content-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.StaticContentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>static-content-servlet</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+	
 	<!-- config call -->
 	<servlet>
 		<servlet-name>config-servlet</servlet-name>

@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "module" ], function($, bus, module) {
+define([ "jquery", "message-bus", "customization", "module" ], function($, bus, customization, module) {
 
 	var getValueOrDefault = function(object, value, defaultValue) {
 		var objectValue = object[value];
@@ -44,10 +44,12 @@ define([ "jquery", "message-bus", "module" ], function($, bus, module) {
 							"url" : url,
 							"wmsName" : wmsName,
 							"name" : portalLayer.label,
-							"infoLink" : "http://rdc-snsf.org/static/loc/en/html/bluemarble_def.html",
 							"queryable" : wmsLayer.queryable,
 							"visible" : getValueOrDefault(portalLayer, "active", true)
 						};
+						if (portalLayer.hasOwnProperty("infoFile")) {
+							layerInfo.infoLink = "static/loc/" + customization.languageCode + "/html/" + portalLayer.infoFile;
+						}
 						if (wmsLayer.hasOwnProperty("wmsTime")) {
 							layerInfo.timestamps = wmsLayer.wmsTime.split(",");
 						}
