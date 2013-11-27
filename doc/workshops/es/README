@@ -1,0 +1,5 @@
+This documentation references some sections in geotalleres. Therefore in order to build the documentation it is necessary first to clone the geotalleres repository in this same folder:
+
+$ git clone git@github.com:geotalleres/geotalleres.git
+
+Afterwards it is possible to run make successfully

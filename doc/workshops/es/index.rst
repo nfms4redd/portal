@@ -6,15 +6,14 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   authors
-   virtualbox
+   geotalleres/teoria/virtual-box/virtual-box
    community
-   linux
-   webservices
+   geotalleres/teoria/linux/linux
+   geotalleres/teoria/servicios-web/servicios-web
    architecture
-   postgresql
-   geoserver_intro
-   geoserver_vector
+   geotalleres/teoria/postgresql/postgresql
+   geotalleres/teoria/geoserver-intro/geoserver_intro
+   geotalleres/teoria/geoserver-vector/geoserver_vector
    portal_configuration
-   geoserver_raster
+   geotalleres/teoria/geoserver-raster/geoserver_raster
    portal_raster_config

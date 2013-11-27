@@ -1,6 +1,19 @@
 Portal: Configuración de capas raster
 ==========================================
 
+.. note::
+
+	=================  ================================================
+	Fecha              Autores
+	=================  ================================================             
+	1 Diciembre 2012    * Oscar Fonts (oscar.fonts@geomati.co)
+	24 Junio 2013		* Fernando González (fernando.gonzalez@fao.org)
+	=================  ================================================	
+
+	©2013 FAO Forestry 
+	
+	Excepto donde quede reflejado de otra manera, la presente documentación se halla bajo licencia : Creative Commons (Creative Commons - Attribution - Share Alike: http://creativecommons.org/licenses/by-sa/3.0/deed.es)
+
 El proceso de configuración de capas raster en el portal es exactamente el mismo que para las capas vectoriales, ya que
 tanto unas como otras se exponen a través de la interfaz WMS, que no hace diferencia entre raster y vector.
 
