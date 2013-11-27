@@ -572,7 +572,7 @@ app::
 
 geoserver::
 
-	$ sudo -u postgres createdb -O geoserver
+	$ sudo -u postgres createdb -O geoserver geoserver
 	$ sudo -u postgres psql -d geoserver -c "CREATE EXTENSION postgis;"
 	
 
