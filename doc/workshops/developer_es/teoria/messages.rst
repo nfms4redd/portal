@@ -76,6 +76,48 @@ Más información:
 
 
 
+**zoom-in**
+
+Mueve la escala al nivel inmediatamente mayor
+
+Parámetros: Ninguno
+
+Ejemplo de uso::
+
+	bus.send("zoom-in");
+
+Más información:
+
+
+
+**zoom-out**
+
+Mueve la escala al nivel inmediatamente menor
+
+Parámetros: Ninguno
+
+Ejemplo de uso::
+
+	bus.send("zoom-out");
+
+Más información:
+
+
+
+**initial-zoom**
+
+Situa el mapa en la posición inicial
+
+Parámetros: Ninguno
+
+Ejemplo de uso::
+
+	bus.send("initial-zoom");
+
+Más información:
+
+
+
 **set-default-exclusive-control**
 
 Establece el control exclusivo por defecto para el mapa. Sólo un módulo exclusivo está activado en cada momento.
