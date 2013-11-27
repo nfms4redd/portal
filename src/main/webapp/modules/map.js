@@ -76,5 +76,13 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		}
 	});
 
+	bus.listen("zoom-in", function(event) {
+		map.zoomIn();
+	});
+
+	bus.listen("zoom-out", function(event) {
+		map.zoomOut();
+	});
+
 	return map;
 });
