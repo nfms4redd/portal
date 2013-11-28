@@ -692,6 +692,7 @@ In both cases chose the JDK version, not the JRE one. For example in case of a 3
 Make the file executable with ``chmod`` and execute it from the directory containing the JDK ::
 
 	$ chmod u+x /tmp/jai-1_1_3-lib-linux-i586-jdk.bin 
+	$ cd /usr/lib/jvm/default-java
 	$ sudo /tmp/jai-1_1_3-lib-linux-i586-jdk.bin 
 
 Accept the license
