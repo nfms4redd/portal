@@ -25,10 +25,15 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		var groups = layerRoot.groups;
 		for (var i = 0; i < groups.length; i++) {
 			var group = groups[i];
-			bus.send("add-group", {
-				"id" : group.id,
-				"name" : group.label
-			});
+            var groupInfo = {
+                "id" : group.id,
+                "name" : group.label
+            };
+            if (group.hasOwnProperty("infoFile")) {
+                groupInfo.infoLink = "static/loc/" + customization.languageCode + "/html/" + group.infoFile;
+            }
+
+            bus.send("add-group", groupInfo);
 
 			var items = group.items;
 			for (var j = 0; j < items.length; j++) {

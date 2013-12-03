@@ -82,6 +82,7 @@
 	"groups" : [ {
 		"id" : "base",
 		"label" : "${base_layers}",
+        "infoFile": "base_layers.html",
 		"items" : [ "blue-marble", "forestClassification" ]
 	}, {
 		"id" : "admin",
