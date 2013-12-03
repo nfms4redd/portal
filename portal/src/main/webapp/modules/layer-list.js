@@ -47,7 +47,26 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		var divTitle = $("<div/>");
 		aTitle = $("<a/>").attr("href", "#").html(groupInfo.name).disableSelection();
 		divTitle.append(aTitle);
-		divLayers.append(divTitle);
+
+        if (groupInfo.hasOwnProperty("infoLink")) {
+            infoButton = $('<a style="position:absolute;top:3px;right:4px;width:16px;height:16px;padding:0;" class="layer_info_button" href="' + groupInfo.infoLink + '"></a>');
+
+            // prevent accordion item from expanding when clicking on the info button
+            infoButton.click(function (event) { event.stopPropagation() });
+
+            infoButton.fancybox({
+                'autoScale' : false,
+                'openEffect' : 'elastic',
+                'closeEffect' : 'elastic',
+                'type': 'ajax',
+                'overlayOpacity': 0.5
+            });
+
+            divTitle.append(infoButton);
+        }
+
+        divLayers.append(divTitle);
+
 		var tblLayerGroup = $("<table/>");
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
 		tblLayerGroup.addClass("group-content-table");
