@@ -1,4 +1,8 @@
-#info_popup table {
+#info_popup {
+	padding: 6px 0;
+}
+
+#info_popup>table {
 	border: 2px solid black;
 	color: #fff;
 	width: 100%;
