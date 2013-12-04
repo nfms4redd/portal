@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +19,14 @@ public class TestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		try {
-			// TODO put in servlet context?
-			InitialContext cxt = new InitialContext();
-			DataSource ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/app");
+			DataSource ds = (DataSource) req.getServletContext().getAttribute(
+					"datasource.app");
 
 			Connection conn = ds.getConnection();
 			Statement statement = conn.createStatement();
-			statement.execute("");
+			statement.execute("select * from boh;");
 			statement.close();
 			conn.close();
-		} catch (NamingException e) {
-			throw new StatusServletExceptionImpl(500,
-					"Server configuration error");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new StatusServletExceptionImpl(500, "Database access error");
