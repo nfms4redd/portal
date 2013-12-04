@@ -21,11 +21,11 @@
 
 <link rel="stylesheet" href="js/OpenLayers/theme/default/style.css"/>
 
-#foreach( $styleSheet in $styleSheets )
-<link rel="stylesheet" href="$styleSheet">
-#end
+{{#styleSheets}}
+<link rel="stylesheet" href="{{.}}">
+{{/styleSheets}}
 
-<script src="$configUrl"></script>
+<script src="{{configUrl}}"></script>
 <script src="js/require.js" data-main="modules/main"></script>
 
 </head>
