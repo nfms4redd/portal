@@ -50,7 +50,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 							"wmsName" : wmsName,
 							"name" : portalLayer.label,
 							"queryable" : wmsLayer.queryable,
-							"visible" : getValueOrDefault(portalLayer, "active", true)
+							"visible" : getValueOrDefault(portalLayer, "active", false)
 						};
 						if (portalLayer.hasOwnProperty("infoFile")) {
 							layerInfo.infoLink = "static/loc/" + customization.languageCode + "/html/" + portalLayer.infoFile;
@@ -59,6 +59,9 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 							layerInfo.timestamps = wmsLayer.wmsTime.split(",");
 						}
 						bus.send("add-layer", layerInfo);
+
+                        // Set layer visibility on OpenLayers
+                        bus.send("layer-visibility", [layerInfo.id, layerInfo.visible])
 					} else {
 						bus.send("error", "One (and only one) wms layer with id '" + id + "' expected");
 					}

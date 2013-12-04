@@ -38,9 +38,9 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 			transparent : true
 		});
 		layer.id = layerInfo.id;
-		if (!layerInfo.visible) {
-			layer.setVisibility(false);
-		}
+//		if (!layerInfo.visible) {
+//			layer.setVisibility(false);
+//		}
 		if (layerInfo.hasOwnProperty("timestamps")) {
 			timeDependentLayers.push(layer);
 		}
