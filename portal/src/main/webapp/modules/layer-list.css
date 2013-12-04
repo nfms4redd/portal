@@ -1,3 +1,16 @@
+/* JQuery UI hack */
+.ui-widget { font-size: 11px !important; }
+
+
+#layer_list_selector_pane {
+    z-index: 1100;
+    width: 290px;
+    top: 186px;
+    left: 10px;
+    position: absolute;
+    display: none;
+}
+
 #active_layers {
 	position: relative;
 	top: 0;
