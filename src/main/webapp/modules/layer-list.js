@@ -48,24 +48,24 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		aTitle = $("<a/>").attr("href", "#").html(groupInfo.name).disableSelection();
 		divTitle.append(aTitle);
 
-        if (groupInfo.hasOwnProperty("infoLink")) {
-            infoButton = $('<a style="position:absolute;top:3px;right:4px;width:16px;height:16px;padding:0;" class="layer_info_button" href="' + groupInfo.infoLink + '"></a>');
+		if (groupInfo.hasOwnProperty("infoLink")) {
+			infoButton = $('<a style="position:absolute;top:3px;right:4px;width:16px;height:16px;padding:0;" class="layer_info_button" href="' + groupInfo.infoLink + '"></a>');
 
-            // prevent accordion item from expanding when clicking on the info button
-            infoButton.click(function (event) { event.stopPropagation() });
+			// prevent accordion item from expanding when clicking on the info button
+			infoButton.click(function (event) { event.stopPropagation() });
 
-            infoButton.fancybox({
-                'autoScale' : false,
-                'openEffect' : 'elastic',
-                'closeEffect' : 'elastic',
-                'type': 'ajax',
-                'overlayOpacity': 0.5
-            });
+			infoButton.fancybox({
+				'autoScale' : false,
+				'openEffect' : 'elastic',
+				'closeEffect' : 'elastic',
+				'type': 'ajax',
+				'overlayOpacity': 0.5
+			});
 
-            divTitle.append(infoButton);
-        }
+			divTitle.append(infoButton);
+		}
 
-        divLayers.append(divTitle);
+		divLayers.append(divTitle);
 
 		var tblLayerGroup = $("<table/>");
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
@@ -127,6 +127,13 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			tblLayerGroup.append(trLayer);
 			divLayers.accordion("refresh");
 		}
+	});
+
+	bus.listen("show-layer-list", function(event, groupInfo) {
+		divLayersContainer.show();
+	});
+	bus.listen("hide-layer-list", function(event, groupInfo) {
+		divLayersContainer.hide();
 	});
 
 	return divLayersContainer;

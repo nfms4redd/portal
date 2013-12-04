@@ -19,11 +19,19 @@ define([ "jquery" ], function($) {
 	var divLayerList = $("<div/>").attr("id", "layers_container");
 	body.append(divLayerList);
 
+    var divActiveLayerList = $("<div/>").attr("id", "active_layers_container");
+    body.append(divActiveLayerList);
+
+    var divLayerListSelector = $("<div/>").attr("id", "layer_list_selector_pane");
+    body.append(divLayerListSelector);
+
 	return {
-		"banner":     divBanner,
-		"toolbar":    divToolbar,
+		"banner": divBanner,
+		"toolbar": divToolbar,
 		"timeSlider": divTimeSlider,
-		"map":        divMap,
-		"layers":     divLayerList
+		"map": divMap,
+		"layers": divLayerList,
+        "activeLayers": divActiveLayerList,
+        layerListSelector:  divLayerListSelector
 	};
 });
