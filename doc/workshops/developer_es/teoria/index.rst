@@ -7,10 +7,10 @@ Contents:
    :maxdepth: 2
 
    prerequisites
-   frontend-architecture
+   client-architecture
    important-modules
    messages
-   backend
+   server
    client-plugins
    server-plugins
    advanced-topics

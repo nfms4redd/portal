@@ -1,4 +1,4 @@
-Arquitectura Frontend
+Arquitectura cliente
 ======================
 
 La arquitectura del cliente web viene definida principalmente por el uso del proyecto RequireJS y por el uso del patrón message-bus. Además, se hace un uso extensivo de la librería OpenLayers
