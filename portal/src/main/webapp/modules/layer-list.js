@@ -24,10 +24,10 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 
 	var divLayersContainer = layout.layers;
 
-	var divActiveLayers = $("<div/>").attr("id", "active_layers");
-	var h3Title = $("<h3/>").html("Selected layers");
-	divActiveLayers.append(h3Title);
-	divLayersContainer.append(divActiveLayers);
+//	var divActiveLayers = $("<div/>").attr("id", "active_layers");
+//	var h3Title = $("<h3/>").html("Selected layers");
+//	divActiveLayers.append(h3Title);
+//	divLayersContainer.append(divActiveLayers);
 
 	divLayers = $("<div/>").attr("id", "all_layers");
 	divLayers.addClass("ui-accordion-icons");
