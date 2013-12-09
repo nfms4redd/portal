@@ -24,9 +24,43 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 		}
 	});
 
-	bus.listen("layer-visibility", function(event, layerId, visibility) {
-		table.append($('<tr><td>test</td></tr>'));
-	});
+	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
+        var tr1, tr2;
+
+        function addLayer() {
+            // Layer label
+            tr1 = $('<tr><td>' + layerInfo.name + '</td></tr>')
+
+            // Transparency slider
+            var transparencyDiv = $('<div style="margin-top:4px; margin-bottom:12px;" id="' + 'cazzo' + '_transparency_slider"></div>');
+            var td = $('<td colspan="2"></td>');
+            td.append(transparencyDiv);
+            tr2 = $('<tr></tr>');
+            tr2.append(td);
+
+            // Append elements to table
+            table.append(tr1);
+            table.append(tr2);
+
+            //layers = contextConf.layers;
+            $(transparencyDiv).slider({
+                min: 0,
+                max: 100,
+                value: 100,
+                slide: function (event, ui) {
+                    bus.send("transparency-slider-changed", [layerInfo, ui.value / 100]);
+                }
+            });
+        }
+
+        function delLayer() {
+            if (typeof(tr1) != 'undefined') tr1.remove();
+            if (typeof(tr2) != 'undefined') tr2.remove();
+        }
+
+        if (visibility) { addLayer(); }
+        else { delLayer(); }
+    });
 
 	bus.listen("show-active-layer-list", function(event, groupInfo) {
 		divActiveLayers.accordion({
@@ -34,6 +68,8 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 			autoHeight: false,
 			animated: false,
 			create: function (event, ui) {
+                // Hide the expand/contract arrow - it doesn't work
+
                 //console.log(divActiveLayers.find('.ui-icon-triangle-1-s'))
                 //divActiveLayers.find('.ui-icon-triangle-1-s').hide();
 				//$('#active_layers_pane .ui-icon-triangle-1-s').hide();

@@ -83,7 +83,15 @@
 		"id" : "base",
 		"label" : "${base_layers}",
         "infoFile": "base_layers.html",
-		"items" : [ "blue-marble", "forestClassification" ]
+		"items" : [ {
+			"id" : "innerbase",
+			"label" : "General purpose",
+			"items": ["blue-marble"]
+		}, {
+			"id" : "innerforest",
+			"label" : "Forest classifications",
+			"items": [ "forestClassification" ]
+		} ]
 	}, {
 		"id" : "admin",
 		"label" : "${admin_areas}",

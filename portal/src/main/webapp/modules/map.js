@@ -50,8 +50,8 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		bus.send("maplayer-added", [ layer, layerInfo ]);
 	});
 
-	bus.listen("layer-visibility", function(event, layerId, visibility) {
-		var layer = map.getLayer(layerId);
+	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
+		var layer = map.getLayer(layerInfo.id);
 		layer.setVisibility(visibility);
 	});
 
@@ -83,6 +83,11 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	bus.listen("zoom-out", function(event) {
 		map.zoomOut();
 	});
+
+    bus.listen("transparency-slider-changed", function(event, layerInfo, opacity) {
+        var layer = map.getLayer(layerInfo.id);
+        layer.setOpacity(opacity);
+    });
 
 	return map;
 });

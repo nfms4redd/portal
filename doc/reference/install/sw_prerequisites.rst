@@ -489,6 +489,7 @@ A. Using UbuntuGIS repository
 
 Add the ubuntugis-stable repository, and update packages::
 
+  sudo apt-get install python-software-properties
   sudo add-apt-repository ppa:ubuntugis/ppa
   sudo apt-get update
 
