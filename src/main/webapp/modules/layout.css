@@ -26,6 +26,15 @@ html,body {
 	bottom: 0px;
 }
 
+#layer_list_selector_pane {
+    width: 290px;
+    top: 186px;
+    left: 10px;
+    position: absolute;
+    display: none;
+    z-index: 1100;
+}
+
 #layers_container {
 	font-size: 10px;
 	left: 10px;
@@ -33,6 +42,15 @@ html,body {
 	top: 215px;
 	width: 250px;
 	z-index: 1100;
+}
+
+#active_layers_container {
+    font-size: 10px;
+    left: 10px;
+    position: absolute;
+    top: 215px;
+    width: 250px;
+    display: none;
 }
 
 .ui-front {
