@@ -1,6 +1,7 @@
 /* JQuery UI hack */
-.ui-widget { font-size: 11px !important; }
-
+.ui-widget {
+	font-size: 11px !important;
+}
 
 #active_layers>table {
 	width: 100%;
@@ -14,12 +15,7 @@
 	width: 100%;
 }
 
-#all_layers>table {
-	width: 100%;
-	padding: 0px;
-}
-
-.group_content_table {
+#all_layers table {
 	width: 100%;
 	border-collapse: collapse;
 }
@@ -42,8 +38,7 @@ td.layer_visibility {
 .layer_visibility {
 	width: 16px;
 	height: 16px;
-	background: url(images/ui-elements.png) no-repeat scroll 0 0
-		transparent;
+	background: url(images/ui-elements.png) no-repeat scroll 0 0 transparent;
 	cursor: pointer;
 }
 

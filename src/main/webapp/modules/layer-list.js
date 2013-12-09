@@ -44,9 +44,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	divLayersContainer.append(divLayers);
 
 	bus.listen("add-group", function(event, groupInfo) {
-		var divTitle = $("<div/>");
-		aTitle = $("<a/>").attr("href", "#").html(groupInfo.name).disableSelection();
-		divTitle.append(aTitle);
+		var divTitle = $("<div/>").html(groupInfo.name).disableSelection();
 
 		if (groupInfo.hasOwnProperty("infoLink")) {
 			infoButton = $('<a style="position:absolute;top:3px;right:4px;width:16px;height:16px;padding:0;" class="layer_info_button" href="' + groupInfo.infoLink + '"></a>');
@@ -65,12 +63,23 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			divTitle.append(infoButton);
 		}
 
-		divLayers.append(divTitle);
 
 		var tblLayerGroup = $("<table/>");
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
-		tblLayerGroup.addClass("group-content-table");
-		divLayers.append(tblLayerGroup).accordion("refresh");
+		
+		if (groupInfo.hasOwnProperty("parentId")) {
+			var parentId = groupInfo.parentId;
+			var tblParentLayerGroup = $("#group-content-table-" + parentId);
+			if (tblParentLayerGroup.length == 0) {
+				bus.send("error", "Group " + groupInfo.name + " references nonexistent group: " + parentId);
+			}
+			tblParentLayerGroup.append(divTitle).append(tblLayerGroup);
+		} else {
+			divLayers.append(divTitle);
+			var divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
+			divContent.append(tblLayerGroup);
+			divLayers.append(divContent).accordion("refresh");
+		}
 	});
 	bus.listen("add-layer", function(event, layerInfo) {
 		var tblLayerGroup = $("#group-content-table-" + layerInfo.groupId);
