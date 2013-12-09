@@ -35,9 +35,8 @@ public class IndexHTMLServlet extends HttpServlet {
 		VelocityContext context = new VelocityContext();
 
 		ServletContext servletContext = getServletContext();
-		ArrayList<String> styleSheets = getStyleSheets(servletContext,
-				"modules");
-		styleSheets.addAll(getStyleSheets(servletContext, "styles"));
+		ArrayList<String> styleSheets = getStyleSheets(servletContext, "styles");
+		styleSheets.addAll(getStyleSheets(servletContext, "modules"));
 		context.put("styleSheets", styleSheets);
 
 		String lang = req.getParameter("lang");
