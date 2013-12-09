@@ -1,5 +1,11 @@
 define([ "jquery", "message-bus" ], function($, bus) {
 
+	var renderers = new Array();
+
+	bus.listen("add-layer-info-renderer", function(event, layerName, renderer) {
+		renderers[layerName] = renderer;
+	});
+
 	bus.listen("info-features", function(event, features, x, y) {
 		// re-project to Google projection
 		var epsg4326 = new OpenLayers.Projection("EPSG:4326");
@@ -27,12 +33,8 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			autoOpen : false
 		});
 
-		// TODO check if there is a custom pop up instead of showing the
-		// standard one
-
 		$.each(features, function(layerId, feature) {
 			var qualifiedLayerId = feature.gml.featureNSPrefix + ":" + feature.gml.featureType;
-
 			var table = $("<table/>");
 			var tr1 = $("<tr/>");
 			var td1 = $('<td colspan="2" class="area_name" />');
@@ -44,15 +46,19 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			table.mouseout(function() {
 				bus.send("clear-highlighted-features");
 			});
-
-			var info = $("<table/>");
-			$.each(feature.attributes, function(index, attribute) {
-				var tdIndex = $("<td/>").html(index);
-				var tdAttribute = $("<td/>").html(":&nbsp;&nbsp;&nbsp;" + attribute);
-				var trAttribute = $("<tr/>").append(tdIndex).append(tdAttribute);
-				info.append(trAttribute);
-			});
-			td1.append(info);
+			var customRenderer = renderers[qualifiedLayerId];
+			if (customRenderer) {
+				td1.append(customRenderer(feature));
+			} else {
+				var info = $("<table/>");
+				$.each(feature.attributes, function(index, attribute) {
+					var tdIndex = $("<td/>").html(index);
+					var tdAttribute = $("<td/>").html(":&nbsp;&nbsp;&nbsp;" + attribute);
+					var trAttribute = $("<tr/>").append(tdIndex).append(tdAttribute);
+					info.append(trAttribute);
+				});
+				td1.append(info);
+			}
 
 			tr2 = $("<tr/>");
 			var td2 = $("<td class=\"td_left\" id=\"indicator_buttons_container_" + layerId + "\"/>");

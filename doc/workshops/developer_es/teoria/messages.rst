@@ -328,6 +328,18 @@ Más información:
 
 
 
+**add-layer-info-renderer**
+
+Lanzado para registrar un renderizador de información específico de una capa. Por defecto cuando se pincha en una capa se muestra un diálogo común para todos los elementos
+
+Parámetros:
+
+Ejemplo de uso:
+
+Más información:
+
+
+
 **evento**
 
 Parámetros:
