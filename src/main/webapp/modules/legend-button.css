@@ -1,0 +1,9 @@
+#toggle_legend {
+	z-index: 1000;
+	top: 150px;
+	margin-right: 0px;
+	position: absolute;
+	width: 60px;
+	right: 20px;
+	margin-top: 0;
+}
