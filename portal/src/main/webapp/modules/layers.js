@@ -62,6 +62,16 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 						if (wmsLayer.hasOwnProperty("wmsTime")) {
 							layerInfo.timestamps = wmsLayer.wmsTime.split(",");
 						}
+						if (wmsLayer.hasOwnProperty("legend")) {
+							layerInfo.legendURL = "static/loc/" + customization.languageCode + "/images/" + wmsLayer.legend;
+						}
+						if (wmsLayer.hasOwnProperty("sourceLink")) {
+							layerInfo.sourceLink = wmsLayer.sourceLink;
+						}
+						if (wmsLayer.hasOwnProperty("sourceLabel")) {
+							layerInfo.sourceLabel = wmsLayer.sourceLabel;
+						}
+
 						bus.send("add-layer", layerInfo);
 
                         // Set layer visibility on OpenLayers
@@ -75,7 +85,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			}
 		}
 	};
-	
+
 	bus.listen("modules-loaded", function() {
 		var layerRoot = module.config();
 		var groups = layerRoot.groups;
