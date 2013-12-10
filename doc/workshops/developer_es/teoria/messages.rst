@@ -199,7 +199,9 @@ Indica que se debe añadir un grupo al árbol de capas
 Parámetros: Un objeto con las siguientes propiedades:
 
 * id: identificador del grupo
+* parentId: Opcional, para grupos dentro de otros grupos hace referencia al grupo contenedor
 * name: nombre del grupo
+* infoFile: Ruta de la página HTML con información sobre el grupo
 
 Ejemplo de uso::
 
@@ -228,6 +230,9 @@ Parámetros: Un objeto con las siguientes propiedades:
 * infoLink: URL con información de la capa
 * queryable: Si se pretende ofrecer información de la capa o no
 * visible: Si la capa está inicialmente visible o no
+* legendURL: La ruta de una imagen con la leyenda de la capa
+* sourceLink: Enlace externo al organismo productor de los datos
+* sourceLabel: Etiqueta a mostrar en el enlace ``sourceLink``
 * timestamps: Array con los instantes de tiempo en ISO8601 para los que la capa tiene información
 
 Ejemplo de uso::
