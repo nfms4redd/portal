@@ -297,6 +297,20 @@ Más información:
 
 
 
+**toggle-legend**
+
+Escuchado por el módulo ``legend-panel`` para mostrar u ocultar el panel con la leyenda.
+
+Parámetros: Ninguno
+
+Ejemplo de uso::
+
+	bus.send("toggle-legend");
+
+Más información:
+
+
+
 **evento**
 
 Parámetros:
