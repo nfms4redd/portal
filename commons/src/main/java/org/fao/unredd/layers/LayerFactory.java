@@ -17,6 +17,8 @@ package org.fao.unredd.layers;
 
 import java.io.IOException;
 
+import javax.naming.ConfigurationException;
+
 /**
  * Builds instances to manage the layer configurations. Layer names are
  * qualified with the workspace name like this: workspace_name:layer_name
@@ -53,6 +55,7 @@ public interface LayerFactory {
 	 * 
 	 * @param layerName
 	 * @return true if there is an entry for this layer, false otherwise
+	 * @throws ConfigurationException
 	 */
-	boolean exists(String layerName);
+	boolean exists(String layerName) throws ConfigurationException;
 }
