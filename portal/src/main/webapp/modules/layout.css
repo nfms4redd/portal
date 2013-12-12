@@ -5,6 +5,11 @@ html,body {
 	font: 100% "Trebuchet MS", sans-serif;
 }
 
+body {
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+}
+
 #center {
 	height: 100%;
 }
