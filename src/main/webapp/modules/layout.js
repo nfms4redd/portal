@@ -25,6 +25,9 @@ define([ "jquery" ], function($) {
     var divLayerListSelector = $("<div/>").attr("id", "layer_list_selector_pane");
     body.append(divLayerListSelector);
 
+    // disable text selection on Explorer (done with CSS in other browsers)
+    $(function() { document.body.onselectstart = function() { return false }})
+
 	return {
 		"banner": divBanner,
 		"toolbar": divToolbar,
