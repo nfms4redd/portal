@@ -18,7 +18,6 @@ package org.fao.unredd.portal;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -34,11 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.layers.NoSuchIndicatorException;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -70,19 +66,19 @@ public class IndicatorsTest {
 		OutputDescriptor indicator = new OutputDescriptor("id", "name",
 				"fieldId");
 		when(layer.getOutputs()).thenReturn(new Outputs(indicator));
-		when(layer.getOutput("id")).thenReturn(CONTENT);
-		when(layer.getOutput(argThat(new BaseMatcher<String>() {
-
-			@Override
-			public boolean matches(Object argument) {
-				return !argument.equals("id");
-			}
-
-			@Override
-			public void describeTo(Description description) {
-				description.appendText("Different from id");
-			}
-		}))).thenThrow(new NoSuchIndicatorException(""));
+		// when(layer.getOutput("id")).thenReturn(CONTENT);
+		// when(layer.getOutput(argThat(new BaseMatcher<String>() {
+		//
+		// @Override
+		// public boolean matches(Object argument) {
+		// return !argument.equals("id");
+		// }
+		//
+		// @Override
+		// public void describeTo(Description description) {
+		// description.appendText("Different from id");
+		// }
+		// }))).thenThrow(new NoSuchIndicatorException(""));
 		layerFactory = mock(LayerFactory.class);
 		when(layerFactory.exists(anyString())).thenReturn(true);
 		when(layerFactory.newLayer(anyString())).thenReturn(layer);

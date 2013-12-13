@@ -18,8 +18,6 @@ package org.fao.unredd.model;
 import java.util.Collection;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -27,19 +25,19 @@ import javax.persistence.OneToMany;
 public class Layer {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@OneToMany(mappedBy = "layer")
+	private String id;
 
 	private String name;
 
 	@OneToMany(mappedBy = "layer")
 	private Collection<LayerUpdate> updates;
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

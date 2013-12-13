@@ -4,15 +4,13 @@
 	version="2.0">
 	<persistence-unit name="layers">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<non-jta-data-source>java:/comp/env/jdbc/app</non-jta-data-source>
 		<class>org.fao.unredd.model.Layer</class>
 		<class>org.fao.unredd.model.LayerUpdate</class>
 		<class>org.fao.unredd.model.Feedback</class>
+		<class>org.fao.unredd.model.Indicator</class>
+		<class>org.fao.unredd.model.IndicatorData</class>
 		<properties>
-			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:h2:tmp/test" />
-			<property name="javax.persistence.jdbc.user" value="sa" />
-			<property name="javax.persistence.jdbc.password" value="" />
-
 			<!-- Vendor specific -->
 			<property name="eclipselink.ddl-generation" value="create-tables" />
 		</properties>

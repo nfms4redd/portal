@@ -2,7 +2,6 @@ package org.fao.unredd.portal;
 
 import java.io.IOException;
 
-import javax.naming.ConfigurationException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,19 +25,14 @@ public class IndicatorListServlet extends HttpServlet {
 			String answer = "[]";
 			LayerFactory layerFactory = (LayerFactory) getServletContext()
 					.getAttribute("layer-factory");
-			try {
-				if (layerFactory.exists(layerId)) {
-					Layer layer = layerFactory.newLayer(layerId);
-					Outputs indicators = layer.getOutputs();
-					answer = indicators.toJSON();
-				}
-				resp.setContentType("application/json");
-				resp.setCharacterEncoding("utf8");
-				resp.getWriter().print(answer);
-			} catch (ConfigurationException e) {
-				throw new StatusServletExceptionImpl(500,
-						"Error accessing layer configuration");
+			if (layerFactory.exists(layerId)) {
+				Layer layer = layerFactory.newLayer(layerId);
+				Outputs indicators = layer.getOutputs();
+				answer = indicators.toJSON();
 			}
+			resp.setContentType("application/json");
+			resp.setCharacterEncoding("utf8");
+			resp.getWriter().print(answer);
 		}
 
 	}

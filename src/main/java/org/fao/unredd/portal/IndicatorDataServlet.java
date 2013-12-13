@@ -1,6 +1,5 @@
 package org.fao.unredd.portal;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -8,10 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.fao.unredd.charts.ChartGenerator;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchIndicatorException;
+import org.fao.unredd.layers.Output;
 
 public class IndicatorDataServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -31,12 +30,9 @@ public class IndicatorDataServlet extends HttpServlet {
 						.getAttribute("layer-factory");
 				if (layerFactory.exists(layerId)) {
 					Layer layer = layerFactory.newLayer(layerId);
-					ChartGenerator chartGenerator = new ChartGenerator(
-							new ByteArrayInputStream(layer.getOutput(
-									indicatorId).getBytes("UTF-8")));
-					resp.setContentType(chartGenerator.getContentType());
-					chartGenerator.generate(objectId, resp.getWriter());
-					resp.flushBuffer();
+					Output output = layer.getOutput(indicatorId, objectId);
+					resp.setContentType(output.getContentType());
+					output.writeOutput(resp.getOutputStream());
 				} else {
 					throw new StatusServletExceptionImpl(400, "The layer "
 							+ layerId + " does not exist");

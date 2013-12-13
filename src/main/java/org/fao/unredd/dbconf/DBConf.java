@@ -1,29 +1,25 @@
 package org.fao.unredd.dbconf;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.MosaicLayer;
-import org.fao.unredd.portal.ConfigurationException;
 
 public class DBConf implements LayerFactory {
 
-	private DataSource dataSource;
+	private EntityManagerFactory emf;
 
-	public DBConf(DataSource dataSource) {
-		this.dataSource = dataSource;
+	public DBConf(EntityManagerFactory emf) {
+		this.emf = emf;
 	}
 
 	@Override
 	public Layer newLayer(String layerName) throws IOException {
-		return new DBLayer(dataSource, layerName);
+		return new DBLayer(emf, layerName);
 	}
 
 	@Override
@@ -32,34 +28,15 @@ public class DBConf implements LayerFactory {
 	}
 
 	@Override
-	public boolean exists(String layerName) throws ConfigurationException {
-		Connection connection = null;
-		Statement statement = null;
-		ResultSet resultSet = null;
+	public boolean exists(String layerName) {
+		EntityManager entityManager = emf.createEntityManager();
 		try {
-			connection = dataSource.getConnection();
-			statement = connection.createStatement();
-			resultSet = statement
-					.executeQuery("SELECT name FROM layers WHERE id='"
-							+ layerName + "';");
-			return resultSet.next();
-		} catch (SQLException e) {
-			throw new ConfigurationException("Error accessing the database", e);
+			org.fao.unredd.model.Layer layer = entityManager.find(
+					org.fao.unredd.model.Layer.class, layerName);
+			boolean exists = layer != null;
+			return exists;
 		} finally {
-			try {
-				if (resultSet != null) {
-					resultSet.close();
-				}
-			} catch (SQLException e1) {
-			}
-			try {
-				statement.close();
-			} catch (SQLException e1) {
-			}
-			try {
-				connection.close();
-			} catch (SQLException e1) {
-			}
+			entityManager.close();
 		}
 	}
 }
