@@ -15,16 +15,13 @@
  */
 package org.fao.unredd.portal;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.fao.unredd.charts.ChartGenerator;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.layers.NoSuchIndicatorException;
 import org.fao.unredd.layers.Outputs;
 
 public class IndicatorsController {
@@ -75,32 +72,32 @@ public class IndicatorsController {
 
 	public void returnIndicator(String objectId, String layerId,
 			String indicatorId) throws IOException {
-		if (layerId == null || indicatorId == null) {
-			ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
-					.writeError(response);
-		} else {
-			try {
-				if (layerFactory.exists(layerId)) {
-					Layer layer = layerFactory.newLayer(layerId);
-					try {
-						ChartGenerator chartGenerator = new ChartGenerator(
-								new ByteArrayInputStream(layer.getOutput(
-										indicatorId).getBytes("UTF-8")));
-						response.setContentType(chartGenerator.getContentType());
-						chartGenerator.generate(objectId, response.getWriter());
-						response.flushBuffer();
-					} catch (IOException e) {
-						logger.error("Error returning the indicators", e);
-						response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					}
-				} else {
-					ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
-							.writeError(response);
-				}
-			} catch (NoSuchIndicatorException e) {
-				ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
-						.writeError(response);
-			}
-		}
+		// if (layerId == null || indicatorId == null) {
+		// ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
+		// .writeError(response);
+		// } else {
+		// try {
+		// if (layerFactory.exists(layerId)) {
+		// Layer layer = layerFactory.newLayer(layerId);
+		// try {
+		// ChartGenerator chartGenerator = new ChartGenerator(
+		// new ByteArrayInputStream(layer.getOutput(
+		// indicatorId).getBytes("UTF-8")));
+		// response.setContentType(chartGenerator.getContentType());
+		// chartGenerator.generate(objectId, response.getWriter());
+		// response.flushBuffer();
+		// } catch (IOException e) {
+		// logger.error("Error returning the indicators", e);
+		// response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		// }
+		// } else {
+		// ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
+		// .writeError(response);
+		// }
+		// } catch (NoSuchIndicatorException e) {
+		// ApplicationController.ErrorCause.ILLEGAL_ARGUMENT
+		// .writeError(response);
+		// }
+		// }
 	}
 }

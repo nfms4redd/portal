@@ -2,75 +2,72 @@ package org.fao.unredd.dbconf;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.NoSuchConfigurationException;
 import org.fao.unredd.layers.NoSuchIndicatorException;
+import org.fao.unredd.layers.Output;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
-import org.fao.unredd.portal.ConfigurationException;
+import org.fao.unredd.model.Indicator;
 
 public class DBLayer implements Layer {
 
-	private DataSource dataSource;
+	private EntityManagerFactory emf;
 	private String layerName;
 
-	public DBLayer(DataSource dataSource, String layerName) {
-		this.dataSource = dataSource;
+	public DBLayer(EntityManagerFactory emf, String layerName) {
+		this.emf = emf;
 		this.layerName = layerName;
 	}
 
 	@Override
 	public Outputs getOutputs() throws IOException {
-		Connection connection = null;
-		Statement statement = null;
-		ResultSet resultSet = null;
+		EntityManager entityManager = emf.createEntityManager();
 		try {
-			connection = dataSource.getConnection();
-			statement = connection.createStatement();
-			resultSet = statement
-					.executeQuery("SELECT id, name FROM indicators WHERE layer_id='"
-							+ layerName + "';");
+			TypedQuery<Indicator> indicatorsQuery = entityManager.createQuery(
+					"SELECT i FROM Indicator i WHERE i.layer.id ='" + layerName
+							+ "'", Indicator.class);
+			List<Indicator> indicators;
+			indicators = indicatorsQuery.getResultList();
 			ArrayList<OutputDescriptor> outputs = new ArrayList<OutputDescriptor>();
-			while (resultSet.next()) {
-				String indicatorId = resultSet.getString("id");
-				String indicatorName = resultSet.getString("name");
-				OutputDescriptor descriptor = new OutputDescriptor(indicatorId,
-						indicatorName, "no field id");
-				outputs.add(descriptor);
+			for (Indicator indicator : indicators) {
+				OutputDescriptor indicatorDescriptor = new OutputDescriptor(
+						Integer.toString(indicator.getId()),
+						indicator.getName(), "oid-120");
+				outputs.add(indicatorDescriptor);
 			}
 			return new Outputs(outputs);
-		} catch (SQLException e) {
-			throw new ConfigurationException("Error accessing the database", e);
 		} finally {
-			try {
-				if (resultSet != null) {
-					resultSet.close();
-				}
-			} catch (SQLException e1) {
-			}
-			try {
-				statement.close();
-			} catch (SQLException e1) {
-			}
-			try {
-				connection.close();
-			} catch (SQLException e1) {
-			}
+			entityManager.close();
 		}
 	}
 
 	@Override
-	public String getOutput(String outputId) throws NoSuchIndicatorException,
-			IOException {
-		throw new UnsupportedOperationException();
+	public Output getOutput(String outputId, String objectId)
+			throws NoSuchIndicatorException, IOException {
+		EntityManager entityManager = emf.createEntityManager();
+		try {
+			String jpql = "SELECT new org.fao.unredd.dbconf.DBOutput(i.contentType, d.content) "
+					+ "FROM Indicator i, IndicatorData d "
+					+ "WHERE i.id='"
+					+ outputId
+					+ "' AND i.layer.id ='"
+					+ layerName
+					+ "' "
+					+ "AND d.indicator = i AND d.id='" + objectId + "'";
+			TypedQuery<DBOutput> indicatorsQuery = entityManager.createQuery(
+					jpql, DBOutput.class);
+			return indicatorsQuery.getSingleResult();
+		} finally {
+			entityManager.close();
+		}
 	}
 
 	@Override

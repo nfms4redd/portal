@@ -38,14 +38,16 @@ public interface Layer {
 	Outputs getOutputs() throws IOException;
 
 	/**
-	 * Get the output content with the specified id
+	 * Get the output with the specified id for the object associated with the
+	 * specified objectId
 	 * 
 	 * @param outputId
+	 * @param objectId
 	 * @return
 	 * @throws NoSuchIndicatorException
 	 */
-	String getOutput(String outputId) throws NoSuchIndicatorException,
-			IOException;
+	Output getOutput(String outputId, String objectId)
+			throws NoSuchIndicatorException, IOException;
 
 	/**
 	 * Sets the content of the output with the specified id. If the output
