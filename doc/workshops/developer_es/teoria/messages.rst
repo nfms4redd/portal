@@ -104,6 +104,23 @@ Más información:
 
 
 
+**zoom-to**
+
+Mueve el encuadre al objeto OpenLayers.Bounds que se pasa como parámetro
+
+Parámetros: OpenLayers.Bounds con el extent deseado
+
+Ejemplo de uso::
+
+	var bounds = new OpenLayers.Bounds();
+	bounds.extend(new OpenLayers.LonLat(0,42));
+	bounds.extend(new OpenLayers.LonLat(10,52));
+	bus.send("zoom-to", bounds);
+
+Más información:
+
+
+
 **initial-zoom**
 
 Situa el mapa en la posición inicial
