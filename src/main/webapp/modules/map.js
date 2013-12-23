@@ -84,6 +84,10 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		map.zoomOut();
 	});
 
+	bus.listen("zoom-to", function(event, bounds) {
+		map.zoomToExtent(bounds);
+	});
+
     bus.listen("transparency-slider-changed", function(event, layerInfo, opacity) {
         var layer = map.getLayer(layerInfo.id);
         layer.setOpacity(opacity);
