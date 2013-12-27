@@ -273,7 +273,7 @@ Cambia la visibilidad de una capa
 
 Parámetros:
 
-* id de la capa
+* objeto con la información de la capa
 * valor de visibilidad
 
 Ejemplo de uso::
