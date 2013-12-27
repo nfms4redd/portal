@@ -14,6 +14,7 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 			dialog.dialog({
 				position : [ 'right', 'bottom' ],
 				closeOnEscape : false,
+				autoOpen : false,
 				height : 300,
 				minHeight : 400,
 				maxHeight : 400,

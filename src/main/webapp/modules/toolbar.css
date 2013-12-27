@@ -9,6 +9,7 @@
 	color: #ccc;
 	text-align: center;
 	line-height: 12px;
+	cursor: pointer;
 }
 
 .blue_button.selected {
