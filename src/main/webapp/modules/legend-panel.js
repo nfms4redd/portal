@@ -2,7 +2,6 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 
 	var dialog = null;
 	var divContent = null;
-	var layerIdLegend = [];
 
 	var getDialog = function() {
 		if (dialog == null) {
@@ -44,20 +43,13 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 		}
 	});
 
-	bus.listen("add-layer", function(event, layerInfo) {
-		if (layerInfo.hasOwnProperty("legendURL")) {
-			layerIdLegend[layerInfo.id] = layerInfo;
-		}
-	});
-
-	bus.listen("layer-visibility", function(event, layerId, visibility) {
+	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
 		var idPrefix = "legend_panel_";
-		var layerInfo = layerIdLegend[layerId];
-		if (layerInfo != undefined) {
+		if (layerInfo.hasOwnProperty("legendURL")) {
 			if (visibility) {
 				var imagePath = layerInfo.legendURL;
 				var tblLegend = $("<table/>").appendTo(getDivContent());
-				tblLegend.attr("id", idPrefix + layerId);
+				tblLegend.attr("id", idPrefix + layerInfo.id);
 				tblLegend.addClass("layer_legend");
 
 				var trTitle = $("<tr/>").appendTo(tblLegend).addClass("legend_header");
@@ -71,7 +63,7 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 				var tdImage = $("<td/>").appendTo(trImage);
 				$("<img/>").attr("src", imagePath).appendTo(tdImage);
 			} else {
-				$("#" + idPrefix + layerId).remove();
+				$("#" + idPrefix + layerInfo.id).remove();
 			}
 		}
 	});
