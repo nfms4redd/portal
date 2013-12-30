@@ -52,4 +52,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		}
 	});
 
+	bus.listen("layers-loaded", function() {
+		divTimeSlider.slider("value", divTimeSlider.slider("value"));
+	});
 });
