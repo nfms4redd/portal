@@ -2,7 +2,6 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	var map = null;
 	var currentControl = null;
 	var defaultExclusiveControl = null;
-	var timeDependentLayers = [];
 
 	var activateExclusiveControl = function(event, control) {
 		if (currentControl != null) {
@@ -41,9 +40,6 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 //		if (!layerInfo.visible) {
 //			layer.setVisibility(false);
 //		}
-		if (layerInfo.hasOwnProperty("timestamps")) {
-			timeDependentLayers.push(layer);
-		}
 		if (map !== null) {
 			map.addLayer(layer);
 		}
@@ -67,12 +63,19 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		defaultExclusiveControl = control;
 	});
 
-	bus.listen("time-slider.selection", function(event, date) {
-		for (var i = 0; i < timeDependentLayers.length; i++) {
-			var timeDependentLayer = timeDependentLayers[i];
-			timeDependentLayer.mergeNewParams({
-				"time" : date.toISO8601String()
-			});
+	bus.listen("layer-timestamp-selected", function(event, layerId, timestamp) {
+		var layer = map.getLayer(layerId);
+		/*
+		 * On application startup some events can be produced before the map has
+		 * the reference to the layers so we have to check if layer is null
+		 */
+		if (layer != null) {
+			var params = {};
+			params.time = null;
+			if (timestamp != null) {
+				params.time = timestamp.toISO8601String();
+			}
+			layer.mergeNewParams(params);
 		}
 	});
 
