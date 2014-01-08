@@ -3,7 +3,7 @@
 Software prerequisites
 ======================
 
-The system needs some base applications: Oracle JDK 6, Tomcat 6, Apache 2, PostGIS 2.0 on PostgreSQL 9.1 and Open Foris Geospatial Toolkit.
+The system needs some base applications: Oracle JDK 6, Tomcat 7, Apache 2, PostGIS 2.0 on PostgreSQL 9.1 and Open Foris Geospatial Toolkit.
 
 
 JDK 6
@@ -166,7 +166,7 @@ Configuring tomcat as a service
      done
      export JAVA_HOME
      
-     # Directory where the Tomcat 6 binary distribution resides
+     # Directory where the Tomcat 7 binary distribution resides
      CATALINA_HOME=/var/tomcat
      
      # Use the Java security manager? (yes/no)

@@ -17,7 +17,7 @@ define([ "map", "message-bus" ], function(map, bus) {
 		eventListeners : {
 			getfeatureinfo : function(evt) {
 				if (evt.features && evt.features.length) {
-					bus.send("info-features", [ evt.features, evt.xy.x, evt.xy.y ]);
+					bus.send("info-features", [ [ evt.features[0] ], evt.xy.x, evt.xy.y ]);
 				}
 			}
 		},
