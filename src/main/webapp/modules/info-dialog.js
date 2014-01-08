@@ -94,7 +94,7 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			infoPopup.append(table);
 
 			$("#zoom_to_feature_" + layerId).click(function() {
-				map.zoomToExtent(feature.geometry.getBounds().scale(1.2));
+				bus.send("zoom-to", feature.geometry.getBounds().scale(1.2));
 			});
 		});
 

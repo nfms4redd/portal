@@ -1,5 +1,7 @@
 define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function($, bus, layout) {
 
+	var temporalLayers = new Array();
+
 	var divLayers = null;
 
 	// Should go in layout
@@ -86,7 +88,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		if (tblLayerGroup.length == 0) {
 			bus.send("error", "Layer " + layerInfo.name + " references nonexistent group: " + layerInfo.groupId);
 		} else {
-			var trLayer = $("<tr/>").addClass("layer_row");
+			var trLayer = $("<tr/>").attr("id", "layer-row-" + layerInfo.id).addClass("layer_row");
 
 			var tdLegend = $("<td/>").addClass("layer_legend");
 			trLayer.append(tdLegend);
@@ -133,8 +135,42 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			}
 			trLayer.append(tdInfo);
 
+			if (layerInfo.hasOwnProperty("timestamps")) {
+				temporalLayers.push(layerInfo);
+			}
+
 			tblLayerGroup.append(trLayer);
 			divLayers.accordion("refresh");
+		}
+	});
+
+	bus.listen("time-slider.selection", function(event, date) {
+		for (var i = 0; i < temporalLayers.length; i++) {
+			var layer = temporalLayers[i];
+			var timestamps = layer.timestamps;
+			var closestPrevious = null;
+			timestamps.sort();
+			for ( var j = 0; j < timestamps.length; j++) {
+				var timestampString = timestamps[j];
+				var timestamp = new Date();
+				timestamp.setISO8601(timestampString);
+				if (timestamp <= date) {
+					closestPrevious = timestamp;
+				} else {
+					break;
+				}
+			}
+
+			if (closestPrevious == null) {
+				closestPrevious = new Date();
+				closestPrevious.setISO8601(timestamps[0]);
+			}
+
+			var tdLayerName = $("#layer-row-" + layer.id + " .layer_name");
+			tdLayerName.find("span").remove();
+			$("<span/>").html(" (" + closestPrevious.getFullYear() + ")").appendTo(tdLayerName);
+
+			bus.send("layer-timestamp-selected", [layer.id, closestPrevious]);
 		}
 	});
 

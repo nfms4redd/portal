@@ -35,8 +35,8 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 			for (var i = 0; i < layerTimestamps.length; i++) {
 				var layerTimestamp = layerTimestamps[i];
 				var exists = false;
-				for ( var i = 0; i < timestamps.length; i++) {
-					if (timestamps[i] === layerTimestamp) {
+				for ( var j = 0; j < timestamps.length; j++) {
+					if (timestamps[j] === layerTimestamp) {
 						exists = true;
 						break;
 					}
@@ -52,4 +52,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		}
 	});
 
+	bus.listen("layers-loaded", function() {
+		divTimeSlider.slider("value", divTimeSlider.slider("value"));
+	});
 });
