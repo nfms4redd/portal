@@ -49,30 +49,24 @@
 				"id" : "blue-marble",
 				"active" : true,
 				"label" : "Blue marble",
-				"layers" : [ "blue-marble" ]
-			},
-			{
-				"id" : "forestClassification",
-				"active" : true,
-				"infoFile" : "forest_classification_def.html",
-				"label" : "${facet_forest_classification}",
-				"layers" : [ "forestClassification" ]
+				"layers" : [ "blue-marble", "forestClassification" ]
 			},
 			{
 				"id" : "forest_mask",
+                "active" : false,
 				"label" : "${forest_mask}",
 				"layers" : [ "forest_mask" ]
 			},
 			{
 				"id" : "countryBoundaries",
-				"active" : true,
+				"active" : false,
 				"label" : "${country_boundaries}",
 				"layers" : [ "countryBoundaries" ],
 				"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
 			},
 			{
 				"id" : "provinces",
-				"active" : true,
+				"active" : false,
 				"infoFile" : "provinces_def.html",
 				"label" : "${provinces}",
 				"layers" : [ "provinces" ],
@@ -87,11 +81,7 @@
 			"id" : "innerbase",
 			"label" : "General purpose",
 			"items": ["blue-marble"]
-		}, {
-			"id" : "innerforest",
-			"label" : "Forest classifications",
-			"items": [ "forestClassification" ]
-		} ]
+		}]
 	}, {
 		"id" : "admin",
 		"label" : "${admin_areas}",

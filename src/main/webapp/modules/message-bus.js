@@ -1,6 +1,6 @@
 define([ "jquery" ], function($) {
 
-	var messageBus = {};
+	var messageBus = $({});
 
 	/**
 	 * Sends a message to the message bus. All the listeners of the event will
@@ -14,7 +14,7 @@ define([ "jquery" ], function($) {
 	 *            sent to the listeners of the event.
 	 */
 	function send(name, parameters) {
-		$(messageBus).trigger(name, parameters);
+		messageBus.trigger(name, parameters);
 	}
 
 	/**
@@ -29,7 +29,7 @@ define([ "jquery" ], function($) {
 	 *            the sequence of parameters specified in the call to send.
 	 */
 	function listen(name, callBack) {
-		$(messageBus).bind(name, callBack);
+		messageBus.bind(name, callBack);
 	}
 
 	return {
