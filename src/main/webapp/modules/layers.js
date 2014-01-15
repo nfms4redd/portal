@@ -17,23 +17,25 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
     bus.listen("add-portal-layer", function(event, portalLayer) {
         var wmsLayers = portalLayer.wmsLayers;
-        for (var i = 0; i < wmsLayers.length; i++) {
+        var i;
+
+        for (i = 0; i < wmsLayers.length; i++) {
             bus.send("add-layer", wmsLayers[i]);
         }
     })
 
     bus.listen("portal-layer-visibility", function(event, portalLayer) {
         var wmsLayers = portalLayer.wmsLayers;
+        var i;
 
-        for (var i = 0; i < wmsLayers.length; i++) {
+        for (i = 0; i < wmsLayers.length; i++) {
             bus.send("layer-visibility", [wmsLayers[i], getValueOrDefault(portalLayer, "active", false)])
-            if (getValueOrDefault(portalLayer, "active", false)) console.log(wmsLayers[i]);
         }
     })
 
     var processGroup = function(layerRoot, parentId, group) {
         var items, item, portalLayers, portalLayer, wmsLayerIds,
-            wmsLayers, wmsLayer, i, j;
+            wmsLayers, wmsLayer, i, j, layerInfoArray;
 
 		var groupInfo = {
 			"id" : group.id,
@@ -65,7 +67,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
                 portalLayer = portalLayers[0];
                 wmsLayerIds = portalLayer.layers;
 
-                var layerInfoArray = [];
+                layerInfoArray = [];
 
                 // Iterate over wms layers
                 for (j = 0; j < wmsLayerIds.length; j++) {

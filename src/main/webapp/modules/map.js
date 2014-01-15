@@ -28,7 +28,6 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	map.addControl(new OpenLayers.Control.Navigation());
 
 	bus.listen("add-layer", function(event, layerInfo) {
-        //console.log(layerInfo); // DEBUG
 		var layer = new OpenLayers.Layer.WMS("WMS layer", layerInfo.baseUrl, {
 			layers : layerInfo.wmsName,
 			buffer : 0,
@@ -70,13 +69,8 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		 * On application startup some events can be produced before the map has
 		 * the reference to the layers so we have to check if layer is null
 		 */
-		if (layer != null) {
-			var params = {};
-			params.time = null;
-			if (timestamp != null) {
-				params.time = timestamp.toISO8601String();
-			}
-			layer.mergeNewParams(params);
+		if (layer !== null && timestamp !== null) {
+			layer.mergeNewParams({'time': timestamp.toISO8601String()});
 		}
 	});
 
@@ -92,10 +86,10 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		map.zoomToExtent(bounds);
 	});
 
-    bus.listen("transparency-slider-changed", function(event, layerInfo, opacity) {
-        var layer = map.getLayer(layerInfo.id);
-        layer.setOpacity(opacity);
-    });
+	bus.listen("transparency-slider-changed", function(event, layerInfo, opacity) {
+		var layer = map.getLayer(layerInfo.id);
+		layer.setOpacity(opacity);
+	});
 
 	return map;
 });
