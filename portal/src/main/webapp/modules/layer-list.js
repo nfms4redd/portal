@@ -34,19 +34,21 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	divLayers = $("<div/>").attr("id", "all_layers");
 	divLayers.addClass("ui-accordion-icons");
 	divLayers.accordion({
-		"animate" : false,
-		"heightStyle" : "content",
+		"animate": false,
+		"heightStyle": "content",
 		/*
 		 * Collapse all content since otherwise the accordion sets the 'display'
 		 * to 'block' instead than to 'table'
 		 */
-		"collapsible" : true,
-		"active" : false
+		"collapsible": true,
+		"active": false
 	});
 	divLayersContainer.append(divLayers);
 
 	bus.listen("add-group", function(event, groupInfo) {
-		var divTitle = $("<div/>").html(groupInfo.name).disableSelection();
+		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;
+
+		divTitle = $("<div/>").html(groupInfo.name).disableSelection();
 
 		if (groupInfo.hasOwnProperty("infoLink")) {
 			infoButton = $('<a style="position:absolute;top:3px;right:4px;width:16px;height:16px;padding:0;" class="layer_info_button" href="' + groupInfo.infoLink + '"></a>');
@@ -66,149 +68,90 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		}
 
 
-		var tblLayerGroup = $("<table/>");
+		tblLayerGroup = $("<table/>");
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
 		
 		if (groupInfo.hasOwnProperty("parentId")) {
-			var parentId = groupInfo.parentId;
-			var tblParentLayerGroup = $("#group-content-table-" + parentId);
+			parentId = groupInfo.parentId;
+			tblParentLayerGroup = $("#group-content-table-" + parentId);
 			if (tblParentLayerGroup.length == 0) {
 				bus.send("error", "Group " + groupInfo.name + " references nonexistent group: " + parentId);
 			}
 			tblParentLayerGroup.append(divTitle).append(tblLayerGroup);
 		} else {
 			divLayers.append(divTitle);
-			var divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
+			divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
 			divContent.append(tblLayerGroup);
 			divLayers.append(divContent).accordion("refresh");
 		}
 	});
 
-    bus.listen("add-portal-layer", function(event, portalLayer) {
-        var tblLayerGroup = $("#group-content-table-" + portalLayer.groupId);
-        if (tblLayerGroup.length == 0) {
-            bus.send("error", "Layer " + portalLayer.label + " references nonexistent group: " + portalLayer.groupId);
-        } else {
-            var trLayer = $("<tr/>").attr("id", "layer-row-" + portalLayer.id).addClass("layer_row");
+	bus.listen("add-portal-layer", function(event, portalLayer) {
+		var tblLayerGroup, trLayer, tdLegend, tdLegend,
+			tdVisibility, divCheckbox, tdName, tdInfo, aLink;
 
-            var tdLegend = $("<td/>").addClass("layer_legend");
-            trLayer.append(tdLegend);
-
-            var tdVisibility = $("<td/>").css("width", "16px");
-            var divCheckbox = $("<div/>").addClass("layer_visibility");
-            if (portalLayer.active) {
-                divCheckbox.addClass("checked");
-            }
-            divCheckbox.mousedown(function() {
-                divCheckbox.addClass("mousedown");
-            })
-                .mouseup(function() {
-                    divCheckbox.removeClass("mousedown");
-                }).mouseleave(function() {
-                    divCheckbox.removeClass("in");
-                }).mouseenter(function() {
-                    divCheckbox.addClass("in");
-                }).click(function() {
-                    divCheckbox.toggleClass("checked");
-                    portalLayer.active = divCheckbox.hasClass("checked");
-                    bus.send("portal-layer-visibility", portalLayer);
-                });
-
-            tdVisibility.append(divCheckbox);
-
-            trLayer.append(tdVisibility);
-
-            var tdName = $("<td/>").addClass("layer_name");
-            tdName.html(portalLayer.label);
-            trLayer.append(tdName);
-
-            var tdInfo = $("<td/>").addClass("layer_info");
-            if (portalLayer.hasOwnProperty("infoLink")) {
-                var aLink = $("<a/>").attr("href", portalLayer.infoLink);
-                aLink.addClass("layer_info_button");
-                aLink.fancybox({
-                    "closeBtn" : "true",
-                    "openEffect" : "elastic",
-                    "closeEffect" : "elastic",
-                    "type" : "iframe",
-                    "overlayOpacity" : 0.5
-                });
-                tdInfo.append(aLink);
-            }
-            trLayer.append(tdInfo);
-
-            if (portalLayer.hasOwnProperty("timestamps")) {
-                temporalLayers.push(portalLayer);
-            }
-
-            tblLayerGroup.append(trLayer);
-            divLayers.accordion("refresh");
-        }
-    })
-
-	bus.listen("add-layer", function(event, layerInfo) {
-        return;
-
-        alert('this message should show')
-		var tblLayerGroup = $("#group-content-table-" + layerInfo.groupId);
+		tblLayerGroup = $("#group-content-table-" + portalLayer.groupId);
 		if (tblLayerGroup.length == 0) {
-			bus.send("error", "Layer " + layerInfo.name + " references nonexistent group: " + layerInfo.groupId);
+			bus.send("error", "Layer " + portalLayer.label + " references nonexistent group: " + portalLayer.groupId);
 		} else {
-			var trLayer = $("<tr/>").attr("id", "layer-row-" + layerInfo.id).addClass("layer_row");
+			trLayer = $("<tr/>").attr("id", "layer-row-" + portalLayer.id).addClass("layer_row");
 
-			var tdLegend = $("<td/>").addClass("layer_legend");
+			tdLegend = $("<td/>").addClass("layer_legend");
 			trLayer.append(tdLegend);
 
-			var tdVisibility = $("<td/>").css("width", "16px");
-			var divCheckbox = $("<div/>").addClass("layer_visibility");
-			if (layerInfo.visible) {
+			tdVisibility = $("<td/>").css("width", "16px");
+			divCheckbox = $("<div/>").addClass("layer_visibility");
+			if (portalLayer.active) {
 				divCheckbox.addClass("checked");
 			}
 			divCheckbox.mousedown(function() {
 				divCheckbox.addClass("mousedown");
 			}).mouseup(function() {
 				divCheckbox.removeClass("mousedown");
+			}).mouseenter(function() {
+					divCheckbox.addClass("in");
 			}).mouseleave(function() {
 				divCheckbox.removeClass("in");
-			}).mouseenter(function() {
-				divCheckbox.addClass("in");
 			}).click(function() {
 				divCheckbox.toggleClass("checked");
-				var checked = divCheckbox.hasClass("checked");
-				bus.send("layer-visibility", [ layerInfo, checked ]);
+				portalLayer.active = divCheckbox.hasClass("checked");
+				bus.send("portal-layer-visibility", portalLayer);
 			});
 
 			tdVisibility.append(divCheckbox);
 
 			trLayer.append(tdVisibility);
 
-			var tdName = $("<td/>").addClass("layer_name");
-			tdName.html(layerInfo.name);
+			tdName = $("<td/>").addClass("layer_name");
+			tdName.html(portalLayer.label);
 			trLayer.append(tdName);
 
-			var tdInfo = $("<td/>").addClass("layer_info");
-			if (layerInfo.hasOwnProperty("infoLink")) {
-				var aLink = $("<a/>").attr("href", layerInfo.infoLink);
+			tdInfo = $("<td/>").addClass("layer_info");
+			if (portalLayer.hasOwnProperty("infoLink")) {
+				aLink = $("<a/>").attr("href", portalLayer.infoLink);
 				aLink.addClass("layer_info_button");
 				aLink.fancybox({
-					"closeBtn" : "true",
-					"openEffect" : "elastic",
-					"closeEffect" : "elastic",
-					"type" : "iframe",
-					"overlayOpacity" : 0.5
+					"closeBtn": "true",
+					"openEffect": "elastic",
+					"closeEffect": "elastic",
+					"type": "iframe",
+					"overlayOpacity": 0.5
 				});
 				tdInfo.append(aLink);
 			}
 			trLayer.append(tdInfo);
 
-			if (layerInfo.hasOwnProperty("timestamps")) {
-				temporalLayers.push(layerInfo);
-			}
+
+			$.each(portalLayer.wmsLayers, function(index, wmsLayer) {
+				if (wmsLayer.hasOwnProperty("timestamps")) {
+					temporalLayers.push(wmsLayer);
+				}
+			});
 
 			tblLayerGroup.append(trLayer);
 			divLayers.accordion("refresh");
 		}
-	});
+	})
 
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
