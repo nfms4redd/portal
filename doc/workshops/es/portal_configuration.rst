@@ -151,7 +151,7 @@ El formato utilizado para este fichero de configuración es JSON (JavaScript Obj
 
 * Los objetos están delimitados por llaves (``{}``) y contienen una serie de pares atributo-valor separados por comas. Los pares atributo/valor consisten en un nombre de propiedad entrecomillado, dos puntos y el valor. Por ejemplo podemos tener el siguiente elemento:
 
-  .. code-block:: json
+  .. code-block:: js
 
 	{
 		"id":12,
@@ -161,7 +161,7 @@ El formato utilizado para este fichero de configuración es JSON (JavaScript Obj
 
   o incluso un elemento dentro de otro:
   
-  .. code-block:: json
+  .. code-block:: js
 
 	{
 		"empresa":"zapatos smith",
@@ -176,11 +176,11 @@ El formato utilizado para este fichero de configuración es JSON (JavaScript Obj
 
 * Los arrays especifican sus valores entre corchetes ([]) y separados por comas.
 
-  .. code-block:: json
+  .. code-block:: js
 
 	[1, 2, 3, 4, 5]
 	
-  .. code-block:: json
+  .. code-block:: js
 
 	[
 		{
@@ -209,9 +209,9 @@ El formato utilizado para este fichero de configuración es JSON (JavaScript Obj
 
 El fichero ``layers.json`` contiene tres secciones:
 
-* ``layers``
-* ``contexts``
-* ``contextGroups``
+* ``wmsLayers``
+* ``portalLayers``
+* ``groups``
 
 En este apartado vamos a realizar dos ejercicios:
 
@@ -220,16 +220,16 @@ En este apartado vamos a realizar dos ejercicios:
 * En segundo lugar, añadiremos la capa "roads" en un nuevo grupo de capas.
 
 
-Layers
-......
+Conexión WMS
+............
 
-Cada "layer" se corresponde con una de las capas publicadas en GeoServer, y describe la manera de conectarse al servidor para obtener los datos:
+Cada "wmsLayer" se corresponde con una de las capas publicadas en GeoServer, y describe la manera de conectarse al servidor para obtener los datos:
 
 TODO link the reference and complete the reference if necessary
 
 .. code-block:: js
 
-  "layers": [
+  "wmsLayers": [
      {
       "id": "limites_administrativos",
       "baseUrl": "http://172.16.250.131/geoserver/gwc/service/wms",
@@ -247,14 +247,14 @@ TODO link the reference and complete the reference if necessary
   * la baseUrl debe apuntar al servidor geoserver donde hemos cargado la capa.
 
 
-Contexts
-........
+Capas del portal
+.................
 
-Cada "context" representa una capa en el árbol de capas del portal y por tanto añade nuevos datos necesarios para mostrar la información en la interfaz gráfica.
+Cada "portalLayer" representa una capa en el árbol de capas del portal y por tanto añade nuevos datos necesarios para mostrar la información en la interfaz gráfica.
 
 .. code-block:: js
 
-  "contexts": [
+  "portalLayers": [
     {
       "id": "limites_administrativos",
       "active": true,
@@ -277,29 +277,47 @@ Cada "context" representa una capa en el árbol de capas del portal y por tanto 
     una imagen con la leyenda. 
 
 
-ContextGroups
+Grupos
 .............
 
-Los "contextGroups" son una estructura recursiva (multinivel) para agrupar visualmente las capas en el panel.
+Los "Groups" son una estructura recursiva (multinivel) para agrupar visualmente las capas en el panel.
 El "group" de primer nivel construye cada uno de los grupos de capas en forma de persiana desplegable, conteniendo una lista de 
 "items" que hacen referencia a los contextos definidos anteriormente.
 
+.. code-block:: js
+
+	"groups" : [
+		{
+			"id" : "admin",
+			"label" : "${admin_areas}",
+			"items" : [ "countryBoundaries", "provinces" ]
+		}, 
+		...
+	]
+
+Nótese que en la propiedad "items", se hace referencia a las "portalLayers" definidas anteriormente. También, es posible dentro de dicha propiedad, añadir varios subgrupos de manera que las capas contenidas en éstos se visualicen dentro de una misma pestaña, pero agrupados visualmente bajo un título.
 
 .. code-block:: js
-     
-  "contextGroups": 
-  {
-    "items": [
-      {
-        "group": {
-          "label": "${admin_areas}",
-          "items": [
-            { "context": "country" }
-          ]
-        }
-      }
-    ]
-  }
+
+	"groups" : [
+		{
+			"id" : "admin",
+			"label" : "${admin_areas}",
+			"items" : [
+				{
+					"id" : "admin1",
+					"label" : "Nacional",
+					"items": ["limite_nacional"]
+				}, {
+					"id" : "admin2",
+					"label" : "Regional",
+					"items": [ "provincias" ]
+				}
+			]
+		}, 
+		...
+	]
+
 
 * Añadir un nuevo elemento `{ "context": "limites_administrativos" }` a continuación de `{ "context": "country" }`. Esto incluirá la capa
   en el grupo de áreas administrativas.
