@@ -1,6 +1,19 @@
 Portal: Configuración inicial 
 ======================================
 
+.. note::
+
+	=================  ================================================
+	Fecha              Autores
+	=================  ================================================             
+	1 Diciembre 2012    * Oscar Fonts (oscar.fonts@geomati.co)
+	24 Junio 2013		* Fernando González (fernando.gonzalez@fao.org)
+	=================  ================================================	
+
+	©2013 FAO Forestry 
+	
+	Excepto donde quede reflejado de otra manera, la presente documentación se halla bajo licencia : Creative Commons (Creative Commons - Attribution - Share Alike: http://creativecommons.org/licenses/by-sa/3.0/deed.es)
+
 El Portal de NFMS es la aplicación pública de la plataforma, utilizada para la visualización de los recursos cartográficos y estadísticos.
 
 El portal es personalizable a las necesidades de cada país, tanto en su aspecto como en los datos mostrados. La aplicación viene con una 
