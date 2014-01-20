@@ -1,5 +1,5 @@
 #zoom_to_max_extent {
-	background: url("../static/img/ui-elements.png") no-repeat scroll 0
+	background: url("images/ui-elements.png") no-repeat scroll 0
 		-80px transparent;
 	height: 25px;
 	left: 90px;
@@ -10,7 +10,7 @@
 }
 
 #zoom_out {
-	background: url("../static/img/ui-elements.png") no-repeat scroll 0
+	background: url("images/ui-elements.png") no-repeat scroll 0
 		-48px transparent;
 	height: 25px;
 	left: 10px;
@@ -21,7 +21,7 @@
 }
 
 #zoom_in {
-	background: url("../static/img/ui-elements.png") no-repeat scroll 0
+	background: url("images/ui-elements.png") no-repeat scroll 0
 		-16px transparent;
 	height: 25px;
 	left: 50px;

@@ -16,7 +16,8 @@ table.layer_legend {
 }
 
 table.layer_legend td {
-	padding-right: 10px background-color: #fff;
+	padding-right: 10px;
+    background-color: #fff;
 }
 
 .legend_header {
