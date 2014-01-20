@@ -26,6 +26,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		controls : []
 	});
 	map.addControl(new OpenLayers.Control.Navigation());
+	map.addControl(new OpenLayers.Control.Scale());
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var layer = new OpenLayers.Layer.WMS("WMS layer", layerInfo.baseUrl, {
