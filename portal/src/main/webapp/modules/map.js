@@ -47,6 +47,17 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		bus.send("maplayer-added", [ layer, layerInfo ]);
 	});
 
+	bus.listen("layers-loaded", function() {
+		// Add the vector layer for highlighted features on top of all the other layers
+
+		// StyleMap for the highlight layer
+		var styleMap = new OpenLayers.StyleMap({'strokeWidth': 5, fillOpacity: 0, strokeColor: '#ee4400', strokeOpacity: 0.5, strokeLinecap: 'round'});
+
+		var highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {styleMap: styleMap});
+		highlightLayer.id = "Highlighted Features";
+		map.addLayer(highlightLayer);
+	});
+
 	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
 		var layer = map.getLayer(layerInfo.id);
 		layer.setVisibility(visibility);
