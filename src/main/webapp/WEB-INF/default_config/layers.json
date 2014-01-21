@@ -27,16 +27,16 @@
 			"sourceLabel" : "FACET"
 		}, {
 			"id" : "countryBoundaries",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
 			"wmsName" : "unredd:drc_boundary",
 			"imageFormat" : "image/png8",
 			"visible" : true,
 			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
 			"sourceLabel" : "WRI",
-			"wmsTime" : "2005-03-01T00:00"
+			"queryable" : true
 		}, {
 			"id" : "provinces",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
 			"wmsName" : "unredd:drc_provinces",
 			"imageFormat" : "image/png8",
 			"visible" : true,
