@@ -131,7 +131,7 @@ define([ "jquery", "message-bus", "map" ], function($, bus, map) {
 		highlightLayer.redraw();
 	});
 
-	bus.listen("clear-highlighted-features", function(event, feature) {
+	bus.listen("clear-highlighted-features", function() {
 		var highlightLayer = map.getLayer("Highlighted Features");
 		highlightLayer.removeAllFeatures();
 		highlightLayer.redraw();
