@@ -26,7 +26,18 @@
 #end
 
 <script src="$configUrl"></script>
-<script src="js/require.js" data-main="modules/main"></script>
+<!--<script src="js/require.js" data-main="modules/main"></script>-->
+<script src="js/require.js"></script>
+<script>
+    require.config({
+        paths: {
+            //Comment out this line to go back to loading
+            //the non-optimized main.js source file.
+            "main": "js/min/portal"
+        }
+    });
+    require(["main"]);
+</script>
 
 </head>
 <body>
