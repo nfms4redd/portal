@@ -4,32 +4,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 
 	var divLayers = null;
 
-	// Should go in layout
-	// var divLayerListSelector = $("<div/>").attr("id",
-	// "layer_list_selector");
-	//
-	// var rdoAllLayers = $("<input/>").attr("id",
-	// "all_layers").attr("type", "radio")//
-	// .attr("name", "layer_list_selector").attr("checked", "checked");
-	// var rdoAllLayersLabel = $("<label/>").attr("for",
-	// "all_layers").html(i18n.layers);
-	// rdoAllLayers.append(rdoAllLayersLabel);
-	// divLayerListSelector.append(rdoAllLayers);
-	//
-	// var rdoSelectedLayers = $("<input/>").attr("id",
-	// "active_layers").attr("type", "radio")//
-	// .attr("name", "layer_list_selector");
-	// var rdoSelectedLayersLabel = $("<label/>").attr("for",
-	// "active_layers").html(i18n.selected_layers);
-	// rdoSelectedLayers.append(rdoSelectedLayersLabel);
-	// divLayerListSelector.append(rdoSelectedLayers);
-
 	var divLayersContainer = layout.layers;
-
-//	var divActiveLayers = $("<div/>").attr("id", "active_layers");
-//	var h3Title = $("<h3/>").html("Selected layers");
-//	divActiveLayers.append(h3Title);
-//	divLayersContainer.append(divActiveLayers);
 
 	divLayers = $("<div/>").attr("id", "all_layers");
 	divLayers.addClass("ui-accordion-icons");
@@ -168,7 +143,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 
 			var tdLayerName = $("#layer-row-" + layer.id + " .layer_name");
 			tdLayerName.find("span").remove();
-			$("<span/>").html(" (" + closestPrevious.getFullYear() + ")").appendTo(tdLayerName);
+			$("<span/>").html(" (" + closestPrevious.getUTCFullYear() + ")").appendTo(tdLayerName);
 
 			bus.send("layer-timestamp-selected", [layer.id, closestPrevious]);
 		}
