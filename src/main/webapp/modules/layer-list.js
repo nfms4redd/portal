@@ -63,7 +63,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 
 	bus.listen("add-portal-layer", function(event, portalLayer) {
 		var tblLayerGroup, trLayer, tdLegend, tdLegend,
-			tdVisibility, divCheckbox, tdName, tdInfo, aLink;
+			tdVisibility, divCheckbox, tdName, tdInfo, aLink, inlineLegend;
 
 		tblLayerGroup = $("#group-content-table-" + portalLayer.groupId);
 		if (tblLayerGroup.length == 0) {
@@ -72,6 +72,25 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			trLayer = $("<tr/>").attr("id", "layer-row-" + portalLayer.id).addClass("layer_row");
 
 			tdLegend = $("<td/>").addClass("layer_legend");
+
+			if (portalLayer.hasOwnProperty("inlineLegendUrl")) {
+				// context has an inline legend
+				//tdLegend = $('<td style="width:20px">');
+				//inlineLegend = $('<img class="inline-legend" src="' + UNREDD.wmsServers[0] + contextConf.inlineLegendUrl + '">');
+				inlineLegend = $('<img class="inline-legend" src="' + portalLayer.inlineLegendUrl + '">');
+				tdLegend.append(inlineLegend);
+//			} else if (context.hasLegend) {
+//				// context has a legend to be shown on the legend pane - we add a link to show the legend pane
+//				if (active) {
+//					tdLegend = $('<td style="font-size:9px;width:20px;height:20px"><a id="' + contextName + '_inline_legend_icon" class="inline_legend_icon on"></a></td>');
+//					// add the legend to the legend pane (hidden when page loads)
+//					setLegends(context, true);
+//				} else {
+//					tdLegend = $('<td style="font-size:9px;width:20px;height:20px"><a id="' + contextName + '_inline_legend_icon" class="inline_legend_icon"></a></td>');
+//				}
+//			} else {
+//				tdLegend = $('<td></td>');
+			}
 			trLayer.append(tdLegend);
 
 			tdVisibility = $("<td/>").css("width", "16px");
@@ -115,7 +134,6 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 				tdInfo.append(aLink);
 			}
 			trLayer.append(tdInfo);
-
 
 			$.each(portalLayer.wmsLayers, function(index, wmsLayer) {
 				if (wmsLayer.hasOwnProperty("timestamps")) {
