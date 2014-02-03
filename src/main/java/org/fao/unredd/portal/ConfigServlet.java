@@ -57,6 +57,8 @@ public class ConfigServlet extends HttpServlet {
 		return new JSONObject().element("title", title)//
 				.element("languages", config.getLanguages())//
 				.element("languageCode", locale.getLanguage())//
+				.element("queryURL", config.getQueryURL())//
+				.element("layerURL", config.getLayerURL())//
 				.element("modules", config.getModules());
 	}
 
