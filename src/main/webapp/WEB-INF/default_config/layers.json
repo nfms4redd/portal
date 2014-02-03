@@ -68,14 +68,14 @@
 			"active" : true,
 			"label" : "${country_boundaries}",
 			"layers" : [ "countryBoundaries" ],
-			"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
+			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
 		}, {
 			"id" : "provinces",
 			"active" : true,
 			"infoFile" : "provinces_def.html",
 			"label" : "${provinces}",
 			"layers" : [ "provinces" ],
-			"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
+			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
 		}
 	],
 
