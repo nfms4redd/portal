@@ -81,7 +81,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 						wmsLayer.timestamps = wmsLayer.wmsTime.split(",")
 					}
 
-					//bus.send("add-layer", layerInfo);
 					layerInfoArray.push(wmsLayer);
 				}
 

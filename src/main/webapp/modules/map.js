@@ -99,8 +99,10 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	});
 
 	bus.listen("transparency-slider-changed", function(event, layerInfo, opacity) {
-		var layer = map.getLayer(layerInfo.id);
-		layer.setOpacity(opacity);
+		$.each(layerInfo.layers, function(index, layerId) {
+			var layer = map.getLayer(layerId);
+			layer.setOpacity(opacity);
+		});
 	});
 
 	return map;
