@@ -1,90 +1,108 @@
 define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bus, layout, map) {
 	var divActiveLayersContainer = layout.activeLayers;
 
-    var divActiveLayers = $("<div/>").attr("id", "active_layers");
+	var divActiveLayers = $("<div/>").attr("id", "active_layers");
 
-    // Accordion header
+	// Accordion header
 	var h3Title = $("<h3/>").html("Selected layers");
 	divActiveLayers.append(h3Title);
 
-    // div that contains all the active layers with sliders
+	// div that contains all the active layers with sliders
 	var div = $("<div/>");
 	divActiveLayers.append(div);
 	//div.empty();
 
-    var table = $('<table style="width:100%;margin:auto"></table>');
+	var table = $('<table style="width:100%;margin:auto"></table>');
 	div.append(table);
 
-    // create the accordion
-    divActiveLayers.accordion({
+	// create the accordion
+	divActiveLayers.accordion({
 		collapsible: false,
 		autoHeight: false,
 		animated: false,
-        heightStyle: "content",
+		heightStyle: "content",
 		create: function (event, ui) {
 			$('#active_layers_pane .ui-icon-triangle-1-s').hide();
-			//updateActiveLayersPane(mapContexts);
 		}
 	});
 
-    divActiveLayersContainer.append(divActiveLayers);
+	divActiveLayersContainer.append(divActiveLayers);
 
-	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
-        var layerId = layerInfo.id;
+	bus.listen("portal-layer-visibility", function(event, layerInfo) {
+		var tr1, layerId, tdLegend, inlineLegend, visibility, colspan;
 
-        function addLayer(layerId) {
-            // Layer label
-            var tr1 = $('<tr id="' + layerId + '_tr1"><td>' + layerInfo.name + '</td></tr>')
+		visibility = layerInfo.active === true;
 
-            // Transparency slider
-            var transparencyDiv = $('<div style="margin-top:4px; margin-bottom:12px;" id="' + 'layerId' + '_transparency_slider"></div>');
-            var td = $('<td colspan="2"></td>');
-            td.append(transparencyDiv);
-            var tr2 = $('<tr id="' + layerId + '_tr2"></tr>');
-            tr2.append(td);
+		layerId = layerInfo.id;
+		colspan = 2;
 
-            // Append elements to table
-            table.append(tr1);
-            table.append(tr2);
+		function addLayer(layerId) {
+			// Layer label
+			tr1 = $('<tr></tr>');
 
-            //layers = contextConf.layers;
-            $(transparencyDiv).slider({
-                min: 0,
-                max: 100,
-                value: 100 * map.getLayer(layerId).opacity,
-                slide: function (event, ui) {
-                    bus.send("transparency-slider-changed", [layerInfo, ui.value / 100]);
-                }
-            });
-            divActiveLayers.accordion("refresh");
-        }
+			tdLegend = null;
+	    if (layerInfo.hasOwnProperty("inlineLegendUrl")) {
+		    tdLegend = $("<td/>").addClass("layer_legend");
+	      inlineLegend = $('<img class="inline-legend" src="' + layerInfo.inlineLegendUrl + '">');
+	      tdLegend.append(inlineLegend);
+	    }
 
-        function delLayer(layerId) {
-            $('#' + layerId + '_tr1').remove();
-            $('#' + layerId + '_tr2').remove();
-        }
+	    if (tdLegend !== null) {
+		    tr1.append(tdLegend);
+		    colspan = 1
+	    }
 
-        if (visibility) { addLayer(layerId); }
-        else { delLayer(layerId); }
-    });
+			tr1.append($('<td colspan="' + colspan + '">' + layerInfo.label + '</td>'));
+
+			// Transparency slider
+			var transparencyDiv = $('<div style="margin-top:4px; margin-bottom:12px;" id="' + 'layerId' + '_transparency_slider"></div>');
+			var td = $('<td colspan="2"></td>');
+			td.append(transparencyDiv);
+			var tr2 = $('<tr id="' + layerId + '_tr2"></tr>');
+			tr2.append(td);
+
+			// Append elements to table
+			table.append(tr1);
+			table.append(tr2);
+
+			//layers = contextConf.layers;
+			$(transparencyDiv).slider({
+				min: 0,
+				max: 100,
+				value: 100 * map.getLayer(layerId).opacity,
+				slide: function (event, ui) {
+					bus.send("transparency-slider-changed", [layerInfo, ui.value / 100]);
+				}
+			});
+			divActiveLayers.accordion("refresh");
+		}
+
+		function delLayer(layerId) {
+			$('#' + layerId + '_tr1').remove();
+			$('#' + layerId + '_tr2').remove();
+		}
+
+		if (visibility) { addLayer(layerId); }
+		else { delLayer(layerId); }
+	});
 
 	bus.listen("show-active-layer-list", function(event, groupInfo) {
-//        divActiveLayers.accordion({
-//            collapsible: false,
-//            autoHeight: false,
-//            animated: false,
-//            clearStyle: true,
-//            create: function (event, ui) {
-//                $('#active_layers_pane .ui-icon-triangle-1-s').hide();
-//                //updateActiveLayersPane(mapContexts);
-//            }
-//        });
-        divActiveLayers.accordion("refresh");
+//    divActiveLayers.accordion({
+//      collapsible: false,
+//      autoHeight: false,
+//      animated: false,
+//      clearStyle: true,
+//      create: function (event, ui) {
+//        $('#active_layers_pane .ui-icon-triangle-1-s').hide();
+//        //updateActiveLayersPane(mapContexts);
+//      }
+//    });
+		divActiveLayers.accordion("refresh");
 		divActiveLayersContainer.show();
 	});
 
 	bus.listen("hide-active-layer-list", function(event, groupInfo) {
-        divActiveLayersContainer.hide();
+		divActiveLayersContainer.hide();
 	});
 
 	return divActiveLayers;

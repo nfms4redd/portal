@@ -45,11 +45,13 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 	});
 
 	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
-		var idPrefix = "legend_panel_";
+		var idPrefix, imagePath, tblLegend;
+
+		idPrefix = "legend_panel_";
 		if (layerInfo.hasOwnProperty("legendURL")) {
 			if (visibility) {
-				var imagePath = layerInfo.legendURL;
-				var tblLegend = $("<table/>").appendTo(getDivContent());
+				imagePath = layerInfo.legendURL;
+				tblLegend = $("<table/>").appendTo(getDivContent());
 				tblLegend.attr("id", idPrefix + layerInfo.id);
 				tblLegend.addClass("layer_legend");
 
