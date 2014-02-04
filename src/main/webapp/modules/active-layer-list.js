@@ -65,7 +65,6 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 			table.append(tr1);
 			table.append(tr2);
 
-			//layers = contextConf.layers;
 			$(transparencyDiv).slider({
 				min: 0,
 				max: 100,
