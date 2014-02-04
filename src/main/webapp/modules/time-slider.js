@@ -16,24 +16,6 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		return arr[1] + " " + arr[0];
 	};
 
-	div = layout.timeSlider;
-	divTimeSlider = $("<div/>").attr("id", "time_slider");
-	div.append(divTimeSlider);
-	divTimeSlider.slider({
-		change : function(event, ui) {
-			var d = new Date();
-
-			d.setISO8601(timestamps[ui.value]);
-			divTimeSliderLabel.text(getLocalizedDate(timestamps[ui.value]));
-			bus.send("time-slider.selection", d);
-		}
-	});
-	divTimeSlider.slider("option", "min", 0);
-	divTimeSlider.slider("option", "max", 0);
-
-	divTimeSliderLabel = $("<div/>").attr("id", "time_slider_label");
-	div.append(divTimeSliderLabel);
-
 	bus.listen("add-layer", function(event, wmsLayer) {
 		var layerTimestamps, i;
 
@@ -48,8 +30,30 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 
 	bus.listen("layers-loaded", function() {
 		timestamps = Object.keys(timestampSet).sort();
+		if (timestamps.length > 0) {
+			div = layout.timeSlider;
+			divTimeSlider = $("<div/>").attr("id", "time_slider");
+			div.append(divTimeSlider);
+			divTimeSlider.slider({
+				change : function(event, ui) {
+					var d = new Date();
 
-		divTimeSlider.slider("option", "max", timestamps.length - 1);
-		divTimeSlider.slider("value", timestamps.length - 1);
+					d.setISO8601(timestamps[ui.value]);
+					divTimeSliderLabel.text(getLocalizedDate(timestamps[ui.value]));
+					bus.send("time-slider.selection", d);
+				}
+			});
+			divTimeSlider.slider("option", "min", 0);
+//			divTimeSlider.slider("option", "max", 0);
+
+			divTimeSliderLabel = $("<div/>").attr("id", "time_slider_label");
+			div.append(divTimeSliderLabel);
+
+
+			divTimeSlider.slider("option", "max", timestamps.length - 1);
+			divTimeSlider.slider("value", timestamps.length - 1);
+
+			layout.timeSlider.show();
+		}
 	});
 });

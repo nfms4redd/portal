@@ -7,6 +7,8 @@ define([ "jquery" ], function($) {
 	divHeader.append(divBanner);
 	var divToolbar = $("<div/>").attr("id", "toolbar");
 	var divTimeSlider = $("<div/>").attr("id", "time_slider_pane");
+	divTimeSlider.hide();
+
 	divToolbar.append(divTimeSlider);
 	divHeader.append(divToolbar);
 	body.append(divHeader);
