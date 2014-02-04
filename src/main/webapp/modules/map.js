@@ -35,15 +35,17 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 			transitionEffect : "resize",
 			removeBackBufferDelay : 0,
 			isBaseLayer : false,
-			transparent : true
+			transparent : true,
+			format: layerInfo.imageFormat || 'image/png'
+		}, {
+			noMagic: true
 		});
 		layer.id = layerInfo.id;
-//		if (!layerInfo.visible) {
-//			layer.setVisibility(false);
-//		}
+
 		if (map !== null) {
 			map.addLayer(layer);
 		}
+
 		bus.send("maplayer-added", [ layer, layerInfo ]);
 	});
 

@@ -4,6 +4,7 @@
 			"id" : "blue-marble",
 			"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
 			"wmsName" : "common:blue_marble",
+			"imageFormat" : "image/jpeg",
 			"visible" : true
 		}, {
 			"id" : "forestClassification",
