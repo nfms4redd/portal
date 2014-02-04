@@ -48,6 +48,8 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 
 	bus.listen("layers-loaded", function() {
 		timestamps = Object.keys(timestampSet).sort();
-		divTimeSlider.slider("value", divTimeSlider.slider("value"));
+
+		divTimeSlider.slider("option", "max", timestamps.length - 1);
+		divTimeSlider.slider("value", timestamps.length - 1);
 	});
 });
