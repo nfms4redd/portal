@@ -87,7 +87,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	});
 
 	bus.listen("add-portal-layer", function(event, portalLayer) {
-		var tblLayerGroup, trLayer, tdLegend, tdLegend,
+		var tblLayerGroup, trLayer, tdLegend,
 			tdVisibility, divCheckbox, tdName, tdInfo, aLink, inlineLegend;
 
 		tblLayerGroup = $("#group-content-table-" + portalLayer.groupId);

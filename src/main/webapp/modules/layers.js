@@ -1,14 +1,5 @@
 define([ "jquery", "message-bus", "customization", "module" ], function($, bus, customization, module) {
 
-	var getValueOrDefault = function(object, value, defaultValue) {
-		var objectValue = object[value];
-		if (objectValue !== undefined) {
-			return objectValue;
-		} else {
-			return defaultValue;
-		}
-	};
-
 		var findById = function(array, id) {
 			return $.grep(array, function(l) {
 				return l.id === id;
@@ -29,7 +20,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			var i;
 
 			for (i = 0; i < wmsLayers.length; i++) {
-				bus.send("layer-visibility", [wmsLayers[i], getValueOrDefault(portalLayer, "active", false)])
+				bus.send("layer-visibility", [wmsLayers[i], portalLayer.active || false])
 			}
 		})
 
