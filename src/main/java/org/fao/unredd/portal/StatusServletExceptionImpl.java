@@ -2,8 +2,6 @@ package org.fao.unredd.portal;
 
 import javax.servlet.ServletException;
 
-import org.fao.unredd.servlet.StatusServletException;
-
 public class StatusServletExceptionImpl extends ServletException implements
 		StatusServletException {
 	private static final long serialVersionUID = 1L;
