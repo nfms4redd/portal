@@ -1,0 +1,80 @@
+/* JQuery UI hack */
+.ui-widget {
+	font-size: 11px !important;
+}
+
+#active_layers>table {
+	width: 100%;
+	padding: 0px;
+}
+
+#all_layers {
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+#all_layers table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.layer_row {
+	font-size: 10px;
+	height: 22px;
+}
+
+.layer_legend {
+	font-size: 9px;
+	width: 20px;
+	height: 20px;
+}
+
+td.layer_visibility {
+	width: 16px;
+}
+
+.layer_visibility {
+	width: 16px;
+	height: 16px;
+	background: url(images/ui-elements.png) no-repeat scroll 0 0 transparent;
+	cursor: pointer;
+}
+
+.layer_visibility.in.mousedown {
+	width: 16px;
+	height: 16px;
+	background-position: -48px 0px;
+}
+
+.layer_visibility.checked {
+	width: 16px;
+	height: 16px;
+	background-position: -32px 0px;
+}
+
+.layer_visibility.checked.in.mousedown {
+	width: 16px;
+	height: 16px;
+	background-position: -16px 0px;
+}
+
+.layer_name {
+	/* 	color: #FFF; */
+	
+}
+
+.layer_info {
+	width: 16px;
+}
+
+.layer_info_button {
+	background: url("images/ui-elements.png") no-repeat scroll 0 -130px
+		rgba(0, 0, 0, 0);
+	display: block;
+	height: 16px;
+	padding: 0;
+	text-decoration: none;
+	width: 16px;
+}

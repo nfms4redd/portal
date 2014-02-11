@@ -15,50 +15,28 @@
  */
 package org.fao.unredd.portal;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.FileNameMap;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBException;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-import org.fao.unredd.layers.LayerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-@Controller
 public class ApplicationController {
-
-	private static Logger logger = Logger
-			.getLogger(ApplicationController.class);
-
-	@Autowired
-	org.fao.unredd.portal.Config config;
-
-	@Autowired
-	net.tanesha.recaptcha.ReCaptchaImpl reCaptcha;
-
-	@Autowired
-	private LayerFactory layerFactory;
-
+	//
+	// private static Logger logger = Logger
+	// .getLogger(ApplicationController.class);
+	//
+	// @Autowired
+	// org.fao.unredd.portal.Config config;
+	//
+	// @Autowired
+	// net.tanesha.recaptcha.ReCaptchaImpl reCaptcha;
+	//
+	// @Autowired
+	// private LayerFactory layerFactory;
+	//
 	/**
 	 * A collection of the possible error causes.
 	 * 
@@ -112,7 +90,6 @@ public class ApplicationController {
 			contents.put("id", id);
 			contents.put("message", message);
 
-			new Config();
 			JSONObject json = new JSONObject();
 			json.putAll(contents);
 			return json.toString();
@@ -127,229 +104,229 @@ public class ApplicationController {
 			response.getWriter().write(getJson());
 		}
 	}
-
-	@RequestMapping(value = "/index.do", method = RequestMethod.GET)
-	public ModelAndView index(Model model) {
-		ModelAndView mv = new ModelAndView();
-		model.addAttribute("captchaHtml",
-				reCaptcha.createRecaptchaHtml(null, null));
-		mv.setViewName("index");
-		return mv;
-	}
-
-	@RequestMapping("/messages.json")
-	public ModelAndView getLocalizedMessages() {
-		return new ModelAndView("messages", "messages", config.getMessages());
-	}
-
-	@RequestMapping("/static/**")
-	public void getCustomStaticFile(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		// Get path to file
-		String fileName = (String) request
-				.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-
-		// Verify file exists
-		File file = new File(config.getDir() + "/static/" + fileName);
-		if (!file.isFile()) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-
-		// Manage cache headers: Last-Modified and If-Modified-Since
-		long ifModifiedSince = request.getDateHeader("If-Modified-Since");
-		long lastModified = file.lastModified();
-		if (ifModifiedSince >= (lastModified / 1000 * 1000)) {
-			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-			return;
-		}
-		response.setDateHeader("Last-Modified", lastModified);
-
-		// Set content type
-		FileNameMap fileNameMap = URLConnection.getFileNameMap();
-		String type = fileNameMap.getContentTypeFor(fileName);
-		response.setContentType(type);
-
-		// Send contents
-		try {
-			InputStream is = new FileInputStream(file);
-			IOUtils.copy(is, response.getOutputStream());
-			response.flushBuffer();
-		} catch (IOException e) {
-			logger.error("Error reading file", e);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@RequestMapping("/layers.json")
-	public void getLayers(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
-		response.setContentType("application/json;charset=UTF-8");
-		try {
-			if (request.getParameterMap().containsKey("jsonp")) {
-				response.getWriter().print("layers_json = ");
-			}
-			response.getWriter().print(setLayerTimes());
-			response.flushBuffer();
-		} catch (IOException e) {
-			logger.error("Error reading file", e);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@RequestMapping(value = "/indicators.json", method = RequestMethod.GET)
-	public void getLayerIndicators(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		IndicatorsController controller = new IndicatorsController(response,
-				layerFactory);
-
-		controller.returnIndicators(request
-				.getParameter(IndicatorsController.PARAM_LAYER_ID));
-	}
-
-	@RequestMapping(value = "/indicator.json", method = RequestMethod.GET)
-	public void getLayerIndicatorOutput(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		IndicatorsController controller = new IndicatorsController(response,
-				layerFactory);
-
-		controller.returnIndicator(
-				request.getParameter(IndicatorsController.PARAM_OBJECT_ID),
-				request.getParameter(IndicatorsController.PARAM_LAYER_ID),
-				request.getParameter(IndicatorsController.PARAM_INDICATOR_ID));
-	}
-
-	@RequestMapping("/charts.json")
-	public void getCharts(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		response.setContentType("application/json;charset=UTF-8");
-		try {
-			response.getWriter().print(getCharts());
-			response.flushBuffer();
-		} catch (Exception e) {
-			logger.error(e);
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@RequestMapping(value = "/report.json", method = RequestMethod.POST)
-	public void buildCustomReport(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, JAXBException {
-		throw new UnsupportedOperationException();
-		// response.setContentType("application/json;charset=UTF-8");
-		//
-		// // Get posted attributes
-		// @SuppressWarnings("unchecked")
-		// Map<String, String> attributes = flattenParamValues(request
-		// .getParameterMap());
-		//
-		// // Get Chart Script Resource from ChartScriptId parameter
-		// long chartScriptId = Long.valueOf(attributes.get("ChartScriptId"));
-		//
-		// // POSTed body, should be a WKT geometry
-		// String wktROI = getRequestBodyAsString(request, response);
-		//
-		// try {
-		// // Generate Report
-		// ReportManager report = new ReportManager(getGeostore(),
-		// config.getProperties());
-		// String reportContents = report.get(wktROI, chartScriptId);
-		//
-		// // Persist report in GeoStore, get the URL
-		// Long reportId = getGeostore().insertReport(attributes,
-		// reportContents);
-		// String resourceName = getGeostore().getClient()
-		// .getResource(reportId).getName();
-		// String reportURL = getGeostore().getClient().getGeostoreRestUrl()
-		// + "/misc/category/name/Report/resource/name/"
-		// + resourceName + "/data?name=" + attributes.get("UserName")
-		// + " Stats";
-		//
-		// // Build JSON response
-		// String responseBody = "{ \n" + "   \"success\": true, \n"
-		// + "   \"response_type\": \"result_embedded\", \n"
-		// + "   \"link\": { \n" + "      \"type\": \"text/html\", \n"
-		// + "      \"href\": \"" + reportURL + "\" \n" + "   } \n"
-		// + "}";
-		// response.getWriter().print(responseBody);
-		//
-		// } catch (ReportException e) {
-		// // Will send the errorCause whose name equals the
-		// // RealTimeStatsException.Code name
-		// ErrorCause cause = ErrorCause.valueOf(e.getCode().name());
-		// response.setStatus(cause.status);
-		// response.getWriter().write(cause.getJson());
-		// }
-		//
-		// response.flushBuffer();
-	}
-
-	@RequestMapping(value = "/feedback", method = RequestMethod.POST)
-	public void postFeedback(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
-		FeedbackController controller = new FeedbackController(request,
-				response, reCaptcha);
-
-		controller.postFeedback();
-	}
-
-	private String getCharts() throws UnsupportedEncodingException,
-			JAXBException {
-		throw new UnsupportedOperationException();
-		// Map<Long, String> resp = new HashMap<Long, String>();
-		// List<Resource> charts = getGeostore().getUNREDDResources(
-		// UNREDDCategories.CHARTSCRIPT);
-		// for (Resource chart : charts) {
-		// resp.put(chart.getId(), chart.getName());
-		// }
-		// JSONObject json = new JSONObject();
-		// json.putAll(resp);
-		// return json.toString();
-	}
-
-	private String getLayerTimesFromGeostore(String layerName)
-			throws JAXBException, UnsupportedEncodingException {
-		throw new UnsupportedOperationException();
-		// List<Resource> layerUpdates = getGeostore()
-		// .searchLayerUpdatesByLayerName(layerName);
-		// if (layerUpdates.size() == 0) {
-		// logger.warn("Requested times for \""
-		// + layerName
-		// + "\", but no corresponding LayerUpdates found in GeoStore.");
-		// }
-		//
-		// String times = "";
-		// Iterator<Resource> iterator = layerUpdates.iterator();
-		// while (iterator.hasNext()) {
-		// UNREDDLayerUpdate unreddLayerUpdate = new UNREDDLayerUpdate(
-		// iterator.next());
-		//
-		// times += unreddLayerUpdate.getDateAsString();
-		//
-		// if (iterator.hasNext()) {
-		// times += ",";
-		// }
-		// }
-		// return times += toString();
-	}
-
-	private String setLayerTimes() {
-		String jsonLayers = config.getLayers();
-		Pattern patt = Pattern.compile("\\$\\{time\\.([\\w.]*)\\}");
-		Matcher m = patt.matcher(jsonLayers);
-		StringBuffer sb = new StringBuffer(jsonLayers.length());
-		while (m.find()) { // Found time-dependant layer in json file
-			String layerName = m.group(1);
-			try {
-				m.appendReplacement(sb, getLayerTimesFromGeostore(layerName));
-			} catch (Exception e) {
-				m.appendReplacement(sb, "");
-				logger.error("Error getting layer times from GeoStore.");
-			}
-		}
-		m.appendTail(sb);
-		return sb.toString();
-	}
+	//
+	// @RequestMapping(value = "/index.do", method = RequestMethod.GET)
+	// public ModelAndView index(Model model) {
+	// ModelAndView mv = new ModelAndView();
+	// model.addAttribute("captchaHtml",
+	// reCaptcha.createRecaptchaHtml(null, null));
+	// mv.setViewName("index");
+	// return mv;
+	// }
+	//
+	// @RequestMapping("/messages.json")
+	// public ModelAndView getLocalizedMessages() {
+	// return new ModelAndView("messages", "messages", config.getMessages());
+	// }
+	//
+	// @RequestMapping("/static/**")
+	// public void getCustomStaticFile(HttpServletRequest request,
+	// HttpServletResponse response) throws IOException {
+	// // Get path to file
+	// String fileName = (String) request
+	// .getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+	//
+	// // Verify file exists
+	// File file = new File(config.getDir() + "/static/" + fileName);
+	// if (!file.isFile()) {
+	// response.sendError(HttpServletResponse.SC_NOT_FOUND);
+	// return;
+	// }
+	//
+	// // Manage cache headers: Last-Modified and If-Modified-Since
+	// long ifModifiedSince = request.getDateHeader("If-Modified-Since");
+	// long lastModified = file.lastModified();
+	// if (ifModifiedSince >= (lastModified / 1000 * 1000)) {
+	// response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+	// return;
+	// }
+	// response.setDateHeader("Last-Modified", lastModified);
+	//
+	// // Set content type
+	// FileNameMap fileNameMap = URLConnection.getFileNameMap();
+	// String type = fileNameMap.getContentTypeFor(fileName);
+	// response.setContentType(type);
+	//
+	// // Send contents
+	// try {
+	// InputStream is = new FileInputStream(file);
+	// IOUtils.copy(is, response.getOutputStream());
+	// response.flushBuffer();
+	// } catch (IOException e) {
+	// logger.error("Error reading file", e);
+	// response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	// }
+	// }
+	//
+	// @RequestMapping("/layers.json")
+	// public void getLayers(HttpServletRequest request,
+	// HttpServletResponse response) throws IOException {
+	//
+	// response.setContentType("application/json;charset=UTF-8");
+	// try {
+	// if (request.getParameterMap().containsKey("jsonp")) {
+	// response.getWriter().print("layers_json = ");
+	// }
+	// response.getWriter().print(setLayerTimes());
+	// response.flushBuffer();
+	// } catch (IOException e) {
+	// logger.error("Error reading file", e);
+	// response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	// }
+	// }
+	//
+	// @RequestMapping(value = "/indicators.json", method = RequestMethod.GET)
+	// public void getLayerIndicators(HttpServletRequest request,
+	// HttpServletResponse response) throws IOException {
+	// IndicatorsController controller = new IndicatorsController(response,
+	// layerFactory);
+	//
+	// controller.returnIndicators(request
+	// .getParameter(IndicatorsController.PARAM_LAYER_ID));
+	// }
+	//
+	// @RequestMapping(value = "/indicator.json", method = RequestMethod.GET)
+	// public void getLayerIndicatorOutput(HttpServletRequest request,
+	// HttpServletResponse response) throws IOException {
+	// IndicatorsController controller = new IndicatorsController(response,
+	// layerFactory);
+	//
+	// controller.returnIndicator(
+	// request.getParameter(IndicatorsController.PARAM_OBJECT_ID),
+	// request.getParameter(IndicatorsController.PARAM_LAYER_ID),
+	// request.getParameter(IndicatorsController.PARAM_INDICATOR_ID));
+	// }
+	//
+	// @RequestMapping("/charts.json")
+	// public void getCharts(HttpServletRequest request,
+	// HttpServletResponse response) throws IOException {
+	// response.setContentType("application/json;charset=UTF-8");
+	// try {
+	// response.getWriter().print(getCharts());
+	// response.flushBuffer();
+	// } catch (Exception e) {
+	// logger.error(e);
+	// response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	// }
+	// }
+	//
+	// @RequestMapping(value = "/report.json", method = RequestMethod.POST)
+	// public void buildCustomReport(HttpServletRequest request,
+	// HttpServletResponse response) throws IOException, JAXBException {
+	// throw new UnsupportedOperationException();
+	// // response.setContentType("application/json;charset=UTF-8");
+	// //
+	// // // Get posted attributes
+	// // @SuppressWarnings("unchecked")
+	// // Map<String, String> attributes = flattenParamValues(request
+	// // .getParameterMap());
+	// //
+	// // // Get Chart Script Resource from ChartScriptId parameter
+	// // long chartScriptId = Long.valueOf(attributes.get("ChartScriptId"));
+	// //
+	// // // POSTed body, should be a WKT geometry
+	// // String wktROI = getRequestBodyAsString(request, response);
+	// //
+	// // try {
+	// // // Generate Report
+	// // ReportManager report = new ReportManager(getGeostore(),
+	// // config.getProperties());
+	// // String reportContents = report.get(wktROI, chartScriptId);
+	// //
+	// // // Persist report in GeoStore, get the URL
+	// // Long reportId = getGeostore().insertReport(attributes,
+	// // reportContents);
+	// // String resourceName = getGeostore().getClient()
+	// // .getResource(reportId).getName();
+	// // String reportURL = getGeostore().getClient().getGeostoreRestUrl()
+	// // + "/misc/category/name/Report/resource/name/"
+	// // + resourceName + "/data?name=" + attributes.get("UserName")
+	// // + " Stats";
+	// //
+	// // // Build JSON response
+	// // String responseBody = "{ \n" + "   \"success\": true, \n"
+	// // + "   \"response_type\": \"result_embedded\", \n"
+	// // + "   \"link\": { \n" + "      \"type\": \"text/html\", \n"
+	// // + "      \"href\": \"" + reportURL + "\" \n" + "   } \n"
+	// // + "}";
+	// // response.getWriter().print(responseBody);
+	// //
+	// // } catch (ReportException e) {
+	// // // Will send the errorCause whose name equals the
+	// // // RealTimeStatsException.Code name
+	// // ErrorCause cause = ErrorCause.valueOf(e.getCode().name());
+	// // response.setStatus(cause.status);
+	// // response.getWriter().write(cause.getJson());
+	// // }
+	// //
+	// // response.flushBuffer();
+	// }
+	//
+	// @RequestMapping(value = "/feedback", method = RequestMethod.POST)
+	// public void postFeedback(HttpServletRequest request,
+	// HttpServletResponse response) throws IOException {
+	//
+	// FeedbackController controller = new FeedbackController(request,
+	// response, reCaptcha);
+	//
+	// controller.postFeedback();
+	// }
+	//
+	// private String getCharts() throws UnsupportedEncodingException,
+	// JAXBException {
+	// throw new UnsupportedOperationException();
+	// // Map<Long, String> resp = new HashMap<Long, String>();
+	// // List<Resource> charts = getGeostore().getUNREDDResources(
+	// // UNREDDCategories.CHARTSCRIPT);
+	// // for (Resource chart : charts) {
+	// // resp.put(chart.getId(), chart.getName());
+	// // }
+	// // JSONObject json = new JSONObject();
+	// // json.putAll(resp);
+	// // return json.toString();
+	// }
+	//
+	// private String getLayerTimesFromGeostore(String layerName)
+	// throws JAXBException, UnsupportedEncodingException {
+	// throw new UnsupportedOperationException();
+	// // List<Resource> layerUpdates = getGeostore()
+	// // .searchLayerUpdatesByLayerName(layerName);
+	// // if (layerUpdates.size() == 0) {
+	// // logger.warn("Requested times for \""
+	// // + layerName
+	// // + "\", but no corresponding LayerUpdates found in GeoStore.");
+	// // }
+	// //
+	// // String times = "";
+	// // Iterator<Resource> iterator = layerUpdates.iterator();
+	// // while (iterator.hasNext()) {
+	// // UNREDDLayerUpdate unreddLayerUpdate = new UNREDDLayerUpdate(
+	// // iterator.next());
+	// //
+	// // times += unreddLayerUpdate.getDateAsString();
+	// //
+	// // if (iterator.hasNext()) {
+	// // times += ",";
+	// // }
+	// // }
+	// // return times += toString();
+	// }
+	//
+	// private String setLayerTimes() {
+	// String jsonLayers = config.getLayers();
+	// Pattern patt = Pattern.compile("\\$\\{time\\.([\\w.]*)\\}");
+	// Matcher m = patt.matcher(jsonLayers);
+	// StringBuffer sb = new StringBuffer(jsonLayers.length());
+	// while (m.find()) { // Found time-dependant layer in json file
+	// String layerName = m.group(1);
+	// try {
+	// m.appendReplacement(sb, getLayerTimesFromGeostore(layerName));
+	// } catch (Exception e) {
+	// m.appendReplacement(sb, "");
+	// logger.error("Error getting layer times from GeoStore.");
+	// }
+	// }
+	// m.appendTail(sb);
+	// return sb.toString();
+	// }
 }
