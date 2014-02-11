@@ -1,12 +1,13 @@
-define([ "map", "message-bus" ], function(map, bus) {
+define([ "map", "message-bus", "customization" ], function(map, bus, customization) {
 
 	var control = new OpenLayers.Control.WMSGetFeatureInfo({
-		url : null,
+		url : customization.queryURL,
+		layerUrls : [ customization.layerURL ],
 		title : 'Identify features by clicking',
 		queryVisible : true,
 		infoFormat : 'application/vnd.ogc.gml',
 		hover : false,
-		drillDown : true,
+		drillDown : false,
 		maxFeatures : 5,
 		handlerOptions : {
 			"click" : {
@@ -36,9 +37,6 @@ define([ "map", "message-bus" ], function(map, bus) {
 				control.layers = new Array();
 			}
 			control.layers.push(layer);
-			if (control.url == null) {
-				control.url = layerInfo.url;
-			}
 		}
 	});
 });

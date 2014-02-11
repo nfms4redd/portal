@@ -43,6 +43,8 @@ import org.apache.log4j.Logger;
 public class Config {
 
 	private static final String PROPERTY_CLIENT_MODULES = "client.modules";
+	private static final String PROPERTY_SERVER_QUERY_URL = "info.queryUrl";
+	private static final String PROPERTY_SERVER_LAYER_URL = "info.layerUrl";
 
 	private static Logger logger = Logger.getLogger(Config.class);
 
@@ -191,12 +193,23 @@ public class Config {
 	}
 
 	public String[] getModules() throws ConfigurationException {
-		String moduleString = getProperties().getProperty(
-				PROPERTY_CLIENT_MODULES);
-		if (moduleString != null) {
-			return moduleString.split(",");
+		return getProperty(PROPERTY_CLIENT_MODULES).split(",");
+	}
+
+	public String getQueryURL() throws ConfigurationException {
+		return getProperty(PROPERTY_SERVER_QUERY_URL);
+	}
+
+	public String getLayerURL() {
+		return getProperty(PROPERTY_SERVER_LAYER_URL);
+	}
+
+	private String getProperty(String propertyName) throws ConfigurationException {
+		String value = getProperties().getProperty(propertyName);
+		if (value != null) {
+			return value;
 		} else {
-			throw new ConfigurationException("No \"" + PROPERTY_CLIENT_MODULES
+			throw new ConfigurationException("No \"" + propertyName
 					+ "\" property in configuration");
 		}
 	}
