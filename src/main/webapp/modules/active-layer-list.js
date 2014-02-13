@@ -31,8 +31,10 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 	bus.listen("portal-layer-visibility", function(event, layerInfo) {
 		var tr1, layerId, tdLegend, inlineLegend, visibility, colspan;
 
-		visibility = layerInfo.active === true;
-
+		// set the visibility flag to true if the layer is active and if it is not a placeholder (placeholder means that no geospatial data to show are associated)
+		visibility = (layerInfo.active === true) && !layerInfo.isPlaceholder;
+        
+		
 		layerId = layerInfo.id;
 		colspan = 2;
 
