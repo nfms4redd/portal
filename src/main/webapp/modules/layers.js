@@ -77,7 +77,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 					if (wmsLayer.hasOwnProperty("wmsTime")) {
 						wmsLayer.timestamps = wmsLayer.wmsTime.split(",")
 					}
-
+                    wmsLayer.zIndex = layerRoot.wmsLayers.indexOf(wmsLayer);
 					layerInfoArray.push(wmsLayer);
 				}
 
