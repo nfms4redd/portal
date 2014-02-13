@@ -112,7 +112,9 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 				bus.send("portal-layer-visibility", portalLayer);
 			});
 
-			tdVisibility.append(divCheckbox);
+			if(!portalLayer.isPlaceholder){
+				tdVisibility.append(divCheckbox);
+			}
 
 			trLayer.append(tdVisibility);
 

@@ -25,8 +25,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		})
 
 		var processGroup = function(layerRoot, parentId, group) {
-			var items, item, portalLayers, portalLayer, wmsLayerIds,
-				wmsLayers, wmsLayer, i, j, layerInfoArray;
+		var items, item, portalLayers, portalLayer, wmsLayerIds,
+			wmsLayers, wmsLayer, i, j, layerInfoArray;
 
 		var groupInfo = {
 			"id" : group.id,
@@ -56,12 +56,18 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				}
 
 				portalLayer = portalLayers[0];
-				wmsLayerIds = portalLayer.layers;
+				
+				// CHECK IF the CURRENT portalLayer is a PLACEHOLDER
+				// if no layers(wmsLayers) are defined in portalLayers means that the portalLayer
+				// is just a placeholder in the layer menu, used to store generic info 
+				portalLayer.isPlaceholder = (portalLayer.layers === undefined) || (portalLayer.layers.length === 0); 
+				
+				wmsLayerIds = (portalLayer.isPlaceholder)?null:portalLayer.layers;
 
 				layerInfoArray = [];
 
-				// Iterate over wms layers
-				for (j = 0; j < wmsLayerIds.length; j++) {
+				// Iterate over wms layers 
+				for (j = 0; !portalLayer.isPlaceholder && j < wmsLayerIds.length; j++) {
 					wmsLayers = findById(layerRoot.wmsLayers, wmsLayerIds[j]);
 					if (wmsLayers.length === 0) {
 						bus.send("error", "At least one layer with id '" + wmsLayerIds[j] + "' expected");
