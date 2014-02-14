@@ -41,9 +41,9 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 			noMagic: true
 		});
 		layer.id = layerInfo.id;
-
 		if (map !== null) {
 			map.addLayer(layer);
+			layer.setZIndex(layerInfo.zIndex);
 		}
 
 		bus.send("maplayer-added", [ layer, layerInfo ]);
