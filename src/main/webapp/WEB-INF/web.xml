@@ -35,6 +35,15 @@
 		<url-pattern>/static/*</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>modules</servlet-name>
+		<servlet-class>org.fao.unredd.portal.ModulesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>modules</servlet-name>
+		<url-pattern>/modules/*</url-pattern>
+	</servlet-mapping>
+	
 	<!-- config call -->
 	<servlet>
 		<servlet-name>config-servlet</servlet-name>
