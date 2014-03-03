@@ -19,7 +19,9 @@ public class AppContextListener implements ServletContextListener {
 		String rootPath = servletContext.getRealPath("/");
 		String configInitParameter = servletContext
 				.getInitParameter("PORTAL_CONFIG_DIR");
-		Config config = new Config(rootPath, configInitParameter);
+		boolean configCache = Boolean.parseBoolean(System
+				.getenv("NFMS_CONFIG_CACHE"));
+		Config config = new Config(rootPath, configInitParameter, configCache);
 		servletContext.setAttribute("config", config);
 
 		Properties configurationProperties = config.getProperties();

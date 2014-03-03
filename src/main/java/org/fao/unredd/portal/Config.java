@@ -49,17 +49,18 @@ public class Config {
 	private static Logger logger = Logger.getLogger(Config.class);
 
 	private File dir = null;
-	private CachedProperties cachedProperties;
+	private Properties properties;
 
 	private String rootPath;
 	private String configInitParameter;
+	private boolean useCache;
 	private HashMap<Locale, ResourceBundle> localeBundles = new HashMap<Locale, ResourceBundle>();
+	private String layersContent;
 
-	public Config(String rootPath, String configInitParameter) {
+	public Config(String rootPath, String configInitParameter, boolean useCache) {
 		this.rootPath = rootPath;
 		this.configInitParameter = configInitParameter;
-
-		cachedProperties = new CachedProperties(getPortalPropertiesFile());
+		this.useCache = useCache;
 	}
 
 	public File getPortalPropertiesFile() {
@@ -108,7 +109,17 @@ public class Config {
 	}
 
 	public Properties getProperties() {
-		return cachedProperties.getProperties();
+		if (properties == null || !useCache) {
+			File file = getPortalPropertiesFile();
+			logger.debug("Reading portal properties file " + file);
+			properties = new Properties();
+			try {
+				properties.load(new FileInputStream(file));
+			} catch (IOException e) {
+				logger.error("Error reading portal properties file", e);
+			}
+		}
+		return properties;
 	}
 
 	public ArrayList<String> getLanguages() {
@@ -135,7 +146,10 @@ public class Config {
 
 	public String getLayers(Locale locale) throws IOException,
 			ConfigurationException {
-		return getLocalizedFileContents(getLayersFile(), locale);
+		if (layersContent == null || !useCache) {
+			layersContent = getLocalizedFileContents(getLayersFile(), locale);
+		}
+		return layersContent;
 	}
 
 	public File getLayersFile() {
@@ -145,7 +159,7 @@ public class Config {
 	public ResourceBundle getMessages(Locale locale)
 			throws ConfigurationException {
 		ResourceBundle bundle = localeBundles.get(locale);
-		if (bundle == null) {
+		if (bundle == null || !useCache) {
 			URLClassLoader urlClassLoader;
 			try {
 				urlClassLoader = new URLClassLoader(
@@ -204,7 +218,8 @@ public class Config {
 		return getProperty(PROPERTY_SERVER_LAYER_URL);
 	}
 
-	private String getProperty(String propertyName) throws ConfigurationException {
+	private String getProperty(String propertyName)
+			throws ConfigurationException {
 		String value = getProperties().getProperty(propertyName);
 		if (value != null) {
 			return value;
