@@ -35,8 +35,10 @@ public class IndexHTMLServlet extends HttpServlet {
 		VelocityContext context = new VelocityContext();
 
 		ServletContext servletContext = getServletContext();
+		Config config = (Config) getServletContext().getAttribute("config");
 		ArrayList<String> styleSheets = getStyleSheets(servletContext, "styles");
 		styleSheets.addAll(getStyleSheets(servletContext, "modules"));
+		styleSheets.addAll(getStyleSheets(config, "modules"));
 		context.put("styleSheets", styleSheets);
 
 		String lang = req.getParameter("lang");
@@ -63,6 +65,15 @@ public class IndexHTMLServlet extends HttpServlet {
 	private ArrayList<String> getStyleSheets(ServletContext servletContext,
 			String path) {
 		File styleFolder = new File(servletContext.getRealPath(path));
+		return getStyleSheets(styleFolder, path);
+	}
+
+	private ArrayList<String> getStyleSheets(Config config, String path) {
+		File styleFolder = new File(config.getDir(), path);
+		return getStyleSheets(styleFolder, path);
+	}
+
+	private ArrayList<String> getStyleSheets(File styleFolder, String path) {
 		File[] styleSheetFiles = styleFolder.listFiles();
 		ArrayList<String> styleSheets = new ArrayList<String>();
 		for (File file : styleSheetFiles) {
