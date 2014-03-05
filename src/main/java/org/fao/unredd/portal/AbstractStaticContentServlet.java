@@ -38,7 +38,7 @@ public abstract class AbstractStaticContentServlet extends HttpServlet {
 		}
 
 		if (file == null) {
-			throw new StatusServletExceptionImpl(404,
+			throw new StatusServletException(404,
 					"The file could not be found");
 		}
 
@@ -62,7 +62,7 @@ public abstract class AbstractStaticContentServlet extends HttpServlet {
 			IOUtils.copy(is, resp.getOutputStream());
 		} catch (IOException e) {
 			logger.error("Error reading file", e);
-			throw new StatusServletExceptionImpl(500,
+			throw new StatusServletException(500,
 					"Could transfer the resource");
 		}
 	}

@@ -19,7 +19,7 @@ public class IndicatorListServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String layerId = req.getParameter("layerId");
 		if (layerId == null) {
-			throw new StatusServletExceptionImpl(400,
+			throw new StatusServletException(400,
 					"layerId parameter is mandatory");
 		} else {
 			String answer = "[]";

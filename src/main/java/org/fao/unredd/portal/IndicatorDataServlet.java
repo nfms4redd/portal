@@ -23,7 +23,7 @@ public class IndicatorDataServlet extends HttpServlet {
 		String indicatorId = req.getParameter("indicatorId");
 		String objectId = req.getParameter("objectId");
 		if (layerId == null || indicatorId == null) {
-			throw new StatusServletExceptionImpl(400,
+			throw new StatusServletException(400,
 					"layerId and indicatorId parameters are mandatory");
 		} else {
 			try {
@@ -38,11 +38,11 @@ public class IndicatorDataServlet extends HttpServlet {
 					chartGenerator.generate(objectId, resp.getWriter());
 					resp.flushBuffer();
 				} else {
-					throw new StatusServletExceptionImpl(400, "The layer "
+					throw new StatusServletException(400, "The layer "
 							+ layerId + " does not exist");
 				}
 			} catch (NoSuchIndicatorException e) {
-				throw new StatusServletExceptionImpl(400, "The indicator "
+				throw new StatusServletException(400, "The indicator "
 						+ indicatorId + " does not exist");
 			}
 		}
