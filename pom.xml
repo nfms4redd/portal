@@ -190,7 +190,7 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>uglify</id>
+			<id>optmize</id>
 			<build>
 				<plugins>
 					<plugin>
