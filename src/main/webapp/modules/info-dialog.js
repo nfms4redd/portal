@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "map" ], function($, bus, map) {
+define([ "jquery", "message-bus", "map", "i18n" ], function($, bus, map, i18n) {
 
 	bus.listen("info-features", function(event, features, x, y) {
 		var i, infoPopup, dialogX, dialogY, epsg4326, epsg900913;
@@ -98,7 +98,7 @@ define([ "jquery", "message-bus", "map" ], function($, bus, map) {
 
 			// TODO: localize statistics and zoom to area buttons
 			td3 = $("<td class=\"td_right\"/>");
-			td3.append("<a style=\"color:white\" class=\"feature_link\" href=\"#\" id=\"zoom_to_feature_" + layerId + "\">Zoom to area</a>");
+			td3.append("<a style=\"color:white\" class=\"feature_link\" href=\"#\" id=\"zoom_to_feature_" + layerId + "\">"+ i18n["zoom_to_area"] + "</a>");
 			tr2.append(td3);
 			infoPopup.append(table);
 

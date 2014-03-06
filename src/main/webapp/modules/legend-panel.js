@@ -6,7 +6,7 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 	var getDialog = function() {
 		if (dialog == null) {
 			dialog = $("<div/>");
-			dialog.attr("title", "Legend");
+			dialog.attr("title", i18n["legend_button"]);
 			dialog.attr("id", "legend_pane");
 			divContent = $("<div/>");
 			divContent.appendTo(dialog);
