@@ -45,7 +45,8 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 
 			divTimeSlider.slider({
 				change: function(event, ui) {
-					var d = (new Date()).setISO8601(timestamps[ui.value]);
+					var d = new Date();
+					d.setISO8601(timestamps[ui.value]);
 					bus.send("time-slider.selection", d);
 				},
 				slide: function(event, ui) {
