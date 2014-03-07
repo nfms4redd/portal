@@ -1,4 +1,4 @@
-define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
+define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, customization, bus) {
 
 	var dialog = null;
 	var divContent = null;
@@ -35,6 +35,15 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 		return divContent;
 	};
 
+	bus.listen("open-legend", function(event, layerId) {
+		getDialog().dialog("open");
+		var table = $("#legend_panel_" + layerId);
+		var dialog = getDialog();
+		dialog.animate({
+			scrollTop : table.offset().top - dialog.offset().top + dialog.scrollTop()
+		});
+	});
+
 	bus.listen("toggle-legend", function() {
 		var dialog = getDialog();
 		if (!dialog.dialog("isOpen")) {
@@ -48,15 +57,15 @@ define([ "jquery", "i18n", "message-bus" ], function($, i18n, bus) {
 		var idPrefix, imagePath, tblLegend;
 
 		idPrefix = "legend_panel_";
-		if (layerInfo.hasOwnProperty("legendURL")) {
+		if (layerInfo.hasOwnProperty("legend")) {
 			if (visibility) {
-				imagePath = layerInfo.legendURL;
+				imagePath = "static/loc/" + customization.languageCode + "/images/" + layerInfo.legend;
 				tblLegend = $("<table/>").appendTo(getDivContent());
 				tblLegend.attr("id", idPrefix + layerInfo.id);
 				tblLegend.addClass("layer_legend");
 
 				var trTitle = $("<tr/>").appendTo(tblLegend).addClass("legend_header");
-				$("<td/>").appendTo(trTitle).addClass("legend_layer_name").html(layerInfo.name);
+				$("<td/>").appendTo(trTitle).addClass("legend_layer_name").html(layerInfo.label);
 				if (layerInfo.hasOwnProperty("sourceLink") && layerInfo.hasOwnProperty("sourceLabel")) {
 					var tdSourceLink = $("<td/>").appendTo(trTitle).addClass("data_source_link");
 					$("<span/>").appendTo(tdSourceLink).addClass("lang").html(i18n["data_source"] + ":");

@@ -79,17 +79,39 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 				//inlineLegend = $('<img class="inline-legend" src="' + UNREDD.wmsServers[0] + contextConf.inlineLegendUrl + '">');
 				inlineLegend = $('<img class="inline-legend" src="' + portalLayer.inlineLegendUrl + '">');
 				tdLegend.append(inlineLegend);
-//			} else if (context.hasLegend) {
-//				// context has a legend to be shown on the legend pane - we add a link to show the legend pane
-//				if (active) {
-//					tdLegend = $('<td style="font-size:9px;width:20px;height:20px"><a id="' + contextName + '_inline_legend_icon" class="inline_legend_icon on"></a></td>');
-//					// add the legend to the legend pane (hidden when page loads)
-//					setLegends(context, true);
-//				} else {
-//					tdLegend = $('<td style="font-size:9px;width:20px;height:20px"><a id="' + contextName + '_inline_legend_icon" class="inline_legend_icon"></a></td>');
-//				}
-//			} else {
-//				tdLegend = $('<td></td>');
+			} else {
+				var wmsLayerWithLegend = portalLayer.wmsLayers.find(function(layer) {
+					return layer.hasOwnProperty("legend");
+				});
+
+				if (wmsLayerWithLegend) {
+					inlineLegend = $("<td/>");
+					inlineLegend.addClass("inline-legend-button");
+
+					if (portalLayer.active) {
+						inlineLegend.addClass("visible");
+					}
+
+					bus.listen("portal-layer-visibility", function(event, layerInfo) {
+						if (layerInfo.id != portalLayer.id) {
+							return;
+						}
+
+						if (layerInfo.active) {
+							inlineLegend.addClass("visible");
+						} else {
+							inlineLegend.removeClass("visible");
+						}
+					});
+
+					inlineLegend.click(function() {
+						if (portalLayer.active) {
+							bus.send("open-legend", wmsLayerWithLegend.id);
+						}
+					});
+
+					tdLegend.append(inlineLegend);
+				}
 			}
 			trLayer.append(tdLegend);
 

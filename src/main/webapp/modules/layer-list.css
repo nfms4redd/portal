@@ -78,3 +78,17 @@ td.layer_visibility {
 	text-decoration: none;
 	width: 16px;
 }
+
+.inline-legend-button {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    background: url('images/ui-elements.png') no-repeat scroll 0px -114px transparent;
+    display: block;
+    cursor: default;
+}
+
+.inline-legend-button.visible {
+	background-position: -24px -114px;
+	cursor: pointer;
+}

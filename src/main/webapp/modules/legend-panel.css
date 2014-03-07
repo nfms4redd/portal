@@ -35,6 +35,8 @@ table.layer_legend td {
 	right: 0px;
 	color: #000;
 	text-align: right;
+	padding-left: 0px;
+	margin-left: 10px;
 }
 
 .legend_image {
