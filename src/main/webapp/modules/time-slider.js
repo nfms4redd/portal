@@ -17,10 +17,12 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 	div.append(divTimeSlider);
 	divTimeSlider.slider({
 		change : function(event, ui) {
-			var d = new Date();
-			d.setISO8601(timestamps[ui.value]);
-			divTimeSliderLabel.text(getLocalizedDate(timestamps[ui.value]));
-			bus.send("time-slider.selection", d);
+			if (timestamps.length > 0) {
+				var d = new Date();
+				d.setISO8601(timestamps[ui.value]);
+				divTimeSliderLabel.text(getLocalizedDate(timestamps[ui.value]));
+				bus.send("time-slider.selection", d);
+			}
 		}
 	});
 	divTimeSlider.slider("option", "min", 0);
