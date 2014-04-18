@@ -25,12 +25,15 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -122,22 +125,15 @@ public class Config {
 		return properties;
 	}
 
-	public ArrayList<String> getLanguages() {
-		File translationFolder = getTranslationFolder();
-		final Pattern pattern = Pattern.compile("messages_(..)\\.properties");
-		File[] translationFiles = translationFolder.listFiles();
-		ArrayList<String> locales = new ArrayList<String>();
-		if (translationFiles != null) {
-			for (File translationFile : translationFiles) {
-				Matcher matcher = pattern.matcher(translationFile.getName());
-				if (matcher.matches()) {
-					String localeString = matcher.group(1);
-					locales.add(localeString);
-				}
-			}
-		}
+	public List<String[]> getLanguages() {
+		JSONObject json = JSONObject.fromObject(getProperty("languages"));
 
-		return locales;
+		List<String[]> ret = new ArrayList<String[]>();
+		for (Object key : json.keySet()) {
+			String keyString = key.toString();
+			ret.add(new String[] { keyString, json.getString(keyString) });
+		}
+		return ret;
 	}
 
 	private File getTranslationFolder() {
