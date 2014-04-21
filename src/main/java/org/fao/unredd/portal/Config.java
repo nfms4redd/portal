@@ -48,6 +48,7 @@ public class Config {
 	private static final String PROPERTY_CLIENT_MODULES = "client.modules";
 	private static final String PROPERTY_SERVER_QUERY_URL = "info.queryUrl";
 	private static final String PROPERTY_SERVER_LAYER_URL = "info.layerUrl";
+	private static final String PROPERTY_DEFAULT_LANG = "languages.default";
 
 	private static Logger logger = Logger.getLogger(Config.class);
 
@@ -125,6 +126,12 @@ public class Config {
 		return properties;
 	}
 
+	/**
+	 * Returns a list of String[2]. For each array, the first string is the lang
+	 * code and the second string is the display text for that lang.
+	 * 
+	 * @return
+	 */
 	public List<String[]> getLanguages() {
 		JSONObject json = JSONObject.fromObject(getProperty("languages"));
 
@@ -212,6 +219,20 @@ public class Config {
 
 	public String getLayerURL() {
 		return getProperty(PROPERTY_SERVER_LAYER_URL);
+	}
+
+	public String getDefaultLang() {
+		try {
+			return getProperty(PROPERTY_DEFAULT_LANG);
+		} catch (ConfigurationException e) {
+			List<String[]> langs = getLanguages();
+			if (langs != null && langs.size() > 0) {
+				return langs.get(0)[0];
+			}
+		}
+
+		throw new ConfigurationException("No \"" + PROPERTY_DEFAULT_LANG
+				+ "\" property in configuration");
 	}
 
 	private String getProperty(String propertyName)
