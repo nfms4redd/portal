@@ -5,13 +5,13 @@
 	height: 96px;
 	width: 128px;
 	z-index: 1100;
-	background: url(images/logos.png) no-repeat 0 0;
+	background: url(../static/img/logos.png) no-repeat 0 0;
 }
 
 #banner {
 	height: 92px;
 	width: 100%;
-	background: url(images/banner-background.jpg) repeat 0 0;
+	background: url(../static/img/banner-background.jpg) repeat 0 0;
 	background-color: #a0b397;
 }
 
@@ -22,7 +22,7 @@
 	width: 104px;
 	height: 69px;
 	z-index: 1100;
-	background: url(images/flag.png) no-repeat 0 0;
+	background: url(../static/img/flag.png) no-repeat 0 0;
 }
 
 #title {
