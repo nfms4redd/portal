@@ -33,16 +33,19 @@ public class FolderLayerFactory implements LayerFactory {
 	private File layerFolderRoot;
 
 	public FolderLayerFactory(File layerFolderRoot) {
-		if (!layerFolderRoot.exists()) {
-			throw new IllegalArgumentException(
-					"The layer folder root does not exist: "
-							+ layerFolderRoot.getAbsolutePath());
-		}
 		this.layerFolderRoot = layerFolderRoot;
+	}
+
+	private void checkRoot() throws IOException {
+		if (!layerFolderRoot.exists()) {
+			throw new IOException("The layer folder root does not exist: "
+					+ layerFolderRoot.getAbsolutePath());
+		}
 	}
 
 	@Override
 	public Layer newLayer(String layerName) throws IOException {
+		checkRoot();
 		return new LayerFolderImpl(layerName, getConfigurationFolder(layerName));
 	}
 
@@ -56,6 +59,10 @@ public class FolderLayerFactory implements LayerFactory {
 	}
 
 	private File getLayerFolder(String layerName) {
+		if (layerName.indexOf(':') == -1) {
+			throw new IllegalArgumentException(
+					"Layer name must have the ':' character separating workspace and layer name");
+		}
 		String[] workspaceAndName = layerName.split(Pattern.quote(":"));
 		File workspaceFolder = new File(layerFolderRoot, workspaceAndName[0]);
 		File layerFolder = new File(workspaceFolder, workspaceAndName[1]);
@@ -64,6 +71,7 @@ public class FolderLayerFactory implements LayerFactory {
 
 	@Override
 	public MosaicLayer newMosaicLayer(String layerName) throws IOException {
+		checkRoot();
 		return new MosaicLayerFolder(layerName,
 				getConfigurationFolder(layerName));
 	}
@@ -72,5 +80,4 @@ public class FolderLayerFactory implements LayerFactory {
 	public boolean exists(String layerName) {
 		return getLayerFolder(layerName).exists();
 	}
-
 }

@@ -17,7 +17,6 @@ package org.fao.unredd.layers.folder;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 
@@ -30,11 +29,8 @@ public class FolderLayerFactoryTest {
 	public void testUnexistantFolder() throws Exception {
 		File file = new File("does not exist");
 		assertFalse(file.exists());
-		try {
-			new FolderLayerFactory(file);
-			fail();
-		} catch (IllegalArgumentException e) {
-		}
+		FolderLayerFactory factory = new FolderLayerFactory(file);
+		assertFalse(factory.exists("non:existing"));
 	}
 
 	@Test
