@@ -12,7 +12,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>lang-filter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/config.js</url-pattern>
 	</filter-mapping>
 
 	<!-- index call -->
