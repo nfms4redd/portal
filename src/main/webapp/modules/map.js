@@ -29,7 +29,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	map.addControl(new OpenLayers.Control.Scale());
 
 	bus.listen("add-layer", function(event, layerInfo) {
-		var layer = new OpenLayers.Layer.WMS("WMS layer", layerInfo.baseUrl, {
+		var layer = new OpenLayers.Layer.WMS(layerInfo.id, layerInfo.baseUrl, {
 			layers : layerInfo.wmsName,
 			buffer : 0,
 			transitionEffect : "resize",
