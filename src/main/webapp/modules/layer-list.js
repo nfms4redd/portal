@@ -80,9 +80,10 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 				inlineLegend = $('<img class="inline-legend" src="' + portalLayer.inlineLegendUrl + '">');
 				tdLegend.append(inlineLegend);
 			} else {
-				var wmsLayerWithLegend = portalLayer.wmsLayers.find(function(layer) {
-					return layer.hasOwnProperty("legend");
+				var wmsLayersWithLegend = portalLayer.wmsLayers.filter(function(layer) {
+				    return layer.hasOwnProperty("legend");
 				});
+				var wmsLayerWithLegend = wmsLayersWithLegend[0];
 
 				if (wmsLayerWithLegend) {
 					inlineLegend = $("<td/>");
