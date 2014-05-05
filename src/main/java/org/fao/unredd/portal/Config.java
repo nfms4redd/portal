@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -127,20 +128,27 @@ public class Config {
 	}
 
 	/**
-	 * Returns a list of String[2]. For each array, the first string is the lang
-	 * code and the second string is the display text for that lang.
+	 * Returns an array of <code>Map&lt;String, String&gt;</code>. For each
+	 * element of the array, a {@link Map} is returned containing two
+	 * keys/values: <code>code</code> (for language code) and <code>name</code>
+	 * (for language name).
 	 * 
 	 * @return
 	 */
-	public List<String[]> getLanguages() {
-		JSONObject json = JSONObject.fromObject(getProperty("languages"));
+	@SuppressWarnings("unchecked")
+	public Map<String, String>[] getLanguages() {
+		List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
 
-		List<String[]> ret = new ArrayList<String[]>();
-		for (Object key : json.keySet()) {
-			String keyString = key.toString();
-			ret.add(new String[] { keyString, json.getString(keyString) });
+		JSONObject json = JSONObject.fromObject(getProperty("languages"));
+		for (Object langCode : json.keySet()) {
+			Map<String, String> langObject = new HashMap<String, String>();
+			langObject.put("code", langCode.toString());
+			langObject.put("name", json.getString(langCode.toString()));
+
+			ret.add(langObject);
 		}
-		return ret;
+
+		return ret.toArray(new Map[ret.size()]);
 	}
 
 	private File getTranslationFolder() {
@@ -217,9 +225,9 @@ public class Config {
 		try {
 			return getProperty(PROPERTY_DEFAULT_LANG);
 		} catch (ConfigurationException e) {
-			List<String[]> langs = getLanguages();
-			if (langs != null && langs.size() > 0) {
-				return langs.get(0)[0];
+			Map<String, String>[] langs = getLanguages();
+			if (langs != null && langs.length > 0) {
+				return langs[0].get("code");
 			}
 		}
 
