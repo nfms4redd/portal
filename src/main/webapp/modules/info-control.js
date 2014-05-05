@@ -1,8 +1,8 @@
 define([ "map", "message-bus", "customization" ], function(map, bus, customization) {
 
 	var control = new OpenLayers.Control.WMSGetFeatureInfo({
-		url : customization.queryURL,
-		layerUrls : [ customization.layerURL ],
+		url : customization["info.queryUrl"],
+		layerUrls : [ customization["info.layerUrl"] ],
 		title : 'Identify features by clicking',
 		queryVisible : true,
 		infoFormat : 'application/vnd.ogc.gml',

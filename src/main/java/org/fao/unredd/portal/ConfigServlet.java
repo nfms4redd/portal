@@ -2,8 +2,13 @@ package org.fao.unredd.portal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
@@ -54,12 +59,30 @@ public class ConfigServlet extends HttpServlet {
 
 	private JSONObject buildCustomizationObject(Config config, Locale locale,
 			String title) {
-		return new JSONObject().element("title", title)//
-				.element("languages", config.getLanguages())//
-				.element("languageCode", locale.getLanguage())//
-				.element("queryURL", config.getQueryURL())//
-				.element("layerURL", config.getLayerURL())//
-				.element("modules", config.getModules());
-	}
+		// These properties will be handled manually at the end of the method
+		HashSet<String> manuallyHandled = new HashSet<String>();
+		Collections.addAll(manuallyHandled, Config.PROPERTY_CLIENT_MODULES,
+				Config.PROPERTY_MAP_CENTER, Config.PROPERTY_LANGUAGES);
 
+		// We put here all the properties except for the manually handled
+		Properties properties = config.getProperties();
+		JSONObject obj = new JSONObject();
+		for (Object keyObj : properties.keySet()) {
+			String key = keyObj.toString();
+			if (!manuallyHandled.contains(key)) {
+				obj.element(key, properties.getProperty(key));
+			}
+		}
+
+		// We put the manually handled properties
+		obj.element("title", title);
+		obj.element(Config.PROPERTY_LANGUAGES, config.getLanguages());
+		obj.element("languageCode", locale.getLanguage());
+		obj.element("modules",
+				config.getPropertyAsArray(Config.PROPERTY_CLIENT_MODULES));
+		obj.element(Config.PROPERTY_MAP_CENTER,
+				config.getPropertyAsArray(Config.PROPERTY_MAP_CENTER));
+
+		return obj;
+	}
 }

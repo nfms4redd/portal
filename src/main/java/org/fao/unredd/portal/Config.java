@@ -45,9 +45,9 @@ import org.apache.log4j.Logger;
  */
 public class Config {
 
-	private static final String PROPERTY_CLIENT_MODULES = "client.modules";
-	private static final String PROPERTY_SERVER_QUERY_URL = "info.queryUrl";
-	private static final String PROPERTY_SERVER_LAYER_URL = "info.layerUrl";
+	public static final String PROPERTY_CLIENT_MODULES = "client.modules";
+	public static final String PROPERTY_MAP_CENTER = "map.centerLonLat";
+	public static final String PROPERTY_LANGUAGES = "languages";
 	private static final String PROPERTY_DEFAULT_LANG = "languages.default";
 
 	private static Logger logger = Logger.getLogger(Config.class);
@@ -209,16 +209,8 @@ public class Config {
 		}
 	}
 
-	public String[] getModules() throws ConfigurationException {
-		return getProperty(PROPERTY_CLIENT_MODULES).split(",");
-	}
-
-	public String getQueryURL() throws ConfigurationException {
-		return getProperty(PROPERTY_SERVER_QUERY_URL);
-	}
-
-	public String getLayerURL() {
-		return getProperty(PROPERTY_SERVER_LAYER_URL);
+	public String[] getPropertyAsArray(String property) {
+		return getProperty(property).split(",");
 	}
 
 	public String getDefaultLang() {

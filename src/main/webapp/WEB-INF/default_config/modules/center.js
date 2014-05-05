@@ -1,10 +1,10 @@
-define([ "map", "message-bus" ], function(map, bus) {
+define([ "map", "message-bus", "customization" ], function(map, bus, customization) {
 
 	var initialZoom = function() {
 		var epsg4326 = new OpenLayers.Projection("EPSG:4326");
-		var center = new OpenLayers.LonLat(24, -4);
+		var center = new OpenLayers.LonLat(customization["map.centerLonLat"]);
 		center.transform(epsg4326, map.projection);
-		map.setCenter(center, 5);
+		map.setCenter(center, customization["map.initialZoomLevel"]);
 	};
 
 	bus.listen("layers-loaded", initialZoom);
