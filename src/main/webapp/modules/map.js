@@ -29,24 +29,24 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	map.addControl(new OpenLayers.Control.Scale());
 
 	bus.listen("add-layer", function(event, layerInfo) {
-		var layer = new OpenLayers.Layer.WMS(layerInfo.id, layerInfo.baseUrl, {
-			layers : layerInfo.wmsName,
-			buffer : 0,
-			transitionEffect : "resize",
-			removeBackBufferDelay : 0,
-			isBaseLayer : false,
-			transparent : true,
-			format: layerInfo.imageFormat || 'image/png'
-		}, {
-			noMagic: true
+		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
+			var layer = new OpenLayers.Layer.WMS(wmsLayer.id, wmsLayer.baseUrl, {
+				layers : wmsLayer.wmsName,
+				buffer : 0,
+				transitionEffect : "resize",
+				removeBackBufferDelay : 0,
+				isBaseLayer : false,
+				transparent : true,
+				format : wmsLayer.imageFormat || 'image/png'
+			}, {
+				noMagic : true
+			});
+			layer.id = wmsLayer.id;
+			if (map !== null) {
+				map.addLayer(layer);
+				layer.setZIndex(wmsLayer.zIndex);
+			}
 		});
-		layer.id = layerInfo.id;
-		if (map !== null) {
-			map.addLayer(layer);
-			layer.setZIndex(layerInfo.zIndex);
-		}
-
-		bus.send("maplayer-added", [ layer, layerInfo ]);
 	});
 
 	bus.listen("layers-loaded", function() {
