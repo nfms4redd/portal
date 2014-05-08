@@ -14,16 +14,16 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		return arr[1] + " " + arr[0];
 	};
 
-	bus.listen("add-layer", function(event, wmsLayer) {
-		var layerTimestamps, i;
+	bus.listen("add-layer", function(event, layerInfo) {
+		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
+			if (wmsLayer.hasOwnProperty("timestamps")) {
+				var layerTimestamps = wmsLayer.timestamps;
 
-		if (wmsLayer.hasOwnProperty("timestamps")) {
-			layerTimestamps = wmsLayer.timestamps;
-
-			for (i = 0; i < layerTimestamps.length; i++) {
-				timestampSet[layerTimestamps[i]] = true;
+				for (var i = 0; i < layerTimestamps.length; i++) {
+					timestampSet[layerTimestamps[i]] = true;
+				}
 			}
-		}
+		});
 	});
 
 	bus.listen("layers-loaded", function() {
@@ -44,16 +44,16 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 			div.append(divTimeSliderLabel);
 
 			divTimeSlider.slider({
-				change: function(event, ui) {
+				change : function(event, ui) {
 					var d = new Date();
 					d.setISO8601(timestamps[ui.value]);
 					bus.send("time-slider.selection", d);
 				},
-				slide: function(event, ui) {
+				slide : function(event, ui) {
 					divTimeSliderLabel.text(getLocalizedDate(timestamps[ui.value]));
 				},
-				max: lastTimestampIndex,
-				value: lastTimestampIndex
+				max : lastTimestampIndex,
+				value : lastTimestampIndex
 			});
 
 			divTimeSliderLabel.text(getLocalizedDate(timestamps[lastTimestampIndex]));

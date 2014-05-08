@@ -6,15 +6,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			});
 		};
 
-		bus.listen("add-portal-layer", function(event, portalLayer) {
-			var wmsLayers = portalLayer.wmsLayers;
-			var i;
-
-			for (i = 0; i < wmsLayers.length; i++) {
-				bus.send("add-layer", wmsLayers[i]);
-			}
-		})
-
 		bus.listen("portal-layer-visibility", function(event, portalLayer) {
 			var wmsLayers = portalLayer.wmsLayers;
 			var i;
@@ -84,7 +75,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				portalLayer.groupId = group.id
 				portalLayer.wmsLayers = layerInfoArray;
 
-				bus.send("add-portal-layer", portalLayer);
+				bus.send("add-layer", portalLayer);
 				bus.send("portal-layer-visibility", portalLayer);
 			}
 		}
