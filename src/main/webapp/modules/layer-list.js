@@ -93,12 +93,12 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 						inlineLegend.addClass("visible");
 					}
 
-					bus.listen("portal-layer-visibility", function(event, layerInfo) {
-						if (layerInfo.id != portalLayer.id) {
+					bus.listen("layer-visibility", function(event, layerId, visibility) {
+						if (layerId != portalLayer.id) {
 							return;
 						}
 
-						if (layerInfo.active) {
+						if (visibility) {
 							inlineLegend.addClass("visible");
 						} else {
 							inlineLegend.removeClass("visible");
@@ -106,7 +106,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 					});
 
 					inlineLegend.click(function() {
-						if (portalLayer.active) {
+						if ($("#" + portalLayer.id + "_visibility_checkbox").hasClass("checked")) {
 							bus.send("open-legend", wmsLayerWithLegend.id);
 						}
 					});
@@ -117,7 +117,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			trLayer.append(tdLegend);
 
 			tdVisibility = $("<td/>").css("width", "16px");
-			divCheckbox = $("<div/>").addClass("layer_visibility");
+			divCheckbox = $("<div/>").attr("id", portalLayer.id + "_visibility_checkbox").addClass("layer_visibility");
 			if (portalLayer.active) {
 				divCheckbox.addClass("checked");
 			}
@@ -131,8 +131,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 				divCheckbox.removeClass("in");
 			}).click(function() {
 				divCheckbox.toggleClass("checked");
-				portalLayer.active = divCheckbox.hasClass("checked");
-				bus.send("portal-layer-visibility", portalLayer);
+				bus.send("layer-visibility", [ portalLayer.id, divCheckbox.hasClass("checked") ]);
 			});
 
 			if(!portalLayer.isPlaceholder){
