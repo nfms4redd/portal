@@ -1,5 +1,11 @@
 define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, customization, bus) {
 
+	/*
+	 * keep the information about layer legends that will be necessary when
+	 * they become visible
+	 */
+	var legendArrayInfo = {};
+
 	var dialog = null;
 	var divContent = null;
 
@@ -53,29 +59,49 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 		}
 	});
 
-	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
+	bus.listen("add-layer", function(event, layerInfo) {
+		var legendArray = [];
+		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
+			if (wmsLayer.hasOwnProperty("legend")) {
+				legendArray.push({
+					id : wmsLayer.id,
+					legend : wmsLayer.legend,
+					label : wmsLayer.label,
+					sourceLink : wmsLayer.sourceLink,
+					sourceLabel : wmsLayer.sourceLabel
+				});
+			}
+		});
+		if (legendArray.length > 0) {
+			legendArrayInfo[layerInfo.id] = legendArray;
+		}
+	});
+
+	bus.listen("layer-visibility", function(event, layerId, visibility) {
 		var idPrefix, imagePath, tblLegend;
 
 		idPrefix = "legend_panel_";
-		if (layerInfo.hasOwnProperty("legend")) {
+		var legendArray = legendArrayInfo[layerId] || [];
+		for (var i = 0; i < legendArray.length; i++) {
+			var legendInfo = legendArray[i];
 			if (visibility) {
-				imagePath = "static/loc/" + customization.languageCode + "/images/" + layerInfo.legend;
+				imagePath = "static/loc/" + customization.languageCode + "/images/" + legendInfo.legend;
 				tblLegend = $("<table/>").appendTo(getDivContent());
-				tblLegend.attr("id", idPrefix + layerInfo.id);
+				tblLegend.attr("id", idPrefix + legendInfo.id);
 				tblLegend.addClass("layer_legend");
 
 				var trTitle = $("<tr/>").appendTo(tblLegend).addClass("legend_header");
-				$("<td/>").appendTo(trTitle).addClass("legend_layer_name").html(layerInfo.label);
-				if (layerInfo.hasOwnProperty("sourceLink") && layerInfo.hasOwnProperty("sourceLabel")) {
+				$("<td/>").appendTo(trTitle).addClass("legend_layer_name").html(legendInfo.label);
+				if (legendInfo.hasOwnProperty("sourceLink") && legendInfo.hasOwnProperty("sourceLabel")) {
 					var tdSourceLink = $("<td/>").appendTo(trTitle).addClass("data_source_link");
 					$("<span/>").appendTo(tdSourceLink).addClass("lang").html(i18n["data_source"] + ":");
-					$("<a/>").appendTo(tdSourceLink).attr("target", "_blank").attr("href", layerInfo.sourceLink).html(layerInfo.sourceLabel);
+					$("<a/>").appendTo(tdSourceLink).attr("target", "_blank").attr("href", legendInfo.sourceLink).html(legendInfo.sourceLabel);
 				}
 				var trImage = $("<tr/>").appendTo(tblLegend).addClass("legend_image");
 				var tdImage = $("<td/>").appendTo(trImage);
 				$("<img/>").attr("src", imagePath).appendTo(tdImage);
 			} else {
-				$("#" + idPrefix + layerInfo.id).remove();
+				$("#" + idPrefix + legendInfo.id).remove();
 			}
 		}
 	});
