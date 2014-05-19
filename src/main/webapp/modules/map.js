@@ -1,4 +1,11 @@
 define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
+
+	/*
+	 * keep the information about wms layers that will be necessary for
+	 * visibility, opacity, etc.
+	 */
+	var mapLayersByLayerId = {};
+
 	var map = null;
 	var currentControl = null;
 	var defaultExclusiveControl = null;
@@ -29,24 +36,29 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	map.addControl(new OpenLayers.Control.Scale());
 
 	bus.listen("add-layer", function(event, layerInfo) {
-		var layer = new OpenLayers.Layer.WMS(layerInfo.id, layerInfo.baseUrl, {
-			layers : layerInfo.wmsName,
-			buffer : 0,
-			transitionEffect : "resize",
-			removeBackBufferDelay : 0,
-			isBaseLayer : false,
-			transparent : true,
-			format: layerInfo.imageFormat || 'image/png'
-		}, {
-			noMagic: true
+		var mapLayerArray = [];
+		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
+			var layer = new OpenLayers.Layer.WMS(wmsLayer.id, wmsLayer.baseUrl, {
+				layers : wmsLayer.wmsName,
+				buffer : 0,
+				transitionEffect : "resize",
+				removeBackBufferDelay : 0,
+				isBaseLayer : false,
+				transparent : true,
+				format : wmsLayer.imageFormat || 'image/png'
+			}, {
+				noMagic : true
+			});
+			layer.id = wmsLayer.id;
+			if (map !== null) {
+				map.addLayer(layer);
+				layer.setZIndex(wmsLayer.zIndex);
+			}
+			mapLayerArray.push(wmsLayer.id);
 		});
-		layer.id = layerInfo.id;
-		if (map !== null) {
-			map.addLayer(layer);
-			layer.setZIndex(layerInfo.zIndex);
+		if (mapLayerArray.length > 0) {
+			mapLayersByLayerId[layerInfo.id] = mapLayerArray;
 		}
-
-		bus.send("maplayer-added", [ layer, layerInfo ]);
 	});
 
 	bus.listen("layers-loaded", function() {
@@ -60,9 +72,14 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		map.addLayer(highlightLayer);
 	});
 
-	bus.listen("layer-visibility", function(event, layerInfo, visibility) {
-		var layer = map.getLayer(layerInfo.id);
-		layer.setVisibility(visibility);
+	bus.listen("layer-visibility", function(event, layerId, visibility) {
+		var mapLayers = mapLayersByLayerId[layerId];
+		if (mapLayers) {
+			$.each(mapLayers, function(index, mapLayerId) {
+				var layer = map.getLayer(mapLayerId);
+				layer.setVisibility(visibility);
+			});
+		}
 	});
 
 	bus.listen("activate-exclusive-control", function(event, control) {
@@ -100,11 +117,14 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		map.zoomToExtent(bounds);
 	});
 
-	bus.listen("transparency-slider-changed", function(event, layerInfo, opacity) {
-		$.each(layerInfo.layers, function(index, layerId) {
-			var layer = map.getLayer(layerId);
-			layer.setOpacity(opacity);
-		});
+	bus.listen("transparency-slider-changed", function(event, layerId, opacity) {
+		var mapLayers = mapLayersByLayerId[layerId];
+		if (mapLayers) {
+			$.each(mapLayers, function(index, mapLayerId) {
+				var layer = map.getLayer(layerId);
+				layer.setOpacity(opacity);
+			});
+		}
 	});
 
 	return map;

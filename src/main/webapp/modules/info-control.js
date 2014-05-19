@@ -1,5 +1,7 @@
 define([ "map", "message-bus", "customization" ], function(map, bus, customization) {
 
+	var layerIds = new Array();
+
 	var control = new OpenLayers.Control.WMSGetFeatureInfo({
 		url : customization["info.queryUrl"],
 		layerUrls : [ customization["info.layerUrl"] ],
@@ -20,6 +22,13 @@ define([ "map", "message-bus", "customization" ], function(map, bus, customizati
 				if (evt.features) {
 					bus.send("info-features", [ evt.features, evt.xy.x, evt.xy.y ]);
 				}
+			},
+			beforegetfeatureinfo : function() {
+				control.layers = new Array();
+				for (var i = 0; i < layerIds.length; i++) {
+					var layer = map.getLayersByName(layerIds[i])[0];
+					control.layers.push(layer);
+				}
 			}
 		},
 		formatOptions : {
@@ -28,15 +37,14 @@ define([ "map", "message-bus", "customization" ], function(map, bus, customizati
 		}
 	});
 
-	bus.send("set-default-exclusive-control", [control]);
+	bus.send("set-default-exclusive-control", [ control ]);
 	bus.send("activate-default-exclusive-control");
 
-	bus.listen("maplayer-added", function(event, layer, layerInfo) {
-		if (layerInfo.queryable) {
-			if (control.layers == null) {
-				control.layers = new Array();
+	bus.listen("add-layer", function(event, layerInfo) {
+		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
+			if (wmsLayer.queryable) {
+				layerIds.push(wmsLayer.id);
 			}
-			control.layers.push(layer);
-		}
+		});
 	});
 });
