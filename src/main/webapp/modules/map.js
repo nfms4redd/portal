@@ -62,12 +62,21 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	});
 
 	bus.listen("layers-loaded", function() {
-		// Add the vector layer for highlighted features on top of all the other layers
+		// Add the vector layer for highlighted features on top of all the other
+		// layers
 
 		// StyleMap for the highlight layer
-		var styleMap = new OpenLayers.StyleMap({'strokeWidth': 5, fillOpacity: 0, strokeColor: '#ee4400', strokeOpacity: 0.5, strokeLinecap: 'round'});
+		var styleMap = new OpenLayers.StyleMap({
+			'strokeWidth' : 5,
+			fillOpacity : 0,
+			strokeColor : '#ee4400',
+			strokeOpacity : 0.5,
+			strokeLinecap : 'round'
+		});
 
-		var highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {styleMap: styleMap});
+		var highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {
+			styleMap : styleMap
+		});
 		highlightLayer.id = "Highlighted Features";
 		map.addLayer(highlightLayer);
 	});
@@ -101,7 +110,9 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		 * the reference to the layers so we have to check if layer is null
 		 */
 		if (layer !== null && timestamp !== null) {
-			layer.mergeNewParams({'time': timestamp.toISO8601String()});
+			layer.mergeNewParams({
+				'time' : timestamp.toISO8601String()
+			});
 		}
 	});
 
@@ -121,7 +132,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		var mapLayers = mapLayersByLayerId[layerId];
 		if (mapLayers) {
 			$.each(mapLayers, function(index, mapLayerId) {
-				var layer = map.getLayer(layerId);
+				var layer = map.getLayer(mapLayerId);
 				layer.setOpacity(opacity);
 			});
 		}
