@@ -7,6 +7,13 @@
 			"imageFormat" : "image/jpeg",
 			"visible" : true
 		}, {
+			"id" : "nexrad",
+			"baseUrl" : "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi?",
+			"wmsName" : "nexrad-n0r-wmst",
+			"imageFormat" : "image/png",
+			"visible" : true,
+			"wmsTime" : "2010-03-01T00:00,2010-03-02T00:00,2010-03-03T00:00"
+		}, {
 			"id" : "forestClassification",
 			"label" : "${facet_forest_classification}",
 			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
@@ -25,7 +32,8 @@
 			"visible" : true,
 			"legend" : "forest_mask.png",
 			"sourceLink" : "http://osfac.net/facet.html",
-			"sourceLabel" : "FACET"
+			"sourceLabel" : "FACET",
+			"wmsTime" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z"
 		}, {
 			"id" : "forestClassification2",
 			"label" : "grouped facet forest classification",
@@ -61,8 +69,7 @@
 			"visible" : true,
 			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
 			"sourceLabel" : "WRI",
-			"queryable" : true,
-			"wmsTime" : "2007-03-01T00:00,2008-05-11T00:00,2005-03-01T00:00"
+			"queryable" : true
 		}
 	],
 
@@ -101,6 +108,11 @@
 			"label" : "All forestry layers",
 			"layers" : [ "forest_mask2", "forestClassification2" ]
 		}, {
+			"id" : "nexrad_layer",
+			"active" : false,
+			"label" : "Nexrad",
+			"layers" : [ "nexrad" ]
+		}, {
 			"id" : "provinces_title_placeholder",
 			"label" : "Provincias"
 		}
@@ -129,7 +141,7 @@
 		}, {
 			"id" : "landcover",
 			"label" : "${land_cover_maps}",
-			"items" : [ "forest_mask", "forest" ]
+			"items" : [ "forest_mask", "forest", "nexrad_layer" ]
 		}
 	]
 }
