@@ -168,7 +168,16 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			tblLayerGroup.append(trLayer);
 			divLayers.accordion("refresh");
 		}
-	})
+	});
+
+	bus.listen("layer-visibility", function(event, layerId, visible) {
+		var divCheckbox = $("#" + layerId + "_visibility_checkbox");
+		if (visible) {
+			divCheckbox.addClass("checked");
+		} else {
+			divCheckbox.removeClass("checked");
+		}
+	});
 
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
