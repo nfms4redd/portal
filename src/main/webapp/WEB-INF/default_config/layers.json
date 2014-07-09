@@ -1,109 +1,913 @@
 {
-	"wmsLayers" : [
-		{
-			"id" : "blue-marble",
-			"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
-			"wmsName" : "common:blue_marble",
-			"imageFormat" : "image/jpeg",
-			"visible" : true
-		}, {
-			"id" : "forestClassification",
-			"label" : "${facet_forest_classification}",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
-			"wmsName" : "unredd:drc_forest_classification",
-			"imageFormat" : "image/png8",
-			"visible" : true,
-			"legend" : "forest_classification.png",
-			"sourceLink" : "http://osfac.net/facet.html",
-			"sourceLabel" : "FACET"
-		}, {
-			"id" : "forest_mask",
-			"label" : "${forest_mask}",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
-			"wmsName" : "unredd:drc_forest_mask_mosaic",
-			"imageFormat" : "image/png8",
-			"visible" : true,
-			"legend" : "forest_mask.png",
-			"sourceLink" : "http://osfac.net/facet.html",
-			"sourceLabel" : "FACET"
-		}, {
-			"id" : "countryBoundaries",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
-			"wmsName" : "unredd:drc_boundary",
-			"imageFormat" : "image/png8",
-			"visible" : true,
-			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
-			"sourceLabel" : "WRI",
-			"queryable" : true
-		}, {
-			"id" : "provinces",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
-			"wmsName" : "unredd:drc_provinces",
-			"imageFormat" : "image/png8",
-			"visible" : true,
-			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
-			"sourceLabel" : "WRI",
-			"queryable" : true,
-			"wmsTime" : "2007-03-01T00:00,2008-05-11T00:00,2005-03-01T00:00"
-		}
-	],
+    "wmsLayers": [
+        {
+            "id": "bluemarble",
+            "label": "Blue Marble",
+            "baseUrl": "http://rdc-snsf.org/diss_geoserver/wms",
+            "wmsName": "common:blue_marble",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "BackgroundLayer",
+	    	"queryable": false
+        },
+        {
+            "id": "ilua1_stats_provinces_animal",
+            "label": "NWFP Animal Products",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Ilua_Provinces_View_Animal",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "ILUA-I_stats_provinces",
+            "queryable": true
+        },
+        {
+            "id": "ilua1_stats_provinces_biomass",
+            "label": "Aboveground Biomass",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Provinces_Ilua_View_Biomass",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "ILUA-I_stats_provinces",
+            "queryable": true
+        },
+        {
+            "id": "ilua1_stats_provinces_commercial_volume",
+            "label": "Forest Commercial Volume",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName":"zambia:Ilua_Provinces_View_CommercialVolume",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "ILUA-I_stats_provinces",
+	    "queryable": true
+        },
+        {
+            "id": "ilua1_stats_provinces_volume",
+            "label": "Forest Volume",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Ilua_Provinces_View_Volume",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "ILUA-I_stats_provinces",
+            "queryable": true
+        },
+        {
+            "id": "ilua1_stats_provinces_plant",
+            "label": "NWFP Plant Products",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Provinces_Ilua_View_Plant",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "ILUA-I_stats_provinces",
+            "queryable": true
+        },
+        {
+            "id": "ilua1_stats_provinces_wood",
+            "label": "Major wood Products",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Provinces_Ilua_View_Biomass_Wood",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "ILUA-I_stats_provinces",
+            "queryable": true
+        },
+        {
+            "id": "Geology_Zambia",
+            "label": "Geology Zambia",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Geology_Zambia",
+            "imageFormat": "image/png8",
+            "legend": "true",            
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Geology_Zambia",
+            "wmsParameters": {
+            	"tiled": "true"
+            }
+        },
+        {
+            "id": "Vegetation_types",
+            "label": "Vegetation types",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Vegetation_types",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "true",
+            "sourceLink": "",
+            "sourceLabel": "Vegetation_types",
+            "queryable": true,
+            "wmsParameters": {
+                "tiled": "true"
+            }
+        },
+        {
+            "id": "Soils_Zambia",
+            "label": "Soils Zambia",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Soils_Zambia",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "true",
+            "sourceLink": "",
+            "sourceLabel": "Soils_Zambia",
+            "queryable": true
+        },
+        {
+            "id": "Nat_Parks_GMAs",
+            "label": "Nat Parks GMAs",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Nat_Parks_GMAs",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "true",
+            "sourceLink": "",
+            "sourceLabel": "Nat_Parks_GMAs",
+            "queryable": true
+        },
+        {
+            "id": "forest_reserves",
+            "label": "Forest Reserves",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Forest_Reserves",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Forest_Reserves",
+            "queryable": true
+        },
+        {
+            "id": "land_cover",
+            "label": "Sampled Land Cover",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:landcoverMosaic",
+			"wmsTime": "2000-01-01T00:00,2010-01-01T00:00",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "Sampled Land Cover",
+            "queryable": false
+        },
+        {
+            "id": "forest_mask",
+            "label": "Forest Mask",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:landcoverMosaic",
+            "wmsTime": "2000-01-01T00:00,2010-01-01T00:00",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "Sampled Forest Mask",
+            "queryable": false,
+            "wmsParameters": {
+                "styles": "mosaic_forestmask"
+            }
+        },
+        {
+            "id": "deforestation_mask",
+            "label": "Deforestation Mask",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:deforestationMosaic",
+            "wmsTime": "2010",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "legend": "yes",
+            "sourceLink": "",
+            "sourceLabel": "Sampled Deforestation Mask",
+            "queryable": false
+        },        
+	{
 
-	"portalLayers" : [
+            "id": "Stats_District",
+            "label": "District boundaries Zambia",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:District_boundaries_Zambia",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "District_boundaries_Zambia",
+            "queryable": true,
+            "wmsParameters": {
+                "styles": "stats_times"
+            }
+        },
+        {
+            "id": "Stats_Provinces",
+            "label": "Provinces Boundaries",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:Provinces_Boundaries",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Provinces_Boundaries",
+            "queryable": true,
+            "wmsParameters": {
+                "styles": "stats_oarrow"
+            }
+        },
+        {
+            "id": "Stats_Country",
+            "label": "Country Boundaries",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:Country_Boundaries",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Country_Boundaries",
+            "queryable": true,
+            "wmsParameters": {
+                "styles": "stats_backslash"
+            }
+        },
+        {
+            "id": "Stats_NatParks",
+            "label": "Nat Parks GMAs",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:Nat_Parks_GMAs",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Nat_Parks_GMAs",
+            "queryable": true,
+            "wmsParameters": {
+                "styles": "stats_carrow"
+            }
+        },
+        {
+            "id": "Stats_ForestReserves",
+            "label": "Forest Reserves",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:Forest_Reserves",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Forest_Reserves",
+            "queryable": true,
+            "wmsParameters": {
+                "styles": "stats_dot"
+            }
+        },
+        {
+            "id": "District_boundaries_Zambia",
+            "label": "District boundaries Zambia",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:District_boundaries_Zambia",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "District_boundaries_Zambia",
+            "queryable": false
+        },
+        {
+            "id": "Provinces_Boundaries",
+            "label": "Provinces Boundaries",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/zambia/wms?service=WMS",
+            "wmsName": "zambia:Provinces_Boundaries",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Provinces_Boundaries",
+            "queryable": false
+        },
+        {
+            "id": "Country_Boundaries",
+            "label": "Country Boundaries",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Country_Boundaries",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Country_Boundaries",
+            "queryable": false,
+            "wmsParameters": {
+                "tiled": "true"
+            }
+        },
+        {
+            "id": "Powerlines",
+            "label": "Powerlines",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Powerlines",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Powerlines",
+            "queryable": true
+        },
+        {
+            "id": "Railroads",
+            "label": "${zambia_label_Railroads}",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Railroads",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Railroads",
+            "queryable": false
+        },
+        {
+            "id": "Rivers",
+            "label": "Hydrography",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Rivers",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Rivers",
+            "queryable": true
+        },
+ 
+        {
+            "id": "Waterbodies",
+            "label": "Hydrography",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Waterbodies",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Rivers",
+            "queryable": true
+        },
+        {
+            "id": "Roads",
+            "label": "Roads Tracks",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Roads",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Roads",
+            "queryable": false
+        },
+        {
+            "id": "built_up_areas_4326",
+            "label": "Built up areas",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Built_up_areas",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "built_up_areas_4326",
+            "queryable": true
+        },
+        {
+            "id": "Zambia_health_facilities",
+            "label": "Zambia health facilities",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Zambia_health_facilities",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Zambia_health_facilities",
+            "queryable": true
+        },
+        {
+            "id": "settlements",
+            "label": "Settlements",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:settlements",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "settlements",
+            "queryable": true
+        },
+        {
+            "id": "ilua1_plots",
+            "label": "ILUA-I Clusters and Forest Plots",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:forest_plots_ilua1",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "ILUA-II_plots",
+            "queryable": true
+        },
+        {
+            "id": "ilua2_plots",
+            "label": "ILUA-II forest plots",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:forest_plots_ilua2",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "ILUA-II_plots",
+            "queryable": true
+        },
+        {
+            "id": "photo_plots",
+            "label": "ILUA-II photos",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:photo_plots",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "ILUA-II photos",
+            "queryable": true,
+			"wmsParameters": {
+                "tiled": "true"
+            }
+        },
+        {
+            "id": "gis_offices",
+            "label": "GIS offices",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:GIS_NFMS_Offices",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "gis_offices",
+            "queryable": true
+        },
+        {
+            "id": "village_centres",
+            "label": "village centres",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:village_centres",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "village_centres"
+        },
+        {
+            "id": "Towns",
+            "label": "Towns",
+            "baseUrl" : "http://zmb-nfms.org/stg_geoserver/wms",
+            "wmsName": "zambia:Inhabited_Areas",
+            "legend": "yes",
+            "imageFormat": "image/png8",
+            "visible": true,
+            "sourceLink": "",
+            "sourceLabel": "Towns"
+        }
+    ],
+    "portalLayers": [
+        {
+            "id": "bluemarble",
+            "active": true,
+            "infoFile": "blueMarble.html",
+            "label": "Blue Marble",
+            "layers": [
+                "bluemarble"
+            ]
+        },
+        {
+            "id": "land_cover",
+            "active": false,
+            "label": "Sampled Land Cover",
+            "layers": [
+                "land_cover"
+            ]
+        },
+        {
+            "id": "forest_mask",
+            "active": false,
+            "label": "Forest Mask",
+            "layers": [
+                "forest_mask"
+            ]
+        },
+	    {
+            "id": "deforestation_mask",
+            "active": false,
+            "label": "Deforestation Mask",
+            "layers": [
+                "deforestation_mask"
+            ]
+        },
+        {
+            "id": "ilua1_stats_provinces_animal",
+            "active": true,
+            "label": "NWFP Animal Products",
+            "layers": [
+                "ilua1_stats_provinces_animal"
+            ]
+        },
+        {
+            "id": "ilua1_stats_provinces_biomass",
+            "active": false,
+            "label": "Aboveground Biomass",
+            "layers": [
+                "ilua1_stats_provinces_biomass"
+            ]
+        },
+        {
+            "id": "ilua1_stats_provinces_commercial_volume",
+            "active": false,
+            "label": "Forest Commercial Volume",
+            "layers": [
+                "ilua1_stats_provinces_commercial_volume"
+            ]
+        },
+        {
+            "id": "ilua1_stats_provinces_plant",
+            "active": false,
+            "label": "NWFP Plant Products",
+            "layers": [
+                "ilua1_stats_provinces_plant"
+            ]
+        },
+        {
+            "id": "ilua1_stats_provinces_wood",
+            "active": false,
+            "label": "major wood Products",
+            "layers": [
+                "ilua1_stats_provinces_wood"
+            ]
+        },
+        {
+            "id": "ilua1_stats_provinces_volume",
+            "active": false,
+            "label": "Forest Volume",
+            "layers": [
+                "ilua1_stats_provinces_volume"
+            ]
+        },
+        {
+            "id": "ilua1_plots",
+            "active": false,
+            "label": "ILUA-I Clusters and Forest Plots",
+            "layers": [
+                "ilua1_plots"
+            ]
+        },
+        {
+            "id": "ilua2_plots",
+            "active": false,
+            "label": "ILUA-II forest plots",
+            "layers": [
+                "ilua2_plots"
+            ]
+        },
+	    {
+            "id": "photo_plots",
+            "active": false,
+            "label": "ILUA-II photos",
+            "layers": [
+                "photo_plots"
+            ]
+        },
+        {
+            "id": "gis_offices",
+            "active": false,
+            "label": "GIS offices",
+            "layers": [
+                "gis_offices"
+            ]
+        },
+        {
+            "id": "Towns",
+            "active": true,
+            "label": "Towns",
+            "layers": [
+                "Towns"
+            ]
+        },
+        {
+            "id": "Geology_Zambia",
+            "active": false,
+            "label": "Geology Zambia",
+            "layers": [
+                "Geology_Zambia"
+            ]
+        },
+        {
+            "id": "Rivers",
+            "active": false,
+            "label": "Hydrography",
+            "layers": [
+                "Rivers", "Waterbodies"
+            ]
+        },
+        {
+            "id": "Vegetation_types",
+            "active": false,
+            "label": "Vegetation types",
+            "layers": [
+                "Vegetation_types"
+            ]
+        },
+        {
+            "id": "village_centres",
+            "active": false,
+            "label": "village centres",
+            "layers": [
+                "village_centres"
+            ]
+        },
+        {
+            "id": "Soils_Zambia",
+            "active": false,
+            "label": "Soils Zambia",
+            "layers": [
+                "Soils_Zambia"
+            ]
+        },
+        {
+            "id": "Powerlines",
+            "active": false,
+            "label": "Powerlines",
+            "layers": [
+                "Powerlines"
+            ]
+        },
+        {
+            "id": "Nat_Parks_GMAs",
+            "active": false,
+            "label": "Nat Parks GMAs",
+            "layers": [
+                "Nat_Parks_GMAs"
+            ]
+        },
+        {
+            "id": "forest_reserves",
+            "active": false,
+            "label": "Forest Reserves",
+            "layers": [
+                "forest_reserves"
+            ]
+        },
+        {
+            "id": "Roads",
+            "active": true,
+            "label": "Roads, Railroads",
+            "layers": [
+                "Roads",
+                "Railroads"
+            ]
+        },
+        {
+            "id": "built_up_areas_4326",
+            "active": false,
+            "label": "Built up areas",
+            "layers": [
+                "built_up_areas_4326"
+            ]
+        },
+        {
+            "id": "Zambia_health_facilities",
+            "active": false,
+            "label": "Zambia health facilities",
+            "layers": [
+                "Zambia_health_facilities"
+            ]
+        },
+        {
+            "id": "settlements",
+            "active": false,
+            "label": "Settlements",
+            "layers": [
+                "settlements"
+            ]
+        },
+        {
+            "id": "Provinces_Boundaries",
+            "active": false,
+            "label": "Provinces Boundaries",
+            "layers": [
+                "Provinces_Boundaries"
+            ]
+        },
+        {
+            "id": "Country_Boundaries",
+            "active": true,
+            "label": "Country Boundaries",
+            "layers": [
+                "Country_Boundaries"
+            ]
+        },
+        {
+            "id": "District_boundaries_Zambia",
+            "active": false,
+            "label": "District boundaries Zambia",
+            "layers": [
+                "District_boundaries_Zambia"
+            ]
+        },
+        {
+            "id": "outcome1",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Outcome1: Readiness",
+            "layers": []
+        },
+        {
+            "id": "outcome2",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Outcome2: Stakeholder support",
+            "layers": []
+        },
+        {
+            "id": "outcome3",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Outcome3: Implementation capacities",
+            "layers": []
+        },
+        {
+            "id": "outcome4",
+            "active": true,
+            "infoFile": "outcome4.html",
+            "label": "Outcome4: Strategies identified",
+            "layers": []
+            
+        },
+        {
+            "id": "outcome5",
+            "active": true,
+            "infoFile": "outcome5.html",
+            "label": "Outcome5: MRV implementation capacity",
+            "layers": []
+        },
+        {
+            "id": "outcome6",
+            "active": true,
+            "infoFile": "outcome6.html",
+            "label": "Outcome6: Assessment of REL and RL",
+            "layers": []
+        },
+        {
+            "id": "deforestation",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Deforestation (Gross forest cover loss)"
+        },
+        {
+            "id": "degradation",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Degradation"
+        },
+        {
+            "id": "enhancement",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Enhancement"
+        },
+        {
+            "id": "conservation",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Conservation"
+        },
+        {
+            "id": "sustainable",
+            "active": true,
+            "infoFile": "dataNotAvaiable.html",
+            "label": "Sustainable Forest Management"
+        },
+        {
+            "id": "jfs",
+            "active": true,
+            "label": "Joint Forest Management"
+        },
+        {
+            "id": "Stats_Country",
+            "active": false,
+            "infoFile": "Stats_Country.html",
+            "label": "Country Stats",
+            "layers": [
+                "Stats_Country"
+            ]
+        },
+        {
+            "id": "Stats_Provinces",
+            "active": false,
+            "infoFile": "Stats_Provinces.html",
+            "label": "Provinces Stats",
+            "layers": [
+                "Stats_Provinces"
+            ]
+        },
+        {
+            "id": "Stats_District",
+            "active": false,
+            "infoFile": "Stats_District.html",
+            "label": "District Stats",
+            "layers": [
+                "Stats_District"
+            ]
+        },
+        {
+            "id": "Stats_NatParks",
+            "active": false,
+            "infoFile": "Stats_NatParks.html",
+            "label": "Natural Parks Stats",
+            "layers": [
+                "Stats_NatParks"
+            ]
+        },
+        {
+            "id": "Stats_ForestReserves",
+            "active": false,
+            "infoFile": "Stats_ForestReserves.html",
+            "label": "Forest Reserves Stats",
+            "layers": [
+                "Stats_ForestReserves"
+            ]
+        }
+    ],
+    
+      "groups" : [
 		{
-			"id" : "blue-marble",
-			"active" : true,
-			"label" : "Blue marble",
-			"layers" : [ "blue-marble" ]
-		}, {
-			"id" : "forestClassification",
-			"active" : true,
-			"infoFile" : "forest_classification_def.html",
-			"label" : "${facet_forest_classification}",
-			"layers" : [ "forestClassification" ]
-		}, {
-			"id" : "forest_mask",
-			"label" : "${forest_mask}",
-			"layers" : [ "forest_mask" ]
-		}, {
-			"id" : "countryBoundaries",
-			"active" : true,
-			"label" : "${country_boundaries}",
-			"layers" : [ "countryBoundaries" ],
-			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
-		}, {
-			"id" : "provinces",
-			"active" : true,
-			"infoFile" : "provinces_def.html",
-			"label" : "${provinces}",
-			"layers" : [ "provinces" ],
-			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
-		}
-	],
-
-	"groups" : [
-		{
-			"id" : "base",
-			"label" : "${base_layers}",
-			"infoFile": "base_layers.html",
-			"items" : [
-				{
-					"id" : "innerbase",
-					"label" : "General purpose",
-					"items": ["blue-marble"]
-				}, {
-					"id" : "innerforest",
-					"label" : "Forest classifications",
-					"items": [ "forestClassification" ]
-				}
-			]
-		}, {
 			"id" : "admin",
-			"label" : "${admin_areas}",
-			"items" : [ "countryBoundaries", "provinces" ]
-		}, {
-			"id" : "landcover",
-			"label" : "${land_cover_maps}",
-			"items" : [ "forest_mask" ]
+			"label" : "Administrative Areas & Units",
+			"items" : ["bluemarble","Country_Boundaries", "Provinces_Boundaries","District_boundaries_Zambia","Towns"]
+		},
+		{
+			"id" : "environment",
+			"label" : "Environment",
+			"items" : [ "forest_reserves", "Nat_Parks_GMAs", "Geology_Zambia", "Vegetation_types", "Soils_Zambia", "built_up_areas_4326"]		
+		},
+		{
+			"id" : "infrastructure",
+			"label" : "Infrastructure",
+			"items" : [ "Rivers", "Roads", "Powerlines", "Zambia_health_facilities", "gis_offices"]		
+		},
+		{
+			"id" : "forest_changes",
+			"label" : "Forest area and forest area change",
+			"items" : [ "land_cover", "forest_mask", "deforestation_mask"]		
+		},
+		{
+			"id" : "statistics_layers",
+			"infoFile": "stats_group.html",
+			"label" : "Statistics Layers",
+			"items" : [ "Stats_Country", "Stats_Provinces", "Stats_District", "Stats_NatParks", "Stats_ForestReserves"]		
+		},
+		{
+			"id" : "ilua1",
+			"label" : "ILUA - Phase I -",
+			"infoFile": "ilua-I.html",
+			"items" : [
+				{ 
+					"id" : "ilua1_provinces_results",
+					"label" : "<b>ILUA-I Provinces Main Results</b>",
+					"items" : [
+						{
+							"id" : "percent_area_used_for",
+							"label": "% of Area used for",
+		                    "items": ["ilua1_stats_provinces_animal", "ilua1_stats_provinces_plant", "ilua1_stats_provinces_wood"]
+						},
+						{
+							"id" : "forest_volumes",
+							"label": "Forest Volumes (m3/ha)",
+		                    "items": ["ilua1_stats_provinces_commercial_volume", "ilua1_stats_provinces_volume"]
+						},
+						{
+							"id" : "biomasses",
+							"label": "Biomasses (tonnes/ha)",
+		                    "items": ["ilua1_stats_provinces_biomass"]
+						}
+					]
+				},
+				{	
+					"id" : "ilua1_clusters",
+					"label" : "<b>ILUA-I Clusters</b>",
+					"items" : [
+						{
+							"id" : "",
+							"label": "",
+                    		"items": ["ilua1_plots"]
+                    	}
+            		]
+				}
+			]		
+		},
+		{
+			"id": "ilua2",
+            "label": "ILUA - Phase II -",
+            "infoFile": "ilua-II.html",
+            "items": ["photo_plots", "ilua2_plots"]
+        },
+        {
+        	"id": "zambia_quickstart",
+            "label": "UN-REDD Programme - Zambia Quick Start Initiative",
+            "items": ["outcome1", "outcome2", "outcome3", "outcome4", "outcome5", "outcome6"]
+        },
+        {
+        	"id": "redplus_projects",
+            "label": "REDD+ Projects",
+            "items": ["deforestation", "degradation", "enhancement", "conservation", "sustainable"]
+        },
+        {
+        	"id": "jfs",
+            "label": "Forest Related Project",
+            "items": ["jfs"]
 		}
-	]
+	]  
 }

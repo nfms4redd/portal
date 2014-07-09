@@ -53,7 +53,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		// Add the vector layer for highlighted features on top of all the other layers
 
 		// StyleMap for the highlight layer
-		var styleMap = new OpenLayers.StyleMap({'strokeWidth': 5, fillOpacity: 0, strokeColor: '#ee4400', strokeOpacity: 0.5, strokeLinecap: 'round'});
+		var styleMap = new OpenLayers.StyleMap({'strokeWidth': 7, fillOpacity: 0, strokeColor: '#FF6600', strokeOpacity: 0.8, strokeLinecap: 'round'});
 
 		var highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {styleMap: styleMap});
 		highlightLayer.id = "Highlighted Features";
@@ -77,6 +77,14 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		defaultExclusiveControl = control;
 	});
 
+	//
+	bus.listen("activateGetFeatureInfoControls", function(event, controlFeatures, controlText) {
+		map.addControl(controlFeatures);
+		map.addControl(controlText);
+		controlFeatures.activate();
+	});
+	//
+	
 	bus.listen("layer-timestamp-selected", function(event, layerId, timestamp) {
 		var layer = map.getLayer(layerId);
 		/*

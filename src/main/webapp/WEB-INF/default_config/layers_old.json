@@ -1,0 +1,108 @@
+{
+	"wmsLayers" : [
+		{
+			"id" : "blue-marble",
+			"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
+			"wmsName" : "common:blue_marble",
+			"visible" : true
+		}, {
+			"id" : "forestClassification",
+			"label" : "${facet_forest_classification}",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
+			"wmsName" : "unredd:drc_forest_classification",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"legend" : "forest_classification.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET"
+		}, {
+			"id" : "forest_mask",
+			"label" : "${forest_mask}",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_forest_mask_mosaic",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"legend" : "forest_mask.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET"
+		}, {
+			"id" : "countryBoundaries",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_boundary",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
+			"sourceLabel" : "WRI",
+			"queryable" : true
+		}, {
+			"id" : "provinces",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_provinces",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
+			"sourceLabel" : "WRI",
+			"queryable" : true,
+			"wmsTime" : "2007-03-01T00:00,2008-05-11T00:00,2005-03-01T00:00"
+		}
+	],
+
+	"portalLayers" : [
+		{
+			"id" : "blue-marble",
+			"active" : true,
+			"label" : "Blue marble",
+			"layers" : [ "blue-marble" ]
+		}, {
+			"id" : "forestClassification",
+			"active" : true,
+			"infoFile" : "forest_classification_def.html",
+			"label" : "${facet_forest_classification}",
+			"layers" : [ "forestClassification" ]
+		}, {
+			"id" : "forest_mask",
+			"label" : "${forest_mask}",
+			"layers" : [ "forest_mask" ]
+		}, {
+			"id" : "countryBoundaries",
+			"active" : true,
+			"label" : "${country_boundaries}",
+			"layers" : [ "countryBoundaries" ],
+			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
+		}, {
+			"id" : "provinces",
+			"active" : true,
+			"infoFile" : "provinces_def.html",
+			"label" : "${provinces}",
+			"layers" : [ "provinces" ],
+			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
+		}
+	],
+
+	"groups" : [
+		{
+			"id" : "base",
+			"label" : "${base_layers}",
+			"infoFile": "base_layers.html",
+			"items" : [
+				{
+					"id" : "innerbase",
+					"label" : "General purpose",
+					"items": ["blue-marble"]
+				}, {
+					"id" : "innerforest",
+					"label" : "Forest classifications",
+					"items": [ "forestClassification" ]
+				}
+			]
+		}, {
+			"id" : "admin",
+			"label" : "${admin_areas}",
+			"items" : [ "countryBoundaries", "provinces" ]
+		}, {
+			"id" : "landcover",
+			"label" : "${land_cover_maps}",
+			"items" : [ "forest_mask" ]
+		}
+	]
+}

@@ -32,7 +32,7 @@ define([ "map", "message-bus", "customization" ], function(map, bus, customizati
 	bus.send("activate-default-exclusive-control");
 
 	bus.listen("maplayer-added", function(event, layer, layerInfo) {
-		if (layerInfo.queryable) {
+		if (layerInfo.queryable === true) {
 			if (control.layers == null) {
 				control.layers = new Array();
 			}

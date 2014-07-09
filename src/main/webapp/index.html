@@ -26,8 +26,15 @@
 #end
 
 <script src="$configUrl"></script>
-<!--<script src="js/require.js" data-main="modules/main"></script>-->
-<script src="js/require.js"></script>
+
+<!--
+			DEBUG
+-->
+<script src="js/require.js" data-main="modules/main"></script>
+<!--
+			PRODUCTION
+-->
+<!-- <script src="js/require.js"></script>  
 <script>
     require.config({
         paths: {
@@ -38,6 +45,8 @@
     });
     require(["main"]);
 </script>
+-->
+
 
 </head>
 <body>
