@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>proxy</groupId>
 			<artifactId>http_proxy</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
+			<version>1.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>
