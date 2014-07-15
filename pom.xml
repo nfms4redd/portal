@@ -87,21 +87,10 @@
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
 		</dependency>
-		<!-- Geosolutions proxy + transitive dependencies. See issue #7 -->
 		<dependency>
 			<groupId>proxy</groupId>
 			<artifactId>http_proxy</artifactId>
-			<version>1.0.4-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
+			<version>1.0.4</version>
 		</dependency>
 		<!-- J2EE -->
 		<dependency>
