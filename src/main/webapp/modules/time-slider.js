@@ -59,6 +59,10 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 			divTimeSliderLabel.text(getLocalizedDate(timestamps[lastTimestampIndex]));
 
 			div.show();
+
+			// Send time-slider.selection message to show the date on the layer selection pane
+			// right after page load
+			bus.send("time-slider.selection");
 		}
 	});
 });
