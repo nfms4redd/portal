@@ -62,7 +62,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 
 			// Send time-slider.selection message to show the date on the layer selection pane
 			// right after page load
-			bus.send("time-slider.selection");
+			divTimeSlider.slider("value", lastTimestampIndex);
 		}
 	});
 });

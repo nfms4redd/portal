@@ -1,6 +1,7 @@
 define([ "map", "message-bus", "customization" ], function(map, bus, customization) {
 
 	var layerIds = new Array();
+	var lastTimestamp = null;
 
 	var control = new OpenLayers.Control.WMSGetFeatureInfo({
 		url : customization["info.queryUrl"],
@@ -29,6 +30,12 @@ define([ "map", "message-bus", "customization" ], function(map, bus, customizati
 					var layer = map.getLayersByName(layerIds[i])[0];
 					control.layers.push(layer);
 				}
+				
+				if (lastTimestamp != null) {
+					control.vendorParams = {
+						"time" : lastTimestamp.toISO8601String()
+					};
+				}
 			}
 		},
 		formatOptions : {
@@ -46,5 +53,8 @@ define([ "map", "message-bus", "customization" ], function(map, bus, customizati
 				layerIds.push(wmsLayer.id);
 			}
 		});
+	});
+	bus.listen("time-slider.selection", function(event, timestamp) {
+		lastTimestamp = timestamp;
 	});
 });
