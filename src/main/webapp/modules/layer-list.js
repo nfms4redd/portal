@@ -145,8 +145,8 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			trLayer.append(tdName);
 
 			tdInfo = $("<td/>").addClass("layer_info");
-			if (portalLayer.hasOwnProperty("infoFile")) {
-				aLink = $("<a/>").attr("href", portalLayer.infoFile);
+			if (portalLayer.hasOwnProperty("infoLink")) {
+				aLink = $("<a/>").attr("href", portalLayer.infoLink);
 				aLink.addClass("layer_info_button");
 				aLink.fancybox({
 					"closeBtn": "true",

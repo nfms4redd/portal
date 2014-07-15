@@ -43,7 +43,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				// if no layers(wmsLayers) are defined in portalLayers means that the portalLayer
 				// is just a placeholder in the layer menu, used to store generic info 
 				portalLayer.isPlaceholder = (portalLayer.layers === undefined) || (portalLayer.layers.length === 0); 
-				
+
+				if (portalLayer.hasOwnProperty("infoFile")) {
+					portalLayer.infoLink = "static/loc/" + customization.languageCode + "/html/" + portalLayer.infoFile;
+				}
+
 				wmsLayerIds = (portalLayer.isPlaceholder)?null:portalLayer.layers;
 
 				layerInfoArray = [];
