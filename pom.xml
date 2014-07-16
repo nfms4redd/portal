@@ -90,7 +90,7 @@
 		<dependency>
 			<groupId>proxy</groupId>
 			<artifactId>http_proxy</artifactId>
-			<version>1.0.4</version>
+			<version>1.0.5</version>
 		</dependency>
 		<!-- J2EE -->
 		<dependency>
