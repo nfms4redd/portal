@@ -10,7 +10,7 @@ define([ "map", "message-bus", "customization" ], function(map, bus, customizati
 		queryVisible : true,
 		infoFormat : 'application/vnd.ogc.gml',
 		hover : false,
-		drillDown : false,
+		drillDown : true,
 		maxFeatures : 5,
 		handlerOptions : {
 			"click" : {
