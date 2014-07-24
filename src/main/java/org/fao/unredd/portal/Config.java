@@ -246,4 +246,8 @@ public class Config {
 		}
 	}
 
+	public String getIndicatorsFolder() {
+		return getDir() + "/indicators";
+	}
+
 }

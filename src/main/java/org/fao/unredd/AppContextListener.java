@@ -1,7 +1,6 @@
 package org.fao.unredd;
 
 import java.io.File;
-import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -24,9 +23,7 @@ public class AppContextListener implements ServletContextListener {
 		Config config = new Config(rootPath, configInitParameter, configCache);
 		servletContext.setAttribute("config", config);
 
-		Properties configurationProperties = config.getProperties();
-		String indicatorsFolder = configurationProperties
-				.getProperty("layers.rootFolder");
+		String indicatorsFolder = config.getIndicatorsFolder();
 		LayerFactory layerFactory = new FolderLayerFactory(new File(
 				indicatorsFolder));
 		servletContext.setAttribute("layer-factory", layerFactory);
