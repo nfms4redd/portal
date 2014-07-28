@@ -2,47 +2,32 @@
 	padding: 6px 0;
 }
 
-#info_popup>table {
-	border: 2px solid black;
-	color: #fff;
-	width: 100%;
-	font-size: 12px;
+#info_popup #result_area {
+	overflow: auto;
+	height: 100%;
 }
 
-#info_popup table td {
-	padding-top: 4px;
-	padding-bottom: 4px;
-}
-
-#info_popup table a {
-	text-decoration: none;
-}
-
-#info_popup>table:hover {
-	border: 2px solid #cc7722;
-	/*filter: alpha(opacity=75);
-	opacity: 0.75;*/
-}
-
-#info_popup td.area_name {
-	text-transform: capitalize;
-}
-
-div#info_popup a:focus,div#info_popup a:active {
-	outline: 0;
-}
-
-.feature_link {
-	background: #234;
-	padding: 4px;
-	width: 100px;
+#info_popup .layer_title {
+	margin-bottom: 0.5em;
 	text-align: center;
 }
 
-.td_left {
-	text-align: left;
+#info_popup .layer_results {
+	margin-bottom: 1em;
+	color: #fff;
 }
 
-.td_right {
-	text-align: right;
+#info_popup .layer_results table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#info_popup .layer_results table .data {
+	border: 1px solid white;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
+#info_popup .layer_results table .command {
+	border: 0px;
 }
