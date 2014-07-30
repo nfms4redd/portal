@@ -72,17 +72,42 @@ define([ "jquery", "message-bus", "map", "i18n", "customization" ], function($, 
 			$.each(layerFeatures, function(index, feature) {
 				var tr = $("<tr/>").appendTo(tblData);
 
+				// Zoom to object button
 				var imgZoomToArea = $("<img/>").attr("src", "modules/images/zoom-to-object.png");
 				imgZoomToArea.css("cursor", "pointer");
 				$("<td/>").addClass("command").append(imgZoomToArea).appendTo(tr).click(function() {
 					bus.send("zoom-to", feature.geometry.getBounds().scale(1.2));
 				});
 
-				var imgIndicators = $("<img/>").attr("src", "modules/images/object-indicators.png");
-				imgIndicators.css("cursor", "pointer");
-				imgIndicators.click(function() {
+				// Indicators button
+				var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
+				var tdIndicators = $("<td/>").addClass("command").append(imgWait).appendTo(tr);
+				bus.send("ajax", {
+					url : 'indicators?layerId=' + layerId,
+					success : function(indicators, textStatus, jqXHR) {
+						//TODO if there is more than one indicator, offer the choice to the user.
+						if (indicators.length > 0) {
+							var aIndicators = $("<a/>").addClass("fancybox.iframe").appendTo(tdIndicators);
+							$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
+							aIndicators.attr("href", "indicator?objectId=" + feature.attributes[indicators[0].fieldId] + "&layerId=" + layerId + "&indicatorId=" + indicators[0].id);
+							aIndicators.fancybox({
+								maxWidth : 840,
+								maxHeight : 600,
+								fitToView : false,
+								width : 840,
+								height : 590,
+								autoSize : false,
+								closeClick : false,
+								openEffect : 'none',
+								closeEffect : 'fade'
+							});
+						}
+					},
+					errorMsg : "Could not obtain the indicator",
+					complete : function() {
+						imgWait.remove();
+					}
 				});
-				$("<td/>").addClass("command").append(imgIndicators).appendTo(tr);
 
 				var attributes = feature.attributes;
 				for (attribute in attributes) {
