@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
+	<listener>
+		<listener-class>org.fao.unredd.AppContextListener</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>lang-filter</filter-name>
+		<filter-class>org.fao.unredd.portal.LangFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>lang-filter</filter-name>
+		<url-pattern>/config.js</url-pattern>
+	</filter-mapping>
+
+	<!-- index call -->
+	<servlet>
+		<servlet-name>index-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.IndexHTMLServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>index-servlet</servlet-name>
+		<url-pattern>/index.html</url-pattern>
+	</servlet-mapping>
+
+	<!-- static folder content -->
+	<servlet>
+		<servlet-name>static-content-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.StaticContentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>static-content-servlet</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>modules</servlet-name>
+		<servlet-class>org.fao.unredd.portal.ModulesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>modules</servlet-name>
+		<url-pattern>/modules/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>jslib</servlet-name>
+		<servlet-class>org.fao.unredd.portal.JSLibServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jslib</servlet-name>
+		<url-pattern>/jslib/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>styles</servlet-name>
+		<servlet-class>org.fao.unredd.portal.StylesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>styles</servlet-name>
+		<url-pattern>/styles/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- config call -->
+	<servlet>
+		<servlet-name>config-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.ConfigServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>config-servlet</servlet-name>
+		<url-pattern>/config.js</url-pattern>
+	</servlet-mapping>
+
+	<!-- Error management -->
+	<servlet>
+		<servlet-name>error-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.ErrorServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>error-servlet</servlet-name>
+		<url-pattern>/error</url-pattern>
+	</servlet-mapping>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error</location>
+	</error-page>
+
+	<!-- GeoSolution's Proxy Servlet -->
+	<context-param>
+		<param-name>proxyPropPath</param-name>
+		<param-value>/proxy.properties</param-value>
+	</context-param>
+	<servlet>
+		<servlet-name>HttpProxy</servlet-name>
+		<servlet-class>it.geosolutions.httpproxy.HTTPProxy</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HttpProxy</servlet-name>
+		<url-pattern>/proxy</url-pattern>
+	</servlet-mapping>
+
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-fragment>
