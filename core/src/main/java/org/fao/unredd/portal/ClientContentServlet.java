@@ -16,29 +16,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-public abstract class AbstractStaticContentServlet extends HttpServlet {
+public class ClientContentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static Logger logger = Logger
-			.getLogger(AbstractStaticContentServlet.class);
+			.getLogger(ClientContentServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		Config config = (Config) getServletContext().getAttribute("config");
 
-		String pathInfo = req.getPathInfo();
-		File file = null;
-		for (File dir : getDirectories(config)) {
-			File f = new File(dir, pathInfo);
-			if (f.isFile()) {
-				file = f;
-				break;
-			}
-		}
+		String pathInfo = req.getServletPath() + req.getPathInfo();
+		File file = new File(config.getDir(), pathInfo);
 
 		InputStream stream = null;
-		if (file != null) {
+		if (file.isFile()) {
 			// Manage cache headers: Last-Modified and If-Modified-Since
 			long ifModifiedSince = req.getDateHeader("If-Modified-Since");
 			long lastModified = file.lastModified();
@@ -54,7 +47,7 @@ public abstract class AbstractStaticContentServlet extends HttpServlet {
 			resp.setContentType(type);
 			stream = new BufferedInputStream(new FileInputStream(file));
 		} else {
-			String path = "/" + getClasspathPackage() + pathInfo;
+			String path = "/nfms" + pathInfo;
 			InputStream classPathResource = this.getClass()
 					.getResourceAsStream(path);
 			if (classPathResource != null) {
@@ -78,23 +71,4 @@ public abstract class AbstractStaticContentServlet extends HttpServlet {
 		}
 
 	}
-
-	/**
-	 * Get the classpath package where the resources that cannot be found in
-	 * folder will be searched
-	 * 
-	 * @return
-	 */
-	protected abstract String getClasspathPackage();
-
-	/**
-	 * Get the directories where the content must be searched. The array must be
-	 * ordered by preference; this is, the first directory containing the
-	 * specified resource will be used to handle the request.
-	 * 
-	 * @param config
-	 *            The {@link Config} attribute from the servlet context.
-	 * @return The array of directories, ordered by preference.
-	 */
-	protected abstract File[] getDirectories(Config config);
 }
