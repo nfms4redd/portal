@@ -55,7 +55,7 @@ public class AppContextListener implements ServletContextListener {
 						} else if (entryPath.endsWith(".css")) {
 							css.add("modules/" + entryFileName);
 						}
-					} else if (entryPath.startsWith("nfms/styles/")
+					} else if (entryPath.startsWith("nfms/styles")
 							&& entryPath.endsWith(".css")) {
 						String relativePath = new File("nfms/styles").toURI().relativize(new File(entryPath).toURI()).getPath();
 						css.add("styles/" + relativePath);

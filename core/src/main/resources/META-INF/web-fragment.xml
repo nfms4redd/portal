@@ -28,34 +28,13 @@
 	<!-- static folder content -->
 	<servlet>
 		<servlet-name>static-content-servlet</servlet-name>
-		<servlet-class>org.fao.unredd.portal.StaticContentServlet</servlet-class>
+		<servlet-class>org.fao.unredd.portal.ClientContentServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>static-content-servlet</servlet-name>
 		<url-pattern>/static/*</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>modules</servlet-name>
-		<servlet-class>org.fao.unredd.portal.ModulesServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>modules</servlet-name>
 		<url-pattern>/modules/*</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>jslib</servlet-name>
-		<servlet-class>org.fao.unredd.portal.JSLibServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>jslib</servlet-name>
 		<url-pattern>/jslib/*</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>styles</servlet-name>
-		<servlet-class>org.fao.unredd.portal.StylesServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>styles</servlet-name>
 		<url-pattern>/styles/*</url-pattern>
 	</servlet-mapping>
 
