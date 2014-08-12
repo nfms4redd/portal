@@ -19,8 +19,7 @@ import org.apache.log4j.Logger;
 public class ClientContentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private static Logger logger = Logger
-			.getLogger(ClientContentServlet.class);
+	private static Logger logger = Logger.getLogger(ClientContentServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
