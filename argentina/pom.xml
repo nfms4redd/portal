@@ -21,7 +21,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
-			<artifactId>portal-core</artifactId>
+			<artifactId>core</artifactId>
 			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -32,5 +32,12 @@
 	</dependencies>
 	<build>
 		<finalName>unredd-portal-arg</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+		</plugins>
 	</build>
 </project>

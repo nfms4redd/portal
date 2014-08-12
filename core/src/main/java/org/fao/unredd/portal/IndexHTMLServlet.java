@@ -48,6 +48,13 @@ public class IndexHTMLServlet extends HttpServlet {
 		}
 		context.put("configUrl", url);
 
+		boolean minifiedjs = Boolean.parseBoolean(System.getenv("MINIFIED_JS"));
+		if (minifiedjs) {
+			context.put("mainModulePath", "optimized/portal");
+		}else {
+			context.put("mainModulePath", "modules/main");
+		}
+
 		StringResourceRepository repo = StringResourceLoader.getRepository();
 		String templateName = "/index.html";
 		BufferedInputStream bis = new BufferedInputStream(this.getClass()
