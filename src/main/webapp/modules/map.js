@@ -38,17 +38,32 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	bus.listen("add-layer", function(event, layerInfo) {
 		var mapLayerArray = [];
 		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
-			var layer = new OpenLayers.Layer.WMS(wmsLayer.id, wmsLayer.baseUrl, {
-				layers : wmsLayer.wmsName,
-				buffer : 0,
-				transitionEffect : "resize",
-				removeBackBufferDelay : 0,
-				isBaseLayer : false,
-				transparent : true,
-				format : wmsLayer.imageFormat || 'image/png'
-			}, {
-				noMagic : true
-			});
+			var layer;
+			if (wmsLayer.type == "osm") {
+				layer = new OpenLayers.Layer.OSM(wmsLayer.id, wmsLayer.osmUrls);
+			} else if (wmsLayer.type == "wfs") {
+				layer = new OpenLayers.Layer.Vector("WFS", {
+					strategies : [ new OpenLayers.Strategy.Fixed() ],
+					protocol : new OpenLayers.Protocol.WFS({
+						version : "1.0.0",
+						url : wmsLayer.baseUrl,
+						featureType : wmsLayer.featureTypeName
+					}),
+					projection : new OpenLayers.Projection("EPSG:4326")
+				});
+			} else {
+				layer = new OpenLayers.Layer.WMS(wmsLayer.id, wmsLayer.baseUrl, {
+					layers : wmsLayer.wmsName,
+					buffer : 0,
+					transitionEffect : "resize",
+					removeBackBufferDelay : 0,
+					isBaseLayer : false,
+					transparent : true,
+					format : wmsLayer.imageFormat || 'image/png'
+				}, {
+					noMagic : true
+				});
+			}
 			layer.id = wmsLayer.id;
 			if (map !== null) {
 				map.addLayer(layer);

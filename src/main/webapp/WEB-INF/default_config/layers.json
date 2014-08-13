@@ -1,6 +1,15 @@
 {
 	"wmsLayers" : [
 		{
+			"id" : "cycle-osm",
+			"type" : "osm",
+			"osmUrls" : [
+				"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+				"http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+				"http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+			]
+		},
+		{
 			"id" : "blue-marble",
 			"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
 			"wmsName" : "common:blue_marble",
@@ -79,7 +88,14 @@
 			"active" : true,
 			"label" : "Blue marble",
 			"layers" : [ "blue-marble" ]
-		}, {
+		},
+		{
+			"id" : "osm-layer",
+			"active" : true,
+			"label" : "Open Cycle Map",
+			"layers" : [ "cycle-osm" ]
+		},
+		{
 			"id" : "forestClassification",
 			"active" : true,
 			"infoFile" : "forest_classification_def.html",
@@ -127,7 +143,7 @@
 				{
 					"id" : "innerbase",
 					"label" : "General purpose",
-					"items": ["blue-marble"]
+					"items": ["blue-marble", "osm-layer"]
 				}, {
 					"id" : "innerforest",
 					"label" : "Forest classifications",
