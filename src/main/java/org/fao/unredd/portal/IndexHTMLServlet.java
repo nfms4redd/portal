@@ -41,10 +41,10 @@ public class IndexHTMLServlet extends HttpServlet {
 		styleSheets.addAll(getStyleSheets(config, "modules"));
 		context.put("styleSheets", styleSheets);
 
-		String lang = req.getParameter("lang");
+		String queryString = req.getQueryString();
 		String url = "config.js";
-		if (lang != null && lang.trim().length() > 0) {
-			url += "?lang=" + lang;
+		if (queryString != null) {
+			url += "?" + queryString;
 		}
 		context.put("configUrl", url);
 

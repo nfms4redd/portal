@@ -2,11 +2,9 @@ package org.fao.unredd.portal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -38,6 +36,8 @@ public class ConfigServlet extends HttpServlet {
 		moduleConfig.element("i18n", buildI18NObject(bundle));
 		moduleConfig.element("layers",
 				JSONSerializer.toJSON(config.getLayers(locale)));
+		moduleConfig.element("url-parameters",
+				JSONSerializer.toJSON(req.getParameterMap()));
 
 		String json = new JSONObject().element("config", moduleConfig)
 				.toString();
