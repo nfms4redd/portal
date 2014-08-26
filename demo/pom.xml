@@ -68,13 +68,12 @@
 				</executions>
 				<configuration>
 					<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
-					<extraConfigFile>wro.properties</extraConfigFile>
+					<extraConfigFile>${basedir}/src/main/config/wro.properties</extraConfigFile>
 					<targetGroups>portal-style</targetGroups>
 					<minimize>true</minimize>
 					<contextFolder>${basedir}/target/requirejs/nfms/</contextFolder>
-					<contextPath>../</contextPath>
 					<destinationFolder>${basedir}/src/main/webapp/optimized/</destinationFolder>
-					<wroFile>wro.xml</wroFile>
+					<wroFile>${basedir}/src/main/config/wro.xml</wroFile>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -96,7 +95,7 @@
 					<!--</nodeExecutable> -->
 					<!-- path to optimizer json config file -->
 					<configFiles>
-						<configFile>${basedir}/buildconfig.js</configFile>
+						<configFile>${basedir}/src/main/config/buildconfig.js</configFile>
 					</configFiles>
 					<fillDepsFromFolder>${project.build.directory}/requirejs/nfms/modules</fillDepsFromFolder>
 					<!-- optional path to optimizer executable -->
