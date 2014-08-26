@@ -44,7 +44,7 @@
 				<executions>
 					<execution>
 						<id>unpack-dependencies</id>
-						<phase>generate-resources</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>unpack-dependencies</goal>
 						</goals>
@@ -53,6 +53,29 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>ro.isdc.wro4j</groupId>
+				<artifactId>wro4j-maven-plugin</artifactId>
+				<version>1.7.6</version>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+					<extraConfigFile>wro.properties</extraConfigFile>
+					<targetGroups>portal-style</targetGroups>
+					<minimize>true</minimize>
+					<contextFolder>${basedir}/target/requirejs/nfms/</contextFolder>
+					<contextPath>../</contextPath>
+					<destinationFolder>${basedir}/src/main/webapp/optimized/</destinationFolder>
+					<wroFile>wro.xml</wroFile>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.github.bringking</groupId>
@@ -121,7 +144,6 @@
 										<ignore />
 									</action>
 								</pluginExecution>
-								<!-- copy-dependency plugin -->
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>com.github.bringking</groupId>
@@ -129,6 +151,19 @@
 										<versionRange>[2.0,)</versionRange>
 										<goals>
 											<goal>optimize</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>ro.isdc.wro4j</groupId>
+										<artifactId>wro4j-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>run</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

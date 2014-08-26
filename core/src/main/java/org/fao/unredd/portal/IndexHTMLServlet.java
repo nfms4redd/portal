@@ -19,6 +19,7 @@ import org.apache.velocity.runtime.resource.loader.StringResourceLoader;
 import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 
 public class IndexHTMLServlet extends HttpServlet {
+	private static final String OPTIMIZED_FOLDER = "optimized";
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -33,12 +34,19 @@ public class IndexHTMLServlet extends HttpServlet {
 		engine.init();
 		VelocityContext context = new VelocityContext();
 
+		boolean minifiedjs = Boolean.parseBoolean(System.getenv("MINIFIED_JS"));
 		ServletContext servletContext = getServletContext();
 		Config config = (Config) getServletContext().getAttribute("config");
-		@SuppressWarnings("unchecked")
-		ArrayList<String> styleSheets = (ArrayList<String>) servletContext
-				.getAttribute("css-paths");
-		styleSheets.addAll(getStyleSheets(config, "modules"));
+		ArrayList<String> styleSheets = new ArrayList<String>();
+		if (minifiedjs) {
+			styleSheets.add(OPTIMIZED_FOLDER + "/portal-style.css");
+		} else {
+			@SuppressWarnings("unchecked")
+			ArrayList<String> classPathStylesheets = (ArrayList<String>) servletContext
+					.getAttribute("css-paths");
+			styleSheets.addAll(classPathStylesheets);
+			styleSheets.addAll(getStyleSheets(config, "modules"));
+		}
 		context.put("styleSheets", styleSheets);
 
 		String queryString = req.getQueryString();
@@ -48,10 +56,9 @@ public class IndexHTMLServlet extends HttpServlet {
 		}
 		context.put("configUrl", url);
 
-		boolean minifiedjs = Boolean.parseBoolean(System.getenv("MINIFIED_JS"));
 		if (minifiedjs) {
-			context.put("mainModulePath", "optimized/portal");
-		}else {
+			context.put("mainModulePath", OPTIMIZED_FOLDER + "/portal");
+		} else {
 			context.put("mainModulePath", "modules/main");
 		}
 
