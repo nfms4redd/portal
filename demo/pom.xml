@@ -82,7 +82,7 @@
 				<version>2.0.5-SNAPSHOT</version>
 				<executions>
 					<execution>
-						<phase>generate-resources</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>optimize</goal>
 						</goals>
