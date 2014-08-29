@@ -21,10 +21,9 @@ import java.util.regex.Pattern;
 
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.layers.MosaicLayer;
 
 /**
- * Folder based implementation of {@link LayerFactory}
+ * Folder based implementation of {@link RWLayerFactory}
  * 
  * @author fergonco
  */
@@ -67,13 +66,6 @@ public class FolderLayerFactory implements LayerFactory {
 		File workspaceFolder = new File(layerFolderRoot, workspaceAndName[0]);
 		File layerFolder = new File(workspaceFolder, workspaceAndName[1]);
 		return layerFolder;
-	}
-
-	@Override
-	public MosaicLayer newMosaicLayer(String layerName) throws IOException {
-		checkRoot();
-		return new MosaicLayerFolder(layerName,
-				getConfigurationFolder(layerName));
 	}
 
 	@Override

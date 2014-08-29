@@ -16,21 +16,17 @@
 package org.fao.unredd.layers.folder;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
-import org.fao.unredd.layers.NoSuchConfigurationException;
 import org.fao.unredd.layers.NoSuchIndicatorException;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
@@ -50,8 +46,6 @@ public abstract class AbstractLayerFolder implements Layer {
 	private static final String CONFIGURATION = "configuration";
 	private static final String WORK = "work";
 	private File root;
-	private String workspaceName;
-	private String layerName;
 	private String qName;
 
 	public AbstractLayerFolder(String layerName, File root) throws IOException {
@@ -60,8 +54,6 @@ public abstract class AbstractLayerFolder implements Layer {
 			throw new IllegalArgumentException(
 					"The layer name must have the form workspaceName:layerName");
 		}
-		this.workspaceName = workspaceAndName[0];
-		this.layerName = workspaceAndName[1];
 		this.qName = layerName;
 		this.root = root;
 		if (!root.exists()) {
@@ -71,16 +63,6 @@ public abstract class AbstractLayerFolder implements Layer {
 								+ root);
 			}
 		}
-	}
-
-	@Override
-	public String getWorkspace() {
-		return workspaceName;
-	}
-
-	@Override
-	public String getName() {
-		return layerName;
 	}
 
 	public String getQualifiedName() {
@@ -99,24 +81,6 @@ public abstract class AbstractLayerFolder implements Layer {
 	 */
 	public File getWorkFile(String fileName) {
 		return new File(getWorkFolder(), fileName);
-	}
-
-	@Override
-	public String getConfiguration(String id)
-			throws NoSuchConfigurationException, IOException {
-		File file = new File(getConfigurationFolder(), id);
-		if (!file.exists()) {
-			throw new NoSuchConfigurationException();
-		}
-		BufferedInputStream input = new BufferedInputStream(
-				new FileInputStream(file));
-		String ret;
-		try {
-			ret = new String(IOUtils.toByteArray(input));
-		} finally {
-			input.close();
-		}
-		return ret;
 	}
 
 	public File getConfigurationFolder() {
@@ -179,39 +143,5 @@ public abstract class AbstractLayerFolder implements Layer {
 		String ret = IOUtils.toString(input);
 		input.close();
 		return ret;
-	}
-
-	@Override
-	public void setOutput(String id, String outputName, String fieldId,
-			String content) throws IOException {
-		File outputFolder = new File(getOutputFolder(), id);
-		if (outputFolder.exists()) {
-			FileUtils.cleanDirectory(outputFolder);
-		} else {
-			if (!outputFolder.mkdirs()) {
-				throw new IOException(
-						"Cannot create the indicator output folder: "
-								+ outputFolder.getAbsolutePath());
-			}
-		}
-
-		BufferedOutputStream resultStream = new BufferedOutputStream(
-				new FileOutputStream(new File(outputFolder, OUTPUT_FILE_NAME)));
-		try {
-			IOUtils.write(content, resultStream);
-		} finally {
-			resultStream.close();
-		}
-
-		Properties metadata = getMetadataProperties(outputFolder);
-		metadata.setProperty(METADATA_FIELD_ID_PROPERTY_NAME, fieldId);
-		metadata.setProperty(METADATA_INDICATOR_NAME_PROPERTY_NAME, outputName);
-		FileOutputStream metadataStream = new FileOutputStream(
-				getMetadataFile(outputFolder));
-		try {
-			metadata.store(metadataStream, "");
-		} finally {
-			metadataStream.close();
-		}
 	}
 }
