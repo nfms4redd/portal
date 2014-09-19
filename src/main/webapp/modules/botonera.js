@@ -1,5 +1,5 @@
 define([ "jquery", "layout" ], function($, layout) {
-	var botonera = div = layout.layerTimeBoton; //$("<div/>").attr("style", "position:absolute;top:0; left:7em; z-index:2000");
+	var botonera = layout.toolbar; //layerTimeBoton; //$("<div/>").attr("style", "position:absolute;top:0; left:7em; z-index:2000");
 	//botonera.appendTo(layout["map"]);
 
 	return {
