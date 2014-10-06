@@ -74,12 +74,14 @@ public class IndexHTMLServlet extends HttpServlet {
 	}
 
 	private ArrayList<String> getStyleSheets(File styleFolder, String path) {
-		File[] styleSheetFiles = styleFolder.listFiles();
 		ArrayList<String> styleSheets = new ArrayList<String>();
-		for (File file : styleSheetFiles) {
-			String fileName = file.getName();
-			if (fileName.toLowerCase().endsWith(".css")) {
-				styleSheets.add(path + "/" + fileName);
+		File[] styleSheetFiles = styleFolder.listFiles();
+		if (styleSheetFiles != null) {
+			for (File file : styleSheetFiles) {
+				String fileName = file.getName();
+				if (fileName.toLowerCase().endsWith(".css")) {
+					styleSheets.add(path + "/" + fileName);
+				}
 			}
 		}
 		return styleSheets;
