@@ -25,6 +25,16 @@
 		<url-pattern>/index.html</url-pattern>
 	</servlet-mapping>
 
+	<!-- main requirejs module -->
+	<servlet>
+		<servlet-name>mainjs-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.portal.MainJSServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>mainjs-servlet</servlet-name>
+		<url-pattern>/modules/main.js</url-pattern>
+	</servlet-mapping>
+
 	<!-- static folder content -->
 	<servlet>
 		<servlet-name>static-content-servlet</servlet-name>
