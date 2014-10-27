@@ -2,11 +2,9 @@ package org.fao.unredd;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,10 +54,29 @@ public class AppContextListener implements ServletContextListener {
 			e.printStackTrace();
 		}
 
-		ArrayList<String> js = new ArrayList<String>();
-		ArrayList<String> css = new ArrayList<String>();
-		scanJars(servletContext, js, css);
-		scanClasses(servletContext, js, css);
+		final ArrayList<String> js = new ArrayList<String>();
+		final ArrayList<String> css = new ArrayList<String>();
+		ContextEntryListener cssAndJsCollector = new ContextEntryListener() {
+
+			@Override
+			public void accept(String path, ContextEntryReader entryReader)
+					throws IOException {
+				boolean modules = path.startsWith("nfms/modules");
+				boolean styles = path.startsWith("nfms/styles");
+				File pathFile = new File(path);
+				if ((styles || modules) && path.endsWith(".css")) {
+					css.add(pathFile.getParentFile().getName() + "/"
+							+ pathFile.getName());
+				} else if (modules && path.endsWith(".js")) {
+					String name = pathFile.getName();
+					name = name.substring(0, name.length() - 3);
+					js.add(name);
+				}
+			}
+
+		};
+		scanClasses(servletContext, cssAndJsCollector);
+		scanJars(servletContext, cssAndJsCollector);
 		servletContext.setAttribute("js-paths", js);
 		servletContext.setAttribute("css-paths", css);
 
@@ -70,7 +87,6 @@ public class AppContextListener implements ServletContextListener {
 			@Override
 			public void accept(String path, ContextEntryReader entryReader)
 					throws IOException {
-				System.out.println("  " + path);
 				if (path.matches("\\Qnfms/\\E\\w+\\Q-conf.json\\E")) {
 					JSONObject jsonRoot = (JSONObject) JSONSerializer
 							.toJSON(entryReader.getContent());
@@ -90,7 +106,8 @@ public class AppContextListener implements ServletContextListener {
 				}
 
 				for (Object key : jsonMap.keySet()) {
-					map.put(key.toString(), jsonMap.getString(key.toString()));
+					Object value = jsonMap.get(key.toString());
+					map.put(key.toString(), value.toString());
 				}
 			}
 		};
@@ -141,7 +158,6 @@ public class AppContextListener implements ServletContextListener {
 			ContextEntryListener contextEntryListener) {
 		Set<String> libJars = servletContext.getResourcePaths("/WEB-INF/lib");
 		for (Object jar : libJars) {
-			System.out.println(jar);
 			InputStream jarStream = servletContext.getResourceAsStream(jar
 					.toString());
 			final ZipInputStream zis = new ZipInputStream(
@@ -159,79 +175,6 @@ public class AppContextListener implements ServletContextListener {
 							}
 						};
 						contextEntryListener.accept(entryPath, contentReader);
-					}
-				}
-			} catch (IOException e) {
-				throw new RuntimeException("Cannot start the application", e);
-			} finally {
-				try {
-					zis.close();
-				} catch (IOException e) {
-				}
-			}
-
-		}
-	}
-
-	private void scanClasses(ServletContext servletContext,
-			ArrayList<String> js, ArrayList<String> css) {
-		File rootFolder = new File(
-				servletContext.getRealPath("WEB-INF/classes/nfms"));
-		File modulesFolder = new File(rootFolder, "modules");
-		File stylesFolder = new File(rootFolder, "styles");
-		scanChildren(rootFolder.toURI(), modulesFolder, ".js", js);
-		scanChildren(rootFolder.toURI(), modulesFolder, ".css", css);
-		scanChildren(rootFolder.toURI(), stylesFolder, ".css", css);
-	}
-
-	private void scanChildren(URI referenceURI, File currentFolder,
-			final String extension, ArrayList<String> collection) {
-		File[] files = currentFolder.listFiles(new FileFilter() {
-
-			@Override
-			public boolean accept(File file) {
-				return file.getName().endsWith(extension) || file.isDirectory();
-			}
-		});
-
-		if (files != null) {
-			for (File file : files) {
-				if (file.isDirectory()) {
-					scanChildren(referenceURI, file, extension, collection);
-				} else {
-					collection.add(referenceURI.relativize(file.toURI())
-							.getPath());
-				}
-			}
-		}
-	}
-
-	private void scanJars(ServletContext servletContext, ArrayList<String> js,
-			ArrayList<String> css) {
-		Set<String> libJars = servletContext.getResourcePaths("/WEB-INF/lib");
-		for (Object jar : libJars) {
-			InputStream jarStream = servletContext.getResourceAsStream(jar
-					.toString());
-			ZipInputStream zis = new ZipInputStream(new BufferedInputStream(
-					jarStream));
-			ZipEntry entry;
-			try {
-				while ((entry = zis.getNextEntry()) != null) {
-					String entryPath = entry.getName();
-					if (entryPath.startsWith("nfms/modules")) {
-						String entryFileName = new File(entryPath).getName();
-						if (entryPath.endsWith(".js")) {
-							js.add(entryFileName.substring(0,
-									entryFileName.length() - 3));
-						} else if (entryPath.endsWith(".css")) {
-							css.add("modules/" + entryFileName);
-						}
-					} else if (entryPath.startsWith("nfms/styles")
-							&& entryPath.endsWith(".css")) {
-						String relativePath = new File("nfms/styles").toURI()
-								.relativize(new File(entryPath).toURI())
-								.getPath();
-						css.add("styles/" + relativePath);
 					}
 				}
 			} catch (IOException e) {
