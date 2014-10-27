@@ -32,20 +32,22 @@ public class MainJSServlet extends HttpServlet {
 					.getAttribute("requirejs-shims");
 
 			output = output.replaceAll("\\Q$paths\\E", "paths:{"
-					+ getCommaSeparatedMap(paths) + "}");
+					+ getCommaSeparatedMap(paths, "\"") + "}");
 			output = output.replaceAll("\\Q$shim\\E", "shim:{"
-					+ getCommaSeparatedMap(shims) + "}");
+					+ getCommaSeparatedMap(shims, "") + "}");
 		}
 
 		resp.getWriter().print(output);
 	}
 
-	private String getCommaSeparatedMap(Map<String, String> paths) {
+	private String getCommaSeparatedMap(Map<String, String> paths,
+			String valueQuotes) {
 		StringBuilder ret = new StringBuilder();
 		String separator = "";
 		for (String key : paths.keySet()) {
-			ret.append(separator).append("\"").append(key).append("\":\"")
-					.append(paths.get(key)).append("\"");
+			ret.append(separator).append("\"").append(key).append("\":")
+					.append(valueQuotes).append(paths.get(key))
+					.append(valueQuotes);
 			separator = ",";
 		}
 
