@@ -1,0 +1,10 @@
+{
+	requirejs: {
+		paths : {
+			"mustache": "../jslib/jquery.mustache"
+		},
+		shim : {
+			"mustache": [ "jquery" ]
+		},
+	}
+}

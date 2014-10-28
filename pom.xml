@@ -11,7 +11,8 @@
 		<module>argentina</module>
 		<module>base</module>
 		<module>demo</module>
-	</modules>
+    <module>jwebclient-analyzer</module>
+  </modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>9.2</geotools.version>
