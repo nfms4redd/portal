@@ -32,8 +32,8 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 		Map<String, String> shims = analyzer.getNonRequireShimMap();
 		List<String> moduleNames = analyzer.getRequireJSModuleNames();
 
-		RequireTemplate template = new RequireTemplate("/main.js", paths,
-				shims, moduleNames);
+		RequireTemplate template = new RequireTemplate("/buildconfig.js",
+				paths, shims, moduleNames);
 
 		try {
 			OutputStream outputStream = new BufferedOutputStream(
