@@ -26,40 +26,13 @@ import org.apache.log4j.Logger;
 public class JEEContextAnalyzer {
 	private static Logger logger = Logger.getLogger(JEEContextAnalyzer.class);
 
-	private ArrayList<String> js = null;
-	private ArrayList<String> css = null;
-	private Map<String, String> requirejsPaths = null;
-	private Map<String, String> requirejsShims = null;
+	private ArrayList<String> js = new ArrayList<String>();
+	private ArrayList<String> css = new ArrayList<String>();
+	private Map<String, String> requirejsPaths = new HashMap<String, String>();
+	private Map<String, String> requirejsShims = new HashMap<String, String>();
 
 	public JEEContextAnalyzer(Context context) {
-		js = new ArrayList<String>();
-		css = new ArrayList<String>();
-		requirejsPaths = new HashMap<String, String>();
-		requirejsShims = new HashMap<String, String>();
-
 		ContextEntryListener cssAndJsCollector = new ContextEntryListener() {
-
-			@Override
-			public void accept(String path, ContextEntryReader entryReader)
-					throws IOException {
-				boolean modules = path.startsWith("nfms/modules");
-				boolean styles = path.startsWith("nfms/styles");
-				File pathFile = new File(path);
-				if ((styles || modules) && path.endsWith(".css")) {
-					css.add(pathFile.getParentFile().getName() + "/"
-							+ pathFile.getName());
-				} else if (modules && path.endsWith(".js")) {
-					String name = pathFile.getName();
-					name = name.substring(0, name.length() - 3);
-					js.add(name);
-				}
-			}
-
-		};
-		scanClasses(context, cssAndJsCollector);
-		scanJars(context, cssAndJsCollector);
-
-		ContextEntryListener pluginDescriptorAnalyzer = new ContextEntryListener() {
 
 			@Override
 			public void accept(String path, ContextEntryReader entryReader)
@@ -74,6 +47,18 @@ public class JEEContextAnalyzer {
 								(JSONObject) requireJS.get("paths"));
 						fill(requirejsShims, (JSONObject) requireJS.get("shim"));
 					}
+				} else {
+					boolean modules = path.startsWith("nfms/modules");
+					boolean styles = path.startsWith("nfms/styles");
+					File pathFile = new File(path);
+					if ((styles || modules) && path.endsWith(".css")) {
+						css.add(pathFile.getParentFile().getName() + "/"
+								+ pathFile.getName());
+					} else if (modules && path.endsWith(".js")) {
+						String name = pathFile.getName();
+						name = name.substring(0, name.length() - 3);
+						js.add(name);
+					}
 				}
 			}
 
@@ -87,9 +72,10 @@ public class JEEContextAnalyzer {
 					map.put(key.toString(), value.toString());
 				}
 			}
+
 		};
-		scanClasses(context, pluginDescriptorAnalyzer);
-		scanJars(context, pluginDescriptorAnalyzer);
+		scanClasses(context, cssAndJsCollector);
+		scanJars(context, cssAndJsCollector);
 	}
 
 	private void scanClasses(Context context,
