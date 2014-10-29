@@ -1,7 +1,7 @@
 package org.fao.unredd.portal;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import org.fao.unredd.jwebclientAnalyzer.RequireTemplate;
 
 public class MainJSServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -20,10 +20,7 @@ public class MainJSServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		if (output == null) {
-			InputStream stream = this.getClass()
-					.getResourceAsStream("/main.js");
-			output = IOUtils.toString(stream);
-			stream.close();
+
 			@SuppressWarnings("unchecked")
 			Map<String, String> paths = (Map<String, String>) getServletContext()
 					.getAttribute("requirejs-paths");
@@ -31,27 +28,13 @@ public class MainJSServlet extends HttpServlet {
 			Map<String, String> shims = (Map<String, String>) getServletContext()
 					.getAttribute("requirejs-shims");
 
-			output = output.replaceAll("\\Q$paths\\E", "paths:{"
-					+ getCommaSeparatedMap(paths, "\"") + "}");
-			output = output.replaceAll("\\Q$shim\\E", "shim:{"
-					+ getCommaSeparatedMap(shims, "") + "}");
+			RequireTemplate template = new RequireTemplate("/main.js", paths,
+					shims, Collections.<String> emptyList());
+
+			output = template.generate();
 		}
 
 		resp.getWriter().print(output);
-	}
-
-	private String getCommaSeparatedMap(Map<String, String> paths,
-			String valueQuotes) {
-		StringBuilder ret = new StringBuilder();
-		String separator = "";
-		for (String key : paths.keySet()) {
-			ret.append(separator).append("\"").append(key).append("\":")
-					.append(valueQuotes).append(paths.get(key))
-					.append(valueQuotes);
-			separator = ",";
-		}
-
-		return ret.toString();
 	}
 
 }
