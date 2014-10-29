@@ -70,6 +70,18 @@ public class JEEContextAnalyzerTest {
 		checkMap(context.getNonRequireShimMap(), "fancy-box", "mustache");
 	}
 
+	@Test
+	public void checkExpandedClient() {
+		JEEContextAnalyzer context = new JEEContextAnalyzer(
+				new ExpandedClientContext("src/test/resources/test2/nfms"));
+
+		checkList(context.getRequireJSModuleNames(), "module3");
+		checkList(context.getCSSRelativePaths(), "modules/module3.css",
+				"styles/general2.css");
+		checkMap(context.getNonRequirePathMap(), "mustache");
+		checkMap(context.getNonRequireShimMap(), "mustache");
+	}
+
 	private void checkList(List<String> result, String... testEntries) {
 		for (String entry : testEntries) {
 			assertTrue(entry, result.remove(entry));

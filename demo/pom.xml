@@ -55,6 +55,24 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.fao.unredd</groupId>
+				<artifactId>jwebclient-analyzer-maven-plugin</artifactId>
+				<version>3.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>generate-buildconfig</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>generate-buildconfig</goal>
+						</goals>
+						<configuration>
+							<webClientFolder>${project.build.directory}/requirejs/nfms</webClientFolder>
+							<outputPath>${project.build.directory}/buildconfig.js</outputPath>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>ro.isdc.wro4j</groupId>
 				<artifactId>wro4j-maven-plugin</artifactId>
 				<version>1.7.6</version>
@@ -95,7 +113,7 @@
 					<!--</nodeExecutable> -->
 					<!-- path to optimizer json config file -->
 					<configFiles>
-						<configFile>${basedir}/src/main/config/buildconfig.js</configFile>
+						<configFile>${project.build.directory}/buildconfig.js</configFile>
 					</configFiles>
 					<fillDepsFromFolder>${project.build.directory}/requirejs/nfms/modules</fillDepsFromFolder>
 					<!-- optional path to optimizer executable -->
