@@ -67,7 +67,8 @@
 						</goals>
 						<configuration>
 							<webClientFolder>${project.build.directory}/requirejs/nfms</webClientFolder>
-							<outputPath>${project.build.directory}/buildconfig.js</outputPath>
+							<buildconfigOutputPath>${project.build.directory}/buildconfig.js</buildconfigOutputPath>
+							<mainOutputPath>${project.build.directory}/requirejs/nfms/modules/main.js</mainOutputPath>
 						</configuration>
 					</execution>
 				</executions>
