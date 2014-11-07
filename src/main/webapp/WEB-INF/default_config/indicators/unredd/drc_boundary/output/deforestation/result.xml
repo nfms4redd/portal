@@ -7,26 +7,30 @@
 	<tooltipDecimals>1</tooltipDecimals>
 	<hover></hover>
 	<footer>Powered by UNREDD team at FAO</footer>
-	<graphicType>line</graphicType>
+	<graphicType>3d</graphicType>
 	<labels>
 		<label>1990</label>
 		<label>1999</label>
-		<label>2008</label>
+		<label>2010</label>
 	</labels>
+	<series>
+		<label>TF</label>
+		<label>OTF/OFL</label>
+		<label>OT</label>
+	</series>
+	
 	<data zone-id="1">
-		<value>85</value>
-		<value>86</value>
-		<value>87</value>
+		<values><value>85</value><value>86</value><value>87</value></values>
+		<values><value>86</value><value>88</value><value>90</value></values>
+		<values><value>87</value><value>90</value><value>91</value></values>
 	</data>
 	<data zone-id="2">
 		<value>1000</value>
 		<value>500</value>
-		<value>86</value>
 	</data>
 	<data zone-id="3">
 		<value>1200</value>
 		<value>1100</value>
-		<value>900</value>
 	</data>
 	<data zone-id="4">
 		<value>343</value>

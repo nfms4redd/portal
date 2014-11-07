@@ -1,6 +1,7 @@
 package org.fao.unredd.portal;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,8 +28,15 @@ public class IndicatorListServlet extends HttpServlet {
                     .getAttribute("layer-factory");
             if (layerFactory.exists(layerId)) {
                 Layer layer = layerFactory.newLayer(layerId);
-                Outputs indicators = layer.getOutputs();
-                answer = indicators.toJSON();
+                Outputs indicators;
+				try {
+					indicators = layer.getOutputs();
+	                answer = indicators.toJSON();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
             }
             try {
                 resp.setContentType("application/json");

@@ -53,6 +53,7 @@ import javax.xml.bind.annotation.XmlType;
     "tooltipDecimals",
     "hover",
     "footer",
+    "graphicType",
     "labels",
     "data"
 })
@@ -73,6 +74,8 @@ public class StatisticsChartInput {
     @XmlElement(required = true)
     protected String footer;
     @XmlElement(required = true)
+    protected String graphicType;
+    @XmlElement(required = false)
     protected LabelType labels;
     @XmlElement(required = true)
     protected List<DataType> data;
@@ -235,6 +238,30 @@ public class StatisticsChartInput {
      */
     public void setFooter(String value) {
         this.footer = value;
+    }
+
+    /**
+     * Gets the value of the graphicType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getGraphicType() {
+        return graphicType;
+    }
+
+    /**
+     * Sets the value of the graphicType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setGraphicType(String value) {
+        this.graphicType = value;
     }
 
     /**

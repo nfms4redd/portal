@@ -16,6 +16,8 @@
 package org.fao.unredd.layers;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.sql.SQLException;
 
 /**
  * Represents the configuration for a layer.
@@ -29,8 +31,9 @@ public interface Layer {
      * 
      * @return
      * @throws IOException
+     * @throws SQLException 
      */
-    Outputs getOutputs() throws IOException;
+    Outputs getOutputs() throws IOException, SQLException;
 
     /**
      * Get the output content with the specified id

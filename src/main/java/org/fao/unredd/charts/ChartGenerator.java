@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,10 +38,11 @@ import org.fao.unredd.charts.generated.StatisticsChartInput;
  */
 public class ChartGenerator {
 
-	private StatisticsChartInput inputData;
+	private Array inputData;
 
-	public ChartGenerator(InputStream chartInput) {
-		inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
+	public ChartGenerator(Array chartInputData) {
+		//inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
+		inputData = chartInputData;
 	}
 
 	public void generate(String objectId, Writer writer) throws IOException {
@@ -50,6 +52,7 @@ public class ChartGenerator {
 				"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 		engine.init();
 		VelocityContext context = new VelocityContext();
+		
 		context.put("title", nullToEmptyString(inputData.getTitle()));
 		context.put("subtitle", nullToEmptyString(inputData.getSubtitle()));
 		context.put("dates", inputData.getLabels().getLabel().iterator());
@@ -58,12 +61,18 @@ public class ChartGenerator {
 		context.put("tooltipDecimals",
 				nullToEmptyString(inputData.getTooltipDecimals()));
 		context.put("data", getValues(objectId, inputData.getData()));
+
 		context.put("hover", nullToEmptyString(inputData.getHover()));
 		context.put("footer", nullToEmptyString(inputData.getFooter()));
 
+		String template = ""; 
+		if (inputData.getGraphicType().equals("3d")){
+			template = "/org/fao/unredd/charts/highcharts-3D-template.vtl";
+		}else{
+			template = "/org/fao/unredd/charts/highcharts-template.vtl";
+		}
 		Template t = engine
-				.getTemplate("/org/fao/unredd/charts/highcharts-template.vtl");
-
+				.getTemplate(template);
 		t.merge(context, writer);
 		writer.flush();
 	}
