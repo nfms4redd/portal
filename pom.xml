@@ -8,11 +8,10 @@
 	<name>UNREDD NFMS portal</name>
 	<modules>
 		<module>core</module>
-		<module>argentina</module>
 		<module>base</module>
 		<module>demo</module>
-    <module>jwebclient-analyzer</module>
-    <module>jwebclient-analyzer-maven-plugin</module>
+		<module>jwebclient-analyzer</module>
+		<module>jwebclient-analyzer-maven-plugin</module>
   </modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
