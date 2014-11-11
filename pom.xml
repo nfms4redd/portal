@@ -12,7 +12,8 @@
 		<module>demo</module>
 		<module>jwebclient-analyzer</module>
 		<module>jwebclient-analyzer-maven-plugin</module>
-  </modules>
+		<module>feedback</module>
+	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>9.2</geotools.version>
