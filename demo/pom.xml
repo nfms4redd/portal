@@ -28,6 +28,11 @@
 			<artifactId>base</artifactId>
 			<version>3.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>feedback</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>unredd-portal</finalName>

@@ -23,11 +23,12 @@ public class Mailer {
 	private String message;
 
 	public Mailer(Properties properties) {
-		this(properties.getProperty("mailHost"), properties
-				.getProperty("mailPort"), properties
-				.getProperty("mailUserName"), properties
-				.getProperty("mailPassword"), properties
-				.getProperty("mailTitle"), properties.getProperty("mailText"));
+		this(properties.getProperty("feedback-mail-host"), properties
+				.getProperty("feedback-mail-port"), properties
+				.getProperty("feedback-mail-username"), properties
+				.getProperty("feedback-mail-password"), properties
+				.getProperty("feedback-mail-title"), properties
+				.getProperty("feedback-mail-text"));
 	}
 
 	public Mailer(String host, String port, String userName, String password,

@@ -19,7 +19,8 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 		DataSource dataSource;
 		try {
 			context = new InitialContext();
-			dataSource = (DataSource) context.lookup("java:/comp/env/jdbc/app");
+			dataSource = (DataSource) context
+					.lookup("java:/comp/env/jdbc/unredd-portal");
 		} catch (NamingException e) {
 			throw new PersistenceException("Cannot obtain Datasource", e);
 		}
