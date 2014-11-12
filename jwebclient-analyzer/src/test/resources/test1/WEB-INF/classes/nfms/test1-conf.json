@@ -1,4 +1,12 @@
 {
+	configuration: {
+		layout : {
+			"banner-size" : "29px"
+		},
+		legend : {
+			"show-title" : true
+		}
+	},
 	requirejs: {
 		paths : {
 			"jquery-ui" : "../jslib/jquery-ui-1.10.4.custom",

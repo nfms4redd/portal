@@ -15,7 +15,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -30,6 +29,7 @@ public class JEEContextAnalyzer {
 	private ArrayList<String> css = new ArrayList<String>();
 	private Map<String, String> requirejsPaths = new HashMap<String, String>();
 	private Map<String, String> requirejsShims = new HashMap<String, String>();
+	private Map<String, JSONObject> configurationMap = new HashMap<String, JSONObject>();
 
 	public JEEContextAnalyzer(Context context) {
 		ContextEntryListener cssAndJsCollector = new ContextEntryListener() {
@@ -38,15 +38,13 @@ public class JEEContextAnalyzer {
 			public void accept(String path, ContextEntryReader entryReader)
 					throws IOException {
 				if (path.matches("\\Qnfms/\\E\\w+\\Q-conf.json\\E")) {
-					JSONObject jsonRoot = (JSONObject) JSONSerializer
-							.toJSON(entryReader.getContent());
-					if (jsonRoot.has("requirejs")) {
-						JSONObject requireJS = jsonRoot
-								.getJSONObject("requirejs");
-						fill(requirejsPaths,
-								(JSONObject) requireJS.get("paths"));
-						fill(requirejsShims, (JSONObject) requireJS.get("shim"));
-					}
+					PluginDescriptor pluginDescriptor = new PluginDescriptor(
+							entryReader.getContent());
+					requirejsPaths.putAll(pluginDescriptor
+							.getRequireJSPathsMap());
+					requirejsShims.putAll(pluginDescriptor.getRequireJSShims());
+					configurationMap.putAll(pluginDescriptor
+							.getConfigurationMap());
 				} else {
 					boolean modules = path.startsWith("nfms/modules");
 					boolean styles = path.startsWith("nfms/styles");
@@ -59,17 +57,6 @@ public class JEEContextAnalyzer {
 						name = name.substring(0, name.length() - 3);
 						js.add(name);
 					}
-				}
-			}
-
-			private void fill(Map<String, String> map, JSONObject jsonMap) {
-				if (jsonMap == null) {
-					return;
-				}
-
-				for (Object key : jsonMap.keySet()) {
-					Object value = jsonMap.get(key.toString());
-					map.put(key.toString(), value.toString());
 				}
 			}
 
@@ -161,6 +148,10 @@ public class JEEContextAnalyzer {
 
 	public Map<String, String> getNonRequireShimMap() {
 		return requirejsShims;
+	}
+
+	public Map<String, JSONObject> getConfigurationElements() {
+		return configurationMap;
 	}
 
 	private interface ContextEntryListener {

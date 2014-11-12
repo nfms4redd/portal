@@ -18,6 +18,7 @@ package org.fao.unredd.portal;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -38,6 +39,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.fao.unredd.jwebclientAnalyzer.PluginDescriptor;
 
 /**
  * Utility class to access the custom resources placed in PORTAL_CONFIG_DIR.
@@ -248,6 +250,21 @@ public class Config {
 
 	public String getIndicatorsFolder() {
 		return getDir() + "/indicators";
+	}
+
+	public Map<String, JSONObject> getPluginConfiguration() throws IOException {
+		File configProperties = new File(getDir() + "/plugin-conf.properties");
+		BufferedInputStream stream;
+		try {
+			stream = new BufferedInputStream(new FileInputStream(
+					configProperties));
+		} catch (FileNotFoundException e) {
+			return new HashMap<String, JSONObject>();
+		}
+		String content = IOUtils.toString(configProperties.toURI());
+		stream.close();
+		PluginDescriptor pluginDescriptor = new PluginDescriptor(content);
+		return pluginDescriptor.getConfigurationMap();
 	}
 
 }

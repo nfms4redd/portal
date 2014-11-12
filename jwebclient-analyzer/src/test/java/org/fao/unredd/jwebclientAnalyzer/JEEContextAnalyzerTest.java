@@ -1,5 +1,6 @@
 package org.fao.unredd.jwebclientAnalyzer;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.File;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -65,9 +68,15 @@ public class JEEContextAnalyzerTest {
 		checkList(context.getCSSRelativePaths(), "styles/general.css",
 				"modules/module2.css", "modules/module3.css",
 				"styles/general2.css");
-		checkMap(context.getNonRequirePathMap(), "jquery-ui", "fancy-box",
+		checkMapKeys(context.getNonRequirePathMap(), "jquery-ui", "fancy-box",
 				"openlayers", "mustache");
-		checkMap(context.getNonRequireShimMap(), "fancy-box", "mustache");
+		checkMapKeys(context.getNonRequireShimMap(), "fancy-box", "mustache");
+		Map<String, JSONObject> confElements = context
+				.getConfigurationElements();
+		assertEquals("29px", confElements.get("layout")
+				.getString("banner-size"));
+		assertEquals(true, confElements.get("legend").getBoolean("show-title"));
+		assertEquals(14, confElements.get("layer-list").getInt("top"));
 	}
 
 	@Test
@@ -78,8 +87,8 @@ public class JEEContextAnalyzerTest {
 		checkList(context.getRequireJSModuleNames(), "module3");
 		checkList(context.getCSSRelativePaths(), "modules/module3.css",
 				"styles/general2.css");
-		checkMap(context.getNonRequirePathMap(), "mustache");
-		checkMap(context.getNonRequireShimMap(), "mustache");
+		checkMapKeys(context.getNonRequirePathMap(), "mustache");
+		checkMapKeys(context.getNonRequireShimMap(), "mustache");
 	}
 
 	private void checkList(List<String> result, String... testEntries) {
@@ -90,7 +99,7 @@ public class JEEContextAnalyzerTest {
 		assertTrue(result.size() == 0);
 	}
 
-	private void checkMap(Map<String, String> result, String... testKeys) {
+	private void checkMapKeys(Map<String, ?> result, String... testKeys) {
 		for (String entry : testKeys) {
 			assertTrue(result.remove(entry) != null);
 		}
