@@ -41,6 +41,8 @@ public class AppContextListener implements ServletContextListener {
 				context.getNonRequirePathMap());
 		servletContext.setAttribute("requirejs-shims",
 				context.getNonRequireShimMap());
+		servletContext.setAttribute("plugin-configuration",
+				context.getConfigurationElements());
 	}
 
 	@Override

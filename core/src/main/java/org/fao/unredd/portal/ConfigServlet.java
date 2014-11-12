@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -33,6 +34,7 @@ public class ConfigServlet extends HttpServlet {
 		String title = bundle.getString("title");
 
 		JSONObject moduleConfig = new JSONObject();
+		// Fixed elements
 		moduleConfig.element(
 				"customization",
 				buildCustomizationObject(req.getServletContext(), config,
@@ -40,6 +42,23 @@ public class ConfigServlet extends HttpServlet {
 		moduleConfig.element("i18n", buildI18NObject(bundle));
 		moduleConfig.element("layers",
 				JSONSerializer.toJSON(config.getLayers(locale)));
+		// plugin elements
+		@SuppressWarnings("unchecked")
+		Map<String, JSONObject> pluginConfiguration = (Map<String, JSONObject>) getServletContext()
+				.getAttribute("plugin-configuration");
+		Map<String, JSONObject> pluginConfigurationOverride = config
+				.getPluginConfiguration();
+		for (String configurationItem : pluginConfiguration.keySet()) {
+			JSONObject defaultConfiguration = pluginConfiguration
+					.get(configurationItem);
+			JSONObject overridenConfiguration = pluginConfigurationOverride
+					.get(configurationItem);
+			if (overridenConfiguration != null) {
+				defaultConfiguration = overridenConfiguration;
+			}
+
+			moduleConfig.element(configurationItem, defaultConfiguration);
+		}
 
 		String json = new JSONObject().element("config", moduleConfig)
 				.toString();
