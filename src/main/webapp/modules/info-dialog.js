@@ -87,20 +87,24 @@ define([ "jquery", "message-bus", "map", "i18n", "customization" ], function($, 
 					success : function(indicators, textStatus, jqXHR) {
 						//TODO if there is more than one indicator, offer the choice to the user.
 						if (indicators.length > 0) {
-							var aIndicators = $("<a/>").addClass("fancybox.iframe").appendTo(tdIndicators);
-							$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
-							aIndicators.attr("href", "indicator?objectId=" + feature.attributes[indicators[0].fieldId] + "&layerId=" + layerId + "&indicatorId=" + indicators[0].id);
-							aIndicators.fancybox({
-								maxWidth : 840,
-								maxHeight : 600,
-								fitToView : false,
-								width : 840,
-								height : 590,
-								autoSize : false,
-								closeClick : false,
-								openEffect : 'none',
-								closeEffect : 'fade'
-							});
+							$(indicators).each(function( i, val ) { console.log(val.id+'-> '+val.fieldId);
+								//TODO mostrar nombre del indicador para elejir?									
+								var aIndicators = $("<a/>").addClass("fancybox.iframe").appendTo(tdIndicators);
+								$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
+								aIndicators.attr("href", "indicator?objectId=" + val.fieldId + "&layerId=" + layerId + "&indicatorId=" + val.id);
+								aIndicators.fancybox({
+									maxWidth : 840,
+									maxHeight : 600,
+									fitToView : false,
+									width : 840,
+									height : 590,
+									autoSize : false,
+									closeClick : false,
+									openEffect : 'none',
+									closeEffect : 'fade'
+								});
+								//TODO Agregar separador entre iconos.
+							});// END each
 						}
 					},
 					errorMsg : "Could not obtain the indicator",
