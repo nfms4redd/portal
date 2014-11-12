@@ -48,7 +48,7 @@ import org.postgresql.util.PSQLException;
  * 
  * @author fergonco
  */
-public class DBLayerFactory implements Layer, LayerFactory {
+public class DBLayerFactory implements LayerFactory {
 
 	private static final String METADATA_FIELD_ID_PROPERTY_NAME = "field-id";
 	private static final String METADATA_INDICATOR_NAME_PROPERTY_NAME = "indicator-name";
@@ -74,54 +74,11 @@ public class DBLayerFactory implements Layer, LayerFactory {
 		return qName;
 	}
 
-	@Override
-	public Outputs getOutputs() throws SQLException {
-		// Buscar indicadores para la capa en la BD...
-		ArrayList<OutputDescriptor> outputDescriptors = new ArrayList<OutputDescriptor>();
-		try {
-			InitialContext context = new InitialContext();
-			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/app");
-			Connection connection = dataSource.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet result = statement
-					.executeQuery("select * from indicators.indicators_metadata WHERE layer_id='"+this.qName+"'");
-
-//			PrintWriter writer = resp.getWriter();
-
-			if (result.next()) {
-				outputDescriptors.add(new OutputDescriptor(result.getString("id"),result.getString("title"),result.getString("division_field_id")));
-
-/* CODIGO PARA TRAER LOS DATOS DEL INDICADOR *********************************************************************** 
-				//				writer.println("Number of results: " + result.getInt(1));
-				try {
-					ResultSet result_data = statement
-										.executeQuery("SELECT division_id,class,array_agg(fecha_result),array_agg(ha) FROM stb_cobertura "
-						 + "WHERE division_id = '"+this.qName+"' GROUP BY division_id,class");
-				} catch (SQLException e) {
-					throw new ServletException("Cannot find the database", e);
-				}
-	*/			
-			} else {
-//				writer.print("No results");
-			}
-			result.close();
-			statement.close();
-			connection.close();
-		} catch (NamingException e) {
-			throw new SQLException("Cannot find the database", e);
-		} catch (SQLException e) {
-			throw new SQLException("Cannot find the database", e);
-		}
-//.executeQuery("SELECT division_id,class,array_agg(fecha_result),array_agg(ha) FROM stb_cobertura "
-// + "WHERE division_id = '"+this.qName+"' GROUP BY division_id,class");
-
-		return new Outputs(outputDescriptors);
-	}
-
+	
 	private ResultSet getMetadataProperties()
 			throws SQLException {
 		ResultSet ret = null;
+		ResultSet metadata=null;
 		try {
 			InitialContext context = new InitialContext();
 			DataSource dataSource = (DataSource) context
@@ -131,10 +88,10 @@ public class DBLayerFactory implements Layer, LayerFactory {
 			ResultSet result = statement
 					.executeQuery("select * count from indicators.indicators_metadata WHERE layer_id='"+this.qName+"'");
 			if (result.next()) {
-				 		ret=result;
+				 		metadata=result;
 				 
 			} else {
-				ret=null;
+				metadata=null;
 			}
 			result.close();
 			statement.close();
@@ -159,59 +116,9 @@ public class DBLayerFactory implements Layer, LayerFactory {
 			metadata.load(new FileInputStream(metadataFile));
 		}
 		*/
-		Array metadata[]=null;
 		return metadata;
 	}
 
-
-	@Override
-	public Array getOutput(String outputId) throws NoSuchIndicatorException,
-			IOException {
-	//TODO
-		Array ret = null;// = "nada";
-		try {
-			InitialContext context = new InitialContext();
-			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/app");
-			Connection connection = dataSource.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet result = statement
-					.executeQuery("SELECT division_id,class,array_agg(fecha_result),array_agg(ha) FROM stb_cobertura "
-					 + "WHERE division_id = '"+this.qName+"' GROUP BY division_id,class");
-
-			if (result.next()) {
-				 if (result.getInt("count")>0){
-						ret=true;
-				 }
-			} else {
-				ret=false;
-			}
-			result.close();
-			statement.close();
-			connection.close();
-			} catch (NamingException e) {
-				return false;
-				//throw new SQLException("Cannot find the database", e);
-			}
-		 catch (PSQLException e) {
-			 //TODO MAnejar errores sql, no conecta, permiso denegado, loguear estos errores
-		//Nothing, return false	
-		}
-
-		catch (Exception e) {
-				 e.getMessage();
-			//Nothing, return false	
-			}
-		
-		return ret;
-	}
-
-	@Override
-	public Layer newLayer(String layerName) throws IOException {
-		// TODO Auto-generated method stub
-		
-		return (Layer) new DBLayerFactory(layerName);
-	}
 
 	@Override
 	public boolean exists(String layerName) {
@@ -224,7 +131,7 @@ public class DBLayerFactory implements Layer, LayerFactory {
 			Connection connection = dataSource.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet result = statement
-					.executeQuery("select count(*) count from indicators.indicators_metadata WHERE layer_id='"+layerName+"'");
+					.executeQuery("select count(*) count from indicators.indicators_metadata WHERE layer_name='"+layerName+"'");
 			if (result.next()) {
 				 if (result.getInt("count")>0){
 						ret=true;
@@ -242,6 +149,7 @@ public class DBLayerFactory implements Layer, LayerFactory {
 		 catch (PSQLException e) {
 			 //TODO MAnejar errores sql, no conecta, permiso denegado, loguear estos errores
 		//Nothing, return false	
+			 e.getMessage();
 		}
 
 		catch (Exception e) {
@@ -250,4 +158,11 @@ public class DBLayerFactory implements Layer, LayerFactory {
 			}
 		return ret;
 		}
+
+	@Override
+	public Layer newLayer(String layerName) throws IOException {
+		// TODO Auto-generated method stub
+		Layer nuevaLayer = new DBLayer(layerName);
+		return nuevaLayer;
+	}
 }

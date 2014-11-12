@@ -45,12 +45,12 @@
         $(function () {
             $('#container1').highcharts({
                     title: {
-            //text: 'Classification des forêts',
-            text: 'Segun leyenda N1',
+            //text: 'Segun leyenda N1',
+            text: '$title',
             x: -20 //center
           },
           subtitle: {
-            text: 'x anio relevado',
+        	  text: '$subtitle',
             x: -20
           },
           xAxis: {
@@ -65,7 +65,8 @@
           },
         yAxis: {
             title: {
-              text: 'Hectareas'
+              //text: 'Hectareas'
+            	text: '$y-label ($units)'
             },
             //categories:['TF','OTF/OFL','OT']
         },
@@ -90,10 +91,10 @@
         series: [
         	#foreach( $data in $datas )
         	{
-            name: #series[$foreach.counter],
-            data: [#foreach( $datum in $data )$datum#if( $foreach.hasNext ), #end#end],
+            name: $series[$foreach.counter],
+            data: [#foreach( $datum in $data )$datum #if( $foreach.hasNext ), #end#end],
             stack: 0
-        	}#if( $foreach.hasNext ),
+        	}#if( $foreach.hasNext ), #end
         	#end
         }],
         credits: {

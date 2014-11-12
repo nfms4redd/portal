@@ -32,17 +32,27 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.fao.unredd.charts.generated.DataType;
 import org.fao.unredd.charts.generated.StatisticsChartInput;
+import org.fao.unredd.layers.Output;
 
 /**
  * 
  */
 public class ChartGenerator {
 
-	private Array inputData;
-
-	public ChartGenerator(Array chartInputData) {
+	private Output inputData;
+/*
+	public ChartGenerator(String string) {
+//		inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
+		inputData = new Output(string;
+	}
+	*/
+	public ChartGenerator(Output output) {
 		//inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
-		inputData = chartInputData;
+		inputData = output;
+	}
+	
+	public ChartGenerator(FileInputStream fileInputStream) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public void generate(String objectId, Writer writer) throws IOException {
@@ -55,12 +65,13 @@ public class ChartGenerator {
 		
 		context.put("title", nullToEmptyString(inputData.getTitle()));
 		context.put("subtitle", nullToEmptyString(inputData.getSubtitle()));
-		context.put("dates", inputData.getLabels().getLabel().iterator());
-		context.put("y-label", nullToEmptyString(inputData.getYLabel()));
+		context.put("dates", inputData.getLabels().iterator());
+		context.put("y-label", nullToEmptyString(inputData.getY_label()));
 		context.put("units", nullToEmptyString(inputData.getUnits()));
 		context.put("tooltipDecimals",
-				nullToEmptyString(inputData.getTooltipDecimals()));
-		context.put("data", getValues(objectId, inputData.getData()));
+				nullToEmptyString(inputData.getTooltipsdecimals()));
+		context.put("data",  inputData.getData());
+		context.put("series",  inputData.getSeries());
 
 		context.put("hover", nullToEmptyString(inputData.getHover()));
 		context.put("footer", nullToEmptyString(inputData.getFooter()));
@@ -75,6 +86,12 @@ public class ChartGenerator {
 				.getTemplate(template);
 		t.merge(context, writer);
 		writer.flush();
+	}
+
+	private Iterator<Double> getValues(String objectId, String[][] data) {
+		// TODO Auto-generated method stub
+		
+		return null;
 	}
 
 	private Object nullToEmptyString(Object value) {

@@ -24,21 +24,25 @@ import java.util.Iterator;
  * 
  * @author fergonco
  */
-public class Outputs extends ArrayList<OutputDescriptor> {
+public class Outputs extends ArrayList<Output> {
 	private static final long serialVersionUID = 1L;
 
-	public Outputs(ArrayList<OutputDescriptor> outputDescriptors) {
-		this.addAll(outputDescriptors);
+	public Outputs(ArrayList<Output> temp) {
+		this.addAll(temp);
 	}
 
-	public Outputs(OutputDescriptor... outputDescriptors) {
-		Collections.addAll(this, outputDescriptors);
+	public Outputs(Output... outputs) {
+		Collections.addAll(this, outputs);
+	}
+
+	public Outputs(OutputDescriptor outputDescriptor) {
+		this.add((Output) outputDescriptor);
 	}
 
 	public String toJSON() {
 		StringBuilder ret = new StringBuilder("[");
 		String separator = "";
-		Iterator<OutputDescriptor> it = iterator();
+		Iterator<Output> it = iterator();
 		while (it.hasNext()) {
 			OutputDescriptor outputDescriptor = it.next();
 			ret.append(separator).append(outputDescriptor.toJSON());

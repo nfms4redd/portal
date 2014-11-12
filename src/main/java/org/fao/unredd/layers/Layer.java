@@ -23,6 +23,7 @@ import java.sql.SQLException;
  * Represents the configuration for a layer.
  * 
  * @author fergonco
+ * @destructor manureta
  */
 public interface Layer {
 
@@ -42,7 +43,7 @@ public interface Layer {
      * @return
      * @throws NoSuchIndicatorException
      */
-    String getOutput(String outputId) throws NoSuchIndicatorException,
+    Output getOutput(String outputId) throws NoSuchIndicatorException,
             IOException;
 
 }
