@@ -1,9 +1,12 @@
-define([ "jquery", "layout", "i18n", "message-bus" ], function($, layout, i18n, bus) {
+define([ "jquery", "layout", "i18n", "message-bus", "module" ], function($, layout, i18n, bus, module) {
 
-	var divFlag = $("<div/>").attr("id", "flag");
-	var divLogos = $("<div/>").attr("id", "logos");
-	var spnTitle = $("<span/>").attr("id", "title").html(i18n["title"]);
-	layout.banner.append(divFlag).append(divLogos).append(spnTitle);
+	if (!module.config().hide) {
+		var divBanner = $("<div/>").attr("id", "banner");
+		layout.header.prepend(divBanner);
 
-	return layout.banner;
+		var divFlag = $("<div/>").attr("id", "flag");
+		var divLogos = $("<div/>").attr("id", "logos");
+		var spnTitle = $("<span/>").attr("id", "title").html(i18n["title"]);
+		divBanner.append(divFlag).append(divLogos).append(spnTitle);
+	}
 });

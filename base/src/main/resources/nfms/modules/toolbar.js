@@ -9,8 +9,9 @@ define([ "jquery", "message-bus", "layout", "customization", "i18n", "mustache" 
 	var template = '{{#langs}}<a class="blue_button lang_button {{selectedClass}}" href="?lang={{code}}" id="button_{{code}}">{{name}}</a>{{/langs}}';
 	var output = mustache.render(template, view);
 
-	var divToolbar = layout.toolbar;
+	var divToolbar = $("<div/>").attr("id", "toolbar");
 	divToolbar.append(output);
+	layout.header.append(divToolbar);
 
 	return divToolbar;
 });
