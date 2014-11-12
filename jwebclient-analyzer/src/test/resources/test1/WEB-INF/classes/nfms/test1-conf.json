@@ -1,19 +1,19 @@
 {
-	configuration: {
-		layout : {
+	"default-conf": {
+		"layout" : {
 			"banner-size" : "29px"
 		},
-		legend : {
+		"legend" : {
 			"show-title" : true
 		}
 	},
-	requirejs: {
-		paths : {
+	"requirejs": {
+		"paths" : {
 			"jquery-ui" : "../jslib/jquery-ui-1.10.4.custom",
 			"fancy-box": "../jslib/jquery.fancybox.pack",
 			"openlayers": "../jslib/OpenLayers/OpenLayers.unredd"
 		},
-		shim : {
+		"shim" : {
 			"fancy-box": [ "jquery" ]
 		},
 	}

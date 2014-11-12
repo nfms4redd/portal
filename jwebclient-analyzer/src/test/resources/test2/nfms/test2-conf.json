@@ -1,14 +1,14 @@
 {
-	configuration: {
-		layer-list : {
+	"default-conf" : {
+		"layer-list" : {
 			"top" : 14
 		}
 	},
-	requirejs: {
-		paths : {
+	"requirejs" : {
+		"paths" : {
 			"mustache": "../jslib/jquery.mustache"
 		},
-		shim : {
+		"shim" : {
 			"mustache": [ "jquery" ]
 		},
 	}
