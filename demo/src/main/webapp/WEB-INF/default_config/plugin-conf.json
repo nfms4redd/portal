@@ -1,0 +1,7 @@
+{
+	"default-conf" : {
+		"banner" : {
+			"hide" : false
+		}
+	}
+}

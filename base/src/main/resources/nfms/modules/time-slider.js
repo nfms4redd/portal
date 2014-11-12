@@ -1,7 +1,8 @@
-define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, bus, layout, ui, i18n) {
+define([ "jquery", "message-bus", "toolbar", "jquery-ui", "i18n" ], function($, bus, toolbar, ui, i18n) {
 
 	var timestampSet = {};
-
+	var divTimeSlideContainer;
+	
 	var getLocalizedDate = function(date) {
 		var defaultMonths = [ "Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sep.", "Oct.", "Nov.", "Dec." ];
 		var months = i18n.months ? eval(i18n.months) : defaultMonths;
@@ -14,6 +15,10 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		return arr[1] + " " + arr[0];
 	};
 
+	divTimeSlideContainer = $("<div/>").attr("id", "time_slider_pane");
+	divTimeSlideContainer.hide();
+	toolbar.append(divTimeSlideContainer);
+	
 	bus.listen("add-layer", function(event, layerInfo) {
 		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
 			if (wmsLayer.hasOwnProperty("timestamps")) {
@@ -27,7 +32,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 	});
 
 	bus.listen("layers-loaded", function() {
-		var timestamps, div, divTimeSlider, divTimeSliderLabel, lastTimestampIndex;
+		var timestamps, div, divTimeSliderLabel, lastTimestampIndex;
 
 		timestamps = $.map(timestampSet, function(value, key) {
 			return key;
@@ -35,9 +40,9 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "i18n" ], function($, b
 		lastTimestampIndex = timestamps.length - 1;
 
 		if (timestamps.length > 0) {
-			div = layout.timeSlider;
+			div = divTimeSlideContainer;
 
-			divTimeSlider = $('<div id="time_slider"/>');
+			var divTimeSlider = $('<div id="time_slider"/>');
 			div.append(divTimeSlider);
 
 			divTimeSliderLabel = $('<div id="time_slider_label"/>');

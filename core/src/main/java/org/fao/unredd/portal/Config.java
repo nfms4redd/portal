@@ -253,7 +253,7 @@ public class Config {
 	}
 
 	public Map<String, JSONObject> getPluginConfiguration() throws IOException {
-		File configProperties = new File(getDir() + "/plugin-conf.properties");
+		File configProperties = new File(getDir() + "/plugin-conf.json");
 		BufferedInputStream stream;
 		try {
 			stream = new BufferedInputStream(new FileInputStream(
@@ -261,7 +261,7 @@ public class Config {
 		} catch (FileNotFoundException e) {
 			return new HashMap<String, JSONObject>();
 		}
-		String content = IOUtils.toString(configProperties.toURI());
+		String content = IOUtils.toString(stream);
 		stream.close();
 		PluginDescriptor pluginDescriptor = new PluginDescriptor(content);
 		return pluginDescriptor.getConfigurationMap();

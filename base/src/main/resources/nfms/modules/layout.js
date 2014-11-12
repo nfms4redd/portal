@@ -3,14 +3,6 @@ define([ "jquery" ], function($) {
 	var body = $("body");
 
 	var divHeader = $("<div/>").attr("id", "header");
-	var divBanner = $("<div/>").attr("id", "banner");
-	divHeader.append(divBanner);
-	var divToolbar = $("<div/>").attr("id", "toolbar");
-	var divTimeSlider = $("<div/>").attr("id", "time_slider_pane");
-	divTimeSlider.hide();
-
-	divToolbar.append(divTimeSlider);
-	divHeader.append(divToolbar);
 	body.append(divHeader);
 
 	var divCenter = $("<div/>").attr("id", "center");
@@ -31,9 +23,7 @@ define([ "jquery" ], function($) {
 	$(function() { document.body.onselectstart = function() { return false }})
 
 	return {
-		"banner": divBanner,
-		"toolbar": divToolbar,
-		"timeSlider": divTimeSlider,
+		"header": divHeader,
 		"map": divMap,
 		"layers": divLayerList,
 		"activeLayers": divActiveLayerList,

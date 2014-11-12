@@ -18,8 +18,8 @@ public class PluginDescriptor {
 		if (jsonRoot.has("requirejs")) {
 			requireJS = jsonRoot.getJSONObject("requirejs");
 		}
-		if (jsonRoot.has("configuration")) {
-			configuration = jsonRoot.getJSONObject("configuration");
+		if (jsonRoot.has("default-conf")) {
+			configuration = jsonRoot.getJSONObject("default-conf");
 		}
 
 	}
