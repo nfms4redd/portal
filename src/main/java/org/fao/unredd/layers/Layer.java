@@ -16,7 +16,6 @@
 package org.fao.unredd.layers;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.sql.SQLException;
 
 /**
@@ -27,23 +26,23 @@ import java.sql.SQLException;
  */
 public interface Layer {
 
-    /**
-     * Get a list of all the output identifiers in this layer
-     * 
-     * @return
-     * @throws IOException
-     * @throws SQLException 
-     */
-    Outputs getOutputs() throws IOException, SQLException;
+	/**
+	 * Get a list of all the output identifiers in this layer
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	Outputs getOutputs() throws IOException, SQLException;
 
-    /**
-     * Get the output content with the specified id
-     * 
-     * @param outputId
-     * @return
-     * @throws NoSuchIndicatorException
-     */
-    Output getOutput(String outputId) throws NoSuchIndicatorException,
-            IOException;
+	/**
+	 * Get the output content with the specified id
+	 * 
+	 * @param outputId
+	 * @return
+	 * @throws NoSuchIndicatorException
+	 */
+	Output getOutput(String outputId) throws NoSuchIndicatorException,
+			IOException;
 
 }

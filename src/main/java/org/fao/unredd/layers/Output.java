@@ -50,6 +50,7 @@ public class Output extends OutputDescriptor {
 	  private ArrayList<String> series = null;
 	  private ArrayList<String> labels = null;
 	  private ArrayList<ArrayList<String>> values = null;
+	  
 	public Output(String id, String name, String fieldId) {
 		super(id, name, fieldId);
 	}

@@ -15,49 +15,28 @@
  */
 package org.fao.unredd.layers.bd;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.layers.NoSuchIndicatorException;
-import org.fao.unredd.layers.OutputDescriptor;
-import org.fao.unredd.layers.Outputs;
 import org.postgresql.util.PSQLException;
 
 /**
- * Abstract {@link Layer} folder based implementation
+ * Databases based implementation of {@link LayerFactory}
  * 
- * @author fergonco
+ * @author manureta
  */
 public class DBLayerFactory implements LayerFactory {
 
-	private static final String METADATA_FIELD_ID_PROPERTY_NAME = "field-id";
-	private static final String METADATA_INDICATOR_NAME_PROPERTY_NAME = "indicator-name";
-	private static final String METADATA_PROPERTIES_FILE_NAME = "metadata.properties";
-	private static final String OUTPUT_FILE_NAME = "result.xml";
-	private static final String OUTPUT = "output";
-	private static final String CONFIGURATION = "configuration";
-	private static final String WORK = "work";
-	private File root;
+
 	private String qName;
 
 	public DBLayerFactory(String layerName) throws IOException {
@@ -75,51 +54,6 @@ public class DBLayerFactory implements LayerFactory {
 	}
 
 	
-	private ResultSet getMetadataProperties()
-			throws SQLException {
-		ResultSet ret = null;
-		ResultSet metadata=null;
-		try {
-			InitialContext context = new InitialContext();
-			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/app");
-			Connection connection = dataSource.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet result = statement
-					.executeQuery("select * count from indicators.indicators_metadata WHERE layer_id='"+this.qName+"'");
-			if (result.next()) {
-				 		metadata=result;
-				 
-			} else {
-				metadata=null;
-			}
-			result.close();
-			statement.close();
-			connection.close();
-			} catch (NamingException e) {
-				return null;
-				//throw new SQLException("Cannot find the database", e);
-			}
-		 catch (PSQLException e) {
-			 //TODO MAnejar errores sql, no conecta, permiso denegado, loguear estos errores
-		//Nothing, return false	
-		}
-
-		catch (Exception e) {
-				 e.getMessage();
-			//Nothing, return false	
-			}
-
-		/*		Properties metadata = new Properties();
-		File metadataFile = getMetadataFile(outputRoot);
-		if (metadataFile.exists()) {
-			metadata.load(new FileInputStream(metadataFile));
-		}
-		*/
-		return metadata;
-	}
-
-
 	@Override
 	public boolean exists(String layerName) {
 		// TODO Auto-generated method stub

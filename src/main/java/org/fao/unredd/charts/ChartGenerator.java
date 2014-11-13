@@ -19,38 +19,34 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
-import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.bind.JAXB;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.fao.unredd.charts.generated.DataType;
-import org.fao.unredd.charts.generated.StatisticsChartInput;
 import org.fao.unredd.layers.Output;
 
 /**
  * 
+ * @destructor manureta
  */
 public class ChartGenerator {
 
 	private Output inputData;
-/*
-	public ChartGenerator(String string) {
-//		inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
-		inputData = new Output(string;
-	}
-	*/
+
+	/*
+	 * public ChartGenerator(String string) { // inputData =
+	 * JAXB.unmarshal(chartInput, StatisticsChartInput.class); inputData = new
+	 * Output(string; }
+	 */
 	public ChartGenerator(Output output) {
-		//inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
+		// inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
 		inputData = output;
 	}
-	
+
 	public ChartGenerator(FileInputStream fileInputStream) {
 		// TODO Auto-generated constructor stub
 	}
@@ -62,39 +58,30 @@ public class ChartGenerator {
 				"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 		engine.init();
 		VelocityContext context = new VelocityContext();
-		
+
 		context.put("title", nullToEmptyString(inputData.getTitle()));
 		context.put("subtitle", nullToEmptyString(inputData.getSubtitle()));
 		context.put("y-label", nullToEmptyString(inputData.getY_label()));
 		context.put("units", nullToEmptyString(inputData.getUnits()));
 		context.put("tooltipDecimals",
 				nullToEmptyString(inputData.getTooltipsdecimals()));
-		
-		
-		context.put("datas",  inputData.getData(objectId).iterator());
-		context.put("series",  inputData.getSeries(objectId));
+
+		context.put("datas", inputData.getData(objectId).iterator());
+		context.put("series", inputData.getSeries(objectId));
 		context.put("dates", inputData.getLabels(objectId).iterator());
-		
-		
+
 		context.put("hover", nullToEmptyString(inputData.getHover()));
 		context.put("footer", nullToEmptyString(inputData.getFooter()));
 
-		String template = ""; 
-		if (inputData.getGraphicType().equals("3d")){
+		String template = "";
+		if (inputData.getGraphicType().equals("3d")) {
 			template = "/org/fao/unredd/charts/highcharts-3D-template.vtl";
-		}else{
+		} else {
 			template = "/org/fao/unredd/charts/highcharts-template.vtl";
 		}
-		Template t = engine
-				.getTemplate(template);
+		Template t = engine.getTemplate(template);
 		t.merge(context, writer);
 		writer.flush();
-	}
-
-	private Iterator<Double> getValues(String objectId, String[][] data) {
-		// TODO Auto-generated method stub
-		
-		return null;
 	}
 
 	private Object nullToEmptyString(Object value) {
