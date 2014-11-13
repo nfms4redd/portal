@@ -65,14 +65,17 @@ public class ChartGenerator {
 		
 		context.put("title", nullToEmptyString(inputData.getTitle()));
 		context.put("subtitle", nullToEmptyString(inputData.getSubtitle()));
-		context.put("dates", inputData.getLabels().iterator());
 		context.put("y-label", nullToEmptyString(inputData.getY_label()));
 		context.put("units", nullToEmptyString(inputData.getUnits()));
 		context.put("tooltipDecimals",
 				nullToEmptyString(inputData.getTooltipsdecimals()));
-		context.put("data",  inputData.getData());
-		context.put("series",  inputData.getSeries());
-
+		
+		
+		context.put("datas",  inputData.getData(objectId).iterator());
+		context.put("series",  inputData.getSeries(objectId));
+		context.put("dates", inputData.getLabels(objectId).iterator());
+		
+		
 		context.put("hover", nullToEmptyString(inputData.getHover()));
 		context.put("footer", nullToEmptyString(inputData.getFooter()));
 

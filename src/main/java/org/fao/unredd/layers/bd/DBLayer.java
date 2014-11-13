@@ -61,6 +61,7 @@ public class DBLayer implements Layer {
 			 		output.setTooltipsdecimals(result.getInt("tooltipsdecimals"));
 			 		output.setLayer_name(result.getString("layer_name"));
 			 		output.setTable_name_data(result.getString("table_name_data"));
+			 		output.setDivision_field_id(result.getString("division_field_id"));
 				// TODO: Agregar un metodo al output para obtener los datos de un determinado Feautre-id
 				 	
 				 	temp.add(output);
@@ -111,44 +112,6 @@ public class DBLayer implements Layer {
 				return elemento;
 			}
 		}
-/*
-		String ret = null;// = "nada";
-		try {
-			InitialContext context = new InitialContext();
-			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/app");
-			Connection connection = dataSource.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet result = statement
-					.executeQuery("SELECT division_id,class,array_agg(fecha_result),array_agg(ha) FROM '"+this.table_name_data+"' "
-					 + "WHERE division_id = '"+outputId+"' GROUP BY division_id,class");
-
-			if (result.next()) {
-				 if (result.getInt("count")>0){
-						ret= result.getString("division_id");
-				 }
-			} else {
-				ret=null;
-			}
-			result.close();
-			statement.close();
-			connection.close();
-			} catch (NamingException e) {
-				return null;
-				//throw new SQLException("Cannot find the database", e);
-			}
-		 catch (PSQLException e) {
-			 //TODO MAnejar errores sql, no conecta, permiso denegado, loguear estos errores
-		//Nothing, return false	
-		}
-
-		catch (Exception e) {
-				 e.getMessage();
-			//Nothing, return false	
-			}
-		
-		return ret;
-*/
 		return null;
 	}
 

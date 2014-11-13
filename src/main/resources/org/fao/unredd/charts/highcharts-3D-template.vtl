@@ -91,12 +91,13 @@
         series: [
         	#foreach( $data in $datas )
         	{
-            name: $series[$foreach.counter],
+        		#set ( $it = $foreach.count - 1 )
+            name: '$series[$it] ',
             data: [#foreach( $datum in $data )$datum #if( $foreach.hasNext ), #end#end],
-            stack: 0
+            stack: $foreach.count
         	}#if( $foreach.hasNext ), #end
         	#end
-        }],
+        ],
         credits: {
           enabled: false
         }
