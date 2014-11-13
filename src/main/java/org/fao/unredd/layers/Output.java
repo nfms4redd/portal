@@ -186,7 +186,7 @@ public class Output extends OutputDescriptor {
 			Statement statement = connection.createStatement();
 			ResultSet result = statement
 					.executeQuery("SELECT "+this.getDivision_field_id()+",class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "+this.getTable_name_data()+" "
-					 + "WHERE "+this.getDivision_field_id()+" = '"+this.getId()+"' GROUP BY "+this.getDivision_field_id()+",class");
+					 + "WHERE "+this.getDivision_field_id()+" = '"+objectid+"' GROUP BY "+this.getDivision_field_id()+",class");
 			this.series=new ArrayList<String>();
 			this.labels=new ArrayList<String>();
 			this.values=new ArrayList<ArrayList<String>>();
