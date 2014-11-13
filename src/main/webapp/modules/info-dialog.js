@@ -91,7 +91,7 @@ define([ "jquery", "message-bus", "map", "i18n", "customization" ], function($, 
 								//TODO mostrar nombre del indicador para elejir?									
 								var aIndicators = $("<a/>").addClass("fancybox.iframe").appendTo(tdIndicators);
 								$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
-								aIndicators.attr("href", "indicator?objectId=" + val.fieldId + "&layerId=" + layerId + "&indicatorId=" + val.id);
+								aIndicators.attr("href", "indicator?objectId=" + feature.attributes[val.fieldId] + "&layerId=" + layerId + "&indicatorId=" + val.id);
 								aIndicators.fancybox({
 									maxWidth : 840,
 									maxHeight : 600,
