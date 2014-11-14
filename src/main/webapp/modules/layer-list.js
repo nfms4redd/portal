@@ -9,14 +9,14 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	divLayers = $("<div/>").attr("id", "all_layers");
 	divLayers.addClass("ui-accordion-icons");
 	divLayers.accordion({
-		"animate": false,
-		"heightStyle": "content",
+		"animate" : false,
+		"heightStyle" : "content",
 		/*
 		 * Collapse all content since otherwise the accordion sets the 'display'
 		 * to 'block' instead than to 'table'
 		 */
-		"collapsible": true,
-		"active": false
+		"collapsible" : true,
+		"active" : false
 	});
 	divLayersContainer.append(divLayers);
 
@@ -28,24 +28,26 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		if (groupInfo.hasOwnProperty("infoLink")) {
 			infoButton = $('<a style="position:absolute;top:3px;right:4px;width:16px;height:16px;padding:0;" class="layer_info_button" href="' + groupInfo.infoLink + '"></a>');
 
-			// prevent accordion item from expanding when clicking on the info button
-			infoButton.click(function (event) { event.stopPropagation() });
+			// prevent accordion item from expanding
+			// when clicking on the info button
+			infoButton.click(function(event) {
+				event.stopPropagation()
+			});
 
 			infoButton.fancybox({
 				'autoScale' : false,
 				'openEffect' : 'elastic',
 				'closeEffect' : 'elastic',
-				'type': 'ajax',
-				'overlayOpacity': 0.5
+				'type' : 'ajax',
+				'overlayOpacity' : 0.5
 			});
 
 			divTitle.append(infoButton);
 		}
 
-
 		tblLayerGroup = $("<table/>");
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
-		
+
 		if (groupInfo.hasOwnProperty("parentId")) {
 			parentId = groupInfo.parentId;
 			tblParentLayerGroup = $("#group-content-table-" + parentId);
@@ -62,8 +64,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 	});
 
 	bus.listen("add-layer", function(event, portalLayer) {
-		var tblLayerGroup, trLayer, tdLegend,
-			tdVisibility, divCheckbox, tdName, tdInfo, aLink, inlineLegend;
+		var tblLayerGroup, trLayer, tdLegend, tdVisibility, divCheckbox, tdName, tdInfo, aLink, inlineLegend;
 
 		tblLayerGroup = $("#group-content-table-" + portalLayer.groupId);
 		if (tblLayerGroup.length == 0) {
@@ -75,13 +76,17 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 
 			if (portalLayer.hasOwnProperty("inlineLegendUrl")) {
 				// context has an inline legend
-				//tdLegend = $('<td style="width:20px">');
-				//inlineLegend = $('<img class="inline-legend" src="' + UNREDD.wmsServers[0] + contextConf.inlineLegendUrl + '">');
+				// tdLegend = $('<td
+				// style="width:20px">');
+				// inlineLegend = $('<img
+				// class="inline-legend" src="' +
+				// UNREDD.wmsServers[0] +
+				// contextConf.inlineLegendUrl + '">');
 				inlineLegend = $('<img class="inline-legend" src="' + portalLayer.inlineLegendUrl + '">');
 				tdLegend.append(inlineLegend);
 			} else {
 				var wmsLayersWithLegend = portalLayer.wmsLayers.filter(function(layer) {
-				    return layer.hasOwnProperty("legend");
+					return layer.hasOwnProperty("legend");
 				});
 				var wmsLayerWithLegend = wmsLayersWithLegend[0];
 
@@ -126,7 +131,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			}).mouseup(function() {
 				divCheckbox.removeClass("mousedown");
 			}).mouseenter(function() {
-					divCheckbox.addClass("in");
+				divCheckbox.addClass("in");
 			}).mouseleave(function() {
 				divCheckbox.removeClass("in");
 			}).click(function() {
@@ -134,7 +139,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 				bus.send("layer-visibility", [ portalLayer.id, divCheckbox.hasClass("checked") ]);
 			});
 
-			if(!portalLayer.isPlaceholder){
+			if (!portalLayer.isPlaceholder) {
 				tdVisibility.append(divCheckbox);
 			}
 
@@ -145,15 +150,15 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			trLayer.append(tdName);
 
 			tdInfo = $("<td/>").addClass("layer_info");
-			if (portalLayer.hasOwnProperty("infoLink")) {
-				aLink = $("<a/>").attr("href", portalLayer.infoLink);
+			if (portalLayer.hasOwnProperty("infoFile")) {
+				aLink = $("<a/>").attr("href", portalLayer.infoFile);
 				aLink.addClass("layer_info_button");
 				aLink.fancybox({
-					"closeBtn": "true",
-					"openEffect": "elastic",
-					"closeEffect": "elastic",
-					"type": "iframe",
-					"overlayOpacity": 0.5
+					"closeBtn" : "true",
+					"openEffect" : "elastic",
+					"closeEffect" : "elastic",
+					"type" : "iframe",
+					"overlayOpacity" : 0.5
 				});
 				tdInfo.append(aLink);
 			}
@@ -185,7 +190,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			var timestamps = layer.timestamps;
 			var closestPrevious = null;
 			timestamps.sort();
-			for ( var j = 0; j < timestamps.length; j++) {
+			for (var j = 0; j < timestamps.length; j++) {
 				var timestampString = timestamps[j];
 				var timestamp = new Date();
 				timestamp.setISO8601(timestampString);
@@ -205,10 +210,15 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			tdLayerName.find("span").remove();
 			$("<span/>").html(" (" + closestPrevious.getUTCFullYear() + ")").appendTo(tdLayerName);
 
-			bus.send("layer-timestamp-selected", [layer.id, closestPrevious]);
+			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious ]);
 		}
 	});
+	bus.listen("layer-time-slider.selection", function(event, layerid, date) {
+		var tdLayerName = $("#layer-row-" + layerid + " .layer_name");
+		tdLayerName.find("span").remove();
+		$("<span/>").html(" (" + date.getUTCFullYear() + ")").appendTo(tdLayerName);
 
+	});
 	bus.listen("show-layer-list", function(event, groupInfo) {
 		divLayersContainer.show();
 	});
