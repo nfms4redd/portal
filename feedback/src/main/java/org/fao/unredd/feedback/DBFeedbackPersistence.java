@@ -1,9 +1,10 @@
 package org.fao.unredd.feedback;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class DBFeedbackPersistence implements FeedbackPersistence {
 
@@ -30,7 +31,7 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 				statement.setString(1, geom);
 				statement.setInt(2, Integer.parseInt(srid));
 				statement.setString(3, comment);
-				statement.setDate(4, new Date(new java.util.Date().getTime()));
+				statement.setTimestamp(4, new Timestamp(new Date().getTime()));
 				statement.setString(5, email);
 				statement.setString(6, verificationCode);
 				statement.execute();
@@ -40,9 +41,20 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 	}
 
 	@Override
-	public void cleanOutOfDate() {
-		// TODO Auto-generated method stub
+	public void cleanOutOfDate() throws PersistenceException {
+		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
+			@Override
+			public void process(Connection connection) throws SQLException {
+				PreparedStatement statement = connection
+						.prepareStatement("DELETE FROM "
+								+ tableName
+								+ " WHERE verification_code IS NOT NULL"
+								+ " AND date < (current_timestamp - interval '5 days')");
+				statement.execute();
 
+				statement.close();
+			}
+		});
 	}
 
 	@Override

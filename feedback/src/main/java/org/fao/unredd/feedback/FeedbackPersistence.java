@@ -5,7 +5,7 @@ public interface FeedbackPersistence {
 	void insert(String geom, String srid, String comment, String email,
 			String verificationCode) throws PersistenceException;
 
-	void cleanOutOfDate();
+	void cleanOutOfDate() throws PersistenceException;
 
 	void createTable() throws PersistenceException;
 
