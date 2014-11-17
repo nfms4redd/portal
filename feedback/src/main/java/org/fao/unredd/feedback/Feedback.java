@@ -3,7 +3,13 @@ package org.fao.unredd.feedback;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Feedback {
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(Feedback.class);
 
 	private FeedbackPersistence persistence;
 	private Mailer mailInfo;
@@ -19,6 +25,12 @@ public class Feedback {
 			throw new IllegalArgumentException("all parameters are mandatory: "
 					+ geom + srid + comment + email);
 		}
+
+		logger.info("Feedback requested with the following parameters:");
+		logger.info("email: " + email);
+		logger.info("geom: " + geom);
+		logger.info("srid: " + srid);
+		logger.info("comment: " + comment);
 
 		/*
 		 * non unique verification code, but these are valid only a period of
@@ -48,6 +60,10 @@ public class Feedback {
 	public String[] notifyValidated() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void createTable() throws PersistenceException {
+		persistence.createTable();
 	}
 
 }
