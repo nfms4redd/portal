@@ -32,76 +32,66 @@ public class JEEContextAnalyzer {
 	private Map<String, JSONObject> configurationMap = new HashMap<String, JSONObject>();
 
 	public JEEContextAnalyzer(Context context) {
-		ContextEntryListener cssAndJsCollector = new ContextEntryListener() {
+		this(context, "nfms", "nfms");
+	}
 
-			@Override
-			public void accept(String path, ContextEntryReader entryReader)
-					throws IOException {
-				if (path.matches("\\Qnfms/\\E\\w+\\Q-conf.json\\E")) {
-					PluginDescriptor pluginDescriptor = new PluginDescriptor(
-							entryReader.getContent());
-					requirejsPaths.putAll(pluginDescriptor
-							.getRequireJSPathsMap());
-					requirejsShims.putAll(pluginDescriptor.getRequireJSShims());
-					configurationMap.putAll(pluginDescriptor
-							.getConfigurationMap());
-				} else {
-					boolean modules = path.startsWith("nfms/modules");
-					boolean styles = path.startsWith("nfms/styles");
-					File pathFile = new File(path);
-					if ((styles || modules) && path.endsWith(".css")) {
-						css.add(pathFile.getParentFile().getName() + "/"
-								+ pathFile.getName());
-					} else if (modules && path.endsWith(".js")) {
-						String name = pathFile.getName();
-						name = name.substring(0, name.length() - 3);
-						js.add(name);
-					}
-				}
-			}
+	public JEEContextAnalyzer(Context context, String pluginConfDir,
+			String webResourcesDir) {
+		PluginConfigEntryListener pluginConfListener = new PluginConfigEntryListener(
+				pluginConfDir);
+		WebResourcesEntryListener webResourcesListener = new WebResourcesEntryListener(
+				webResourcesDir);
 
-		};
-		scanClasses(context, cssAndJsCollector);
-		scanJars(context, cssAndJsCollector);
+		scanClasses(context, pluginConfListener, webResourcesListener);
+		scanJars(context, pluginConfListener, webResourcesListener);
 	}
 
 	private void scanClasses(Context context,
-			ContextEntryListener contextEntryListener) {
+			PluginConfigEntryListener pluginConfListener,
+			WebResourcesEntryListener webResourcesListener) {
 		File rootFolder = context.getClientRoot();
 		if (rootFolder.exists()) {
-			Iterator<File> allFiles = FileUtils.iterateFiles(rootFolder,
-					relevantExtensions, TrueFileFilter.INSTANCE);
+			scanDir(context, new File(rootFolder, pluginConfListener.dir),
+					pluginConfListener);
+			scanDir(context, new File(rootFolder, webResourcesListener.dir),
+					webResourcesListener);
+		}
+	}
 
-			final File referenceFolder = rootFolder.getParentFile();
-			int rootPathLength = referenceFolder.getAbsolutePath().length() + 1;
-			while (allFiles.hasNext()) {
-				File file = allFiles.next();
-				String name = file.getAbsolutePath();
-				final String relativePath = name.substring(rootPathLength);
-				try {
-					ContextEntryReader contentReader = new ContextEntryReader() {
+	private void scanDir(Context context, final File dir,
+			ContextEntryListener listener) {
+		Iterator<File> allFiles = FileUtils.iterateFiles(dir,
+				relevantExtensions, TrueFileFilter.INSTANCE);
 
-						@Override
-						public String getContent() throws IOException {
-							InputStream input = new BufferedInputStream(
-									new FileInputStream(new File(
-											referenceFolder, relativePath)));
-							String content = IOUtils.toString(input);
-							input.close();
+		final File referenceFolder = dir.getParentFile();
+		int rootPathLength = referenceFolder.getAbsolutePath().length() + 1;
+		while (allFiles.hasNext()) {
+			File file = allFiles.next();
+			String name = file.getAbsolutePath();
+			final String relativePath = name.substring(rootPathLength);
+			try {
+				ContextEntryReader contentReader = new ContextEntryReader() {
 
-							return content;
-						}
-					};
-					contextEntryListener.accept(relativePath, contentReader);
-				} catch (IOException e) {
-					logger.info("Cannot analyze file:" + relativePath);
-				}
+					@Override
+					public String getContent() throws IOException {
+						InputStream input = new BufferedInputStream(
+								new FileInputStream(new File(referenceFolder,
+										relativePath)));
+						String content = IOUtils.toString(input);
+						input.close();
+
+						return content;
+					}
+				};
+				listener.accept(relativePath, contentReader);
+			} catch (IOException e) {
+				logger.info("Cannot analyze file:" + relativePath);
 			}
 		}
 	}
 
 	private void scanJars(Context context,
-			ContextEntryListener contextEntryListener) {
+			ContextEntryListener... contextEntryListeners) {
 		Set<String> libJars = context.getLibPaths();
 		for (Object jar : libJars) {
 			InputStream jarStream = context.getLibAsStream(jar.toString());
@@ -119,7 +109,10 @@ public class JEEContextAnalyzer {
 								return IOUtils.toString(zis);
 							}
 						};
-						contextEntryListener.accept(entryPath, contentReader);
+
+						for (ContextEntryListener listener : contextEntryListeners) {
+							listener.accept(entryPath, contentReader);
+						}
 					}
 				}
 			} catch (IOException e) {
@@ -180,4 +173,47 @@ public class JEEContextAnalyzer {
 		}
 	};
 
+	private class PluginConfigEntryListener implements ContextEntryListener {
+		private String dir;
+
+		public PluginConfigEntryListener(String dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public void accept(String path, ContextEntryReader contentReader)
+				throws IOException {
+			if (path.matches("\\Q" + dir + "/\\E\\w+\\Q-conf.json\\E")) {
+				PluginDescriptor pluginDescriptor = new PluginDescriptor(
+						contentReader.getContent());
+				requirejsPaths.putAll(pluginDescriptor.getRequireJSPathsMap());
+				requirejsShims.putAll(pluginDescriptor.getRequireJSShims());
+				configurationMap.putAll(pluginDescriptor.getConfigurationMap());
+			}
+		}
+	}
+
+	private class WebResourcesEntryListener implements ContextEntryListener {
+		private String dir;
+
+		public WebResourcesEntryListener(String dir) {
+			this.dir = dir;
+		}
+
+		@Override
+		public void accept(String path, ContextEntryReader contentReader)
+				throws IOException {
+			boolean modules = path.startsWith(dir + "/modules");
+			boolean styles = path.startsWith(dir + "/styles");
+			File pathFile = new File(path);
+			if ((styles || modules) && path.endsWith(".css")) {
+				css.add(pathFile.getParentFile().getName() + "/"
+						+ pathFile.getName());
+			} else if (modules && path.endsWith(".js")) {
+				String name = pathFile.getName();
+				name = name.substring(0, name.length() - 3);
+				js.add(name);
+			}
+		}
+	}
 }
