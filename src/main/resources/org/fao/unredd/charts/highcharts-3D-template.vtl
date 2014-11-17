@@ -11,7 +11,8 @@
     <script type="text/javascript" src="http://www.rdc-snsf.org/js/highcharts/highcharts.js"></script>
     -->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://code.highcharts.com/2.2.4/highcharts.js"></script>
+    <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript" src="http://code.highcharts.com/highcharts-3d.js"></script>
     <!-- 2. Add the JavaScript to initialize the chart on document ready -->
     <script type="text/javascript">
       var gup = function (name) {
@@ -38,13 +39,78 @@
         };
 
         $('#title').text(gup('name').toLowerCase());
+      });
+//Chart 3D . manuel.retamozo@fao
+        
+        $(function () {
+            $('#container1').highcharts({
+                    title: {
+            //text: 'Segun leyenda N1',
+            text: '$title',
+            x: -20 //center
+          },
+          subtitle: {
+        	  text: '$subtitle',
+            x: -20
+          },
+          xAxis: {
+            categories: [ #foreach( $date in $dates )'$date'#if( $foreach.hasNext ), #end#end ],
+            labels: {
+              rotation: 0,
+              align: 'right',
+              style: {
+                font: 'normal 10px Verdana, sans-serif'
+              }
+            }
+          },
+        yAxis: {
+            title: {
+              //text: 'Hectareas'
+            	text: '$y-label ($units)'
+            },
+            //categories:['TF','OTF/OFL','OT']
+        },
+        chart: {
+            type: 'column',
+            margin: 75,
+            options3d: {
+				enabled: true,
+                alpha: 20,
+                beta: 15,
+                depth: 110
+            }
+        },
+        plotOptions: {
+            column: {
+                depth: 30,
+                stacking: true,
+                grouping: false,
+                groupZPadding: 10
+            }
+        },
+        series: [
+        	#foreach( $data in $datas )
+        	{
+        		#set ( $it = $foreach.count - 1 )
+            name: '$series[$it] ',
+            data: [#foreach( $datum in $data )$datum #if( $foreach.hasNext ), #end#end],
+            stack: $foreach.count
+        	}#if( $foreach.hasNext ), #end
+        	#end
+        ],
+        credits: {
+          enabled: false
+        }
+    });
+ 
+ });
 
-
-
+//
+/*
         chart1 = new Highcharts.Chart({
           chart: {
             renderTo: 'container1',
-            defaultSeriesType: 'line'
+            defaultSeriesType: 'bar'
           },
           title: {
             //text: 'Classification des forêts',
@@ -99,6 +165,7 @@
         });
 
       });
+      */
     </script>
     
     <style type="text/css">

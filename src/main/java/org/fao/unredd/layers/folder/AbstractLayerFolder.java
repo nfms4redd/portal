@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.NoSuchIndicatorException;
+import org.fao.unredd.layers.Output;
 import org.fao.unredd.layers.OutputDescriptor;
 import org.fao.unredd.layers.Outputs;
 
@@ -98,7 +99,7 @@ public abstract class AbstractLayerFolder implements Layer {
 			return new Outputs();
 		}
 		File[] outputFolders = outputFolder.listFiles();
-		ArrayList<OutputDescriptor> outputDescriptors = new ArrayList<OutputDescriptor>();
+		ArrayList<Output> outputDescriptors = new ArrayList<Output>();
 		for (int i = 0; i < outputFolders.length; i++) {
 			String folderName = outputFolders[i].getName();
 			File outputRoot = new File(getOutputFolder(), folderName);
@@ -109,7 +110,7 @@ public abstract class AbstractLayerFolder implements Layer {
 					.getProperty(METADATA_INDICATOR_NAME_PROPERTY_NAME);
 			if (fieldId != null
 					&& new File(outputRoot, OUTPUT_FILE_NAME).exists()) {
-				outputDescriptors.add(new OutputDescriptor(folderName,
+				outputDescriptors.add(new Output(folderName,
 						indicatorName, fieldId));
 			}
 		}
@@ -132,8 +133,9 @@ public abstract class AbstractLayerFolder implements Layer {
 	}
 
 	@Override
-	public String getOutput(String outputId) throws NoSuchIndicatorException,
+	public Output getOutput(String outputId) throws NoSuchIndicatorException,
 			IOException {
+		/*
 		File outputFolder = new File(getOutputFolder(), outputId);
 		if (!outputFolder.exists()) {
 			throw new NoSuchIndicatorException(outputId);
@@ -142,6 +144,7 @@ public abstract class AbstractLayerFolder implements Layer {
 				new File(outputFolder, OUTPUT_FILE_NAME)));
 		String ret = IOUtils.toString(input);
 		input.close();
-		return ret;
+		*/
+		return new Output(outputId, outputId, outputId);
 	}
 }

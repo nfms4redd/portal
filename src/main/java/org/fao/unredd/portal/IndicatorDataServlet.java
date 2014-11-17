@@ -2,6 +2,7 @@ package org.fao.unredd.portal;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,8 +33,8 @@ public class IndicatorDataServlet extends HttpServlet {
                 if (layerFactory.exists(layerId)) {
                     Layer layer = layerFactory.newLayer(layerId);
                     ChartGenerator chartGenerator = new ChartGenerator(
-                            new ByteArrayInputStream(layer.getOutput(
-                                    indicatorId).getBytes("UTF-8")));
+                            (layer.getOutput(
+                                    indicatorId)));
                     resp.setContentType(chartGenerator.getContentType());
                     chartGenerator.generate(objectId, resp.getWriter());
                     resp.flushBuffer();
