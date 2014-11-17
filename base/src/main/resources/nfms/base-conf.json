@@ -1,0 +1,19 @@
+{
+	"default-conf" : {
+		"banner" : {
+			"hide" : false
+		}
+	},
+	"requirejs" : {
+		"paths" : {
+			"jquery-ui" : "../jslib/jquery-ui-1.10.4.custom",
+			"fancy-box" : "../jslib/jquery.fancybox.pack",
+			"openlayers" : "../jslib/OpenLayers/OpenLayers.debug",
+			"mustache" : "../jslib/jquery.mustache"
+		},
+		"shim" : {
+			"fancy-box" : [ "jquery" ],
+			"mustache" : [ "jquery" ]
+		},
+	}
+}
