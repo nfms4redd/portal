@@ -10,8 +10,6 @@ import javax.servlet.ServletContextListener;
 
 import org.fao.unredd.jwebclientAnalyzer.Context;
 import org.fao.unredd.jwebclientAnalyzer.JEEContextAnalyzer;
-import org.fao.unredd.layers.LayerFactory;
-import org.fao.unredd.layers.folder.FolderLayerFactory;
 import org.fao.unredd.portal.Config;
 
 public class AppContextListener implements ServletContextListener {
@@ -26,16 +24,6 @@ public class AppContextListener implements ServletContextListener {
 				.getenv("NFMS_CONFIG_CACHE"));
 		Config config = new Config(rootPath, configInitParameter, configCache);
 		servletContext.setAttribute("config", config);
-
-	//	String indicatorsFolder = config.getIndicatorsFolder();
-		LayerFactory layerFactory;
-		try {
-			layerFactory = new DBLayerFactory("workspace:newlayer");
-			servletContext.setAttribute("layer-factory", layerFactory);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		JEEContextAnalyzer context = new JEEContextAnalyzer(new JEEContext(
 				servletContext));

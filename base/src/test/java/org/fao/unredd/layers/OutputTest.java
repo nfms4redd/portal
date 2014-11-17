@@ -22,8 +22,6 @@ import java.util.Iterator;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.fao.unredd.layers.OutputDescriptor;
-import org.fao.unredd.layers.Outputs;
 import org.junit.Test;
 
 public class OutputTest {
