@@ -9,24 +9,33 @@ import org.apache.commons.io.IOUtils;
 
 public class RequireTemplate {
 
-	private String resourceName;
+	private InputStream template;
+	private String webResourcesDir;
 	private Map<String, String> paths;
 	private Map<String, String> shims;
 	private List<String> moduleNames;
 
-	public RequireTemplate(String resourceName, Map<String, String> paths,
+	public RequireTemplate(String template, Map<String, String> paths,
 			Map<String, String> shims, List<String> moduleNames) {
-		this.resourceName = resourceName;
+		this(RequireTemplate.class.getResourceAsStream(template), "nfms",
+				paths, shims, moduleNames);
+	}
+
+	public RequireTemplate(InputStream template, String webResourcesDir,
+			Map<String, String> paths, Map<String, String> shims,
+			List<String> moduleNames) {
+		this.template = template;
+		this.webResourcesDir = webResourcesDir;
 		this.paths = paths;
 		this.shims = shims;
 		this.moduleNames = moduleNames;
 	}
 
 	public String generate() throws IOException {
-		InputStream stream = this.getClass().getResourceAsStream(resourceName);
-		String output = IOUtils.toString(stream);
-		stream.close();
+		String output = IOUtils.toString(template);
+		template.close();
 
+		output = output.replaceAll("\\Q$webResourcesDir\\E", webResourcesDir);
 		output = output.replaceAll("\\Q$paths\\E", "paths:{"
 				+ getCommaSeparatedMap(paths, "\"") + "}");
 		output = output.replaceAll("\\Q$shim\\E", "shim:{"
@@ -53,5 +62,4 @@ public class RequireTemplate {
 
 		return ret.toString();
 	}
-
 }
