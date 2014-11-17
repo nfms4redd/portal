@@ -33,6 +33,14 @@
 			<artifactId>feedback</artifactId>
 			<version>3.1-SNAPSHOT</version>
 		</dependency>
+		<!-- Other deployments may access other databases, so it is responsibility 
+			of the application to include the necessary drivers -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.3-1102-jdbc41</version>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>unredd-portal</finalName>
