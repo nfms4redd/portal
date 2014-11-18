@@ -194,7 +194,7 @@ public class Output extends OutputDescriptor {
 		try {
 			InitialContext context = new InitialContext();
 			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/app");
+					.lookup("java:/comp/env/jdbc/unredd-portal");
 			Connection connection = dataSource.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet result = statement
@@ -212,7 +212,7 @@ public class Output extends OutputDescriptor {
 							+ ",class,fecha_result, ha " + "FROM "
 							+ this.getTable_name_data() + " " + "WHERE "
 //							+ this.getDivision_field_id()
-							+ "division_id "
+							+ "objectid "
 							+ " = '" + objectid
 							+ "'" + "ORDER BY fecha_result asc"
 							+ " ) foo	GROUP BY "+ "division_id " //+ this.getDivision_field_id()

@@ -55,7 +55,7 @@ public class DBLayer implements Layer {
 		try {
 			InitialContext context = new InitialContext();
 			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/app");
+					.lookup("java:/comp/env/jdbc/unredd-portal");
 			Connection connection = dataSource.getConnection();
 			Statement statement = connection.createStatement();
 			ResultSet result = statement
