@@ -32,6 +32,13 @@
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 	</distributionManagement>
+	<pluginRepositories>
+		<pluginRepository>
+ 			<id>nfms4redd</id>
+			<name>nfms4redd maven repository</name>
+			<url>http://maven.nfms4redd.org/</url>
+ 		</pluginRepository>
+	</pluginRepositories>
 	<repositories>
 		<repository>
 			<id>osgeo</id>
