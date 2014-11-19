@@ -32,7 +32,6 @@ import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.NoSuchIndicatorException;
 import org.fao.unredd.layers.Output;
 import org.fao.unredd.layers.Outputs;
-import org.postgresql.util.PSQLException;
 
 /**
  * * Concrete implementation of the {@link Layer} interface based on databases
@@ -97,10 +96,6 @@ public class DBLayer implements Layer {
 			// return null;
 			e.getMessage();
 			// throw new SQLException("Cannot find the database", e);
-		} catch (PSQLException e) {
-			// TODO Manejar errores sql, no conecta, permiso denegado, loguear
-			// estos errores
-			e.getMessage();
 		}
 
 		catch (Exception e) {

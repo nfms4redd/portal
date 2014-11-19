@@ -18,6 +18,7 @@ package org.fao.unredd.layers.bd;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,6 @@ import javax.sql.DataSource;
 
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
-import org.postgresql.util.PSQLException;
 
 /**
  * Databases based implementation of {@link LayerFactory}
@@ -80,13 +80,8 @@ public class DBLayerFactory implements LayerFactory {
 				return false;
 				//throw new SQLException("Cannot find the database", e);
 			}
-		 catch (PSQLException e) {
-			 //TODO MAnejar errores sql, no conecta, permiso denegado, loguear estos errores
-		//Nothing, return false	
-			 e.getMessage();
-		}
 
-		catch (Exception e) {
+		catch (SQLException e) {
 				 e.getMessage();
 			//Nothing, return false	
 			}

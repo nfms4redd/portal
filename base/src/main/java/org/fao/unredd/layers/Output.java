@@ -24,11 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.postgresql.util.PSQLException;
+import javax.sql.DataSource;
 
 /**
  * One of the outputs a layer can have.
@@ -203,19 +201,19 @@ public class Output extends OutputDescriptor {
 			// "WHERE "+this.getDivision_field_id()+" = '"+objectid+"' GROUP BY "+this.getDivision_field_id()+",class");
 
 					.executeQuery("SELECT "
-//							+ this.getDivision_field_id()
+							// + this.getDivision_field_id()
 							+ "division_id "
 							+ ",class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "
-							+ "(SELECT " 
-//							+ this.getDivision_field_id()
-							+ "division_id "							
-							+ ",class,fecha_result, ha " + "FROM "
-							+ this.getTable_name_data() + " " + "WHERE "
-//							+ this.getDivision_field_id()
-							+ "objectid "
-							+ " = '" + objectid
-							+ "'" + "ORDER BY fecha_result asc"
-							+ " ) foo	GROUP BY "+ "division_id " //+ this.getDivision_field_id()
+							+ "(SELECT "
+							// + this.getDivision_field_id()
+							+ "division_id " + ",class,fecha_result, ha "
+							+ "FROM " + this.getTable_name_data()
+							+ " "
+							+ "WHERE "
+							// + this.getDivision_field_id()
+							+ "objectid " + " = '" + objectid + "'"
+							+ "ORDER BY fecha_result asc" + " ) foo	GROUP BY "
+							+ "division_id " // + this.getDivision_field_id()
 							+ ",class ");
 			this.series = new ArrayList<String>();
 			this.labels = new ArrayList<String>();
@@ -236,23 +234,10 @@ public class Output extends OutputDescriptor {
 			e.getMessage();
 			// return null;
 			// throw new SQLException("Cannot find the database", e);
-		} catch (PSQLException e) {
+		} catch (SQLException e) {
 			e.getMessage();
 			// TODO MAnejar errores sql, no conecta, permiso denegado, loguear
 			// estos errores
-		}
-
-		catch (Exception e) {
-			e.getMessage();
-			// Ejemplo debug, esto no deberia pasar..
-
-			this.labels.add("1999");
-			this.labels.add("2000");
-			this.labels.add("2001");
-			this.series.add("OT");
-			this.series.add("TF");
-			this.series.add("OTNF");
-
 		}
 
 	}
@@ -265,8 +250,6 @@ public class Output extends OutputDescriptor {
 			for (int i = 0; i < tmparray.length; i++) {
 				ret.add(tmparray[i].toString());
 			}
-		} catch (PSQLException e) {
-			e.getMessage();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -282,8 +265,6 @@ public class Output extends OutputDescriptor {
 			for (int i = 0; i < tmparray.length; i++) {
 				ret.add(tmparray[i].toString());
 			}
-		} catch (PSQLException e) {
-			e.getMessage();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
