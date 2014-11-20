@@ -2,7 +2,6 @@ package org.fao.unredd.jwebclientAnalyzer;
 
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,21 +72,23 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 				new ExpandedClientContext(webClientFolder), pluginConfDir,
 				webResourcesDir);
 
-		InputStream mainStream;
-		if (mainTemplate != null) {
-			try {
-				mainStream = new FileInputStream(mainTemplate);
-			} catch (FileNotFoundException e) {
-				throw new MojoExecutionException(
-						"Cannot find main template file: " + mainTemplate);
-			}
-		} else {
-			mainStream = getClass().getResourceAsStream("/main.js");
+		try {
+			InputStream mainStream = new FileInputStream(mainTemplate);
+			processTemplate(analyzer, mainStream, mainOutputPath);
+			mainStream.close();
+		} catch (IOException e) {
+			throw new MojoExecutionException("Cannot access main template", e);
 		}
-		processTemplate(analyzer,
-				getClass().getResourceAsStream("/buildconfig.js"),
-				buildconfigOutputPath);
-		processTemplate(analyzer, mainStream, mainOutputPath);
+
+		try {
+			InputStream buildStream = getClass().getResourceAsStream(
+					"/buildconfig.js");
+			processTemplate(analyzer, buildStream, buildconfigOutputPath);
+			buildStream.close();
+		} catch (IOException e) {
+			throw new MojoExecutionException(
+					"Cannot access buildconfig template", e);
+		}
 	}
 
 	private void processTemplate(JEEContextAnalyzer analyzer,
@@ -104,8 +105,6 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 			IOUtils.write(template.generate(), outputStream);
 			outputStream.close();
 		} catch (IOException e) {
-			throw new MojoExecutionException("Cannot generate the file in "
-					+ outputPath, e);
 		}
 	}
 

@@ -33,7 +33,6 @@ public class RequireTemplate {
 
 	public String generate() throws IOException {
 		String output = IOUtils.toString(template);
-		template.close();
 
 		output = output.replaceAll("\\Q$webResourcesDir\\E", webResourcesDir);
 		output = output.replaceAll("\\Q$paths\\E", "paths:{"
