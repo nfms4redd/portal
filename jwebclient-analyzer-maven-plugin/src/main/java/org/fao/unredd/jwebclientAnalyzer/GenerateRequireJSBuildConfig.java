@@ -1,8 +1,11 @@
 package org.fao.unredd.jwebclientAnalyzer;
 
 import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
@@ -45,23 +48,56 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 	@Parameter
 	protected String mainOutputPath;
 
+	/**
+	 * Path to search for the plugin configuration files
+	 * (&lt;plugin&gt;-conf.json)
+	 */
+	@Parameter(defaultValue = "nfms")
+	protected String pluginConfDir;
+
+	/**
+	 * Path to search for the web resources (modules, styles, ...)
+	 */
+	@Parameter(defaultValue = "nfms")
+	protected String webResourcesDir;
+
+	/**
+	 * Path to the main.js template to use.
+	 */
+	@Parameter
+	protected String mainTemplate;
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		JEEContextAnalyzer analyzer = new JEEContextAnalyzer(
-				new ExpandedClientContext(webClientFolder));
+				new ExpandedClientContext(webClientFolder), pluginConfDir,
+				webResourcesDir);
 
-		processTemplate(analyzer, "/buildconfig.js", buildconfigOutputPath);
-		processTemplate(analyzer, "/main.js", mainOutputPath);
+		InputStream mainStream;
+		if (mainTemplate != null) {
+			try {
+				mainStream = new FileInputStream(mainTemplate);
+			} catch (FileNotFoundException e) {
+				throw new MojoExecutionException(
+						"Cannot find main template file: " + mainTemplate);
+			}
+		} else {
+			mainStream = getClass().getResourceAsStream("/main.js");
+		}
+		processTemplate(analyzer,
+				getClass().getResourceAsStream("/buildconfig.js"),
+				buildconfigOutputPath);
+		processTemplate(analyzer, mainStream, mainOutputPath);
 	}
 
 	private void processTemplate(JEEContextAnalyzer analyzer,
-			String templateResourceName, String outputPath)
+			InputStream templateStream, String outputPath)
 			throws MojoExecutionException {
 		Map<String, String> paths = analyzer.getNonRequirePathMap();
 		Map<String, String> shims = analyzer.getNonRequireShimMap();
 		List<String> moduleNames = analyzer.getRequireJSModuleNames();
-		RequireTemplate template = new RequireTemplate(templateResourceName,
-				paths, shims, moduleNames);
+		RequireTemplate template = new RequireTemplate(templateStream,
+				webResourcesDir, paths, shims, moduleNames);
 		try {
 			OutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(outputPath));

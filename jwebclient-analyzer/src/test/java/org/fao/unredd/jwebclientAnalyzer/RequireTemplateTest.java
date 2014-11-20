@@ -38,4 +38,15 @@ public class RequireTemplateTest {
 				+ "\"boh\":[\"foo\"]") != -1);
 		assertTrue(output.indexOf("\"module1\",\"module2\"") != -1);
 	}
+
+	@Test
+	public void checkWebResourcesDir() throws IOException {
+		RequireTemplate template = new RequireTemplate(getClass()
+				.getResourceAsStream("/test.js"), "webapp",
+				new HashMap<String, String>(), new HashMap<String, String>(),
+				new ArrayList<String>());
+
+		String output = template.generate();
+		assertTrue(output.indexOf("requirejs/webapp/modules") != -1);
+	}
 }

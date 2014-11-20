@@ -28,8 +28,10 @@ public class FileContext implements Context {
 		});
 
 		HashSet<String> ret = new HashSet<String>();
-		for (File file : jars) {
-			ret.add("WEB-INF/lib/" + file.getName());
+		if (jars != null) {
+			for (File file : jars) {
+				ret.add("WEB-INF/lib/" + file.getName());
+			}
 		}
 		return ret;
 	}
@@ -46,7 +48,7 @@ public class FileContext implements Context {
 
 	@Override
 	public File getClientRoot() {
-		return new File(root, "WEB-INF/classes/nfms");
+		return new File(root, "WEB-INF/classes");
 	}
 
 }

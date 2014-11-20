@@ -79,7 +79,7 @@
 							<goal>generate-buildconfig</goal>
 						</goals>
 						<configuration>
-							<webClientFolder>${project.build.directory}/requirejs/nfms</webClientFolder>
+							<webClientFolder>${project.build.directory}/requirejs</webClientFolder>
 							<buildconfigOutputPath>${project.build.directory}/buildconfig.js</buildconfigOutputPath>
 							<mainOutputPath>${project.build.directory}/requirejs/nfms/modules/main.js</mainOutputPath>
 						</configuration>
@@ -111,7 +111,7 @@
 			<plugin>
 				<groupId>com.github.bringking</groupId>
 				<artifactId>requirejs-maven-plugin</artifactId>
-				<version>2.0.5-SNAPSHOT</version>
+				<version>2.0.4</version>
 				<executions>
 					<execution>
 						<phase>prepare-package</phase>
@@ -126,9 +126,7 @@
 					<!--/opt/nodejs/node -->
 					<!--</nodeExecutable> -->
 					<!-- path to optimizer json config file -->
-					<configFiles>
-						<configFile>${project.build.directory}/buildconfig.js</configFile>
-					</configFiles>
+					<configFile>${project.build.directory}/buildconfig.js</configFile>
 					<fillDepsFromFolder>${project.build.directory}/requirejs/nfms/modules</fillDepsFromFolder>
 					<!-- optional path to optimizer executable -->
 					<!--<optimizerFile> -->
