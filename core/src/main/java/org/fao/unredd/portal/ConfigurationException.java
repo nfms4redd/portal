@@ -11,4 +11,8 @@ public class ConfigurationException extends RuntimeException {
 		super(msg);
 	}
 
+	public ConfigurationException(String msg, Throwable cause) {
+		super(msg, cause);
+	}
+
 }

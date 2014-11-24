@@ -3,6 +3,7 @@ package org.fao.unredd.feedback;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import org.fao.unredd.portal.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 
 import javax.mail.MessagingException;
 
+import org.fao.unredd.portal.PersistenceException;
 import org.junit.Test;
 
 public class CreateCommentTest {

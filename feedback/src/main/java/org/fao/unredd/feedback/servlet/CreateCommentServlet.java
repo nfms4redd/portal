@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fao.unredd.feedback.CannotSendMailException;
 import org.fao.unredd.feedback.Feedback;
-import org.fao.unredd.feedback.PersistenceException;
+import org.fao.unredd.portal.PersistenceException;
 
 public class CreateCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

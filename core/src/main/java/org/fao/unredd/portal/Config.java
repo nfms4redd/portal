@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,11 +64,14 @@ public class Config {
 	private boolean useCache;
 	private HashMap<Locale, ResourceBundle> localeBundles = new HashMap<Locale, ResourceBundle>();
 	private String layersContent;
+	private ArrayList<ModuleConfigurationProvider> moduleConfigurationProviders = new ArrayList<ModuleConfigurationProvider>();
 
 	public Config(String rootPath, String configInitParameter, boolean useCache) {
 		this.rootPath = rootPath;
 		this.configInitParameter = configInitParameter;
 		this.useCache = useCache;
+
+		moduleConfigurationProviders.add(new PluginJSONConfigurationProvider());
 	}
 
 	public File getPortalPropertiesFile() {
@@ -253,18 +257,50 @@ public class Config {
 	}
 
 	public Map<String, JSONObject> getPluginConfiguration() throws IOException {
-		File configProperties = new File(getDir() + "/plugin-conf.json");
-		BufferedInputStream stream;
-		try {
-			stream = new BufferedInputStream(new FileInputStream(
-					configProperties));
-		} catch (FileNotFoundException e) {
-			return new HashMap<String, JSONObject>();
+		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
+		for (ModuleConfigurationProvider provider : moduleConfigurationProviders) {
+			Map<String, JSONObject> moduleConfigurations = provider
+					.getConfigurationMap();
+			Set<String> moduleNames = moduleConfigurations.keySet();
+			for (String moduleName : moduleNames) {
+				JSONObject moduleConfiguration = ret.get(moduleName);
+				if (moduleConfiguration == null) {
+					moduleConfiguration = new JSONObject();
+					ret.put(moduleName, moduleConfiguration);
+				}
+
+				JSONObject moduleConfigurationToMerge = moduleConfigurations
+						.get(moduleName);
+				moduleConfiguration.putAll(moduleConfigurationToMerge);
+			}
+
 		}
-		String content = IOUtils.toString(stream);
-		stream.close();
-		PluginDescriptor pluginDescriptor = new PluginDescriptor(content);
-		return pluginDescriptor.getConfigurationMap();
+		return ret;
 	}
 
+	public void addModuleConfigurationProvider(
+			ModuleConfigurationProvider provider) {
+		moduleConfigurationProviders.add(provider);
+	}
+
+	private class PluginJSONConfigurationProvider implements
+			ModuleConfigurationProvider {
+
+		@Override
+		public Map<String, JSONObject> getConfigurationMap() throws IOException {
+			File configProperties = new File(getDir() + "/plugin-conf.json");
+			BufferedInputStream stream;
+			try {
+				stream = new BufferedInputStream(new FileInputStream(
+						configProperties));
+			} catch (FileNotFoundException e) {
+				return new HashMap<String, JSONObject>();
+			}
+			String content = IOUtils.toString(stream);
+			stream.close();
+			PluginDescriptor pluginDescriptor = new PluginDescriptor(content);
+			return pluginDescriptor.getConfigurationMap();
+		}
+
+	}
 }
