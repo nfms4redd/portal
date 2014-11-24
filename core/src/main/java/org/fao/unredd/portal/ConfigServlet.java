@@ -50,16 +50,16 @@ public class ConfigServlet extends HttpServlet {
 				.getAttribute("plugin-configuration");
 		Map<String, JSONObject> pluginConfigurationOverride = config
 				.getPluginConfiguration();
+		for (String configurationItem : pluginConfigurationOverride.keySet()) {
+			moduleConfig.element(configurationItem,
+					pluginConfigurationOverride.get(configurationItem));
+		}
 		for (String configurationItem : pluginConfiguration.keySet()) {
 			JSONObject defaultConfiguration = pluginConfiguration
 					.get(configurationItem);
-			JSONObject overridenConfiguration = pluginConfigurationOverride
-					.get(configurationItem);
-			if (overridenConfiguration != null) {
-				defaultConfiguration = overridenConfiguration;
+			if (!pluginConfigurationOverride.containsKey(configurationItem)) {
+				moduleConfig.element(configurationItem, defaultConfiguration);
 			}
-
-			moduleConfig.element(configurationItem, defaultConfiguration);
 		}
 
 		String json = new JSONObject().element("config", moduleConfig)

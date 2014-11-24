@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.fao.unredd.portal.DBUtils;
+import org.fao.unredd.portal.PersistenceException;
+
 public class DBFeedbackPersistence implements FeedbackPersistence {
 
 	private String tableName;

@@ -1,4 +1,4 @@
-package org.fao.unredd.feedback;
+package org.fao.unredd.portal;
 
 
 public class PersistenceException extends Exception {

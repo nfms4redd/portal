@@ -1,4 +1,4 @@
-package org.fao.unredd.feedback;
+package org.fao.unredd.portal;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,7 +10,19 @@ import javax.sql.DataSource;
 public class DBUtils {
 
 	public static void processConnection(String resourceName,
-			DBProcessor processor) throws PersistenceException {
+			final DBProcessor processor) throws PersistenceException {
+		processConnection(resourceName, new ReturningDBProcessor<Integer>() {
+
+			@Override
+			public Integer process(Connection connection) throws SQLException {
+				processor.process(connection);
+				return 0;
+			}
+		});
+	}
+
+	public static <T> T processConnection(String resourceName,
+			ReturningDBProcessor<T> processor) throws PersistenceException {
 		InitialContext context;
 		DataSource dataSource;
 		try {
@@ -20,9 +32,10 @@ public class DBUtils {
 		} catch (NamingException e) {
 			throw new PersistenceException("Cannot obtain Datasource", e);
 		}
+		T ret = null;
 		try {
 			Connection connection = dataSource.getConnection();
-			processor.process(connection);
+			ret = processor.process(connection);
 			connection.close();
 		} catch (SQLException e) {
 			throw new PersistenceException("Database error", e);
@@ -33,11 +46,18 @@ public class DBUtils {
 			// ignore
 		}
 
+		return ret;
 	}
 
 	public interface DBProcessor {
 
 		void process(Connection connection) throws SQLException;
+
+	}
+
+	public interface ReturningDBProcessor<T> {
+
+		T process(Connection connection) throws SQLException;
 
 	}
 
