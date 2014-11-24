@@ -17,3 +17,13 @@ To make the plugin work it is necessary to:
 			}
 		}
 	}
+
+TODO:
+
+- Be able to specify the map in the geoexplorer database in a URL parameter
+
+- Set the zoom level and center
+
+- Set the GetLegendGraphics
+
+- Groups
