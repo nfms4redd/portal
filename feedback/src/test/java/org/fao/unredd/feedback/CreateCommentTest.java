@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import javax.mail.MessagingException;
 
@@ -86,5 +87,26 @@ public class CreateCommentTest {
 		feedback = new Feedback(persistence, mock(Mailer.class));
 		feedback.insertNew(validGeometry, validSRID, validComment, validEmail);
 		verify(persistence, times(1)).cleanOutOfDate();
+	}
+
+	@Test
+	public void testVerifyComment() throws Exception {
+		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		when(persistence.existsUnverified("100")).thenReturn(true);
+		feedback = new Feedback(persistence, mock(Mailer.class));
+		feedback.verify("100");
+		verify(persistence).verify("100");
+	}
+
+	@Test
+	public void testVerifyVerifiedComment() throws Exception {
+		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		when(persistence.existsUnverified("100")).thenReturn(false);
+		feedback = new Feedback(persistence, mock(Mailer.class));
+		try {
+			feedback.verify("100");
+			fail();
+		} catch (VerificationCodeNotFoundException e) {
+		}
 	}
 }

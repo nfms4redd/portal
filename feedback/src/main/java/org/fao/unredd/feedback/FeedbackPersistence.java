@@ -11,4 +11,8 @@ public interface FeedbackPersistence {
 
 	void createTable() throws PersistenceException;
 
+	boolean existsUnverified(String verificationCode)
+			throws PersistenceException;
+
+	void verify(String verificationCode) throws PersistenceException;
 }

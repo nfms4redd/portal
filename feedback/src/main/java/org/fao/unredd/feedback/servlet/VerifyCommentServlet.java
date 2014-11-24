@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fao.unredd.feedback.Feedback;
 import org.fao.unredd.feedback.VerificationCodeNotFoundException;
+import org.fao.unredd.portal.PersistenceException;
 import org.fao.unredd.portal.StatusServletException;
 
 public class VerifyCommentServlet extends HttpServlet {
@@ -29,6 +30,9 @@ public class VerifyCommentServlet extends HttpServlet {
 		} catch (VerificationCodeNotFoundException e) {
 			throw new StatusServletException(404,
 					"Could not found any message with the specified validation code");
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

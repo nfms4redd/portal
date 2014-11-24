@@ -2,6 +2,7 @@ package org.fao.unredd.feedback;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -76,6 +77,47 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 								+ "validated boolean NOT NULL DEFAULT false,"//
 								+ "notified boolean NOT NULL DEFAULT false"//
 								+ ")");
+				statement.execute();
+
+				statement.close();
+			}
+		});
+	}
+
+	@Override
+	public boolean existsUnverified(final String verificationCode)
+			throws PersistenceException {
+		return DBUtils.processConnection("unredd-portal",
+				new DBUtils.ReturningDBProcessor<Boolean>() {
+					@Override
+					public Boolean process(Connection connection)
+							throws SQLException {
+						PreparedStatement statement = connection
+								.prepareStatement("SELECT count(*) FROM "
+										+ tableName
+										+ " WHERE verification_code = ?");
+						statement.setString(1, verificationCode);
+						ResultSet resultSet = statement.executeQuery();
+						resultSet.next();
+						int verificationCodeCount = resultSet.getInt(1);
+						statement.close();
+
+						return verificationCodeCount == 1;
+					}
+				});
+	}
+
+	@Override
+	public void verify(final String verificationCode)
+			throws PersistenceException {
+		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
+			@Override
+			public void process(Connection connection) throws SQLException {
+				PreparedStatement statement = connection
+						.prepareStatement("UPDATE TABLE " + tableName
+								+ " SET verification_code = NULL "
+								+ "WHERE verification_code = ?");
+				statement.setString(1, verificationCode);
 				statement.execute();
 
 				statement.close();

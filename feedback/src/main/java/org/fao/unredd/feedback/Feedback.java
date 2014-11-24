@@ -53,9 +53,12 @@ public class Feedback {
 	}
 
 	public void verify(String verificationCode)
-			throws VerificationCodeNotFoundException {
-		// TODO Auto-generated method stub
-
+			throws VerificationCodeNotFoundException, PersistenceException {
+		if (persistence.existsUnverified(verificationCode)) {
+			persistence.verify(verificationCode);
+		} else {
+			throw new VerificationCodeNotFoundException();
+		}
 	}
 
 	public String[] notifyValidated() {
