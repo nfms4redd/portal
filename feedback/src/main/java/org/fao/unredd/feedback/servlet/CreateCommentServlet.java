@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.fao.unredd.feedback.CannotSendMailException;
 import org.fao.unredd.feedback.Feedback;
 import org.fao.unredd.portal.PersistenceException;
+import org.fao.unredd.portal.StatusServletException;
 
 public class CreateCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -26,16 +27,13 @@ public class CreateCommentServlet extends HttpServlet {
 		Feedback feedback = (Feedback) req.getServletContext().getAttribute(
 				"feedback");
 		try {
-			String verificationCode = feedback.insertNew(geom, srid, comment,
-					email);
+			feedback.insertNew(geom, srid, comment, email);
 			resp.setContentType("application/json");
-			resp.getWriter().println(verificationCode);
+			resp.setStatus(200);
 		} catch (CannotSendMailException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new StatusServletException(500, e.getMessage());
 		} catch (PersistenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new StatusServletException(500, e.getMessage());
 		}
 	}
 }

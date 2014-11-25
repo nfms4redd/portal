@@ -42,6 +42,7 @@ public class ErrorServlet extends HttpServlet {
 		} else {
 			if (throwable instanceof StatusServletException) {
 				resp.setStatus(((StatusServletException) throwable).getStatus());
+				errorMsg = throwable.getMessage();
 			} else {
 				resp.setStatus(500);
 			}

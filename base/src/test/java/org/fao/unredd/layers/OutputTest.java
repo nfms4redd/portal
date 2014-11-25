@@ -28,7 +28,7 @@ public class OutputTest {
 
 	@Test
 	public void testSerialization() throws Exception {
-		Outputs indicators = new Outputs(new OutputDescriptor("a", "b", "c"));
+		Outputs indicators = new Outputs(new Output("a", "b", "c"));
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode tree = mapper.readTree(indicators.toJSON());

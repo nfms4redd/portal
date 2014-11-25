@@ -114,7 +114,7 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 			@Override
 			public void process(Connection connection) throws SQLException {
 				PreparedStatement statement = connection
-						.prepareStatement("UPDATE TABLE " + tableName
+						.prepareStatement("UPDATE " + tableName
 								+ " SET verification_code = NULL "
 								+ "WHERE verification_code = ?");
 				statement.setString(1, verificationCode);

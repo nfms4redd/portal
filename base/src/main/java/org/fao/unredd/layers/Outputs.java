@@ -35,10 +35,6 @@ public class Outputs extends ArrayList<Output> {
 		Collections.addAll(this, outputs);
 	}
 
-	public Outputs(OutputDescriptor outputDescriptor) {
-		this.add((Output) outputDescriptor);
-	}
-
 	public String toJSON() {
 		StringBuilder ret = new StringBuilder("[");
 		String separator = "";
