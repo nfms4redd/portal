@@ -11,6 +11,7 @@ import javax.servlet.ServletContextListener;
 import org.fao.unredd.jwebclientAnalyzer.Context;
 import org.fao.unredd.jwebclientAnalyzer.JEEContextAnalyzer;
 import org.fao.unredd.portal.Config;
+import org.fao.unredd.portal.DefaultConfig;
 
 public class AppContextListener implements ServletContextListener {
 
@@ -22,7 +23,8 @@ public class AppContextListener implements ServletContextListener {
 				.getInitParameter("PORTAL_CONFIG_DIR");
 		boolean configCache = Boolean.parseBoolean(System
 				.getenv("NFMS_CONFIG_CACHE"));
-		Config config = new Config(rootPath, configInitParameter, configCache);
+		Config config = new DefaultConfig(rootPath, configInitParameter,
+				configCache);
 		servletContext.setAttribute("config", config);
 
 		JEEContextAnalyzer context = new JEEContextAnalyzer(new JEEContext(

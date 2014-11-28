@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSONObject;
 
 import org.junit.Test;
@@ -16,7 +18,7 @@ public class ConfigTest {
 
 	@Test
 	public void testConfigurationProvidersDontOverride() throws Exception {
-		Config config = new Config("", "", false);
+		Config config = new DefaultConfig("", "", false);
 		JSONObject conf1 = new JSONObject();
 		conf1.element("a", "a");
 		conf1.element("b", "b");
@@ -24,16 +26,18 @@ public class ConfigTest {
 		conf2.element("a", "z");
 		conf2.element("c", "c");
 
+		HttpServletRequest request = mock(HttpServletRequest.class);
 		ModuleConfigurationProvider provider1 = mock(ModuleConfigurationProvider.class);
-		when(provider1.getConfigurationMap()).thenReturn(
+		when(provider1.getConfigurationMap(request)).thenReturn(
 				buildMap("myModule", conf1));
 		ModuleConfigurationProvider provider2 = mock(ModuleConfigurationProvider.class);
-		when(provider2.getConfigurationMap()).thenReturn(
+		when(provider2.getConfigurationMap(request)).thenReturn(
 				buildMap("myModule", conf2));
 		config.addModuleConfigurationProvider(provider1);
 		config.addModuleConfigurationProvider(provider2);
 
-		JSONObject pluginConf = config.getPluginConfiguration().get("myModule");
+		JSONObject pluginConf = config.getPluginConfiguration(request).get(
+				"myModule");
 
 		assertTrue(pluginConf.has("a") && pluginConf.has("b")
 				&& pluginConf.has("c"));

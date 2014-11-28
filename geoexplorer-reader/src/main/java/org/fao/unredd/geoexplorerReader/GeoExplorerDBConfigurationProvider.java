@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -22,11 +24,23 @@ public class GeoExplorerDBConfigurationProvider implements
 	}
 
 	@Override
-	public Map<String, JSONObject> getConfigurationMap()
-			throws ConfigurationException {
+	public Map<String, JSONObject> getConfigurationMap(
+			HttpServletRequest request) throws ConfigurationException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 		try {
-			ret.put("geoexplorer-layers", getGeoExplorerLayers(2));
+			String mapIdParameter = request.getParameter("mapId");
+			int mapId;
+			if (mapIdParameter != null) {
+				try {
+					mapId = Integer.parseInt(mapIdParameter);
+				} catch (NumberFormatException e) {
+					throw new ConfigurationException("mapId must be an integer");
+				}
+			} else {
+				throw new ConfigurationException(
+						"mapId parameter must be configured");
+			}
+			ret.put("geoexplorer-layers", getGeoExplorerLayers(mapId));
 		} catch (PersistenceException e) {
 			throw new ConfigurationException(
 					"Cannot read geoexplorer database", e);
