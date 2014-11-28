@@ -39,7 +39,7 @@ public class DBLayerFactory implements LayerFactory {
 
 	private String qName;
 
-	public DBLayerFactory(String layerName) throws IOException {
+	public DBLayerFactory(String layerName) {
 		String[] workspaceAndName = layerName.split(Pattern.quote(":"));
 		if (workspaceAndName.length != 2) {
 			throw new IllegalArgumentException(

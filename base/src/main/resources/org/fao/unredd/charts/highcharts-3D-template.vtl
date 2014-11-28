@@ -28,7 +28,7 @@
 
       $(document).ready(function() {
         var colors = Highcharts.getOptions().colors;
-        //console.log(colors); // DEBUG
+        // console.log(colors); // DEBUG
 
         // FACET custom colors
         var fccColors = {
@@ -40,14 +40,14 @@
 
         $('#title').text(gup('name').toLowerCase());
       });
-//Chart 3D . manuel.retamozo@fao
+// Chart 3D . manuel.retamozo@fao
         
         $(function () {
             $('#container1').highcharts({
                     title: {
-            //text: 'Segun leyenda N1',
+            // text: 'Segun leyenda N1',
             text: '$title',
-            x: -20 //center
+            x: -20 // center
           },
           subtitle: {
         	  text: '$subtitle',
@@ -55,6 +55,7 @@
           },
           xAxis: {
             categories: [ #foreach( $date in $dates )'$date'#if( $foreach.hasNext ), #end#end ],
+            // categories:['TF','OTF/OFL','OT']
             labels: {
               rotation: 0,
               align: 'right',
@@ -65,10 +66,8 @@
           },
         yAxis: {
             title: {
-              //text: 'Hectareas'
-            	text: '$y-label ($units)'
+                  	text: '$y-label ($units)' // text: 'Bosques deforestados (Hectareas)'
             },
-            //categories:['TF','OTF/OFL','OT']
         },
         chart: {
             type: 'column',
@@ -104,68 +103,6 @@
     });
  
  });
-
-//
-/*
-        chart1 = new Highcharts.Chart({
-          chart: {
-            renderTo: 'container1',
-            defaultSeriesType: 'bar'
-          },
-          title: {
-            //text: 'Classification des forêts',
-            text: '$title',
-            x: -20 //center
-          },
-          subtitle: {
-            text: '$subtitle',
-            x: -20
-          },
-          xAxis: {
-            categories: [ #foreach( $date in $dates )'$date'#if( $foreach.hasNext ), #end#end ],
-            labels: {
-              rotation: -45,
-              align: 'right',
-              style: {
-                font: 'normal 10px Verdana, sans-serif'
-              }
-            }
-          },
-          yAxis: {
-            title: {
-              text: '$y-label ($units)'
-            },
-            plotLines: [{
-              value: 0,
-              width: 1,
-              color: '#808080'
-            }]
-          },
-          tooltip: {
-            formatter: function() {
-              //return '<b>'+ this.series.name +'</b><br/>'+
-              return this.x +': '+ this.y.toFixed($tooltipDecimals) +' $units';
-            }
-          },
-          legend: {
-            enabled: true,
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -10,
-            y: 100,
-            borderWidth: 0
-          },
-          series: [{
-            data: [#foreach( $datum in $data )$datum#if( $foreach.hasNext ), #end#end]
-          }],
-          credits: {
-            enabled: false
-          }
-        });
-
-      });
-      */
     </script>
     
     <style type="text/css">
@@ -194,7 +131,7 @@
             
       #container1
       {
-        /*border: 1px dashed grey;*/
+        /* border: 1px dashed grey; */
         width: 800px;
         height: 400px;
         margin: 0 auto;
@@ -208,8 +145,9 @@
         width: 32px;
         height: 32px;
         float: left;
-        /*padding:5px 0 0px 20px;
-        color:#8e8e8e;*/
+        /*
+		 * padding:5px 0 0px 20px; color:#8e8e8e;
+		 */
       }
       
       a img {
@@ -260,13 +198,7 @@
     
     <!-- 3. Add the containers -->
     <div id="container1"></div>
-    
-    <!--
-    <div id="container2"></div>
-    <div id="container3"></div>
-    <div id="container4"></div>
-    -->
-    
+
     <div id="hover_text">$hover</div>
     <div id="disclaimer">$footer</div>
     

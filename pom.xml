@@ -13,10 +13,10 @@
 		<module>jwebclient-analyzer</module>
 		<module>jwebclient-analyzer-maven-plugin</module>
 		<module>feedback</module>
-    <module>layer-time-sliders</module>
-    <module>geoexplorer-reader</module>
-    <module>integration-tests</module>
-  </modules>
+		<module>layer-time-sliders</module>
+    		<module>geoexplorer-reader</module>
+    		<module>integration-tests</module>
+  	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>9.2</geotools.version>

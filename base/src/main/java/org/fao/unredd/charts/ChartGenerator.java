@@ -31,24 +31,14 @@ import org.fao.unredd.layers.Output;
 
 /**
  * 
- * @destructor manureta
+ * @author manureta
  */
 public class ChartGenerator {
 
 	private Output inputData;
 
-	/*
-	 * public ChartGenerator(String string) { // inputData =
-	 * JAXB.unmarshal(chartInput, StatisticsChartInput.class); inputData = new
-	 * Output(string; }
-	 */
 	public ChartGenerator(Output output) {
-		// inputData = JAXB.unmarshal(chartInput, StatisticsChartInput.class);
 		inputData = output;
-	}
-
-	public ChartGenerator(FileInputStream fileInputStream) {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void generate(String objectId, Writer writer) throws IOException {
@@ -86,25 +76,6 @@ public class ChartGenerator {
 
 	private Object nullToEmptyString(Object value) {
 		return value == null ? "" : value;
-	}
-
-	private Iterator<Double> getValues(String id, List<DataType> data) {
-		for (DataType dataType : data) {
-			if (dataType.getZoneId().equals(id)) {
-				return dataType.getValue().iterator();
-			}
-		}
-
-		return null;
-	}
-
-	public static void main(String[] args) throws Exception {
-		ChartGenerator chartGenerator = new ChartGenerator(
-				new FileInputStream(
-						new File(
-								"/home/fergonco/java/nfms/nfms/"
-										+ "portal/testlayer/output/stats-indicator_unredd_temporalMosaic/result.xml")));
-		chartGenerator.generate("2", new FileWriter(new File("/tmp/a.html")));
 	}
 
 	public String getContentType() {
