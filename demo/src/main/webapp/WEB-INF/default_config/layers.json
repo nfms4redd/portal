@@ -79,6 +79,24 @@
 			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
 			"sourceLabel" : "WRI",
 			"queryable" : true
+		}, {
+			"id" : "departamentos",
+			"baseUrl" : "http://localhost:8080/geoserver/wms",
+			"wmsName" : "idera:departamentos_g",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.mapaeducativo.edu.ar",
+			"sourceLabel" : "WRI",
+			"queryable" : true
+		}, {
+			"id" : "stb",
+			"baseUrl" : "http://localhost:8080/geoserver/wms",
+			"wmsName" : "idera:stb_wgs84",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://localhost",
+			"sourceLabel" : "WRI",
+			"queryable" : true
 		}
 	],
 
@@ -131,6 +149,20 @@
 		}, {
 			"id" : "provinces_title_placeholder",
 			"label" : "Provincias"
+		},
+		{
+			"id" : "departamentos",
+			"active" : true,
+			"infoFile" : "forest_classification_def.html",
+			"label" : "Departamentos de Argentina",
+			"layers" : [ "departamentos" ]
+		},
+		{
+			"id" : "stb",
+			"active" : true,
+			"infoFile" : "forest_classification_def.html",
+			"label" : "Selva Tucumano Boliviana",
+			"layers" : [ "stb" ]
 		}
 	],
 
@@ -153,11 +185,11 @@
 		}, {
 			"id" : "admin",
 			"label" : "${admin_areas}",
-			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces" ]
+			"items" : [ "departamentos","countryBoundaries", "provinces_title_placeholder", "provinces" ]
 		}, {
 			"id" : "landcover",
 			"label" : "${land_cover_maps}",
-			"items" : [ "forest_mask", "forest", "nexrad_layer" ]
+			"items" : [ "stb", "forest_mask", "forest", "nexrad_layer" ]
 		}
 	]
 }
