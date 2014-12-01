@@ -4,7 +4,10 @@
 			"hide" : false
 		},
 		"info-dialog" : {
-			"open-in-center" : false
+			"open-in-center" : center
+		},
+		"error-management" : {
+			"div-id" : null
 		}
 	}
 }
