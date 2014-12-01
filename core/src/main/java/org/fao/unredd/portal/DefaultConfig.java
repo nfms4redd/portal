@@ -155,12 +155,14 @@ public class DefaultConfig implements Config {
 	public String getLayers(Locale locale, HttpServletRequest request)
 			throws IOException, ConfigurationException {
 		if (layersContent == null || !useCache) {
-			layersContent = getLocalizedFileContents(getLayersFile(), locale);
+			layersContent = getLocalizedFileContents(getLayersFile(request),
+					locale);
 		}
 		return layersContent;
 	}
 
-	private File getLayersFile() {
+	@Override
+	public File getLayersFile(HttpServletRequest request) {
 		return new File(getDir() + "/layers.json");
 	}
 
@@ -187,8 +189,7 @@ public class DefaultConfig implements Config {
 		return bundle;
 	}
 
-	@Override
-	public String getLocalizedFileContents(File file, Locale locale)
+	private String getLocalizedFileContents(File file, Locale locale)
 			throws IOException, ConfigurationException {
 		try {
 			BufferedInputStream bis = new BufferedInputStream(

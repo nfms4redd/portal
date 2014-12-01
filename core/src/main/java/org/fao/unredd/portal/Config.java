@@ -53,10 +53,9 @@ public interface Config {
 	String getLayers(Locale locale, HttpServletRequest request)
 			throws IOException, ConfigurationException;
 
-	ResourceBundle getMessages(Locale locale) throws ConfigurationException;
+	File getLayersFile(HttpServletRequest request);
 
-	String getLocalizedFileContents(File file, Locale locale)
-			throws IOException, ConfigurationException;
+	ResourceBundle getMessages(Locale locale) throws ConfigurationException;
 
 	String[] getPropertyAsArray(String property);
 
