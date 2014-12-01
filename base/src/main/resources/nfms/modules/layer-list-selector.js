@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui", "layer-list" ], function($, bus, layout, customization, i18n, ui, layerList) {
+define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui" ], function($, bus, layout, customization, i18n, ui) {
 	var divLayerListSelector = layout.layerListSelector;
 
 	var allLayersButton = $('<input type="radio" id="show_all_layers" name="layer_list_selector" checked="checked"><label for="show_all_layers">' + i18n.layers + '</label>');
