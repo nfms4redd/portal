@@ -16,6 +16,8 @@
     <module>layer-time-sliders</module>
     <module>geoexplorer-reader</module>
     <module>integration-tests</module>
+    <module>time-slider</module>
+    <module>language-buttons</module>
   </modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

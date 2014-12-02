@@ -1,7 +1,8 @@
 {
 	"default-conf" : {
 		"banner" : {
-			"hide" : false
+			"hide" : false,
+			"show-flag" : false
 		},
 		"info-dialog" : {
 			"open-in-center" : center

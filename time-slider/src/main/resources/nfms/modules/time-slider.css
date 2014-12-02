@@ -1,3 +1,16 @@
+#time_slider_pane {
+	z-index: 2000;
+	position: absolute;
+	top: 8px;
+	left: 220px;
+	width: 180px;
+	font-size: 60%;
+	font-size: 11px;
+	border: 1px solid #333;
+	height: 30px;
+	background-color: #456;
+}
+
 #time_slider_label {
 	position: absolute;
 	color: #fff;
