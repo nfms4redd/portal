@@ -31,11 +31,11 @@ public class CreateCommentServlet extends HttpServlet {
 			resp.setContentType("application/json");
 			resp.setStatus(200);
 		} catch (IllegalArgumentException e) {
-			throw new StatusServletException(400, e.getMessage());
+			throw new StatusServletException(400, e);
 		} catch (CannotSendMailException e) {
-			throw new StatusServletException(500, e.getMessage());
+			throw new StatusServletException(500, e);
 		} catch (PersistenceException e) {
-			throw new StatusServletException(500, e.getMessage());
+			throw new StatusServletException(500, e);
 		}
 	}
 }

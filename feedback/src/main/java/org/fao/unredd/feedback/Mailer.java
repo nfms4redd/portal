@@ -23,6 +23,7 @@ public class Mailer {
 	private String title;
 	private String verifyMessage;
 	private String verifiedMessage;
+	private String validatedMessage;
 
 	public Mailer(Properties properties) {
 		this(properties.getProperty("feedback-mail-host"), properties
@@ -31,11 +32,13 @@ public class Mailer {
 				.getProperty("feedback-mail-password"), properties
 				.getProperty("feedback-mail-title"), properties
 				.getProperty("feedback-verify-mail-text"), properties
-				.getProperty("feedback-admin-mail-text"));
+				.getProperty("feedback-admin-mail-text"), properties
+				.getProperty("feedback-validated-mail-text"));
 	}
 
 	public Mailer(String host, String port, String userName, String password,
-			String title, String verifyMessage, String verifiedMessage) {
+			String title, String verifyMessage, String verifiedMessage,
+			String validatedMessage) {
 		this.host = checkNull(host);
 		this.port = checkNull(port);
 		this.userName = checkNull(userName);
@@ -43,6 +46,7 @@ public class Mailer {
 		this.title = checkNull(title);
 		this.verifyMessage = checkNull(verifyMessage);
 		this.verifiedMessage = checkNull(verifiedMessage);
+		this.validatedMessage = checkNull(validatedMessage);
 	}
 
 	private String checkNull(String value) {
@@ -56,10 +60,10 @@ public class Mailer {
 
 	public void sendVerificationMail(String email, String verificationCode)
 			throws MessagingException {
-		sendVerificationMail(email, verificationCode, verifyMessage);
+		replaceCodeAndSendMail(email, verificationCode, verifyMessage);
 	}
 
-	private void sendVerificationMail(String email, String verificationCode,
+	private void replaceCodeAndSendMail(String email, String verificationCode,
 			String text) throws MessagingException, AddressException {
 		text = text.replaceAll(Pattern.quote("$code"), verificationCode);
 		sendMail(email, title, text);
@@ -98,7 +102,12 @@ public class Mailer {
 
 	public void sendVerifiedMail(String verificationCode)
 			throws AddressException, MessagingException {
-		sendVerificationMail(userName, verificationCode, verifiedMessage);
+		replaceCodeAndSendMail(userName, verificationCode, verifiedMessage);
+	}
+
+	public void sendValidatedMail(String mail, String verificationCode)
+			throws AddressException, MessagingException {
+		replaceCodeAndSendMail(mail, verificationCode, validatedMessage);
 	}
 
 }

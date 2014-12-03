@@ -20,6 +20,7 @@ public class FeedbackContextListener implements ServletContextListener {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FeedbackContextListener.class);
+	private Timer timer;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -40,16 +41,29 @@ public class FeedbackContextListener implements ServletContextListener {
 					e);
 		}
 
-		Timer timer = new Timer();
-		int tenMinutes = 1000 * 60 * 10;
+		timer = new Timer();
+		int rate;
+		try {
+			rate = Integer.parseInt(properties
+					.getProperty("feedback-validation-check-delay"));
+		} catch (NumberFormatException e) {
+			logger.warn("feedback-validation-check property not present. Will check each 10 minutes");
+			int tenMinutes = 1000 * 60 * 10;
+			rate = tenMinutes;
+		}
 		timer.scheduleAtFixedRate(new TimerTask() {
 
 			@Override
 			public void run() {
-				((Feedback) servletContext.getAttribute("feedback"))
-						.notifyValidated();
+				try {
+					((Feedback) servletContext.getAttribute("feedback"))
+							.notifyValidated();
+				} catch (PersistenceException e) {
+					logger.error(
+							"Database error notifying the comment authors", e);
+				}
 			}
-		}, 0, tenMinutes);
+		}, 0, rate);
 
 	}
 

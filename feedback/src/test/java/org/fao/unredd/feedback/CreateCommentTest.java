@@ -11,6 +11,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import javax.mail.MessagingException;
+
 import org.fao.unredd.portal.PersistenceException;
 import org.junit.Test;
 
@@ -108,5 +110,34 @@ public class CreateCommentTest {
 			fail();
 		} catch (VerificationCodeNotFoundException e) {
 		}
+	}
+
+	@Test
+	public void testNotifyAuthors() throws Exception {
+		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		when(persistence.getValidatedToNotifyInfo()).thenReturn(
+				new CommentInfo[] { new CommentInfo(1, "a@b.com", "100") });
+		Mailer mailer = mock(Mailer.class);
+		feedback = new Feedback(persistence, mailer);
+		feedback.notifyValidated();
+
+		verify(mailer).sendValidatedMail("a@b.com", "100");
+		verify(persistence).setNotified(1);
+	}
+
+	@Test
+	public void testNotifyAuthorsMailError() throws Exception {
+		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		when(persistence.getValidatedToNotifyInfo()).thenReturn(
+				new CommentInfo[] { new CommentInfo(1, "a@b.com", "100"),
+						new CommentInfo(2, "c@d.com", "101") });
+		Mailer mailer = mock(Mailer.class);
+		doThrow(new MessagingException()).when(mailer).sendValidatedMail(
+				"c@d.com", "101");
+		feedback = new Feedback(persistence, mailer);
+		feedback.notifyValidated();
+
+		verify(mailer).sendValidatedMail("a@b.com", "100");
+		verify(persistence, times(1)).setNotified(1);
 	}
 }

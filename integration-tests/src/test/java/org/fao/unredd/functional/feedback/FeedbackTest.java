@@ -120,14 +120,32 @@ public class FeedbackTest {
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 
 		// Get the verification code from the database
-		Object verificationCode = SQL("SELECT verification_code FROM "
-				+ testSchema + ".comments ORDER BY date DESC");
+		String verificationCode = SQLQuery(
+				"SELECT verification_code FROM " + testSchema
+						+ ".comments ORDER BY date DESC").toString();
 
 		// Verify it
-		ret = GET("verify-comment", "verificationCode",
-				verificationCode.toString());
+		ret = GET("verify-comment", "verificationCode", verificationCode);
 
 		assertEquals(200, ret.getStatusLine().getStatusCode());
+
+		// Check validation has not been notified to author
+		Long notifiedCount = (Long) SQLQuery("SELECT count(*) FROM "
+				+ testSchema + ".comments WHERE state=3");
+		assertEquals(0, notifiedCount.longValue());
+
+		// Validate the entry and wait (more than the notification delay)
+		SQLExecute("UPDATE " + testSchema
+				+ ".comments SET state=2 WHERE verification_code='"
+				+ verificationCode + "'");
+		synchronized (this) {
+			wait(3000);
+		}
+
+		// Check the entry has been marked as "notified"
+		notifiedCount = (Long) SQLQuery("SELECT count(*) FROM " + testSchema
+				+ ".comments WHERE state=3");
+		assertEquals(1, notifiedCount.longValue());
 	}
 
 	@Test
@@ -163,7 +181,7 @@ public class FeedbackTest {
 		assertEquals(400, ret.getStatusLine().getStatusCode());
 	}
 
-	private Object SQL(String sql) throws SQLException {
+	private Object SQLQuery(String sql) throws SQLException {
 		Connection connection = dataSource.getConnection();
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(sql);
@@ -173,6 +191,14 @@ public class FeedbackTest {
 		statement.close();
 		connection.close();
 		return ret;
+	}
+
+	private void SQLExecute(String sql) throws SQLException {
+		Connection connection = dataSource.getConnection();
+		Statement statement = connection.createStatement();
+		statement.execute(sql);
+		statement.close();
+		connection.close();
 	}
 
 	private CloseableHttpResponse GET(String path, String... parameters)

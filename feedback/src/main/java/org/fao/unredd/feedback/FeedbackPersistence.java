@@ -15,4 +15,8 @@ public interface FeedbackPersistence {
 			throws PersistenceException;
 
 	void verify(String verificationCode) throws PersistenceException;
+
+	CommentInfo[] getValidatedToNotifyInfo() throws PersistenceException;
+
+	void setNotified(int id) throws PersistenceException;
 }
