@@ -114,7 +114,7 @@ public class FeedbackTest {
 	@Test
 	public void testCommentAndVerify() throws Exception {
 		CloseableHttpResponse ret = GET("create-comment", "email",
-				"fergonco@gmail.com", "geometry", "POINT(0 1)", "srid",
+				"onuredd@gmail.com", "geometry", "POINT(0 1)", "srid",
 				"900913", "comment", "boh");
 
 		assertEquals(200, ret.getStatusLine().getStatusCode());
@@ -144,7 +144,7 @@ public class FeedbackTest {
 	@Test
 	public void testCommentWrongWKT() throws Exception {
 		CloseableHttpResponse ret = GET("create-comment", "email",
-				"fergonco@gmail.com", "geometry", "POINT(0, 1)", "srid",
+				"onuredd@gmail.com", "geometry", "POINT(0, 1)", "srid",
 				"900913", "comment", "boh");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
@@ -155,7 +155,7 @@ public class FeedbackTest {
 	@Test
 	public void testMissingParameter() throws Exception {
 		CloseableHttpResponse ret = GET("create-comment", "email",
-				"fergonco@gmail.com", "geometry", "POINT(0, 1)", "srid",
+				"onuredd@gmail.com", "geometry", "POINT(0, 1)", "srid",
 				"900913");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
