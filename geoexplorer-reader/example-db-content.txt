@@ -1,0 +1,435 @@
+{
+    "proxy": "../proxy/?url=",
+    "printService": "/geoserver/pdf/",
+    "about": {
+        "title": "GeoExplorer Demo Map",
+        "abstract": "This is a demonstration of GeoExplorer, an application for assembling and publishing web-based maps. After adding layers to the map, use the 'Publish map' tool to embed this map in any web page.",
+        "contact": "For more information, contact <a href='http://opengeo.org'>OpenGeo</a>."
+    },
+    "defaultSourceType": "gxp_wmscsource",
+    "sources": {
+        "local": {
+            "url": "/geoserver/ows",
+            "title": "Local GeoServer",
+            "ptype": "gxp_wmscsource",
+            "projection": "EPSG:102113",
+            "id": "local",
+            "baseParams": {
+                "SERVICE": "WMS",
+                "REQUEST": "GetCapabilities",
+                "TILED": true,
+                "VERSION": "1.1.1"
+            }
+        },
+        "suite": {
+            "url": "http://v2.suite.opengeo.org/geoserver/ows",
+            "title": "Remote Suite GeoServer",
+            "projection": "EPSG:102113",
+            "id": "suite",
+            "baseParams": {
+                "SERVICE": "WMS",
+                "REQUEST": "GetCapabilities",
+                "TILED": true,
+                "VERSION": "1.1.1"
+            }
+        },
+        "mapquest": {
+            "ptype": "gxp_mapquestsource",
+            "projection": "EPSG:102113",
+            "id": "mapquest"
+        },
+        "osm": {
+            "ptype": "gxp_osmsource",
+            "projection": "EPSG:102113",
+            "id": "osm"
+        },
+        "google": {
+            "ptype": "gxp_googlesource",
+            "projection": "EPSG:102113",
+            "id": "google"
+        },
+        "bing": {
+            "ptype": "gxp_bingsource",
+            "projection": "EPSG:102113",
+            "id": "bing"
+        },
+        "mapbox": {
+            "ptype": "gxp_mapboxsource",
+            "projection": "EPSG:102113",
+            "id": "mapbox"
+        },
+        "ol": {
+            "ptype": "gxp_olsource",
+            "projection": "EPSG:102113",
+            "id": "ol"
+        }
+    },
+    "map": {
+        "projection": "EPSG:102113",
+        "layers": [
+            {
+                "source": "mapquest",
+                "name": "osm",
+                "title": "MapQuest OpenStreetMap",
+                "visibility": true,
+                "opacity": 1,
+                "group": "background",
+                "fixed": true,
+                "selected": false
+            },
+            {
+                "source": "ol",
+                "name": "None",
+                "title": "None",
+                "visibility": false,
+                "opacity": 1,
+                "group": "background",
+                "fixed": true,
+                "selected": false,
+                "type": "OpenLayers.Layer",
+                "args": [
+                    "None",
+                    {
+                        "visibility": false
+                    }
+                ]
+            },
+            {
+                "source": "local",
+                "name": "workshop:arg_adm1",
+                "title": "arg_adm1",
+                "visibility": true,
+                "opacity": 1,
+                "selected": true,
+                "capability": {
+                    "nestedLayers": [],
+                    "styles": [
+                        {
+                            "name": "polygon",
+                            "title": "Default Polygon",
+                            "abstract": "A sample style that draws a polygon",
+                            "legend": {
+                                "width": "20",
+                                "height": "20",
+                                "format": "image/png",
+                                "href": "http://192.168.2.107:80/geoserver/wms?request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=arg_adm1"
+                            }
+                        }
+                    ],
+                    "srs": {
+                        "EPSG:102113": true
+                    },
+                    "metadataURLs": [],
+                    "bbox": {
+                        "EPSG:4326": {
+                            "bbox": [
+                                -73.5777809999999,
+                                -55.0615299999999,
+                                -53.5918349999999,
+                                -21.7785479999999
+                            ],
+                            "srs": "EPSG:4326"
+                        }
+                    },
+                    "llbbox": [
+                        -73.5777809999999,
+                        -55.0615299999999,
+                        -53.5918349999999,
+                        -21.7785479999999
+                    ],
+                    "dimensions": {},
+                    "authorityURLs": {},
+                    "identifiers": {},
+                    "keywords": [
+                        "features",
+                        "arg_adm1"
+                    ],
+                    "queryable": true,
+                    "cascaded": 0,
+                    "opaque": false,
+                    "noSubsets": false,
+                    "fixedWidth": 0,
+                    "fixedHeight": 0,
+                    "name": "workshop:arg_adm1",
+                    "title": "arg_adm1",
+                    "abstract": "",
+                    "prefix": "workshop",
+                    "formats": [
+                        "image/png",
+                        "application/atom xml",
+                        "application/atom+xml",
+                        "application/openlayers",
+                        "application/pdf",
+                        "application/rss xml",
+                        "application/rss+xml",
+                        "application/vnd.google-earth.kml",
+                        "application/vnd.google-earth.kml xml",
+                        "application/vnd.google-earth.kml+xml",
+                        "application/vnd.google-earth.kml+xml;mode=networklink",
+                        "application/vnd.google-earth.kmz",
+                        "application/vnd.google-earth.kmz xml",
+                        "application/vnd.google-earth.kmz+xml",
+                        "application/vnd.google-earth.kmz;mode=networklink",
+                        "atom",
+                        "image/geotiff",
+                        "image/geotiff8",
+                        "image/gif",
+                        "image/gif;subtype=animated",
+                        "image/jpeg",
+                        "image/png8",
+                        "image/png; mode=8bit",
+                        "image/svg",
+                        "image/svg xml",
+                        "image/svg+xml",
+                        "image/tiff",
+                        "image/tiff8",
+                        "kml",
+                        "kmz",
+                        "openlayers",
+                        "rss",
+                        "text/html; subtype=openlayers"
+                    ],
+                    "infoFormats": [
+                        "text/plain",
+                        "application/vnd.ogc.gml",
+                        "application/vnd.ogc.gml/3.1.1",
+                        "text/html",
+                        "application/json"
+                    ]
+                },
+                "format": "image/png",
+                "styles": "",
+                "tiled": true,
+                "transparent": true,
+                "cached": true
+            }
+        ],
+        "center": [
+            -7078228.4477628,
+            -4929387.4748536
+        ],
+        "zoom": 4
+    },
+    "viewerTools": [
+        {
+            "hidden": true,
+            "actions": [
+                "layerchooser"
+            ],
+            "checked": true,
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-356"
+        },
+        {
+            "hidden": true,
+            "actions": [
+                "-"
+            ],
+            "checked": true,
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-357"
+        },
+        {
+            "leaf": true,
+            "text": "Print map",
+            "ptype": "gxp_print",
+            "iconCls": "gxp-icon-print",
+            "customParams": {
+                "outputFilename": "GeoExplorer-print"
+            },
+            "printService": "/geoserver/pdf/",
+            "checked": true,
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-358"
+        },
+        {
+            "leaf": true,
+            "text": "Pan map",
+            "checked": true,
+            "iconCls": "gxp-icon-pan",
+            "ptype": "gxp_navigation",
+            "toggleGroup": "navigation",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-359"
+        },
+        {
+            "leaf": true,
+            "text": "Get Feature Info",
+            "checked": true,
+            "iconCls": "gxp-icon-getfeatureinfo",
+            "ptype": "gxp_wmsgetfeatureinfo",
+            "format": "grid",
+            "toggleGroup": "interaction",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-360"
+        },
+        {
+            "leaf": true,
+            "text": "Measure",
+            "checked": true,
+            "iconCls": "gxp-icon-measure-length",
+            "ptype": "gxp_measure",
+            "controlOptions": {
+                "immediate": true
+            },
+            "toggleGroup": "interaction",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-361"
+        },
+        {
+            "leaf": true,
+            "text": "Zoom in / Zoom out",
+            "checked": true,
+            "iconCls": "gxp-icon-zoom-in",
+            "ptype": "gxp_zoom",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-362"
+        },
+        {
+            "leaf": true,
+            "text": "Zoom to previous extent / Zoom to next extent",
+            "checked": true,
+            "iconCls": "gxp-icon-zoom-previous",
+            "ptype": "gxp_navigationhistory",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-363"
+        },
+        {
+            "leaf": true,
+            "text": "Zoom to max extent",
+            "checked": true,
+            "iconCls": "gxp-icon-zoomtoextent",
+            "ptype": "gxp_zoomtoextent",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-364"
+        },
+        {
+            "leaf": true,
+            "text": "Show legend",
+            "checked": true,
+            "iconCls": "gxp-icon-legend",
+            "ptype": "gxp_legend",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-365"
+        },
+        {
+            "leaf": true,
+            "text": "Switch to 3D Viewer",
+            "checked": true,
+            "iconCls": "gxp-icon-googleearth",
+            "ptype": "gxp_googleearth",
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-366"
+        },
+        {
+            "hidden": true,
+            "actions": [
+                "->"
+            ],
+            "checked": true,
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-367"
+        },
+        {
+            "hidden": true,
+            "actions": [
+                "aboutbutton"
+            ],
+            "checked": true,
+            "loader": {
+                "baseParams": {},
+                "events": {
+                    "loadexception": true,
+                    "load": true,
+                    "beforeload": true
+                }
+            },
+            "id": "xnode-368"
+        }
+    ],
+    "modified": 1416499763648
+}
