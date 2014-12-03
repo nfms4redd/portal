@@ -1,4 +1,4 @@
-package org.fao.unredd.functional;
+package org.fao.unredd.functional.feedback;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -29,6 +29,7 @@ import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.fao.unredd.functional.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +38,7 @@ import org.junit.experimental.categories.Category;
 import org.postgresql.ds.PGSimpleDataSource;
 
 @Category(IntegrationTest.class)
-public class FunctionalTest {
+public class FeedbackTest {
 
 	private static final String CONTEXT_PATH = "portal";
 	private static String dbUrl;
@@ -48,8 +49,8 @@ public class FunctionalTest {
 	@BeforeClass
 	public static void setupTests() throws IOException {
 		Properties testProperties = new Properties();
-		InputStream stream = FunctionalTest.class
-				.getResourceAsStream("functional-test.properties");
+		InputStream stream = FeedbackTest.class
+				.getResourceAsStream("/org/fao/unredd/functional/functional-test.properties");
 		testProperties.load(stream);
 		stream.close();
 
@@ -149,6 +150,17 @@ public class FunctionalTest {
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 
 		assertEquals(500, ret.getStatusLine().getStatusCode());
+	}
+
+	@Test
+	public void testMissingParameter() throws Exception {
+		CloseableHttpResponse ret = GET("create-comment", "email",
+				"fergonco@gmail.com", "geometry", "POINT(0, 1)", "srid",
+				"900913");
+
+		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
+
+		assertEquals(400, ret.getStatusLine().getStatusCode());
 	}
 
 	private Object SQL(String sql) throws SQLException {

@@ -30,6 +30,8 @@ public class CreateCommentServlet extends HttpServlet {
 			feedback.insertNew(geom, srid, comment, email);
 			resp.setContentType("application/json");
 			resp.setStatus(200);
+		} catch (IllegalArgumentException e) {
+			throw new StatusServletException(400, e.getMessage());
 		} catch (CannotSendMailException e) {
 			throw new StatusServletException(500, e.getMessage());
 		} catch (PersistenceException e) {
