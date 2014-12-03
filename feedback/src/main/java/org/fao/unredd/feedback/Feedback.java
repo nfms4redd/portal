@@ -39,23 +39,25 @@ public class Feedback {
 		 */
 		String verificationCode = Integer
 				.toString((geom + comment + email + srid).hashCode());
+		persistence.insert(geom, srid, comment, email, verificationCode);
 		try {
-			mailInfo.sendMail(email, verificationCode);
+			mailInfo.sendVerificationMail(email, verificationCode);
 		} catch (AddressException e) {
 			throw new CannotSendMailException("Invalid address", e);
 		} catch (MessagingException e) {
 			throw new CannotSendMailException("Error sending mail", e);
 		}
-		persistence.insert(geom, srid, comment, email, verificationCode);
 		persistence.cleanOutOfDate();
 
 		return verificationCode;
 	}
 
 	public void verify(String verificationCode)
-			throws VerificationCodeNotFoundException, PersistenceException {
+			throws VerificationCodeNotFoundException, PersistenceException,
+			AddressException, MessagingException {
 		if (persistence.existsUnverified(verificationCode)) {
 			persistence.verify(verificationCode);
+			mailInfo.sendVerifiedMail(verificationCode);
 		} else {
 			throw new VerificationCodeNotFoundException();
 		}

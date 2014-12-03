@@ -11,8 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.mail.MessagingException;
-
 import org.fao.unredd.portal.PersistenceException;
 import org.junit.Test;
 
@@ -46,21 +44,21 @@ public class CreateCommentTest {
 	}
 
 	@Test
-	public void testInvalidMailNoInsert() throws Exception {
+	public void testInvalidInsertNoMail() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		doThrow(new PersistenceException("", null)).when(persistence)
+				.insert(anyString(), anyString(), anyString(), anyString(),
+						anyString());
 		Mailer mailer = mock(Mailer.class);
-		doThrow(new MessagingException()).when(mailer).sendMail(anyString(),
-				anyString());
 		feedback = new Feedback(persistence, mailer);
 
 		try {
 			feedback.insertNew(validGeometry, validSRID, validComment,
-					"sindominio@");
+					validEmail);
 			fail();
 		} catch (Exception e) {
 		}
-		verify(persistence, never()).insert(anyString(), anyString(),
-				anyString(), anyString(), anyString());
+		verify(mailer, never()).sendVerificationMail(anyString(), anyString());
 	}
 
 	@Test
@@ -93,9 +91,11 @@ public class CreateCommentTest {
 	public void testVerifyComment() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
 		when(persistence.existsUnverified("100")).thenReturn(true);
-		feedback = new Feedback(persistence, mock(Mailer.class));
+		Mailer mailer = mock(Mailer.class);
+		feedback = new Feedback(persistence, mailer);
 		feedback.verify("100");
 		verify(persistence).verify("100");
+		verify(mailer).sendVerifiedMail("100");
 	}
 
 	@Test
