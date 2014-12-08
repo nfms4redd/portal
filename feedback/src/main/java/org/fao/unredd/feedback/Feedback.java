@@ -65,7 +65,6 @@ public class Feedback {
 
 	public void notifyValidated() throws PersistenceException {
 		CommentInfo[] entries = persistence.getValidatedToNotifyInfo();
-		System.out.println(entries.length);
 		for (CommentInfo entry : entries) {
 			try {
 				mailInfo.sendValidatedMail(entry.getMail(),
