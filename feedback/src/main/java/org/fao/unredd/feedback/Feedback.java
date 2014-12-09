@@ -14,31 +14,31 @@ public class Feedback {
 
 	private FeedbackPersistence persistence;
 	private Mailer mailInfo;
+	private String srid = "900913";
 
 	public Feedback(FeedbackPersistence feedbackPersistence, Mailer mailInfo) {
 		this.persistence = feedbackPersistence;
 		this.mailInfo = mailInfo;
 	}
 
-	public String insertNew(String geom, String srid, String comment,
-			String email) throws CannotSendMailException, PersistenceException {
-		if (geom == null || srid == null || comment == null || email == null) {
+	public String insertNew(String geom, String comment, String email)
+			throws CannotSendMailException, PersistenceException {
+		if (geom == null || comment == null || email == null) {
 			throw new IllegalArgumentException("all parameters are mandatory: "
-					+ geom + srid + comment + email);
+					+ geom + comment + email);
 		}
 
 		logger.info("Feedback requested with the following parameters:");
 		logger.info("email: " + email);
 		logger.info("geom: " + geom);
-		logger.info("srid: " + srid);
 		logger.info("comment: " + comment);
 
 		/*
 		 * non unique verification code, but these are valid only a period of
 		 * time so collisions are very rare
 		 */
-		String verificationCode = Integer
-				.toString((geom + comment + email + srid).hashCode());
+		String verificationCode = Integer.toString((geom + comment + email)
+				.hashCode());
 		persistence.insert(geom, srid, comment, email, verificationCode);
 		try {
 			mailInfo.sendVerificationMail(email, verificationCode);

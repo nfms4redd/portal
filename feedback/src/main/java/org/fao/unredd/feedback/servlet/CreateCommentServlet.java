@@ -16,19 +16,18 @@ public class CreateCommentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		String geom = req.getParameter("geometry");
 		String comment = req.getParameter("comment");
 		String email = req.getParameter("email");
-		String srid = req.getParameter("srid");
 
 		Feedback feedback = (Feedback) req.getServletContext().getAttribute(
 				"feedback");
 		try {
-			feedback.insertNew(geom, srid, comment, email);
-			resp.setContentType("application/json");
+			feedback.insertNew(geom, comment, email);
+			resp.setContentType("text/plain");
 			resp.setStatus(200);
 		} catch (IllegalArgumentException e) {
 			throw new StatusServletException(400, e);

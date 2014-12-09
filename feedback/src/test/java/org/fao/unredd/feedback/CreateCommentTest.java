@@ -21,7 +21,6 @@ public class CreateCommentTest {
 	private static final String validGeometry = "POINT(0 0)";
 	private static final String validComment = "boh";
 	private static final String validEmail = "nombre@dominio.com";
-	private static final String validSRID = "900913";
 	private Feedback feedback;
 
 	@Test
@@ -29,17 +28,15 @@ public class CreateCommentTest {
 			PersistenceException {
 		feedback = new Feedback(mock(FeedbackPersistence.class),
 				mock(Mailer.class));
-		testMandatoryParameter(null, validSRID, validComment, validEmail);
-		testMandatoryParameter(validGeometry, null, validComment, validEmail);
-		testMandatoryParameter(validGeometry, validSRID, null, validEmail);
-		testMandatoryParameter(validGeometry, validSRID, validComment, null);
+		testMandatoryParameter(null, validComment, validEmail);
+		testMandatoryParameter(validGeometry, null, validEmail);
+		testMandatoryParameter(validGeometry, validComment, null);
 	}
 
-	private void testMandatoryParameter(String geom, String srid,
-			String comment, String email) throws CannotSendMailException,
-			PersistenceException {
+	private void testMandatoryParameter(String geom, String comment,
+			String email) throws CannotSendMailException, PersistenceException {
 		try {
-			feedback.insertNew(geom, srid, comment, email);
+			feedback.insertNew(geom, comment, email);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
@@ -55,8 +52,7 @@ public class CreateCommentTest {
 		feedback = new Feedback(persistence, mailer);
 
 		try {
-			feedback.insertNew(validGeometry, validSRID, validComment,
-					validEmail);
+			feedback.insertNew(validGeometry, validComment, validEmail);
 			fail();
 		} catch (Exception e) {
 		}
@@ -67,8 +63,8 @@ public class CreateCommentTest {
 	public void testInsert() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
 		feedback = new Feedback(persistence, mock(Mailer.class));
-		feedback.insertNew(validGeometry, validSRID, validComment, validEmail);
-		verify(persistence, times(1)).insert(eq(validGeometry), eq(validSRID),
+		feedback.insertNew(validGeometry, validComment, validEmail);
+		verify(persistence, times(1)).insert(eq(validGeometry), eq("900913"),
 				eq(validComment), eq(validEmail), anyString());
 	}
 
@@ -76,16 +72,15 @@ public class CreateCommentTest {
 	public void testDifferentVerificationCodes() throws Exception {
 		feedback = new Feedback(mock(FeedbackPersistence.class),
 				mock(Mailer.class));
-		assertTrue(feedback.insertNew(validGeometry, validSRID, validComment,
-				validEmail) != feedback.insertNew("POINT(1 1)", validSRID,
-				validComment, validEmail));
+		assertTrue(feedback.insertNew(validGeometry, validComment, validEmail) != feedback
+				.insertNew("POINT(1 1)", validComment, validEmail));
 	}
 
 	@Test
 	public void testInsertCleansOutOfDate() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
 		feedback = new Feedback(persistence, mock(Mailer.class));
-		feedback.insertNew(validGeometry, validSRID, validComment, validEmail);
+		feedback.insertNew(validGeometry, validComment, validEmail);
 		verify(persistence, times(1)).cleanOutOfDate();
 	}
 

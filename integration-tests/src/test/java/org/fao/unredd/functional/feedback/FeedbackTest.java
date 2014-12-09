@@ -16,11 +16,15 @@ import java.util.Collections;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -113,9 +117,8 @@ public class FeedbackTest {
 
 	@Test
 	public void testCommentAndVerify() throws Exception {
-		CloseableHttpResponse ret = GET("create-comment", "email",
-				"onuredd@gmail.com", "geometry", "POINT(0 1)", "srid",
-				"900913", "comment", "boh");
+		CloseableHttpResponse ret = POST("create-comment", "email",
+				"onuredd@gmail.com", "geometry", "POINT(0 1)", "comment", "boh");
 
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 
@@ -150,9 +153,8 @@ public class FeedbackTest {
 
 	@Test
 	public void testCommentWrongEmail() throws Exception {
-		CloseableHttpResponse ret = GET("create-comment", "email",
-				"wrongaddress", "geometry", "POINT(0 1)", "srid", "900913",
-				"comment", "boh");
+		CloseableHttpResponse ret = POST("create-comment", "email",
+				"wrongaddress", "geometry", "POINT(0 1)", "comment", "boh");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 
@@ -161,9 +163,9 @@ public class FeedbackTest {
 
 	@Test
 	public void testCommentWrongWKT() throws Exception {
-		CloseableHttpResponse ret = GET("create-comment", "email",
-				"onuredd@gmail.com", "geometry", "POINT(0, 1)", "srid",
-				"900913", "comment", "boh");
+		CloseableHttpResponse ret = POST("create-comment", "email",
+				"onuredd@gmail.com", "geometry", "POINT(0, 1)", "comment",
+				"boh");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 
@@ -172,9 +174,8 @@ public class FeedbackTest {
 
 	@Test
 	public void testMissingParameter() throws Exception {
-		CloseableHttpResponse ret = GET("create-comment", "email",
-				"onuredd@gmail.com", "geometry", "POINT(0, 1)", "srid",
-				"900913");
+		CloseableHttpResponse ret = POST("create-comment", "email",
+				"onuredd@gmail.com", "geometry", "POINT(0, 1)");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 
@@ -212,5 +213,20 @@ public class FeedbackTest {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpGet get = new HttpGet(url);
 		return httpClient.execute(get);
+	}
+
+	private CloseableHttpResponse POST(String path, String... parameters)
+			throws ClientProtocolException, IOException {
+		String url = "http://localhost:8080/" + CONTEXT_PATH + "/" + path;
+		ArrayList<NameValuePair> parameterList = new ArrayList<NameValuePair>();
+		for (int i = 0; i < parameters.length; i = i + 2) {
+			parameterList.add(new BasicNameValuePair(parameters[i],
+					parameters[i + 1]));
+		}
+		System.out.println("PUT " + url + " + " + parameterList);
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpPost put = new HttpPost(url);
+		put.setEntity(new UrlEncodedFormEntity(parameterList));
+		return httpClient.execute(put);
 	}
 }
