@@ -62,23 +62,19 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 		if (!mailRegex.test(txtEmail.val())) {
 			bus.send("error", "El email especificado no es válido");
 		} else {
-			var params = {
-				"layerName" : "mi capa",
-				"date" : "2008",
-				"email" : txtEmail.val()
-			};
 			// Do submit
 			bus.send("ajax", {
 				type : 'POST',
-				contentType : 'application/json',
-				url : 'create-comment?' + $.param(params),
-				data : JSON.stringify({
+				url : 'create-comment?',
+				data : {
 					"comment" : txtComment.val(),
-					"geom" : editToolbar.getFeaturesAsWKT()
-				}),
-				dataType : "json",
+					"geometry" : editToolbar.getFeaturesAsWKT(),
+					"layerName" : "mi capa",
+					"date" : "2008",
+					"email" : txtEmail.val()
+				},
 				success : function(data, textStatus, jqXHR) {
-					bus.send("info", i18n[data]);
+					bus.send("info", i18n["feedback_verify_mail_sent"]);
 					dlg.dialog('close');
 				},
 				errorMsg : i18n["feedback_submit_error"]
