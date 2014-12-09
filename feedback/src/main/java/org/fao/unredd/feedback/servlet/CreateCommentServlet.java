@@ -22,11 +22,13 @@ public class CreateCommentServlet extends HttpServlet {
 		String geom = req.getParameter("geometry");
 		String comment = req.getParameter("comment");
 		String email = req.getParameter("email");
+		String layerName = req.getParameter("layerName");
+		String date = req.getParameter("date");
 
 		Feedback feedback = (Feedback) req.getServletContext().getAttribute(
 				"feedback");
 		try {
-			feedback.insertNew(geom, comment, email);
+			feedback.insertNew(geom, comment, email, layerName, date);
 			resp.setContentType("text/plain");
 			resp.setStatus(200);
 		} catch (IllegalArgumentException e) {

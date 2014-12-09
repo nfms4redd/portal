@@ -21,6 +21,8 @@ public class CreateCommentTest {
 	private static final String validGeometry = "POINT(0 0)";
 	private static final String validComment = "boh";
 	private static final String validEmail = "nombre@dominio.com";
+	private static final String validLayer = "classification";
+	private static final String validDate = "1/1/2008";
 	private Feedback feedback;
 
 	@Test
@@ -28,31 +30,42 @@ public class CreateCommentTest {
 			PersistenceException {
 		feedback = new Feedback(mock(FeedbackPersistence.class),
 				mock(Mailer.class));
-		testMandatoryParameter(null, validComment, validEmail);
-		testMandatoryParameter(validGeometry, null, validEmail);
-		testMandatoryParameter(validGeometry, validComment, null);
+		testMandatoryParameter(null, validComment, validEmail, validLayer);
+		testMandatoryParameter(validGeometry, null, validEmail, validLayer);
+		testMandatoryParameter(validGeometry, validComment, null, validLayer);
+		testMandatoryParameter(validGeometry, validComment, validEmail, null);
 	}
 
 	private void testMandatoryParameter(String geom, String comment,
-			String email) throws CannotSendMailException, PersistenceException {
+			String email, String layerName) throws CannotSendMailException,
+			PersistenceException {
 		try {
-			feedback.insertNew(geom, comment, email);
+			feedback.insertNew(geom, comment, email, layerName, validDate);
 			fail();
 		} catch (IllegalArgumentException e) {
 		}
 	}
 
 	@Test
+	public void testDateCanBeNull() throws Exception {
+		feedback = new Feedback(mock(FeedbackPersistence.class),
+				mock(Mailer.class));
+		feedback.insertNew(validGeometry, validComment, validEmail, validDate,
+				null);
+	}
+
+	@Test
 	public void testInvalidInsertNoMail() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
-		doThrow(new PersistenceException("", null)).when(persistence)
-				.insert(anyString(), anyString(), anyString(), anyString(),
-						anyString());
+		doThrow(new PersistenceException("", null)).when(persistence).insert(
+				anyString(), anyString(), anyString(), anyString(),
+				anyString(), anyString(), anyString());
 		Mailer mailer = mock(Mailer.class);
 		feedback = new Feedback(persistence, mailer);
 
 		try {
-			feedback.insertNew(validGeometry, validComment, validEmail);
+			feedback.insertNew(validGeometry, validComment, validEmail,
+					validLayer, validDate);
 			fail();
 		} catch (Exception e) {
 		}
@@ -63,24 +76,28 @@ public class CreateCommentTest {
 	public void testInsert() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
 		feedback = new Feedback(persistence, mock(Mailer.class));
-		feedback.insertNew(validGeometry, validComment, validEmail);
+		feedback.insertNew(validGeometry, validComment, validEmail, validLayer,
+				validDate);
 		verify(persistence, times(1)).insert(eq(validGeometry), eq("900913"),
-				eq(validComment), eq(validEmail), anyString());
+				eq(validComment), eq(validEmail), eq(validLayer),
+				eq(validDate), anyString());
 	}
 
 	@Test
 	public void testDifferentVerificationCodes() throws Exception {
 		feedback = new Feedback(mock(FeedbackPersistence.class),
 				mock(Mailer.class));
-		assertTrue(feedback.insertNew(validGeometry, validComment, validEmail) != feedback
-				.insertNew("POINT(1 1)", validComment, validEmail));
+		assertTrue(feedback.insertNew(validGeometry, validComment, validEmail,
+				validLayer, validDate) != feedback.insertNew("POINT(1 1)",
+				validComment, validEmail, validLayer, validDate));
 	}
 
 	@Test
 	public void testInsertCleansOutOfDate() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
 		feedback = new Feedback(persistence, mock(Mailer.class));
-		feedback.insertNew(validGeometry, validComment, validEmail);
+		feedback.insertNew(validGeometry, validComment, validEmail, validLayer,
+				validDate);
 		verify(persistence, times(1)).cleanOutOfDate();
 	}
 

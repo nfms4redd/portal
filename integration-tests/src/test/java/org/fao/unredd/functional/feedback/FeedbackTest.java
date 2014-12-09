@@ -117,8 +117,14 @@ public class FeedbackTest {
 
 	@Test
 	public void testCommentAndVerify() throws Exception {
-		CloseableHttpResponse ret = POST("create-comment", "email",
-				"onuredd@gmail.com", "geometry", "POINT(0 1)", "comment", "boh");
+		String email = "onuredd@gmail.com";
+		String geometry = "POINT(0 1)";
+		String comment = "boh";
+		String layerName = "classification";
+		String layerDate = "1/1/2008";
+		CloseableHttpResponse ret = POST("create-comment", "email", email,
+				"geometry", geometry, "comment", comment, "layerName",
+				layerName, "date", layerDate);
 
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 
@@ -127,7 +133,24 @@ public class FeedbackTest {
 				"SELECT verification_code FROM " + testSchema
 						+ ".comments ORDER BY date DESC").toString();
 
-		// Verify it
+		// Check the insert
+		assertEquals(email, SQLQuery("SELECT email FROM " + testSchema
+				+ ".comments WHERE verification_code='" + verificationCode
+				+ "'"));
+		assertEquals(geometry, SQLQuery("SELECT ST_AsText(geometry) FROM "
+				+ testSchema + ".comments WHERE verification_code='"
+				+ verificationCode + "'"));
+		assertEquals(comment, SQLQuery("SELECT comment FROM " + testSchema
+				+ ".comments WHERE verification_code='" + verificationCode
+				+ "'"));
+		assertEquals(layerName, SQLQuery("SELECT layer_name FROM " + testSchema
+				+ ".comments WHERE verification_code='" + verificationCode
+				+ "'"));
+		assertEquals(layerDate, SQLQuery("SELECT layer_date FROM " + testSchema
+				+ ".comments WHERE verification_code='" + verificationCode
+				+ "'"));
+
+		// Verify it the comment
 		ret = GET("verify-comment", "verificationCode", verificationCode);
 
 		assertEquals(200, ret.getStatusLine().getStatusCode());
@@ -154,7 +177,8 @@ public class FeedbackTest {
 	@Test
 	public void testCommentWrongEmail() throws Exception {
 		CloseableHttpResponse ret = POST("create-comment", "email",
-				"wrongaddress", "geometry", "POINT(0 1)", "comment", "boh");
+				"wrongaddress", "geometry", "POINT(0 1)", "comment", "boh",
+				"layerName", "classification", "date", "1/1/2008");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 
@@ -165,7 +189,7 @@ public class FeedbackTest {
 	public void testCommentWrongWKT() throws Exception {
 		CloseableHttpResponse ret = POST("create-comment", "email",
 				"onuredd@gmail.com", "geometry", "POINT(0, 1)", "comment",
-				"boh");
+				"boh", "layerName", "classification", "date", "1/1/2008");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 
@@ -175,7 +199,8 @@ public class FeedbackTest {
 	@Test
 	public void testMissingParameter() throws Exception {
 		CloseableHttpResponse ret = POST("create-comment", "email",
-				"onuredd@gmail.com", "geometry", "POINT(0, 1)");
+				"onuredd@gmail.com", "geometry", "POINT(0, 1)", "layerName",
+				"classification", "date", "1/1/2008");
 
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 

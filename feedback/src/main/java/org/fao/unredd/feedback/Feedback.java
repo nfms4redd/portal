@@ -21,17 +21,21 @@ public class Feedback {
 		this.mailInfo = mailInfo;
 	}
 
-	public String insertNew(String geom, String comment, String email)
-			throws CannotSendMailException, PersistenceException {
-		if (geom == null || comment == null || email == null) {
+	public String insertNew(String geom, String comment, String email,
+			String layerName, String layerDate) throws CannotSendMailException,
+			PersistenceException {
+		if (geom == null || comment == null || email == null
+				|| layerName == null) {
 			throw new IllegalArgumentException("all parameters are mandatory: "
-					+ geom + comment + email);
+					+ geom + comment + email + layerName);
 		}
 
 		logger.info("Feedback requested with the following parameters:");
 		logger.info("email: " + email);
 		logger.info("geom: " + geom);
 		logger.info("comment: " + comment);
+		logger.info("layerName: " + layerName);
+		logger.info("date: " + layerDate);
 
 		/*
 		 * non unique verification code, but these are valid only a period of
@@ -39,7 +43,8 @@ public class Feedback {
 		 */
 		String verificationCode = Integer.toString((geom + comment + email)
 				.hashCode());
-		persistence.insert(geom, srid, comment, email, verificationCode);
+		persistence.insert(geom, srid, comment, email, layerName, layerDate,
+				verificationCode);
 		try {
 			mailInfo.sendVerificationMail(email, verificationCode);
 		} catch (AddressException e) {
