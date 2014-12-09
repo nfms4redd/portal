@@ -5,6 +5,7 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 	// Dialog controls
 	var dlg;
 	var cmbLayer;
+	var lblTimestamp;
 	var txtEmail;
 	var txtComment;
 	var editToolbar;
@@ -15,6 +16,8 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 		dlg = $("<div/>").attr("id", "feedback_popup");
 		$("<label/>").addClass("feedback-form-left").html("Capa:").appendTo(dlg);
 		cmbLayer = $("<select/>").attr("id", "feedback-layer-combo").appendTo(dlg);
+		cmbLayer.change(refreshYear);
+		lblTimestamp = $("<span/>").appendTo(dlg);
 
 		dlg.append("<br/>");
 		$("<label/>").addClass("feedback-form-left").html("Drawing tools:").appendTo(dlg);
@@ -63,16 +66,23 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 			bus.send("error", "El email especificado no es válido");
 		} else {
 			// Do submit
+
+			var data = {
+				"comment" : txtComment.val(),
+				"geometry" : editToolbar.getFeaturesAsWKT(),
+				"layerName" : cmbLayer.val(),
+				"email" : txtEmail.val()
+			};
+
+			var timestamp = feedbackLayers[cmbLayer.val()].timestamp;
+			if (timestamp != null) {
+				data.date = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
+			}
+
 			bus.send("ajax", {
 				type : 'POST',
 				url : 'create-comment?',
-				data : {
-					"comment" : txtComment.val(),
-					"geometry" : editToolbar.getFeaturesAsWKT(),
-					"layerName" : "mi capa",
-					"date" : "2008",
-					"email" : txtEmail.val()
-				},
+				data : data,
 				success : function(data, textStatus, jqXHR) {
 					bus.send("info", i18n["feedback_verify_mail_sent"]);
 					dlg.dialog('close');
@@ -96,6 +106,18 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 		bus.send("activate-default-exclusive-control");
 		map.removeLayer(feedbackLayer);
 		$("#button_feedback").removeClass('selected');
+	}
+
+	var refreshYear = function() {
+		var text = "";
+		var selectedLayer = feedbackLayers[cmbLayer.val()];
+		if (selectedLayer != null) {
+			timestamp = selectedLayer["timestamp"];
+			if (timestamp != null) {
+				text = timestamp.getUTCFullYear();
+			}
+		}
+		lblTimestamp.html(text);
 	}
 
 	initializeDialog();
@@ -140,4 +162,10 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 		}
 	});
 
+	bus.listen("layer-timestamp-selected", function(event, layerId, timestamp) {
+		if (layerId in feedbackLayers) {
+			feedbackLayers[layerId].timestamp = timestamp;
+			refreshYear();
+		}
+	});
 });
