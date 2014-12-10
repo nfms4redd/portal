@@ -152,8 +152,11 @@ public class FeedbackTest {
 
 		// Verify it the comment
 		ret = GET("verify-comment", "verificationCode", verificationCode);
-
 		assertEquals(200, ret.getStatusLine().getStatusCode());
+
+		// Check cannot validate twice
+		ret = GET("verify-comment", "verificationCode", verificationCode);
+		assertEquals(404, ret.getStatusLine().getStatusCode());
 
 		// Check validation has not been notified to author
 		Long notifiedCount = (Long) SQLQuery("SELECT count(*) FROM "
@@ -165,7 +168,7 @@ public class FeedbackTest {
 				+ ".comments SET state=2 WHERE verification_code='"
 				+ verificationCode + "'");
 		synchronized (this) {
-			wait(3000);
+			wait(4000);
 		}
 
 		// Check the entry has been marked as "notified"

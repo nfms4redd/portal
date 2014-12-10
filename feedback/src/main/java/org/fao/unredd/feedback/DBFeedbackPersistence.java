@@ -107,7 +107,8 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 						PreparedStatement statement = connection
 								.prepareStatement("SELECT count(*) FROM "
 										+ tableName
-										+ " WHERE verification_code = ?");
+										+ " WHERE verification_code = ? AND state = "
+										+ NEW);
 						statement.setString(1, verificationCode);
 						ResultSet resultSet = statement.executeQuery();
 						resultSet.next();
