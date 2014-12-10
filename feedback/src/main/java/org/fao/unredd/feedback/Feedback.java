@@ -47,8 +47,6 @@ public class Feedback {
 				verificationCode);
 		try {
 			mailInfo.sendVerificationMail(email, verificationCode);
-		} catch (AddressException e) {
-			throw new CannotSendMailException("Invalid address", e);
 		} catch (MessagingException e) {
 			throw new CannotSendMailException("Error sending mail", e);
 		}

@@ -3,7 +3,6 @@ package org.fao.unredd.feedback.servlet;
 import java.io.IOException;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,21 +31,16 @@ public class VerifyCommentServlet extends HttpServlet {
 			Feedback feedback = (Feedback) req.getServletContext()
 					.getAttribute("feedback");
 			feedback.verify(verificationCode);
-			resp.setContentType("application/json");
-			resp.getWriter().println(verificationCode);
+			resp.setContentType("text/plain");
+			resp.getWriter().println("El mensaje ha sido validado.");
 		} catch (VerificationCodeNotFoundException e) {
 			logger.debug("Cannot find verification code", e);
 			throw new StatusServletException(404,
-					"Could not found any message with the specified validation code");
+					"No se encontró ningún comentario con el código");
 		} catch (PersistenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new StatusServletException(500, e);
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new StatusServletException(500, e);
 		}
 	}
 }
