@@ -125,7 +125,7 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 	initializeDialog();
 
 	// Install feedback button
-	var btn = $("<a/>").attr("id", "button_feedback").addClass("blue_button").html("Feedback");
+	var btn = $("<a/>").attr("id", "feedback-button").addClass("blue_button").html("Feedback");
 	btn.appendTo(toolbar);
 	btn.click(function() {
 		if (!btn.hasClass("selected")) {
