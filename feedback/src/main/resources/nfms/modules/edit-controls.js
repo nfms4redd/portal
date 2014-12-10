@@ -92,6 +92,10 @@ define([ "i18n", "openlayers" ], function(i18n) {
 			var multiPolygon = new OpenLayers.Geometry.MultiPolygon(polygons);
 			return new OpenLayers.Feature.Vector(multiPolygon);
 		},
+		
+		hasFeatures : function() {
+			return this.layer.features.length > 0;
+		},
 
 		CLASS_NAME : "OpenLayers.Control.PortalToolbar"
 	});

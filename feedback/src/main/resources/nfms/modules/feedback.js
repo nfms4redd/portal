@@ -64,6 +64,8 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 		var mailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		if (!mailRegex.test(txtEmail.val())) {
 			bus.send("error", "El email especificado no es válido");
+		} else if (!editToolbar.hasFeatures()) {
+			bus.send("error", "Al menos se debe dibujar una geometría");
 		} else {
 			// Do submit
 
