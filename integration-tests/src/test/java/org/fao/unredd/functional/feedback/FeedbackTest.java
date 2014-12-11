@@ -1,6 +1,7 @@
 package org.fao.unredd.functional.feedback;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
@@ -197,6 +198,15 @@ public class FeedbackTest {
 		System.out.println(IOUtils.toString(ret.getEntity().getContent()));
 
 		assertEquals(500, ret.getStatusLine().getStatusCode());
+	}
+
+	@Test
+	public void testVerifyI18n() throws Exception {
+		CloseableHttpResponse en = GET("verify-comment", "verificationCode",
+				"1", "lang", "en");
+		CloseableHttpResponse es = GET("verify-comment", "verificationCode",
+				"1", "lang", "es");
+		assertFalse(en.equals(es));
 	}
 
 	@Test

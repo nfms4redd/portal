@@ -5,8 +5,8 @@ import org.fao.unredd.portal.PersistenceException;
 public interface FeedbackPersistence {
 
 	void insert(String geom, String srid, String comment, String email,
-			String layerName, String layerDate, String verificationCode)
-			throws PersistenceException;
+			String layerName, String layerDate, String verificationCode,
+			String language) throws PersistenceException;
 
 	void cleanOutOfDate() throws PersistenceException;
 

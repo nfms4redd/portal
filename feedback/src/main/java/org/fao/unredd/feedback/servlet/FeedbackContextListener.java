@@ -11,6 +11,7 @@ import javax.servlet.ServletContextListener;
 import org.fao.unredd.feedback.DBFeedbackPersistence;
 import org.fao.unredd.feedback.Feedback;
 import org.fao.unredd.feedback.Mailer;
+import org.fao.unredd.feedback.MissingArgumentException;
 import org.fao.unredd.portal.Config;
 import org.fao.unredd.portal.PersistenceException;
 import org.slf4j.Logger;
@@ -25,20 +26,23 @@ public class FeedbackContextListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		final ServletContext servletContext = sce.getServletContext();
-		Config config = (Config) servletContext.getAttribute("config");
+		final Config config = (Config) servletContext.getAttribute("config");
 		Properties properties = config.getProperties();
 
-		DBFeedbackPersistence feedbackPersistence = new DBFeedbackPersistence(
-				properties.getProperty("feedback-db-table"));
-		final Feedback feedback = new Feedback(feedbackPersistence, new Mailer(
-				properties));
 		try {
+			DBFeedbackPersistence feedbackPersistence = new DBFeedbackPersistence(
+					properties.getProperty("feedback-db-table"));
+			Mailer mailer = new Mailer(properties);
+			Feedback feedback = new Feedback(feedbackPersistence, mailer);
 			feedback.createTable();
 			servletContext.setAttribute("feedback", feedback);
 		} catch (PersistenceException e) {
 			logger.error(
 					"Could not create feedback table. Feedback function will not work properly.",
 					e);
+		} catch (MissingArgumentException e) {
+			logger.error("All mail parameters must be configured. "
+					+ e.getArgumentName() + " missing");
 		}
 
 		timer = new Timer();
@@ -56,8 +60,13 @@ public class FeedbackContextListener implements ServletContextListener {
 			@Override
 			public void run() {
 				try {
-					((Feedback) servletContext.getAttribute("feedback"))
-							.notifyValidated();
+					Feedback feedback = (Feedback) servletContext
+							.getAttribute("feedback");
+					if (feedback != null) {
+						feedback.notifyValidated(config);
+					} else {
+						logger.error("No feedback instance skipping author notification");
+					}
 				} catch (PersistenceException e) {
 					logger.error(
 							"Database error notifying the comment authors", e);

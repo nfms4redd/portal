@@ -1,8 +1,12 @@
 package org.fao.unredd.feedback;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import org.fao.unredd.portal.Config;
 import org.fao.unredd.portal.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +26,14 @@ public class Feedback {
 	}
 
 	public String insertNew(String geom, String comment, String email,
-			String layerName, String layerDate) throws CannotSendMailException,
-			PersistenceException {
-		if (geom == null || comment == null || email == null
-				|| layerName == null) {
-			throw new IllegalArgumentException("all parameters are mandatory: "
-					+ geom + comment + email + layerName);
-		}
+			String layerName, String layerDate, String linkLanguage,
+			String mailTitle, String verificationMessage)
+			throws CannotSendMailException, PersistenceException,
+			MissingArgumentException {
+		checkNull("geom", geom);
+		checkNull("comment", comment);
+		checkNull("email", email);
+		checkNull("layerName", layerName);
 
 		logger.info("Feedback requested with the following parameters:");
 		logger.info("email: " + email);
@@ -44,15 +49,23 @@ public class Feedback {
 		String verificationCode = Integer.toString((geom + comment + email)
 				.hashCode());
 		persistence.insert(geom, srid, comment, email, layerName, layerDate,
-				verificationCode);
+				verificationCode, linkLanguage);
 		try {
-			mailInfo.sendVerificationMail(email, verificationCode);
+			mailInfo.sendVerificationMail(linkLanguage, mailTitle,
+					verificationMessage, email, verificationCode);
 		} catch (MessagingException e) {
-			throw new CannotSendMailException("Error sending mail", e);
+			throw new CannotSendMailException(e);
 		}
 		persistence.cleanOutOfDate();
 
 		return verificationCode;
+	}
+
+	private void checkNull(String paramName, String paramValue)
+			throws MissingArgumentException {
+		if (paramValue == null) {
+			throw new MissingArgumentException(paramName);
+		}
 	}
 
 	public void verify(String verificationCode)
@@ -66,15 +79,19 @@ public class Feedback {
 		}
 	}
 
-	public void notifyValidated() throws PersistenceException {
+	public void notifyValidated(Config config) throws PersistenceException {
 		CommentInfo[] entries = persistence.getValidatedToNotifyInfo();
 		for (CommentInfo entry : entries) {
 			try {
+				ResourceBundle messages = config.getMessages(new Locale(entry
+						.getLanguage()));
 				mailInfo.sendValidatedMail(entry.getMail(),
-						entry.getVerificationCode());
+						entry.getVerificationCode(),
+						messages.getString("Feedback.validated-mail-text"),
+						messages.getString("Feedback.mail-title"));
 				persistence.setNotified(entry.getId());
 			} catch (MessagingException e) {
-				logger.error("Could not send mail to " + entry.getMail(), e);
+				logger.error("Error sending mail:" + entry.getMail(), e);
 				// ignore
 			}
 		}

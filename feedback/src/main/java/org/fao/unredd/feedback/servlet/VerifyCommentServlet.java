@@ -1,6 +1,8 @@
 package org.fao.unredd.feedback.servlet;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fao.unredd.feedback.Feedback;
 import org.fao.unredd.feedback.VerificationCodeNotFoundException;
+import org.fao.unredd.portal.Config;
 import org.fao.unredd.portal.PersistenceException;
 import org.fao.unredd.portal.StatusServletException;
 import org.slf4j.Logger;
@@ -24,6 +27,9 @@ public class VerifyCommentServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		Config config = (Config) req.getServletContext().getAttribute("config");
+		Locale locale = (Locale) req.getAttribute("locale");
+		ResourceBundle messages = config.getMessages(locale);
 
 		String verificationCode = req.getParameter("verificationCode");
 
@@ -32,11 +38,13 @@ public class VerifyCommentServlet extends HttpServlet {
 					.getAttribute("feedback");
 			feedback.verify(verificationCode);
 			resp.setContentType("text/plain");
-			resp.getWriter().println("El mensaje ha sido validado.");
+			resp.getWriter()
+					.println(
+							messages.getString("Feedback.the_message_has_been_validated"));
 		} catch (VerificationCodeNotFoundException e) {
 			logger.debug("Cannot find verification code", e);
 			throw new StatusServletException(404,
-					"No se encontró ningún comentario con el código");
+					messages.getString("Feedback.comment_not_found"));
 		} catch (PersistenceException e) {
 			throw new StatusServletException(500, e);
 		} catch (MessagingException e) {

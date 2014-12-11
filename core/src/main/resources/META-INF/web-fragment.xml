@@ -15,7 +15,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>lang-filter</filter-name>
-		<url-pattern>/config.js</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<!-- index call -->

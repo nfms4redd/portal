@@ -27,8 +27,8 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 	@Override
 	public void insert(final String geom, final String srid,
 			final String comment, final String email, final String layerName,
-			final String layerDate, final String verificationCode)
-			throws PersistenceException {
+			final String layerDate, final String verificationCode,
+			final String language) throws PersistenceException {
 		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
 
 			@Override
@@ -37,9 +37,9 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 						.prepareStatement("INSERT INTO "
 								+ tableName
 								+ "(geometry, comment, date, email, layer_name, "
-								+ "layer_date, verification_code, state) "
+								+ "layer_date, verification_code, language, state) "
 								+ "VALUES"
-								+ "(ST_GeomFromText(?, ?), ?, ?, ?, ?, ?, ?, "
+								+ "(ST_GeomFromText(?, ?), ?, ?, ?, ?, ?, ?, ?, "
 								+ NEW + ")");
 				statement.setString(1, geom);
 				statement.setInt(2, Integer.parseInt(srid));
@@ -49,6 +49,7 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 				statement.setString(6, layerName);
 				statement.setString(7, layerDate);
 				statement.setString(8, verificationCode);
+				statement.setString(9, language);
 				statement.execute();
 				statement.close();
 			}
@@ -88,6 +89,7 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 								+ "date timestamp NOT NULL,"//
 								+ "email varchar NOT NULL,"//
 								+ "verification_code varchar,"//
+								+ "language varchar,"//
 								+ "state int" + ")");
 				statement.execute();
 
@@ -146,13 +148,14 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 			@Override
 			public void process(Connection connection) throws SQLException {
 				PreparedStatement statement = connection
-						.prepareStatement("SELECT id, email, verification_code FROM "
+						.prepareStatement("SELECT id, email, verification_code, language FROM "
 								+ tableName + " WHERE state=" + VALIDATED);
 				ResultSet result = statement.executeQuery();
 				while (result.next()) {
 					ret.add(new CommentInfo(result.getInt("id"), result
 							.getString("email"), result
-							.getString("verification_code")));
+							.getString("verification_code"), result
+							.getString("language")));
 				}
 				result.close();
 				statement.close();

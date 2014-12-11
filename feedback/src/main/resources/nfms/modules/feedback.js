@@ -1,4 +1,5 @@
-define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-controls" ], function(bus, map, toolbar, i18n, $) {
+define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-controls" ],//
+function(bus, urlParameters, map, toolbar, i18n, $) {
 
 	var feedbackLayers = new Array();
 
@@ -63,13 +64,14 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 	var submit = function() {
 		var mailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		if (!mailRegex.test(txtEmail.val())) {
-			bus.send("error", "El email especificado no es válido");
+			bus.send("error", i18n["Feedback.invalid-email-address"]);
 		} else if (!editToolbar.hasFeatures()) {
-			bus.send("error", "Al menos se debe dibujar una geometría");
+			bus.send("error", i18n["Feedback.no-geometries"]);
 		} else {
 			// Do submit
 
 			var data = {
+				"lang" : urlParameters.get("lang"),
 				"comment" : txtComment.val(),
 				"geometry" : editToolbar.getFeaturesAsWKT(),
 				"layerName" : cmbLayer.val(),
@@ -86,10 +88,10 @@ define([ "message-bus", "map", "toolbar", "i18n", "jquery", "openlayers", "edit-
 				url : 'create-comment?',
 				data : data,
 				success : function(data, textStatus, jqXHR) {
-					bus.send("info", i18n["feedback_verify_mail_sent"]);
+					bus.send("info", i18n["Feedback.verify_mail_sent"]);
 					dlg.dialog('close');
 				},
-				errorMsg : i18n["feedback_submit_error"]
+				errorMsg : i18n["Feedback.submit_error"]
 			});
 		}
 	}
