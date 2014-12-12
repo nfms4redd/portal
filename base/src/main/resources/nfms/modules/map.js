@@ -67,7 +67,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 			layer.id = wmsLayer.id;
 			if (map !== null) {
 				map.addLayer(layer);
-				layer.setZIndex(wmsLayer.zIndex);
+				map.setLayerIndex(layer, wmsLayer.zIndex);
 			}
 			mapLayerArray.push(wmsLayer.id);
 		});

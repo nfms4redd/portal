@@ -21,50 +21,48 @@ public class Mailer {
 	private String userName;
 	private String password;
 	private String title;
-	private String verifyMessage;
 	private String verifiedMessage;
-	private String validatedMessage;
 
-	public Mailer(Properties properties) {
+	public Mailer(Properties properties) throws MissingArgumentException {
 		this(properties.getProperty("feedback-mail-host"), properties
 				.getProperty("feedback-mail-port"), properties
 				.getProperty("feedback-mail-username"), properties
 				.getProperty("feedback-mail-password"), properties
-				.getProperty("feedback-mail-title"), properties
-				.getProperty("feedback-verify-mail-text"), properties
-				.getProperty("feedback-admin-mail-text"), properties
-				.getProperty("feedback-validated-mail-text"));
+				.getProperty("feedback-admin-mail-title"), properties
+				.getProperty("feedback-admin-mail-text"));
 	}
 
 	public Mailer(String host, String port, String userName, String password,
-			String title, String verifyMessage, String verifiedMessage,
-			String validatedMessage) {
+			String title, String verifiedMessage)
+			throws MissingArgumentException {
 		this.host = checkNull(host);
 		this.port = checkNull(port);
 		this.userName = checkNull(userName);
 		this.password = checkNull(password);
 		this.title = checkNull(title);
-		this.verifyMessage = checkNull(verifyMessage);
 		this.verifiedMessage = checkNull(verifiedMessage);
-		this.validatedMessage = checkNull(validatedMessage);
 	}
 
-	private String checkNull(String value) {
+	private String checkNull(String value) throws MissingArgumentException {
 		if (value != null) {
 			return value;
 		} else {
-			throw new IllegalArgumentException(
-					"All mail parameters must be specified");
+			throw new MissingArgumentException(value);
 		}
 	}
 
-	public void sendVerificationMail(String email, String verificationCode)
+	public void sendVerificationMail(String linkLanguage, String title,
+			String verifyMessage, String email, String verificationCode)
 			throws MessagingException {
-		replaceCodeAndSendMail(email, verificationCode, verifyMessage);
+		String i18nVerifyMessage = verifyMessage.replaceAll(
+				Pattern.quote("$lang"), linkLanguage);
+		replaceCodeAndSendMail(email, verificationCode, i18nVerifyMessage,
+				title);
 	}
 
 	private void replaceCodeAndSendMail(String email, String verificationCode,
-			String text) throws MessagingException, AddressException {
+			String text, String title) throws MessagingException,
+			AddressException {
 		text = text.replaceAll(Pattern.quote("$code"), verificationCode);
 		sendMail(email, title, text);
 	}
@@ -102,12 +100,14 @@ public class Mailer {
 
 	public void sendVerifiedMail(String verificationCode)
 			throws AddressException, MessagingException {
-		replaceCodeAndSendMail(userName, verificationCode, verifiedMessage);
+		replaceCodeAndSendMail(userName, verificationCode, verifiedMessage,
+				title);
 	}
 
-	public void sendValidatedMail(String mail, String verificationCode)
-			throws AddressException, MessagingException {
-		replaceCodeAndSendMail(mail, verificationCode, validatedMessage);
+	public void sendValidatedMail(String mail, String verificationCode,
+			String validatedMessage, String title) throws AddressException,
+			MessagingException {
+		replaceCodeAndSendMail(mail, verificationCode, validatedMessage, title);
 	}
 
 }

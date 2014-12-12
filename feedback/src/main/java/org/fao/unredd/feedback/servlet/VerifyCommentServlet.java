@@ -1,9 +1,10 @@
 package org.fao.unredd.feedback.servlet;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fao.unredd.feedback.Feedback;
 import org.fao.unredd.feedback.VerificationCodeNotFoundException;
+import org.fao.unredd.portal.Config;
 import org.fao.unredd.portal.PersistenceException;
 import org.fao.unredd.portal.StatusServletException;
 import org.slf4j.Logger;
@@ -25,6 +27,9 @@ public class VerifyCommentServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		Config config = (Config) req.getServletContext().getAttribute("config");
+		Locale locale = (Locale) req.getAttribute("locale");
+		ResourceBundle messages = config.getMessages(locale);
 
 		String verificationCode = req.getParameter("verificationCode");
 
@@ -32,21 +37,18 @@ public class VerifyCommentServlet extends HttpServlet {
 			Feedback feedback = (Feedback) req.getServletContext()
 					.getAttribute("feedback");
 			feedback.verify(verificationCode);
-			resp.setContentType("application/json");
-			resp.getWriter().println(verificationCode);
+			resp.setContentType("text/plain");
+			resp.getWriter()
+					.println(
+							messages.getString("Feedback.the_message_has_been_validated"));
 		} catch (VerificationCodeNotFoundException e) {
 			logger.debug("Cannot find verification code", e);
 			throw new StatusServletException(404,
-					"Could not found any message with the specified validation code");
+					messages.getString("Feedback.comment_not_found"));
 		} catch (PersistenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new StatusServletException(500, e);
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new StatusServletException(500, e);
 		}
 	}
 }
