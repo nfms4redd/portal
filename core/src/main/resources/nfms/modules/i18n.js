@@ -1,3 +1,7 @@
 define([ "module" ], function(module) {
-	return module.config();
+	
+	var translations = module.config();
+	document.title = translations["title"];
+	
+	return translations;
 });

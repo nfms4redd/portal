@@ -10,6 +10,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -20,7 +21,9 @@ public class Mailer {
 	private String userName;
 	private String password;
 	private String title;
-	private String message;
+	private String verifyMessage;
+	private String verifiedMessage;
+	private String validatedMessage;
 
 	public Mailer(Properties properties) {
 		this(properties.getProperty("feedback-mail-host"), properties
@@ -28,17 +31,22 @@ public class Mailer {
 				.getProperty("feedback-mail-username"), properties
 				.getProperty("feedback-mail-password"), properties
 				.getProperty("feedback-mail-title"), properties
-				.getProperty("feedback-mail-text"));
+				.getProperty("feedback-verify-mail-text"), properties
+				.getProperty("feedback-admin-mail-text"), properties
+				.getProperty("feedback-validated-mail-text"));
 	}
 
 	public Mailer(String host, String port, String userName, String password,
-			String title, String message) {
+			String title, String verifyMessage, String verifiedMessage,
+			String validatedMessage) {
 		this.host = checkNull(host);
 		this.port = checkNull(port);
 		this.userName = checkNull(userName);
 		this.password = checkNull(password);
 		this.title = checkNull(title);
-		this.message = checkNull(message);
+		this.verifyMessage = checkNull(verifyMessage);
+		this.verifiedMessage = checkNull(verifiedMessage);
+		this.validatedMessage = checkNull(validatedMessage);
 	}
 
 	private String checkNull(String value) {
@@ -50,8 +58,19 @@ public class Mailer {
 		}
 	}
 
-	public void sendMail(String email, String verificationCode)
+	public void sendVerificationMail(String email, String verificationCode)
 			throws MessagingException {
+		replaceCodeAndSendMail(email, verificationCode, verifyMessage);
+	}
+
+	private void replaceCodeAndSendMail(String email, String verificationCode,
+			String text) throws MessagingException, AddressException {
+		text = text.replaceAll(Pattern.quote("$code"), verificationCode);
+		sendMail(email, title, text);
+	}
+
+	private void sendMail(String email, String title, String text)
+			throws MessagingException, AddressException {
 		// sets SMTP server properties
 		Properties properties = new Properties();
 		properties.put("mail.smtp.host", host);
@@ -68,7 +87,6 @@ public class Mailer {
 
 		Session session = Session.getInstance(properties, auth);
 		Message msg = new MimeMessage(session);
-
 		msg.setFrom(new InternetAddress(userName));
 		InternetAddress[] toAddresses = { new InternetAddress(email) };
 		msg.setRecipients(Message.RecipientType.TO, toAddresses);
@@ -76,12 +94,20 @@ public class Mailer {
 		msg.setSentDate(new Date());
 
 		// set plain text message
-		String text = message;
-		text = text.replaceAll(Pattern.quote("$code"), verificationCode);
 		msg.setText(text);
 
 		// sends the e-mail
 		Transport.send(msg);
+	}
+
+	public void sendVerifiedMail(String verificationCode)
+			throws AddressException, MessagingException {
+		replaceCodeAndSendMail(userName, verificationCode, verifiedMessage);
+	}
+
+	public void sendValidatedMail(String mail, String verificationCode)
+			throws AddressException, MessagingException {
+		replaceCodeAndSendMail(mail, verificationCode, validatedMessage);
 	}
 
 }

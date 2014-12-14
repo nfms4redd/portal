@@ -39,31 +39,43 @@ public class Feedback {
 		 */
 		String verificationCode = Integer
 				.toString((geom + comment + email + srid).hashCode());
+		persistence.insert(geom, srid, comment, email, verificationCode);
 		try {
-			mailInfo.sendMail(email, verificationCode);
+			mailInfo.sendVerificationMail(email, verificationCode);
 		} catch (AddressException e) {
 			throw new CannotSendMailException("Invalid address", e);
 		} catch (MessagingException e) {
 			throw new CannotSendMailException("Error sending mail", e);
 		}
-		persistence.insert(geom, srid, comment, email, verificationCode);
 		persistence.cleanOutOfDate();
 
 		return verificationCode;
 	}
 
 	public void verify(String verificationCode)
-			throws VerificationCodeNotFoundException, PersistenceException {
+			throws VerificationCodeNotFoundException, PersistenceException,
+			AddressException, MessagingException {
 		if (persistence.existsUnverified(verificationCode)) {
 			persistence.verify(verificationCode);
+			mailInfo.sendVerifiedMail(verificationCode);
 		} else {
 			throw new VerificationCodeNotFoundException();
 		}
 	}
 
-	public String[] notifyValidated() {
-		// TODO Auto-generated method stub
-		return null;
+	public void notifyValidated() throws PersistenceException {
+		CommentInfo[] entries = persistence.getValidatedToNotifyInfo();
+		System.out.println(entries.length);
+		for (CommentInfo entry : entries) {
+			try {
+				mailInfo.sendValidatedMail(entry.getMail(),
+						entry.getVerificationCode());
+				persistence.setNotified(entry.getId());
+			} catch (MessagingException e) {
+				logger.error("Could not send mail to " + entry.getMail(), e);
+				// ignore
+			}
+		}
 	}
 
 	public void createTable() throws PersistenceException {

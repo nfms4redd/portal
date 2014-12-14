@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "map", "i18n", "customization" ], function($, bus, map, i18n, customization) {
+define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], function(module, $, bus, map, i18n, customization) {
 
 	var wmsNamePortalLayerName = {};
 
@@ -11,7 +11,7 @@ define([ "jquery", "message-bus", "map", "i18n", "customization" ], function($, 
 	});
 
 	bus.listen("info-features", function(event, features, x, y) {
-		var i, infoPopup, dialogX, dialogY, epsg4326, epsg900913;
+		var i, infoPopup, epsg4326, epsg900913;
 
 		// re-project to Google projection
 		epsg4326 = new OpenLayers.Projection("EPSG:4326");
@@ -133,11 +133,19 @@ define([ "jquery", "message-bus", "map", "i18n", "customization" ], function($, 
 		if (features.length === 0) {
 			infoPopup.dialog('close');
 		} else {
+			var openInCenter = module.config()["open-in-center"];
 			// Don't reposition the dialog if already open
 			if (!infoPopup.dialog('isOpen')) {
-				dialogX = x + 100;
-				dialogY = y - 200;
-				infoPopup.dialog('option', 'position', [ dialogX, dialogY ]);
+				var position;
+				if (openInCenter) {
+					position = "center";
+				} else {
+					var dialogX = x + 100;
+					var dialogY = y - 200;
+					position = [ dialogX, dialogY ];
+				}
+				
+				infoPopup.dialog('option', 'position', position);
 
 				// Finally open the dialog
 				infoPopup.dialog('open');

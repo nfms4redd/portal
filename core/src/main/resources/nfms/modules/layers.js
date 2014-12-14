@@ -1,12 +1,12 @@
 define([ "jquery", "message-bus", "customization", "module" ], function($, bus, customization, module) {
 
-		var findById = function(array, id) {
-			return $.grep(array, function(l) {
-				return l.id === id;
-			});
-		};
+	var findById = function(array, id) {
+		return $.grep(array, function(l) {
+			return l.id === id;
+		});
+	};
 
-		var processGroup = function(layerRoot, parentId, group) {
+	var processGroup = function(layerRoot, parentId, group) {
 		var items, item, portalLayers, portalLayer, wmsLayerIds,
 			wmsLayers, wmsLayer, i, j, layerInfoArray;
 
@@ -82,6 +82,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		var layerRoot = module.config();
 		var groups = layerRoot.groups;
 
+		bus.send("before-adding-layers");
+		
 		for (i = 0; i < groups.length; i++) {
 			processGroup(layerRoot, null, groups[i]);
 		}

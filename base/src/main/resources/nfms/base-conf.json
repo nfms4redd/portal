@@ -1,7 +1,11 @@
 {
 	"default-conf" : {
 		"banner" : {
-			"hide" : false
+			"hide" : false,
+			"show-flag" : true
+		},
+		"info-dialog" : {
+			"open-in-center" : false
 		}
 	},
 	"requirejs" : {

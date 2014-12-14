@@ -35,7 +35,6 @@ import javax.sql.DataSource;
  */
 public class Output extends OutputDescriptor {
 
-	private String title;
 	private String subtitle;
 	private String description;
 	private String y_label;
@@ -49,14 +48,8 @@ public class Output extends OutputDescriptor {
 	private ArrayList<String> labels = null;
 	private ArrayList<ArrayList<String>> values = null;
 
-	public Output(String id, String name, String fieldId) {
-		super(id, name, fieldId);
-	}
-
 	public Output(String id, String name, String fieldId, String title) {
-		super(id, name, fieldId);
-		this.setTitle(title);
-
+		super(id, name, fieldId, title);
 	}
 
 	public ArrayList<ArrayList<String>> getData(String objectid) {
@@ -104,13 +97,6 @@ public class Output extends OutputDescriptor {
 		this.labels = labels;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
 
 	public String getSubtitle() {
 		return subtitle;

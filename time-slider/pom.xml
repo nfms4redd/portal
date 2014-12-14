@@ -8,8 +8,8 @@
 		<artifactId>portal-root</artifactId>
 		<version>3.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>jwebclient-analyzer</artifactId>
-	<name>jwebclient-analyzer</name>
+	<artifactId>time-slider</artifactId>
+	<name>time-slider</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,29 +18,13 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<version>2.4</version>
-			<classifier>jdk15</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.6</version>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>base</artifactId>
+			<version>3.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

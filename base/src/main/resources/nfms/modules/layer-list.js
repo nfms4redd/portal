@@ -1,10 +1,16 @@
 define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function($, bus, layout) {
 
+	var layerActions = new Array();
+
 	var temporalLayers = new Array();
 
 	var divLayers = null;
 
 	var divLayersContainer = layout.layers;
+
+	bus.listen("register-layer-action", function (event, action) {
+		layerActions.push(action);
+	});
 
 	divLayers = $("<div/>").attr("id", "all_layers");
 	divLayers.addClass("ui-accordion-icons");
@@ -149,20 +155,14 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 			tdName.html(portalLayer.label);
 			trLayer.append(tdName);
 
-			tdInfo = $("<td/>").addClass("layer_info");
-			if (portalLayer.hasOwnProperty("infoFile")) {
-				aLink = $("<a/>").attr("href", portalLayer.infoFile);
-				aLink.addClass("layer_info_button");
-				aLink.fancybox({
-					"closeBtn" : "true",
-					"openEffect" : "elastic",
-					"closeEffect" : "elastic",
-					"type" : "iframe",
-					"overlayOpacity" : 0.5
-				});
-				tdInfo.append(aLink);
+			for (var i = 0; i < layerActions.length; i++) {
+				var layerAction = layerActions[i];
+				var element = layerAction(portalLayer);
+				tdAction = $("<td/>").addClass("layer_action").appendTo(trLayer);
+				if (element != null) {
+					tdAction.append(element);
+				}
 			}
-			trLayer.append(tdInfo);
 
 			$.each(portalLayer.wmsLayers, function(index, wmsLayer) {
 				if (wmsLayer.hasOwnProperty("timestamps")) {

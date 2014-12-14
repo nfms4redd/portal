@@ -12,15 +12,6 @@
 	cursor: pointer;
 }
 
-.blue_button.selected {
-	color: #fff;
-}
-
-.lang_button {
-	float: right;
-	margin-left: 20px;
-}
-
 #toolbar {
 	/* for IE */
 	/* filter:alpha(opacity=75); */
@@ -31,17 +22,4 @@
 	z-index: 2000;
 	position: relative;
 	padding-right: 10px;
-}
-
-#time_slider_pane {
-	z-index: 2000;
-	position: absolute;
-	top: 8px;
-	left: 220px;
-	width: 180px;
-	font-size: 60%;
-	font-size: 11px;
-	border: 1px solid #333;
-	height: 30px;
-	background-color: #456;
 }

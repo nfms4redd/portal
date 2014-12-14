@@ -69,10 +69,9 @@ public class DBLayer implements Layer {
 				String name = result.getString("name");
 				String division_field_id = result
 						.getString("division_field_id");
-
-				Output output = new Output("" + id, name, division_field_id);
+				String title = result.getString("title");
+				Output output = new Output("" + id, name, division_field_id, title);
 				// Ver de agregar estos meta datos al Output.
-				output.setTitle(result.getString("title"));
 				output.setSubtitle(result.getString("subtitle"));
 				output.setDescription(result.getString("description"));
 				output.setY_label(result.getString("y_label"));

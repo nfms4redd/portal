@@ -8,7 +8,15 @@ public class StatusServletException extends ServletException {
 	private int status;
 
 	public StatusServletException(int status, String msg) {
-		super(msg);
+		this(status, msg, null);
+	}
+
+	public StatusServletException(int status, Throwable e) {
+		this(status, e.getMessage(), e);
+	}
+
+	public StatusServletException(int status, String msg, Throwable e) {
+		super(msg, e);
 		this.status = status;
 	}
 

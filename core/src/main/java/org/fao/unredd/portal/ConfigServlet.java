@@ -41,7 +41,7 @@ public class ConfigServlet extends HttpServlet {
 						locale, title));
 		moduleConfig.element("i18n", buildI18NObject(bundle));
 		moduleConfig.element("layers",
-				JSONSerializer.toJSON(config.getLayers(locale)));
+				JSONSerializer.toJSON(config.getLayers(locale, req)));
 		moduleConfig.element("url-parameters",
 				JSONSerializer.toJSON(req.getParameterMap()));
 		// plugin elements
@@ -49,7 +49,7 @@ public class ConfigServlet extends HttpServlet {
 		Map<String, JSONObject> pluginConfiguration = (Map<String, JSONObject>) getServletContext()
 				.getAttribute("plugin-configuration");
 		Map<String, JSONObject> pluginConfigurationOverride = config
-				.getPluginConfiguration();
+				.getPluginConfiguration(req);
 		for (String configurationItem : pluginConfigurationOverride.keySet()) {
 			moduleConfig.element(configurationItem,
 					pluginConfigurationOverride.get(configurationItem));

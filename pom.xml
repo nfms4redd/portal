@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.fao.unredd</groupId>
-	<artifactId>portal</artifactId>
+	<artifactId>portal-root</artifactId>
 	<version>3.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>UNREDD NFMS portal</name>
@@ -13,9 +13,10 @@
 		<module>jwebclient-analyzer</module>
 		<module>jwebclient-analyzer-maven-plugin</module>
 		<module>feedback</module>
-		<module>layer-time-sliders</module>
-    		<module>geoexplorer-reader</module>
+		<module>geoexplorer-reader</module>
     		<module>integration-tests</module>
+    		<module>time-slider</module>
+    		<module>language-buttons</module>
   	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

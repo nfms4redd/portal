@@ -18,7 +18,8 @@ package org.fao.unredd.layers;
 /**
  * Describes one of the outputs a layer can have.
  * 
- * @author fergonco
+ * @author fergonco, manureta
+ * 
  */
 public class OutputDescriptor {
 
@@ -36,18 +37,26 @@ public class OutputDescriptor {
 	 * The fieldId that identifies the objects in the layer for whom this output
 	 * contains information
 	 */
+
 	private String fieldId;
 
-	public OutputDescriptor(String id, String name, String fieldId) {
+	/**
+	 * The name of the output
+	 */
+	private String title;
+
+	public OutputDescriptor(String id, String name, String fieldId, String title) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.fieldId = fieldId;
+		this.title = title;
 	}
 
 	public String toJSON() {
 		return "{" + "\"id\":\"" + id + "\"," + //
 				"\"name\":\"" + name + "\"," + //
+				"\"title\":\"" + title + "\"," + //
 				"\"fieldId\":\"" + fieldId + "\"" + "}";
 	}
 
@@ -62,4 +71,9 @@ public class OutputDescriptor {
 	public String getName() {
 		return name;
 	}
+
+	public String getTitle() {
+		return title;
+	}
+
 }

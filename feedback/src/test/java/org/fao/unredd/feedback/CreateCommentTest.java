@@ -46,21 +46,21 @@ public class CreateCommentTest {
 	}
 
 	@Test
-	public void testInvalidMailNoInsert() throws Exception {
+	public void testInvalidInsertNoMail() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		doThrow(new PersistenceException("", null)).when(persistence)
+				.insert(anyString(), anyString(), anyString(), anyString(),
+						anyString());
 		Mailer mailer = mock(Mailer.class);
-		doThrow(new MessagingException()).when(mailer).sendMail(anyString(),
-				anyString());
 		feedback = new Feedback(persistence, mailer);
 
 		try {
 			feedback.insertNew(validGeometry, validSRID, validComment,
-					"sindominio@");
+					validEmail);
 			fail();
 		} catch (Exception e) {
 		}
-		verify(persistence, never()).insert(anyString(), anyString(),
-				anyString(), anyString(), anyString());
+		verify(mailer, never()).sendVerificationMail(anyString(), anyString());
 	}
 
 	@Test
@@ -93,9 +93,11 @@ public class CreateCommentTest {
 	public void testVerifyComment() throws Exception {
 		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
 		when(persistence.existsUnverified("100")).thenReturn(true);
-		feedback = new Feedback(persistence, mock(Mailer.class));
+		Mailer mailer = mock(Mailer.class);
+		feedback = new Feedback(persistence, mailer);
 		feedback.verify("100");
 		verify(persistence).verify("100");
+		verify(mailer).sendVerifiedMail("100");
 	}
 
 	@Test
@@ -108,5 +110,34 @@ public class CreateCommentTest {
 			fail();
 		} catch (VerificationCodeNotFoundException e) {
 		}
+	}
+
+	@Test
+	public void testNotifyAuthors() throws Exception {
+		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		when(persistence.getValidatedToNotifyInfo()).thenReturn(
+				new CommentInfo[] { new CommentInfo(1, "a@b.com", "100") });
+		Mailer mailer = mock(Mailer.class);
+		feedback = new Feedback(persistence, mailer);
+		feedback.notifyValidated();
+
+		verify(mailer).sendValidatedMail("a@b.com", "100");
+		verify(persistence).setNotified(1);
+	}
+
+	@Test
+	public void testNotifyAuthorsMailError() throws Exception {
+		FeedbackPersistence persistence = mock(FeedbackPersistence.class);
+		when(persistence.getValidatedToNotifyInfo()).thenReturn(
+				new CommentInfo[] { new CommentInfo(1, "a@b.com", "100"),
+						new CommentInfo(2, "c@d.com", "101") });
+		Mailer mailer = mock(Mailer.class);
+		doThrow(new MessagingException()).when(mailer).sendValidatedMail(
+				"c@d.com", "101");
+		feedback = new Feedback(persistence, mailer);
+		feedback.notifyValidated();
+
+		verify(mailer).sendValidatedMail("a@b.com", "100");
+		verify(persistence, times(1)).setNotified(1);
 	}
 }
