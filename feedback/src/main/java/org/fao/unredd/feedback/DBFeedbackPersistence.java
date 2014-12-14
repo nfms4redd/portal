@@ -26,8 +26,9 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 
 	@Override
 	public void insert(final String geom, final String srid,
-			final String comment, final String email,
-			final String verificationCode) throws PersistenceException {
+			final String comment, final String email, final String layerName,
+			final String layerDate, final String verificationCode,
+			final String language) throws PersistenceException {
 		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
 
 			@Override
@@ -35,16 +36,20 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 				PreparedStatement statement = connection
 						.prepareStatement("INSERT INTO "
 								+ tableName
-								+ "(geometry, comment, date, email, verification_code, state) "
+								+ "(geometry, comment, date, email, layer_name, "
+								+ "layer_date, verification_code, language, state) "
 								+ "VALUES"
-								+ "(ST_GeomFromText(?, ?), ?, ?, ?, ?, " + NEW
-								+ ")");
+								+ "(ST_GeomFromText(?, ?), ?, ?, ?, ?, ?, ?, ?, "
+								+ NEW + ")");
 				statement.setString(1, geom);
 				statement.setInt(2, Integer.parseInt(srid));
 				statement.setString(3, comment);
 				statement.setTimestamp(4, new Timestamp(new Date().getTime()));
 				statement.setString(5, email);
-				statement.setString(6, verificationCode);
+				statement.setString(6, layerName);
+				statement.setString(7, layerDate);
+				statement.setString(8, verificationCode);
+				statement.setString(9, language);
 				statement.execute();
 				statement.close();
 			}
@@ -79,9 +84,12 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 								+ "id serial,"//
 								+ "geometry geometry('GEOMETRY', 900913),"//
 								+ "comment varchar NOT NULL,"//
+								+ "layer_name varchar NOT NULL,"//
+								+ "layer_date varchar,"//
 								+ "date timestamp NOT NULL,"//
 								+ "email varchar NOT NULL,"//
 								+ "verification_code varchar,"//
+								+ "language varchar,"//
 								+ "state int" + ")");
 				statement.execute();
 
@@ -101,7 +109,8 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 						PreparedStatement statement = connection
 								.prepareStatement("SELECT count(*) FROM "
 										+ tableName
-										+ " WHERE verification_code = ?");
+										+ " WHERE verification_code = ? AND state = "
+										+ NEW);
 						statement.setString(1, verificationCode);
 						ResultSet resultSet = statement.executeQuery();
 						resultSet.next();
@@ -139,13 +148,14 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 			@Override
 			public void process(Connection connection) throws SQLException {
 				PreparedStatement statement = connection
-						.prepareStatement("SELECT id, email, verification_code FROM "
+						.prepareStatement("SELECT id, email, verification_code, language FROM "
 								+ tableName + " WHERE state=" + VALIDATED);
 				ResultSet result = statement.executeQuery();
 				while (result.next()) {
 					ret.add(new CommentInfo(result.getInt("id"), result
 							.getString("email"), result
-							.getString("verification_code")));
+							.getString("verification_code"), result
+							.getString("language")));
 				}
 				result.close();
 				statement.close();

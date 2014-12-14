@@ -1,0 +1,18 @@
+#feedback-button {
+	float: left;
+	margin-left: 450px;
+}
+
+.feedback-form-left {
+	float: left;
+	clear: left;
+	display: block;
+	width: 9em;
+	text-align: right;
+	padding-right: 10px;
+	line-height: 2em;
+}
+
+#feedback-layer-combo {
+	width: 11em;
+}

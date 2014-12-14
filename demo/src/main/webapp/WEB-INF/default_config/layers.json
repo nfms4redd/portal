@@ -118,11 +118,13 @@
 			"active" : true,
 			"infoFile" : "forest_classification_def.html",
 			"label" : "${facet_forest_classification}",
-			"layers" : [ "forestClassification" ]
+			"layers" : [ "forestClassification" ],
+			"feedback" : true
 		}, {
 			"id" : "forest_mask",
 			"label" : "${forest_mask}",
-			"layers" : [ "forest_mask" ]
+			"layers" : [ "forest_mask" ],
+			"feedback" : true
 		}, {
 			"id" : "countryBoundaries",
 			"active" : true,
