@@ -91,4 +91,10 @@ define([ "jquery", "message-bus", "layout", "botonera", "map", "jquery-ui" ], fu
 		}
 		);
 	});
+	bus.listen("layer-visibility", function (portalLayerid,visibility){
+/*		if (visibility==false) {text='ocultar'}
+		else {text='mostrar'};
+		alert(portalLayerid+' '+text+visibility);
+	*/	
+	});
 });
