@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bus, layout, map) {
+define([ "jquery", "message-bus", "layer-list-selector", "jquery-ui" ], function($, bus) {
 
 	/*
 	 * keep the information about the layers that will be necessary when they
@@ -6,7 +6,8 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 	 */
 	var layersInfo = {};
 
-	var divActiveLayersContainer = layout.activeLayers;
+	// Create the div
+	var divActiveLayersContainer = $("#layers_container");
 
 	var divActiveLayers = $("<div/>").attr("id", "active_layers");
 
@@ -123,11 +124,11 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 		// }
 		// });
 		divActiveLayers.accordion("refresh");
-		divActiveLayersContainer.show();
+		divActiveLayers.show();
 	});
 
 	bus.listen("hide-active-layer-list", function(event, groupInfo) {
-		divActiveLayersContainer.hide();
+		divActiveLayers.hide();
 	});
 
 	return divActiveLayers;

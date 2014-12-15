@@ -1,5 +1,10 @@
 define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui" ], function($, bus, layout, customization, i18n, ui) {
-	var divLayerListSelector = layout.layerListSelector;
+	
+	var body = $("body");
+	
+	var divLayerList = $("<div/>").attr("id", "layers_container").appendTo(body);
+
+	var divLayerListSelector = $("<div/>").attr("id", "layer_list_selector_pane").appendTo(body);
 
 	var allLayersButton = $('<input type="radio" id="show_all_layers" name="layer_list_selector" checked="checked"><label for="show_all_layers">' + i18n.layers + '</label>');
 	var activeLayersbutton = $('<input type="radio" id="show_active_layers" name="layer_list_selector"><label for="show_active_layers">' + i18n.selected_layers + '</label>');

@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function($, bus, layout) {
+define([ "jquery", "message-bus", "layer-list-selector", "jquery-ui", "fancy-box" ], function($, bus) {
 
 	var layerActions = new Array();
 
@@ -6,7 +6,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 
 	var divLayers = null;
 
-	var divLayersContainer = layout.layers;
+	var divLayersContainer = $("#layers_container");
 
 	bus.listen("register-layer-action", function (event, action) {
 		layerActions.push(action);
@@ -220,10 +220,10 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 
 	});
 	bus.listen("show-layer-list", function(event, groupInfo) {
-		divLayersContainer.show();
+		divLayers.show();
 	});
 	bus.listen("hide-layer-list", function(event, groupInfo) {
-		divLayersContainer.hide();
+		divLayers.hide();
 	});
 
 	return divLayersContainer;

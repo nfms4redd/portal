@@ -1,0 +1,8 @@
+#layers_container {
+	font-size: 10px;
+	left: 10px;
+	position: absolute;
+	top: 215px;
+	width: 250px;
+	z-index: 1100;
+}

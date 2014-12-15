@@ -40,24 +40,6 @@ body {
     z-index: 1100;
 }
 
-#layers_container {
-	font-size: 10px;
-	left: 10px;
-	position: absolute;
-	top: 215px;
-	width: 250px;
-	z-index: 1100;
-}
-
-#active_layers_container {
-    font-size: 10px;
-    left: 10px;
-    position: absolute;
-    top: 215px;
-    width: 250px;
-    display: none;
-}
-
 .ui-front {
 	/* 
 	Apparently it is possible to put the dialogs on top
