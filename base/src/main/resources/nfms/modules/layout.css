@@ -31,15 +31,6 @@ body {
 	bottom: 0px;
 }
 
-#layer_list_selector_pane {
-    width: 290px;
-    top: 186px;
-    left: 10px;
-    position: absolute;
-    display: none;
-    z-index: 1100;
-}
-
 .ui-front {
 	/* 
 	Apparently it is possible to put the dialogs on top

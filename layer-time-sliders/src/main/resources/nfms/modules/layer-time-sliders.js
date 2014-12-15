@@ -1,15 +1,8 @@
-define([ "jquery", "message-bus", "layout", "botonera", "map", "jquery-ui" ], function($, bus, layout, botonera, map) {
+define([ "jquery", "message-bus", "layout", "botonera", "map", "layer-list-selector", "jquery-ui" ], function($, bus, layout, botonera, map, layerListSelector) {
     var aLayers=[];
     var aTimestampsLayers={};
-	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders");
-
-	botonera.newButton("temporal", function() {
-		divTimeSliders.dialog({
-			closeOnEscape : true,
-			width : "80%",
-			resizable : true
-		});
-	});
+	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders").addClass("layer_container_panel");
+	layerListSelector.registerLayerPanel("layer_slider_selector", "Temporal", divTimeSliders);
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var timestamps = [];

@@ -1,29 +1,52 @@
 define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui" ], function($, bus, layout, customization, i18n, ui) {
-	
-	var body = $("body");
-	
-	var divLayerList = $("<div/>").attr("id", "layers_container").appendTo(body);
 
-	var divLayerListSelector = $("<div/>").attr("id", "layer_list_selector_pane").appendTo(body);
+	var divsById = [];
 
-	var allLayersButton = $('<input type="radio" id="show_all_layers" name="layer_list_selector" checked="checked"><label for="show_all_layers">' + i18n.layers + '</label>');
-	var activeLayersbutton = $('<input type="radio" id="show_active_layers" name="layer_list_selector"><label for="show_active_layers">' + i18n.selected_layers + '</label>');
+	var divContainer = $("<div/>").attr("id", "layers_container").appendTo("body");
 
-	divLayerListSelector.append(allLayersButton);
-	divLayerListSelector.append(activeLayersbutton);
+	var divLayerListSelector = $("<div/>").attr("id", "layer_list_selector_pane").appendTo("body").hide();
 
-    allLayersButton.click(function() {
-		bus.send("show-layer-list");
-		bus.send("hide-active-layer-list");
+	bus.listen("show-layer-panel", function(event, id) {
+		for (divId in divsById) {
+			if (divId == id) {
+				divsById[divId].show();
+			} else {
+				divsById[divId].hide();
+			}
+		}
 	});
 
-    activeLayersbutton.click(function () {
-		bus.send("show-active-layer-list");
-		bus.send("hide-layer-list");
+	var registerLayerPanel = function(id, text, div) {
+
+		var btn = $("<input type='radio'/>").attr("id", id).attr("name", "layerListSelector").appendTo(divLayerListSelector);
+		var lbl = $("<label/>").addClass("noselect").attr("for", id).html(text).appendTo(divLayerListSelector);
+
+		div.appendTo(divContainer);
+
+		if ($.isEmptyObject(divsById)) {
+			btn.attr("checked", "true");
+		} else {
+			div.hide();
+		}
+
+		// Workaround for http://bugs.jqueryui.com/ticket/7665
+		lbl.click(function() {
+			btn.checked = !btn.checked;
+			btn.button("refresh");
+			btn.change();
+			bus.send("show-layer-panel", [ id ]);
+			return false;
+		});
+
+		divsById[id] = div;
+	};
+
+	bus.listen("modules-loaded", function() {
+		divLayerListSelector.buttonset();
+		divLayerListSelector.show();
 	});
 
-	divLayerListSelector.buttonset();
-	divLayerListSelector.show();
-
-	return divLayerListSelector;
+	return {
+		"registerLayerPanel" : registerLayerPanel
+	};
 });
