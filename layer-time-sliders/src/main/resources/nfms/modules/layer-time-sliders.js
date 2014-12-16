@@ -21,10 +21,10 @@ define([ "jquery", "message-bus", "layout", "botonera", "map", "layer-list-selec
 				return a - b;
 			});
 
-			$("<div/>").html(layerInfo.label).appendTo(divTimeSliders);
+			$("<div/>").html(layerInfo.label).addClass("layer-time-slider-title").appendTo(divTimeSliders);
+			var divTimeSliderLabel = $("<span id='layer_time_slider_label_" + layerInfo.id + "'/>").appendTo(divTimeSliders);
 			var divTimeSlider = $("<div id='layer_time_slider_" + layerInfo.id + "' class='layers_time_slider' />").appendTo(divTimeSliders);
-
-			var divTimeSliderLabel = $("<div id='layer_time_slider_label_" + layerInfo.id + "'/>").appendTo(divTimeSliders);
+			divTimeSlider.addClass("layer-time-slider");
 
 			divTimeSlider.slider({
 				change : function(event, ui) {
@@ -44,13 +44,13 @@ define([ "jquery", "message-bus", "layout", "botonera", "map", "layer-list-selec
 				},
 				slide : function(event, ui) {
 					var date = timestamps[ui.value];
-					divTimeSliderLabel.text(date);
+					divTimeSliderLabel.text(date.getLocalizedDate());
 				},
 				max : timestamps.length - 1,
 				value : timestamps.length - 1
 			});
 
-			divTimeSliderLabel.text(timestamps[timestamps.length - 1]);
+			divTimeSliderLabel.text(timestamps[timestamps.length - 1].getLocalizedDate());
 		
 		   aTimestampsLayers[layerInfo.id]=timestamps;
 		}
