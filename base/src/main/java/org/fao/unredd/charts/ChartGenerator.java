@@ -15,18 +15,12 @@
  */
 package org.fao.unredd.charts;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.fao.unredd.charts.generated.DataType;
 import org.fao.unredd.layers.Output;
 
 /**
