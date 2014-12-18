@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "toolbar", "jquery-ui", "iso8601" ], function($, bus, toolbar, ui) {
+define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, toolbar, ui) {
 
 	var timestampSet = {};
 	var divTimeSlideContainer;

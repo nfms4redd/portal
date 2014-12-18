@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "layout", "botonera", "map", "layer-list-selector", "jquery-ui" ], function($, bus, layout, botonera, map, layerListSelector) {
+define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "jquery-ui" ], function($, bus, layout, map, layerListSelector) {
     var aLayers=[];
     var aTimestampsLayers={};
 	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders").addClass("layer_container_panel");
