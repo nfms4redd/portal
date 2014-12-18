@@ -1,20 +1,8 @@
-define([ "jquery", "message-bus", "toolbar", "jquery-ui", "i18n" ], function($, bus, toolbar, ui, i18n) {
+define([ "jquery", "message-bus", "toolbar", "jquery-ui", "iso8601" ], function($, bus, toolbar, ui) {
 
 	var timestampSet = {};
 	var divTimeSlideContainer;
 	
-	var getLocalizedDate = function(date) {
-		var defaultMonths = [ "Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sep.", "Oct.", "Nov.", "Dec." ];
-		var months = i18n.months ? eval(i18n.months) : defaultMonths;
-		var arr = date.split("-");
-
-		if (arr[1]) {
-			arr[1] = months[arr[1] - 1];
-		}
-
-		return arr[1] + " " + arr[0];
-	};
-
 	divTimeSlideContainer = $("<div/>").attr("id", "time_slider_pane");
 	divTimeSlideContainer.hide();
 	toolbar.append(divTimeSlideContainer);
@@ -55,13 +43,13 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui", "i18n" ], function($, 
 					bus.send("time-slider.selection", d);
 				},
 				slide : function(event, ui) {
-					divTimeSliderLabel.text(getLocalizedDate(timestamps[ui.value]));
+					divTimeSliderLabel.text(Date.getLocalizedDate(timestamps[ui.value]));
 				},
 				max : lastTimestampIndex,
 				value : lastTimestampIndex
 			});
 
-			divTimeSliderLabel.text(getLocalizedDate(timestamps[lastTimestampIndex]));
+			divTimeSliderLabel.text(Date.getLocalizedDate(timestamps[lastTimestampIndex]));
 
 			div.show();
 

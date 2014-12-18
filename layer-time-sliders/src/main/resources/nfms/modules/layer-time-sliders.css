@@ -1,0 +1,10 @@
+.layer-time-slider {
+	display: inline-block;
+	width: 50%;
+	margin-left: 10px;
+}
+
+.layer-time-slider-title {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}

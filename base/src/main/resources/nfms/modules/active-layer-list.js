@@ -1,4 +1,5 @@
-define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bus, layout, map) {
+// layer-list is imported to have it first in the list
+define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "layer-list" ], function($, bus, layerListSelector, i18n) {
 
 	/*
 	 * keep the information about the layers that will be necessary when they
@@ -6,34 +7,13 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 	 */
 	var layersInfo = {};
 
-	var divActiveLayersContainer = layout.activeLayers;
-
-	var divActiveLayers = $("<div/>").attr("id", "active_layers");
-
-	// Accordion header
-	var h3Title = $("<h3/>").html("Selected layers");
-	divActiveLayers.append(h3Title);
-
-	// div that contains all the active layers with sliders
-	var div = $("<div/>");
-	divActiveLayers.append(div);
-	// div.empty();
+	// Create the div
+	var divActiveLayers = $("<div/>").attr("id", "active_layers").addClass("layer_container_panel");
 
 	var table = $('<table style="width:100%;margin:auto"></table>');
-	div.append(table);
+	divActiveLayers.append(table);
 
-	// create the accordion
-	divActiveLayers.accordion({
-		collapsible : false,
-		autoHeight : false,
-		animated : false,
-		heightStyle : "content",
-		create : function(event, ui) {
-			$('#active_layers_pane .ui-icon-triangle-1-s').hide();
-		}
-	});
-
-	divActiveLayersContainer.append(divActiveLayers);
+	layerListSelector.registerLayerPanel("active_layers_selector", i18n.selected_layers, divActiveLayers);
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		// set the visibility flag to true if the layer is active and if it is
@@ -71,7 +51,7 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 
 				if (tdLegend !== null) {
 					tr1.append(tdLegend);
-					colspan = 1
+					colspan = 1;
 				}
 
 				tr1.append($('<td colspan="' + colspan + '">' + layerInfo.label + '</td>'));
@@ -95,7 +75,6 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 						bus.send("transparency-slider-changed", [ layerId, ui.value / 100 ]);
 					}
 				});
-				divActiveLayers.accordion("refresh");
 			}
 
 			function delLayer(layerId) {
@@ -109,25 +88,6 @@ define([ "jquery", "message-bus", "layout", "map", "jquery-ui" ], function($, bu
 				delLayer(layerId);
 			}
 		}
-	});
-
-	bus.listen("show-active-layer-list", function(event, groupInfo) {
-		// divActiveLayers.accordion({
-		// collapsible: false,
-		// autoHeight: false,
-		// animated: false,
-		// clearStyle: true,
-		// create: function (event, ui) {
-		// $('#active_layers_pane .ui-icon-triangle-1-s').hide();
-		// //updateActiveLayersPane(mapContexts);
-		// }
-		// });
-		divActiveLayers.accordion("refresh");
-		divActiveLayersContainer.show();
-	});
-
-	bus.listen("hide-active-layer-list", function(event, groupInfo) {
-		divActiveLayersContainer.hide();
 	});
 
 	return divActiveLayers;

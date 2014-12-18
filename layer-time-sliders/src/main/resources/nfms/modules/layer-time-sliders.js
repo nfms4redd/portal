@@ -1,15 +1,8 @@
-define([ "jquery", "message-bus", "layout", "botonera", "map", "jquery-ui" ], function($, bus, layout, botonera, map) {
+define([ "jquery", "message-bus", "layout", "botonera", "map", "layer-list-selector", "jquery-ui" ], function($, bus, layout, botonera, map, layerListSelector) {
     var aLayers=[];
     var aTimestampsLayers={};
-	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders");
-
-	botonera.newButton("temporal", function() {
-		divTimeSliders.dialog({
-			closeOnEscape : true,
-			width : "80%",
-			resizable : true
-		});
-	});
+	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders").addClass("layer_container_panel");
+	layerListSelector.registerLayerPanel("layer_slider_selector", "Temporal", divTimeSliders);
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var timestamps = [];
@@ -28,10 +21,10 @@ define([ "jquery", "message-bus", "layout", "botonera", "map", "jquery-ui" ], fu
 				return a - b;
 			});
 
-			$("<div/>").html(layerInfo.label).appendTo(divTimeSliders);
+			$("<div/>").html(layerInfo.label).addClass("layer-time-slider-title").appendTo(divTimeSliders);
+			var divTimeSliderLabel = $("<span id='layer_time_slider_label_" + layerInfo.id + "'/>").appendTo(divTimeSliders);
 			var divTimeSlider = $("<div id='layer_time_slider_" + layerInfo.id + "' class='layers_time_slider' />").appendTo(divTimeSliders);
-
-			var divTimeSliderLabel = $("<div id='layer_time_slider_label_" + layerInfo.id + "'/>").appendTo(divTimeSliders);
+			divTimeSlider.addClass("layer-time-slider");
 
 			divTimeSlider.slider({
 				change : function(event, ui) {
@@ -51,13 +44,13 @@ define([ "jquery", "message-bus", "layout", "botonera", "map", "jquery-ui" ], fu
 				},
 				slide : function(event, ui) {
 					var date = timestamps[ui.value];
-					divTimeSliderLabel.text(date);
+					divTimeSliderLabel.text(date.getLocalizedDate());
 				},
 				max : timestamps.length - 1,
 				value : timestamps.length - 1
 			});
 
-			divTimeSliderLabel.text(timestamps[timestamps.length - 1]);
+			divTimeSliderLabel.text(timestamps[timestamps.length - 1].getLocalizedDate());
 		
 		   aTimestampsLayers[layerInfo.id]=timestamps;
 		}

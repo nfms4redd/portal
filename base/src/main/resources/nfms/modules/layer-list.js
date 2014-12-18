@@ -1,12 +1,10 @@
-define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function($, bus, layout) {
+define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n) {
 
 	var layerActions = new Array();
 
 	var temporalLayers = new Array();
 
 	var divLayers = null;
-
-	var divLayersContainer = layout.layers;
 
 	bus.listen("register-layer-action", function (event, action) {
 		layerActions.push(action);
@@ -24,7 +22,7 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		"collapsible" : true,
 		"active" : false
 	});
-	divLayersContainer.append(divLayers);
+	layerListSelector.registerLayerPanel("all_layers_selector", i18n.layers, divLayers);
 
 	bus.listen("add-group", function(event, groupInfo) {
 		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;
@@ -219,12 +217,4 @@ define([ "jquery", "message-bus", "layout", "jquery-ui", "fancy-box" ], function
 		$("<span/>").html(" (" + date.getUTCFullYear() + ")").appendTo(tdLayerName);
 
 	});
-	bus.listen("show-layer-list", function(event, groupInfo) {
-		divLayersContainer.show();
-	});
-	bus.listen("hide-layer-list", function(event, groupInfo) {
-		divLayersContainer.hide();
-	});
-
-	return divLayersContainer;
 });

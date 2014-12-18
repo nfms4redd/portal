@@ -1,4 +1,4 @@
-define(function() {
+define(["i18n"], function(i18n) {
 	Date.prototype.setISO8601 = function(str) {
 		var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" + "(T([0-9]{2}):([0-9]{2})(:([0-9]{2})(\\.([0-9]+))?)?"
 				+ "(Z|(([-+])([0-9]{2}):([0-9]{2})))?)?)?)?";
@@ -51,4 +51,24 @@ define(function() {
 				+ pad(this.getUTCSeconds()) + '.'//
 				+ pad(this.getUTCMilliseconds()) + 'Z';
 	};
+
+	Date.prototype.getLocalizedDate = function() {
+		var date = this.toISO8601String();
+		var defaultMonths = [ "Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sep.", "Oct.", "Nov.", "Dec." ];
+		var months = i18n.months ? eval(i18n.months) : defaultMonths;
+		var arr = date.split("-");
+
+		if (arr[1]) {
+			arr[1] = months[arr[1] - 1];
+		}
+
+		return arr[1] + " " + arr[0];
+	};
+
+	Date.getLocalizedDate = function(dateString) {
+		var tmpDate = new Date();
+		tmpDate.setISO8601(dateString);
+		return tmpDate.getLocalizedDate();
+	};
+
 });
