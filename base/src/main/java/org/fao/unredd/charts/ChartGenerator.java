@@ -62,7 +62,10 @@ public class ChartGenerator {
 			template = "/org/fao/unredd/charts/highcharts-3D-template.vtl";
 		} else if (inputData.getGraphicType().equals("2D")) {
 			template = "/org/fao/unredd/charts/highcharts-2D-template.vtl";
+		} else if (inputData.getGraphicType().equals("2D-Bar")) {
+			template = "/org/fao/unredd/charts/highcharts-2D-Bar-template.vtl";
 		} else {
+
 			template = "/org/fao/unredd/charts/highcharts-template.vtl";
 		}
 		Template t = engine.getTemplate(template);
