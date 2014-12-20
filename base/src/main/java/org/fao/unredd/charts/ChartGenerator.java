@@ -58,8 +58,10 @@ public class ChartGenerator {
 		context.put("footer", nullToEmptyString(inputData.getFooter()));
 
 		String template = "";
-		if (inputData.getGraphicType().equals("3d")) {
+		if (inputData.getGraphicType().equals("3D")) {
 			template = "/org/fao/unredd/charts/highcharts-3D-template.vtl";
+		} else if (inputData.getGraphicType().equals("2D")) {
+			template = "/org/fao/unredd/charts/highcharts-2D-template.vtl";
 		} else {
 			template = "/org/fao/unredd/charts/highcharts-template.vtl";
 		}

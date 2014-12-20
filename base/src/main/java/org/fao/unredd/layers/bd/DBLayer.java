@@ -84,6 +84,7 @@ public class DBLayer implements Layer {
 				output.setTable_name_data(resultSet.getString("table_name_data"));
 				output.setDivision_field_id(resultSet
 						.getString("division_field_id"));
+				output.setGraphicType(resultSet.getString("graphic_type"));
 				// TODO: Agregar un metodo al output para obtener los datos de
 				// un determinado Feautre-id
 

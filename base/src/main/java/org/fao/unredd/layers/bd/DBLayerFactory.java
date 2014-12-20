@@ -80,6 +80,7 @@ public class DBLayerFactory implements LayerFactory {
 					});
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
+			// TODO if error because not exsist table, create table
 			e.printStackTrace();
 		}
 		return false;
@@ -105,7 +106,7 @@ public class DBLayerFactory implements LayerFactory {
 				PreparedStatement statement = connection
 						.prepareStatement("CREATE TABLE IF NOT EXISTS indicators.indicators_metadata"
 								+ " ( "
-								+ " id integer NOT NULL DEFAULT nextval('indicators.indicators_metadata_id_seq'::regclass),"
+								+ " id serial NOT NULL,"
 								+ " name character varying,"
 								+ " title character varying,"
 								+ " subtitle character varying,"
@@ -120,6 +121,7 @@ public class DBLayerFactory implements LayerFactory {
 								+ " class_field_name character varying, -- Campo de tabla de clasificaciones a utilizar"
 								+ " date_field_name character varying, -- Campo de fecha en caso de tabla multitemporal"
 								+ " table_name_data character varying, -- Nombre de la tabla de destino de los datos estadisticos calculados"
+								+ " graphic_type character varying, -- Tipo de grafico: 2D, 3D"
 								+ " CONSTRAINT indicators_metadata_pkey PRIMARY KEY (id)"
 								+ " )" + " WITH (" + " OIDS=FALSE" + " )");
 				statement.execute();
