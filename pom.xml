@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.fao.unredd</groupId>
 	<artifactId>portal-root</artifactId>
@@ -13,12 +14,12 @@
 		<module>jwebclient-analyzer</module>
 		<module>jwebclient-analyzer-maven-plugin</module>
 		<module>feedback</module>
-    <module>layer-time-sliders</module>
-    <module>geoexplorer-reader</module>
-    <module>integration-tests</module>
-    <module>time-slider</module>
-    <module>language-buttons</module>
-  </modules>
+		<module>layer-time-sliders</module>
+		<module>geoexplorer-reader</module>
+		<module>integration-tests</module>
+		<module>time-slider</module>
+		<module>language-buttons</module>
+	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>9.2</geotools.version>
@@ -38,10 +39,10 @@
 	</distributionManagement>
 	<pluginRepositories>
 		<pluginRepository>
- 			<id>nfms4redd</id>
+			<id>nfms4redd</id>
 			<name>nfms4redd maven repository</name>
 			<url>http://maven.nfms4redd.org/</url>
- 		</pluginRepository>
+		</pluginRepository>
 	</pluginRepositories>
 	<repositories>
 		<repository>
@@ -72,6 +73,26 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<inceptionYear>2014</inceptionYear>
+					<organizationName>FAO</organizationName>
+					<projectName>NFMS Dissemination Portal</projectName>
+					<licenseName>gpl_v3</licenseName>
+					<roots>
+						<root>src/main/java</root>
+						<root>src/main/resources/nfms/modules</root>
+						<root>src/main/resources/nfms/styles</root>
+					</roots>
+					<includes>
+						<include>*.java</include>
+						<include>*.js</include>
+						<include>*.css</include>
+					</includes>
 				</configuration>
 			</plugin>
 		</plugins>
