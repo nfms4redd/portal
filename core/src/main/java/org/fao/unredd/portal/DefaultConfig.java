@@ -38,7 +38,7 @@ public class DefaultConfig implements Config {
 
 	private static final String PROPERTY_DEFAULT_LANG = "languages.default";
 
-	private static Logger logger = Logger.getLogger(Config.class);
+	private static Logger logger = Logger.getLogger(DefaultConfig.class);
 
 	private File dir = null;
 	private Properties properties;
