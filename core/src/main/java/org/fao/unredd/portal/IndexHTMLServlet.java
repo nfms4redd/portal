@@ -31,6 +31,10 @@ public class IndexHTMLServlet extends HttpServlet {
 				"org.apache.velocity.runtime.resource.loader.StringResourceLoader");
 		engine.setProperty("string.resource.loader.repository.class",
 				"org.apache.velocity.runtime.resource.util.StringResourceRepositoryImpl");
+		engine.setProperty("runtime.log.logsystem.class",
+				"org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
+		engine.setProperty("runtime.log.logsystem.log4j.category", "velocity");
+		engine.setProperty("runtime.log.logsystem.log4j.logger", "velocity");
 		engine.init();
 		VelocityContext context = new VelocityContext();
 
