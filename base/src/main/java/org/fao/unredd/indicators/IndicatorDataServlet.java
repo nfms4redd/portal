@@ -1,8 +1,6 @@
 package org.fao.unredd.indicators;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

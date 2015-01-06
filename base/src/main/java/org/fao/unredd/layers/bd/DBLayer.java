@@ -17,33 +17,32 @@ package org.fao.unredd.layers.bd;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Pattern;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.NoSuchIndicatorException;
 import org.fao.unredd.layers.Output;
 import org.fao.unredd.layers.Outputs;
+import org.fao.unredd.portal.DBUtils;
+import org.fao.unredd.portal.PersistenceException;
 
 /**
- * * Concrete implementation of the {@link Layer} interface based on databases
+ * Concrete implementation of the {@link Layer} interface based on databases
  * 
  * @author manureta
+ * 
  */
 public class DBLayer implements Layer {
 	private String qName;
 	public Outputs var_outputs;
 	public ArrayList<Output> tempoutputs;
 
-	public DBLayer(String layerName) {
+	public DBLayer(String layerName) throws PersistenceException {
 		// TODO Auto-generated constructor stub
 		String[] workspaceAndName = layerName.split(Pattern.quote(":"));
 		if (workspaceAndName.length != 2) {
@@ -51,57 +50,55 @@ public class DBLayer implements Layer {
 					"The layer name must have the form workspaceName:layerName");
 		}
 		this.qName = layerName;
-		try {
-			InitialContext context = new InitialContext();
-			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/unredd-portal");
-			Connection connection = dataSource.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet result = statement
-					.executeQuery("select * from indicators.indicators_metadata WHERE layer_name='"
-							+ this.qName + "'");
+
+		DBUtils.processConnection("unredd-portal",
+				new DBUtils.ReturningDBProcessor<Boolean>() {
+					@Override
+					public Boolean process(Connection connection)
+							throws SQLException {
+						boolean ret = false;
+
+						PreparedStatement statement = connection
+								.prepareStatement("select * from indicators.indicators_metadata WHERE layer_name=?");
+						statement.setString(1, qName);
+						ResultSet resultSet = statement.executeQuery();
+
 			ArrayList<Output> temp = null;
 			temp = new ArrayList<Output>();
-			while (result.next()) {
+			while (resultSet.next()) {
 				// Cargar los datos para este layer de todos los
 				// OutputDescriptors (diferentes graficos)
-				int id = result.getInt("id");
-				String name = result.getString("name");
-				String division_field_id = result
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("name");
+				String division_field_id = resultSet
 						.getString("division_field_id");
-
-				Output output = new Output("" + id, name, division_field_id);
+				String title = resultSet.getString("title");
+				Output output = new Output("" + id, name, division_field_id, title);
 				// Ver de agregar estos meta datos al Output.
-				output.setTitle(result.getString("title"));
-				output.setSubtitle(result.getString("subtitle"));
-				output.setDescription(result.getString("description"));
-				output.setY_label(result.getString("y_label"));
-				output.setUnits(result.getString("units"));
-				output.setTooltipsdecimals(result.getInt("tooltipsdecimals"));
-				output.setLayer_name(result.getString("layer_name"));
-				output.setTable_name_data(result.getString("table_name_data"));
-				output.setDivision_field_id(result
+				output.setSubtitle(resultSet.getString("subtitle"));
+				output.setDescription(resultSet.getString("description"));
+				output.setY_label(resultSet.getString("y_label"));
+				output.setUnits(resultSet.getString("units"));
+				output.setTooltipsdecimals(resultSet.getInt("tooltipsdecimals"));
+				output.setLayer_name(resultSet.getString("layer_name"));
+				output.setTable_name_data(resultSet.getString("table_name_data"));
+				output.setDivision_field_id(resultSet
 						.getString("division_field_id"));
+				output.setGraphicType(resultSet.getString("graphic_type"));
 				// TODO: Agregar un metodo al output para obtener los datos de
 				// un determinado Feautre-id
 
 				temp.add(output);
 
 			}
-			this.var_outputs = new Outputs(temp);
-			result.close();
+			var_outputs = new Outputs(temp);
+			resultSet.close();
 			statement.close();
 			connection.close();
-		} catch (NamingException e) {
-			// return null;
-			e.getMessage();
-			// throw new SQLException("Cannot find the database", e);
-		}
+			return ret;
 
-		catch (Exception e) {
-			e.getMessage();
-			// Nothing, return false
 		}
+	});
 
 	}
 

@@ -17,16 +17,15 @@ package org.fao.unredd.layers;
 
 import java.sql.Array;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+import org.fao.unredd.portal.DBUtils;
+import org.fao.unredd.portal.PersistenceException;
 
 /**
  * One of the outputs a layer can have.
@@ -35,7 +34,6 @@ import javax.sql.DataSource;
  */
 public class Output extends OutputDescriptor {
 
-	private String title;
 	private String subtitle;
 	private String description;
 	private String y_label;
@@ -44,19 +42,15 @@ public class Output extends OutputDescriptor {
 	private String layer_name;
 	private String table_name_data;
 	private String division_field_id;
+	private String graphic_type;
+		
 
 	private ArrayList<String> series = null;
 	private ArrayList<String> labels = null;
 	private ArrayList<ArrayList<String>> values = null;
 
-	public Output(String id, String name, String fieldId) {
-		super(id, name, fieldId);
-	}
-
 	public Output(String id, String name, String fieldId, String title) {
-		super(id, name, fieldId);
-		this.setTitle(title);
-
+		super(id, name, fieldId, title);
 	}
 
 	public ArrayList<ArrayList<String>> getData(String objectid) {
@@ -102,14 +96,6 @@ public class Output extends OutputDescriptor {
 	private void setLabels(ArrayList<String> labels) {
 		// TODO Auto-generated method stub
 		this.labels = labels;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
 	}
 
 	public String getSubtitle() {
@@ -176,8 +162,11 @@ public class Output extends OutputDescriptor {
 		this.division_field_id = division_field_id;
 	}
 
+	public void setGraphicType(String graphic_type) {
+		this.graphic_type = graphic_type;
+	}
 	public String getGraphicType() {
-		return "3d";
+		return graphic_type;
 	}
 
 	public String getHover() {
@@ -188,59 +177,58 @@ public class Output extends OutputDescriptor {
 		return "MR";
 	}
 
-	private void cargarDatos(String objectid) {
+	private void cargarDatos(final String objectid) {
+
 		try {
-			InitialContext context = new InitialContext();
-			DataSource dataSource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/unredd-portal");
-			Connection connection = dataSource.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet result = statement
-			// .executeQuery("SELECT "+this.getDivision_field_id()+",class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "+this.getTable_name_data()+" "
-			// +
-			// "WHERE "+this.getDivision_field_id()+" = '"+objectid+"' GROUP BY "+this.getDivision_field_id()+",class");
+			 boolean ok = DBUtils.processConnection("unredd-portal",
+					new DBUtils.ReturningDBProcessor<Boolean>() {
+						private String object_Id=objectid;
 
-					.executeQuery("SELECT "
-							// + this.getDivision_field_id()
-							+ "division_id "
-							+ ",class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "
-							+ "(SELECT "
-							// + this.getDivision_field_id()
-							+ "division_id " + ",class,fecha_result, ha "
-							+ "FROM " + this.getTable_name_data()
-							+ " "
-							+ "WHERE "
-							// + this.getDivision_field_id()
-							+ "objectid " + " = '" + objectid + "'"
-							+ "ORDER BY fecha_result asc" + " ) foo	GROUP BY "
-							+ "division_id " // + this.getDivision_field_id()
-							+ ",class ");
-			this.series = new ArrayList<String>();
-			this.labels = new ArrayList<String>();
-			this.values = new ArrayList<ArrayList<String>>();
+						@Override
+						public Boolean process(Connection connection)
+								throws SQLException {
+							boolean ret = false;
 
-			while (result.next()) {
-				String clases = result.getString("class");
-				this.addSerie(clases);
+							PreparedStatement statement = connection
+									.prepareStatement("SELECT "
+							// + this.getDivision_field_id()
+							+ "division_id,class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "
+							+ "(SELECT division_id,class,fecha_result, ha "
+							+ "FROM " + getTable_name_data()  
+							+ " WHERE "
+							+ " division_id  =  ? "
+							+ "ORDER BY fecha_result asc ) foo	GROUP BY "
+							+ "division_id,class ");
 
-				this.setLabels(Array2ArrayListDates(result.getArray("labels")));
-				this.addValues(Array2ArrayList(result.getArray("data_values")));
+							statement.setString(1, object_Id);
+							ResultSet resultSet = statement.executeQuery();
+							
+							
+			series = new ArrayList<String>();
+			labels = new ArrayList<String>();
+			values = new ArrayList<ArrayList<String>>();
+
+			while (resultSet.next()) {
+				String clases = resultSet.getString("class");
+				addSerie(clases);
+
+				setLabels(Array2ArrayListDates(resultSet.getArray("labels")));
+				addValues(Array2ArrayList(resultSet.getArray("data_values")));
 
 			}
-			result.close();
+			resultSet.close();
 			statement.close();
 			connection.close();
-		} catch (NamingException e) {
-			e.getMessage();
-			// return null;
-			// throw new SQLException("Cannot find the database", e);
-		} catch (SQLException e) {
-			e.getMessage();
-			// TODO MAnejar errores sql, no conecta, permiso denegado, loguear
-			// estos errores
-		}
+			return ret;
 
 	}
+			 });
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			// TODO if error because not exsist table, create table
+			//e.printStackTrace();
+		}
+		}
 
 	private ArrayList<String> Array2ArrayList(Array array) {
 		ArrayList<String> ret = null;

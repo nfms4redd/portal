@@ -88,10 +88,13 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 						//TODO if there is more than one indicator, offer the choice to the user.
 						if (indicators.length > 0) {
 							$(indicators).each(function( i, val ) { console.log(val.id+'-> '+val.fieldId);
-								//TODO mostrar nombre del indicador para elejir?									
+								// Muestra un icono para cada grafico con el texto alternativo con el titulo del grafico.								
 								var aIndicators = $("<a/>").addClass("fancybox.iframe").appendTo(tdIndicators);
+								aIndicators.css("padding","1px");
 								$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
 								aIndicators.attr("href", "indicator?objectId=" + feature.attributes[val.fieldId] + "&layerId=" + layerId + "&indicatorId=" + val.id);
+								aIndicators.attr("alt", val.title);
+								aIndicators.attr("title", val.title);
 								aIndicators.fancybox({
 									maxWidth : 840,
 									maxHeight : 600,
