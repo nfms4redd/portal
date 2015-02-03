@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.regex.Pattern;
 
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
@@ -34,20 +33,7 @@ import org.fao.unredd.portal.PersistenceException;
  */
 public class DBLayerFactory implements LayerFactory {
 
-	private String qName;
-
-	public DBLayerFactory(String layerName) {
-		String[] workspaceAndName = layerName.split(Pattern.quote(":"));
-		if (workspaceAndName.length != 2) {
-			throw new IllegalArgumentException(
-					"The layer name must have the form workspaceName:layerName");
-		}
-		this.qName = layerName;
-
-	}
-
-	public String getQualifiedName() {
-		return qName;
+	public DBLayerFactory() {
 	}
 
 	@Override
