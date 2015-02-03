@@ -84,10 +84,4 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "jquer
 		}
 		);
 	});
-	bus.listen("layer-visibility", function (portalLayerid,visibility){
-/*		if (visibility==false) {text='ocultar'}
-		else {text='mostrar'};
-		alert(portalLayerid+' '+text+visibility);
-	*/	
-	});
 });
