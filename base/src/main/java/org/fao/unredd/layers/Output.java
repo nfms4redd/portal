@@ -43,7 +43,6 @@ public class Output extends OutputDescriptor {
 	private String table_name_data;
 	private String division_field_id;
 	private String graphic_type;
-		
 
 	private ArrayList<String> series = null;
 	private ArrayList<String> labels = null;
@@ -165,6 +164,7 @@ public class Output extends OutputDescriptor {
 	public void setGraphicType(String graphic_type) {
 		this.graphic_type = graphic_type;
 	}
+
 	public String getGraphicType() {
 		return graphic_type;
 	}
@@ -180,9 +180,9 @@ public class Output extends OutputDescriptor {
 	private void cargarDatos(final String objectid) {
 
 		try {
-			 boolean ok = DBUtils.processConnection("unredd-portal",
+			boolean ok = DBUtils.processConnection("unredd-portal",
 					new DBUtils.ReturningDBProcessor<Boolean>() {
-						private String object_Id=objectid;
+						private String object_Id = objectid;
 
 						@Override
 						public Boolean process(Connection connection)
@@ -191,44 +191,46 @@ public class Output extends OutputDescriptor {
 
 							PreparedStatement statement = connection
 									.prepareStatement("SELECT "
-							// + this.getDivision_field_id()
-							+ "division_id,class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "
-							+ "(SELECT division_id,class,fecha_result, ha "
-							+ "FROM " + getTable_name_data()  
-							+ " WHERE "
-							+ " division_id  =  ? "
-							+ "ORDER BY fecha_result asc ) foo	GROUP BY "
-							+ "division_id,class ");
+											// + this.getDivision_field_id()
+											+ "division_id,class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "
+											+ "(SELECT division_id,class,fecha_result, ha "
+											+ "FROM "
+											+ getTable_name_data()
+											+ " WHERE "
+											+ " division_id  =  ? "
+											+ "ORDER BY fecha_result asc ) foo	GROUP BY "
+											+ "division_id,class ");
 
 							statement.setString(1, object_Id);
 							ResultSet resultSet = statement.executeQuery();
-							
-							
-			series = new ArrayList<String>();
-			labels = new ArrayList<String>();
-			values = new ArrayList<ArrayList<String>>();
 
-			while (resultSet.next()) {
-				String clases = resultSet.getString("class");
-				addSerie(clases);
+							series = new ArrayList<String>();
+							labels = new ArrayList<String>();
+							values = new ArrayList<ArrayList<String>>();
 
-				setLabels(Array2ArrayListDates(resultSet.getArray("labels")));
-				addValues(Array2ArrayList(resultSet.getArray("data_values")));
+							while (resultSet.next()) {
+								String clases = resultSet.getString("class");
+								addSerie(clases);
 
-			}
-			resultSet.close();
-			statement.close();
-			connection.close();
-			return ret;
+								setLabels(Array2ArrayListDates(resultSet
+										.getArray("labels")));
+								addValues(Array2ArrayList(resultSet
+										.getArray("data_values")));
 
-	}
-			 });
+							}
+							resultSet.close();
+							statement.close();
+							connection.close();
+							return ret;
+
+						}
+					});
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			// TODO if error because not exsist table, create table
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
-		}
+	}
 
 	private ArrayList<String> Array2ArrayList(Array array) {
 		ArrayList<String> ret = null;

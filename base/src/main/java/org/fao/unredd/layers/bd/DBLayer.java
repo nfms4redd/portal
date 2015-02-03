@@ -63,42 +63,49 @@ public class DBLayer implements Layer {
 						statement.setString(1, qName);
 						ResultSet resultSet = statement.executeQuery();
 
-			ArrayList<Output> temp = null;
-			temp = new ArrayList<Output>();
-			while (resultSet.next()) {
-				// Cargar los datos para este layer de todos los
-				// OutputDescriptors (diferentes graficos)
-				int id = resultSet.getInt("id");
-				String name = resultSet.getString("name");
-				String division_field_id = resultSet
-						.getString("division_field_id");
-				String title = resultSet.getString("title");
-				Output output = new Output("" + id, name, division_field_id, title);
-				// Ver de agregar estos meta datos al Output.
-				output.setSubtitle(resultSet.getString("subtitle"));
-				output.setDescription(resultSet.getString("description"));
-				output.setY_label(resultSet.getString("y_label"));
-				output.setUnits(resultSet.getString("units"));
-				output.setTooltipsdecimals(resultSet.getInt("tooltipsdecimals"));
-				output.setLayer_name(resultSet.getString("layer_name"));
-				output.setTable_name_data(resultSet.getString("table_name_data"));
-				output.setDivision_field_id(resultSet
-						.getString("division_field_id"));
-				output.setGraphicType(resultSet.getString("graphic_type"));
-				// TODO: Agregar un metodo al output para obtener los datos de
-				// un determinado Feautre-id
+						ArrayList<Output> temp = null;
+						temp = new ArrayList<Output>();
+						while (resultSet.next()) {
+							// Cargar los datos para este layer de todos los
+							// OutputDescriptors (diferentes graficos)
+							int id = resultSet.getInt("id");
+							String name = resultSet.getString("name");
+							String division_field_id = resultSet
+									.getString("division_field_id");
+							String title = resultSet.getString("title");
+							Output output = new Output("" + id, name,
+									division_field_id, title);
+							// Ver de agregar estos meta datos al Output.
+							output.setSubtitle(resultSet.getString("subtitle"));
+							output.setDescription(resultSet
+									.getString("description"));
+							output.setY_label(resultSet.getString("y_label"));
+							output.setUnits(resultSet.getString("units"));
+							output.setTooltipsdecimals(resultSet
+									.getInt("tooltipsdecimals"));
+							output.setLayer_name(resultSet
+									.getString("layer_name"));
+							output.setTable_name_data(resultSet
+									.getString("table_name_data"));
+							output.setDivision_field_id(resultSet
+									.getString("division_field_id"));
+							output.setGraphicType(resultSet
+									.getString("graphic_type"));
+							// TODO: Agregar un metodo al output para obtener
+							// los datos de
+							// un determinado Feautre-id
 
-				temp.add(output);
+							temp.add(output);
 
-			}
-			var_outputs = new Outputs(temp);
-			resultSet.close();
-			statement.close();
-			connection.close();
-			return ret;
+						}
+						var_outputs = new Outputs(temp);
+						resultSet.close();
+						statement.close();
+						connection.close();
+						return ret;
 
-		}
-	});
+					}
+				});
 
 	}
 

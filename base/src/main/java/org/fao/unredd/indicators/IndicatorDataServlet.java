@@ -14,38 +14,37 @@ import org.fao.unredd.layers.NoSuchIndicatorException;
 import org.fao.unredd.portal.StatusServletException;
 
 public class IndicatorDataServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        String layerId = req.getParameter("layerId");
-        String indicatorId = req.getParameter("indicatorId");
-        String objectId = req.getParameter("objectId");
-        if (layerId == null || indicatorId == null) {
-            throw new StatusServletException(400,
-                    "layerId and indicatorId parameters are mandatory");
-        } else {
-            try {
-                LayerFactory layerFactory = (LayerFactory) getServletContext()
-                        .getAttribute("layer-factory");
-                if (layerFactory.exists(layerId)) {
-                    Layer layer = layerFactory.newLayer(layerId);
-                    ChartGenerator chartGenerator = new ChartGenerator(
-                            (layer.getOutput(
-                                    indicatorId)));
-                    resp.setContentType(chartGenerator.getContentType());
-                    chartGenerator.generate(objectId, resp.getWriter());
-                    resp.flushBuffer();
-                } else {
-                    throw new StatusServletException(400, "The layer "
-                            + layerId + " does not exist");
-                }
-            } catch (NoSuchIndicatorException e) {
-                throw new StatusServletException(400, "The indicator "
-                        + indicatorId + " does not exist");
-            }
-        }
-    }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String layerId = req.getParameter("layerId");
+		String indicatorId = req.getParameter("indicatorId");
+		String objectId = req.getParameter("objectId");
+		if (layerId == null || indicatorId == null) {
+			throw new StatusServletException(400,
+					"layerId and indicatorId parameters are mandatory");
+		} else {
+			try {
+				LayerFactory layerFactory = (LayerFactory) getServletContext()
+						.getAttribute("layer-factory");
+				if (layerFactory.exists(layerId)) {
+					Layer layer = layerFactory.newLayer(layerId);
+					ChartGenerator chartGenerator = new ChartGenerator(
+							(layer.getOutput(indicatorId)));
+					resp.setContentType(chartGenerator.getContentType());
+					chartGenerator.generate(objectId, resp.getWriter());
+					resp.flushBuffer();
+				} else {
+					throw new StatusServletException(400, "The layer "
+							+ layerId + " does not exist");
+				}
+			} catch (NoSuchIndicatorException e) {
+				throw new StatusServletException(400, "The indicator "
+						+ indicatorId + " does not exist");
+			}
+		}
+	}
 
 }
