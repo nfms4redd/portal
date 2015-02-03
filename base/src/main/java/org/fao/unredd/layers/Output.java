@@ -180,14 +180,12 @@ public class Output extends OutputDescriptor {
 	private void cargarDatos(final String objectid) {
 
 		try {
-			boolean ok = DBUtils.processConnection("unredd-portal",
-					new DBUtils.ReturningDBProcessor<Boolean>() {
-						private String object_Id = objectid;
+			DBUtils.processConnection("unredd-portal",
+					new DBUtils.DBProcessor() {
 
 						@Override
-						public Boolean process(Connection connection)
+						public void process(Connection connection)
 								throws SQLException {
-							boolean ret = false;
 
 							PreparedStatement statement = connection
 									.prepareStatement("SELECT "
@@ -201,7 +199,7 @@ public class Output extends OutputDescriptor {
 											+ "ORDER BY fecha_result asc ) foo	GROUP BY "
 											+ "division_id,class ");
 
-							statement.setString(1, object_Id);
+							statement.setString(1, objectid);
 							ResultSet resultSet = statement.executeQuery();
 
 							series = new ArrayList<String>();
@@ -221,7 +219,6 @@ public class Output extends OutputDescriptor {
 							resultSet.close();
 							statement.close();
 							connection.close();
-							return ret;
 
 						}
 					});
