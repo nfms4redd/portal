@@ -15,11 +15,14 @@
  */
 package org.fao.unredd.layers.bd;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.portal.DBUtils;
@@ -33,7 +36,10 @@ import org.fao.unredd.portal.PersistenceException;
  */
 public class DBLayerFactory implements LayerFactory {
 
-	public DBLayerFactory() {
+	private String tableName;
+
+	public DBLayerFactory(String tableName) {
+		this.tableName = tableName;
 	}
 
 	@Override
@@ -47,7 +53,8 @@ public class DBLayerFactory implements LayerFactory {
 							boolean ret = false;
 
 							PreparedStatement statement = connection
-									.prepareStatement("select count(*) count from indicators.indicators_metadata WHERE layer_name=?");
+									.prepareStatement("select count(*) count from "
+											+ tableName + " WHERE layer_name=?");
 							statement.setString(1, layerName);
 							ResultSet resultSet = statement.executeQuery();
 							if (resultSet.next()) {
@@ -77,7 +84,7 @@ public class DBLayerFactory implements LayerFactory {
 		// TODO Auto-generated method stub
 		Layer nuevaLayer = null;
 		try {
-			nuevaLayer = new DBLayer(layerName);
+			nuevaLayer = new DBLayer(tableName, layerName);
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,30 +96,20 @@ public class DBLayerFactory implements LayerFactory {
 		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
 			@Override
 			public void process(Connection connection) throws SQLException {
-				PreparedStatement statement = connection
-						.prepareStatement("CREATE TABLE IF NOT EXISTS indicators.indicators_metadata"
-								+ " ( "
-								+ " id serial NOT NULL,"
-								+ " name character varying,"
-								+ " title character varying,"
-								+ " subtitle character varying,"
-								+ " description character varying,"
-								+ " y_label character varying,"
-								+ " units character varying,"
-								+ " tooltipsdecimals integer,"
-								+ " layer_name character varying, -- Nombre de la capa del portal para la cual se visualizara el indicador"
-								+ " table_name_division character varying, -- Tabla con divisiones/regiones para el calculo de las estadisticas"
-								+ " division_field_id character varying, -- Campo identificador de la tabla de divisiones, debe coincidir con el de la capa del portal en geoserver para ser visualizado"
-								+ " class_table_name character varying, -- Tabla con clasificaciones"
-								+ " class_field_name character varying, -- Campo de tabla de clasificaciones a utilizar"
-								+ " date_field_name character varying, -- Campo de fecha en caso de tabla multitemporal"
-								+ " table_name_data character varying, -- Nombre de la tabla de destino de los datos estadisticos calculados"
-								+ " graphic_type character varying, -- Tipo de grafico: 2D, 3D"
-								+ " CONSTRAINT indicators_metadata_pkey PRIMARY KEY (id)"
-								+ " )" + " WITH (" + " OIDS=FALSE" + " )");
-				statement.execute();
-
-				statement.close();
+				try {
+					InputStream stream = this.getClass().getResourceAsStream(
+							"metadata-table-creation.sql");
+					String script = IOUtils.toString(stream);
+					script.replaceAll("$tableName", tableName);
+					stream.close();
+					PreparedStatement statement = connection
+							.prepareStatement(script);
+					statement.execute();
+					statement.close();
+				} catch (IOException e) {
+					// Should never happen
+					throw new RuntimeException("bug");
+				}
 			}
 		});
 	}

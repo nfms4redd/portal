@@ -67,14 +67,15 @@
             },
         },
         chart: {
-            type: 'bar',
-            margin: 75
+            type: 'line',
+            margin: 75,
+            zoomType: 'x',
+            panning: true,
+            panKey: 'shift'
         },
         plotOptions: {
-            bar: {
-                dataLabels: {
-                    enabled: true
-                }
+            line: {
+                connectNulls:true
             }
         },
         series: [
