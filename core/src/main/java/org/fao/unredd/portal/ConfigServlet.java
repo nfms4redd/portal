@@ -37,8 +37,8 @@ public class ConfigServlet extends HttpServlet {
 		// Fixed elements
 		moduleConfig.element(
 				"customization",
-				buildCustomizationObject(req.getServletContext(), config,
-						locale, title));
+				buildCustomizationObject(getServletContext(), config, locale,
+						title));
 		moduleConfig.element("i18n", buildI18NObject(bundle));
 		moduleConfig.element("layers",
 				JSONSerializer.toJSON(config.getLayers(locale, req)));

@@ -19,7 +19,7 @@ public class TestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		try {
-			DataSource ds = (DataSource) req.getServletContext().getAttribute(
+			DataSource ds = (DataSource) getServletContext().getAttribute(
 					"datasource.app");
 
 			Connection conn = ds.getConnection();
