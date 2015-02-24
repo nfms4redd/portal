@@ -1,0 +1,15 @@
+{
+	"default-conf" : {
+		"banner" : {
+			"hide" : false,
+			"show-flag" : false,
+			"show-logos" : false
+		},
+		"info-dialog" : {
+			"open-in-center" : center
+		},
+		"error-management" : {
+			"div-id" : null
+		}
+	}
+}

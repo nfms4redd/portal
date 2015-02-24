@@ -1,0 +1,197 @@
+{
+	"wmsLayers" : [
+		{
+			"id" : "cycle-osm",
+			"type" : "osm",
+			"osmUrls" : [
+				"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+				"http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+				"http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+			]
+		},
+		{
+			"id" : "blue-marble",
+			"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
+			"wmsName" : "unredd:blue_marble",
+			"imageFormat" : "image/jpeg",
+			"visible" : true
+		}, {
+			"id" : "nexrad",
+			"baseUrl" : "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi?",
+			"wmsName" : "nexrad-n0r-wmst",
+			"imageFormat" : "image/png",
+			"visible" : true,
+			"wmsTime" : "2010-03-01T00:00,2010-03-02T00:00,2010-03-03T00:00"
+		}, {
+			"id" : "forestClassification",
+			"label" : "${facet_forest_classification}",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
+			"wmsName" : "unredd:drc_forest_classification",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"legend" : "forest_classification.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET"
+		}, {
+			"id" : "forest_mask",
+			"label" : "${forest_mask}",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_forest_mask_mosaic",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"legend" : "forest_mask.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET",
+			"wmsTime" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z"
+		}, {
+			"id" : "forestClassification2",
+			"label" : "grouped facet forest classification",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/unredd/wms",
+			"wmsName" : "drc_forest_classification",
+			"visible" : true,
+			"legend" : "forest_classification.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET2"
+		}, {
+			"id" : "forest_mask2",
+			"label" : "Grouped forest mask",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/unredd/wms",
+			"wmsName" : "drc_forest_mask_mosaic",
+			"visible" : true,
+			"legend" : "forest_mask.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET2"
+		}, {
+			"id" : "countryBoundaries",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_boundary",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
+			"sourceLabel" : "WRI",
+			"queryable" : true
+		}, {
+			"id" : "provinces",
+			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_provinces",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
+			"sourceLabel" : "WRI",
+			"queryable" : true
+		}, {
+			"id" : "departamentos",
+			"baseUrl" : "http://localhost:8080/geoserver/wms",
+			"wmsName" : "idera:departamentos_g",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.mapaeducativo.edu.ar",
+			"sourceLabel" : "WRI",
+			"queryable" : true
+		}, {
+			"id" : "stb",
+			"baseUrl" : "http://localhost:8080/geoserver/wms",
+			"wmsName" : "idera:stb_wgs84",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://localhost",
+			"sourceLabel" : "WRI",
+			"queryable" : true
+		}
+	],
+
+	"portalLayers" : [
+		{
+			"id" : "blue-marble",
+			"active" : true,
+			"label" : "Blue marble",
+			"layers" : [ "blue-marble" ]
+		},
+		{
+			"id" : "osm-layer",
+			"active" : true,
+			"label" : "Open Cycle Map",
+			"layers" : [ "cycle-osm" ]
+		},
+		{
+			"id" : "forestClassification",
+			"active" : true,
+			"infoFile" : "forest_classification_def.html",
+			"label" : "${facet_forest_classification}",
+			"layers" : [ "forestClassification" ],
+			"feedback" : true
+		}, {
+			"id" : "forest_mask",
+			"label" : "${forest_mask}",
+			"layers" : [ "forest_mask" ],
+			"feedback" : true
+		}, {
+			"id" : "countryBoundaries",
+			"active" : true,
+			"label" : "${country_boundaries}",
+			"layers" : [ "countryBoundaries" ],
+			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
+		}, {
+			"id" : "provinces",
+			"active" : true,
+			"infoFile" : "provinces_def.html",
+			"label" : "${provinces}",
+			"layers" : [ "provinces" ],
+			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
+		}, {
+			"id" : "forest",
+			"active" : false,
+			"label" : "All forestry layers",
+			"layers" : [ "forest_mask2", "forestClassification2" ]
+		}, {
+			"id" : "nexrad_layer",
+			"active" : false,
+			"label" : "Nexrad",
+			"layers" : [ "nexrad" ]
+		}, {
+			"id" : "provinces_title_placeholder",
+			"label" : "Provincias"
+		},
+		{
+			"id" : "departamentos",
+			"active" : true,
+			"infoFile" : "forest_classification_def.html",
+			"label" : "Departamentos de Argentina",
+			"layers" : [ "departamentos" ]
+		},
+		{
+			"id" : "stb",
+			"active" : true,
+			"infoFile" : "forest_classification_def.html",
+			"label" : "Selva Tucumano Boliviana",
+			"layers" : [ "stb" ]
+		}
+	],
+
+	"groups" : [
+		{
+			"id" : "base",
+			"label" : "${base_layers}",
+			"infoFile": "base_layers.html",
+			"items" : [
+				{
+					"id" : "innerbase",
+					"label" : "General purpose",
+					"items": ["blue-marble", "osm-layer"]
+				}, {
+					"id" : "innerforest",
+					"label" : "Forest classifications",
+					"items": [ "forestClassification" ]
+				}
+			]
+		}, {
+			"id" : "admin",
+			"label" : "${admin_areas}",
+			"items" : [ "departamentos","countryBoundaries", "provinces_title_placeholder", "provinces" ]
+		}, {
+			"id" : "landcover",
+			"label" : "${land_cover_maps}",
+			"items" : [ "stb", "forest_mask", "forest", "nexrad_layer" ]
+		}
+	]
+}

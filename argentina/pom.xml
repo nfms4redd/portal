@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.fao.unredd</groupId>
+		<artifactId>portal-root</artifactId>
+		<version>3.1-SNAPSHOT</version>
+	</parent>
+	<packaging>war</packaging>
+	<artifactId>argentina</artifactId>
+	<name>argentina</name>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>core</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>base</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>feedback</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>layer-time-sliders</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>language-buttons</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>time-slider</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<!-- Other deployments may access other databases, so it is responsibility 
+			of the application to include the necessary drivers -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.3-1102-jdbc4</version>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>unredd-portal</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- copy-dependency plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.8,)</versionRange>
+										<goals>
+											<goal>unpack-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.github.bringking</groupId>
+										<artifactId>requirejs-maven-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>optimize</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>ro.isdc.wro4j</groupId>
+										<artifactId>wro4j-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<profiles>
+		<profile>
+			<id>optimize</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>2.8</version>
+						<executions>
+							<execution>
+								<id>unpack-dependencies</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>unpack-dependencies</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.build.directory}/requirejs</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.fao.unredd</groupId>
+						<artifactId>jwebclient-analyzer-maven-plugin</artifactId>
+						<version>3.1-SNAPSHOT</version>
+						<executions>
+							<execution>
+								<id>generate-buildconfig</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>generate-buildconfig</goal>
+								</goals>
+								<configuration>
+									<mainTemplate>${project.build.directory}/requirejs/main.js</mainTemplate>
+									<webClientFolder>${project.build.directory}/requirejs</webClientFolder>
+									<buildconfigOutputPath>${project.build.directory}/buildconfig.js</buildconfigOutputPath>
+									<mainOutputPath>${project.build.directory}/requirejs/nfms/modules/main.js</mainOutputPath>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>ro.isdc.wro4j</groupId>
+						<artifactId>wro4j-maven-plugin</artifactId>
+						<version>1.7.6</version>
+						<executions>
+							<execution>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+							<extraConfigFile>${basedir}/src/main/config/wro.properties</extraConfigFile>
+							<targetGroups>portal-style</targetGroups>
+							<minimize>true</minimize>
+							<contextFolder>${basedir}/target/requirejs/nfms/</contextFolder>
+							<destinationFolder>${basedir}/src/main/webapp/optimized/</destinationFolder>
+							<wroFile>${basedir}/src/main/config/wro.xml</wroFile>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>com.github.bringking</groupId>
+						<artifactId>requirejs-maven-plugin</artifactId>
+						<version>2.0.4</version>
+						<executions>
+							<execution>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>optimize</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<!-- optional path to a nodejs executable -->
+							<!--<nodeExecutable> -->
+							<!--/opt/nodejs/node -->
+							<!--</nodeExecutable> -->
+							<!-- path to optimizer json config file -->
+							<configFile>${project.build.directory}/buildconfig.js</configFile>
+							<fillDepsFromFolder>${project.build.directory}/requirejs/nfms/modules</fillDepsFromFolder>
+							<!-- optional path to optimizer executable -->
+							<!--<optimizerFile> -->
+							<!--${basedir}/src/main/scripts/r.js -->
+							<!--</optimizerFile> -->
+							<!-- optional parameters to optimizer executable -->
+							<optimizerParameters>
+								<parameter>optimize=uglify</parameter>
+								<!--<parameter>baseUrl=${baseDir}</parameter> -->
+							</optimizerParameters>
+							<!-- Whether or not to process configFile with maven filters. If you 
+								use this option, some options in your configFile must resolve to absolute 
+								paths (see below) -->
+							<filterConfig>
+								true
+							</filterConfig>
+							<!-- Skip requirejs optimization if true -->
+							<skip>
+								false
+							</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
