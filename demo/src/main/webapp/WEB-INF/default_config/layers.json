@@ -187,11 +187,11 @@
 		}, {
 			"id" : "admin",
 			"label" : "${admin_areas}",
-			"items" : [ "departamentos","countryBoundaries", "provinces_title_placeholder", "provinces" ]
+			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces" ]
 		}, {
 			"id" : "landcover",
 			"label" : "${land_cover_maps}",
-			"items" : [ "stb", "forest_mask", "forest", "nexrad_layer" ]
+			"items" : [ "forest_mask", "forest", "nexrad_layer" ]
 		}
 	]
 }
