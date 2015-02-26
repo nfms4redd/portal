@@ -215,14 +215,14 @@ public class Output extends OutputDescriptor {
 							PreparedStatement statement = connection
 									.prepareStatement("SELECT "
 											// + this.getDivision_field_id()
-											+ "division_id,class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "
-											+ "(SELECT division_id,class,fecha_result, ha "
+											+ "division_id,variable,array_agg(fecha) labels,array_agg(valor) data_values FROM "
+											+ "(SELECT division_id,variable,fecha, valor "
 											+ "FROM "
 											+ getTable_name_data()
 											+ " WHERE "
 											+ " division_id  =  ? "
-											+ "ORDER BY fecha_result asc ) foo	GROUP BY "
-											+ "division_id,class ");
+											+ "ORDER BY fecha asc ) foo	GROUP BY "
+											+ "division_id, variable");
 
 							statement.setString(1, objectid);
 							ResultSet resultSet = statement.executeQuery();
@@ -231,7 +231,7 @@ public class Output extends OutputDescriptor {
 							values = new ArrayList<TreeSet<MeasurePoint>>();
 
 							while (resultSet.next()) {
-								String clases = resultSet.getString("class");
+								String clases = resultSet.getString("variable");
 								addSerie(clases);
 
 								addSerie(Array2ArrayListDates(resultSet

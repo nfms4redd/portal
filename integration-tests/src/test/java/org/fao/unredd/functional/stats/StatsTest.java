@@ -70,7 +70,7 @@ public class StatsTest extends AbstractIntegrationTest {
 		SQLExecute("SELECT redd_stats_run(" + indicatorId + ");");
 
 		// Check total coverage
-		Float sum = (Float) SQLQuery("SELECT sum(ha) from " + testSchema
+		Float sum = (Float) SQLQuery("SELECT sum(valor) from " + testSchema
 				+ ".stats_results");
 		assertTrue(Math.abs(sum - 0.0015) < 0.00001);
 
