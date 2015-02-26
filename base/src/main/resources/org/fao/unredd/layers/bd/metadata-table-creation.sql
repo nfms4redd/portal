@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS $tableName ( "
+CREATE TABLE IF NOT EXISTS redd_stats_metadata (
 	id serial NOT NULL,
 	name character varying,
 	title character varying,
@@ -24,5 +24,5 @@ CREATE TABLE IF NOT EXISTS $tableName ( "
 	table_name_data character varying,
 	-- Tipo de grafico: 2D, 3D
 	graphic_type character varying,
-	CONSTRAINT indicators_metadata_pkey PRIMARY KEY (id)"
+	CONSTRAINT indicators_metadata_pkey PRIMARY KEY (id)
 ) WITH ( OIDS=FALSE )

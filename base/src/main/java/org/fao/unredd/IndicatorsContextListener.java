@@ -1,13 +1,10 @@
 package org.fao.unredd;
 
-import java.util.Properties;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.fao.unredd.layers.bd.DBLayerFactory;
-import org.fao.unredd.portal.Config;
 import org.fao.unredd.portal.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +17,9 @@ public class IndicatorsContextListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		ServletContext servletContext = sce.getServletContext();
-		Config config = (Config) servletContext.getAttribute("config");
-		Properties properties = config.getProperties();
 
 		try {
-			DBLayerFactory layerFactory = new DBLayerFactory(
-					properties.getProperty("indicators-metadata-db-table"));
+			DBLayerFactory layerFactory = new DBLayerFactory();
 			layerFactory.createTable();
 			servletContext.setAttribute("layer-factory", layerFactory);
 		} catch (PersistenceException e) {

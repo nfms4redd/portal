@@ -1,16 +1,37 @@
--- Function: clasif_bak.cobertura(text, text, text, text, text, text)
+CREATE OR REPLACE FUNCTION redd_stats_run(IN indicators_id integer)
+  RETURNS bool AS
+$BODY$
+DECLARE
+	indicador RECORD;
+BEGIN
 
--- DROP FUNCTION $schema.cobertura(text, text, text, text, text, text);
+FOR indicador IN EXECUTE format('SELECT * FROM redd_stats_metadata WHERE id=%s', indicators_id) LOOP
+	RAISE NOTICE 'Procesando grafico %', indicador.name;
 
-CREATE OR REPLACE FUNCTION calculo_cobertura(IN fajas_table_name text, IN divisions_table_name text, IN division_id_field_name text, IN classification_table_name text, IN class_field_name text, IN date_field_name text)
+	EXECUTE format('DROP TABLE IF EXISTS %s',indicador.table_name_data);
+	
+	RAISE NOTICE 'Generando tabla de datos %',indicador.title;
+	EXECUTE format('CREATE TABLE %s AS SELECT * FROM redd_stats_calculo(''redd_stats_fajas'',''%s'',''%s'',''%s'',''%s'',''%s'')',
+		indicador.table_name_data, indicador.table_name_division, indicador.division_field_id, indicador.class_table_name, indicador.class_field_name, indicador.date_field_name);
+
+	END LOOP;
+
+	-- Devolvemos la cantidad de areas calculadas?
+	RETURN true;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+---
+CREATE OR REPLACE FUNCTION redd_stats_calculo(IN fajas_table_name text, IN divisions_table_name text, IN division_id_field_name text, IN classification_table_name text, IN class_field_name text, IN date_field_name text)
   RETURNS TABLE(division_id character varying, class character varying, fecha_result date, ha real) AS
 $BODY$
 DECLARE
 	faja RECORD;
 	faja_geom geometry;
 BEGIN
-	DROP TABLE IF EXISTS tmp_areas;
-	CREATE TEMP TABLE tmp_areas (division_id varchar, class varchar,fecha date, ha real);
+	DROP TABLE IF EXISTS redd_stats_tmp_areas;
+	CREATE TEMP TABLE redd_stats_tmp_areas (division_id varchar, class varchar,fecha date, ha real);
     
 	FOR faja IN EXECUTE format('SELECT * FROM %s', fajas_table_name) LOOP
 
@@ -36,14 +57,14 @@ BEGIN
 
 		RAISE NOTICE 'acumulando areas';
 		-- Calculamos el área para cada geometría
-		INSERT INTO tmp_areas (division_id, class, fecha, ha) SELECT id, clase, fecha, ST_Area(geom) / 10000 AS ha FROM intersection;
+		INSERT INTO redd_stats_tmp_areas (division_id, class, fecha, ha) SELECT id, clase, fecha, ST_Area(geom) / 10000 AS ha FROM intersection;
 
 		-- Eliminamos las tablas
 		DROP TABLE classification_projected, divisions_projected, classification_cut, divisions_cut, intersection;
 	END LOOP;
 
 	-- Devolvemos la suma del área de las geometrías para cada departamento y clasificación de cobertura
-	RETURN QUERY SELECT ta.division_id, ta.class, ta.fecha, sum(ta.ha) as ha FROM tmp_areas ta GROUP BY ta.division_id, ta.fecha, ta.class ORDER BY ta.division_id, ta.class, ta.fecha;
+	RETURN QUERY SELECT ta.division_id, ta.class, ta.fecha, sum(ta.ha) as ha FROM redd_stats_tmp_areas ta GROUP BY ta.division_id, ta.fecha, ta.class ORDER BY ta.division_id, ta.class, ta.fecha;
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE

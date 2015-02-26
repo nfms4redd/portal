@@ -36,11 +36,7 @@ import org.fao.unredd.portal.PersistenceException;
  */
 public class DBLayerFactory implements LayerFactory {
 
-	private String tableName;
-
-	public DBLayerFactory(String tableName) {
-		this.tableName = tableName;
-	}
+	public static final String REDD_STATS_METADATA = "redd_stats_metadata";
 
 	@Override
 	public boolean exists(final String layerName) {
@@ -54,7 +50,8 @@ public class DBLayerFactory implements LayerFactory {
 
 							PreparedStatement statement = connection
 									.prepareStatement("select count(*) count from "
-											+ tableName + " WHERE layer_name=?");
+											+ REDD_STATS_METADATA
+											+ " WHERE layer_name=?");
 							statement.setString(1, layerName);
 							ResultSet resultSet = statement.executeQuery();
 							if (resultSet.next()) {
@@ -84,7 +81,7 @@ public class DBLayerFactory implements LayerFactory {
 		// TODO Auto-generated method stub
 		Layer nuevaLayer = null;
 		try {
-			nuevaLayer = new DBLayer(tableName, layerName);
+			nuevaLayer = new DBLayer(layerName);
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,7 +97,6 @@ public class DBLayerFactory implements LayerFactory {
 					InputStream stream = this.getClass().getResourceAsStream(
 							"metadata-table-creation.sql");
 					String script = IOUtils.toString(stream);
-					script.replaceAll("$tableName", tableName);
 					stream.close();
 					PreparedStatement statement = connection
 							.prepareStatement(script);

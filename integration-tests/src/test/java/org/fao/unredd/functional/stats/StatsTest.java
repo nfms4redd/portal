@@ -1,13 +1,21 @@
 package org.fao.unredd.functional.stats;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONSerializer;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.fao.unredd.functional.AbstractIntegrationTest;
 import org.fao.unredd.functional.IntegrationTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -16,17 +24,16 @@ public class StatsTest extends AbstractIntegrationTest {
 
 	@Before
 	public void installFunctions() throws IOException, SQLException {
-		executeStatement("stats-calculation-function-creation.sql",
-				"schemaName", testSchema);
-		executeStatement("stats-runner-function-creation.sql", "schemaName",
-				testSchema);
-		executeScript("data.sql", "schemaName", testSchema);
+		executeDelimitedScript("stats-calculator-install.sql");
+		executeDelimitedScript("redd_stats_fajas.sql");
+		executeLines("data.sql", "schemaName", testSchema);
+		SQLExecute("DELETE FROM redd_stats_metadata;");
 	}
 
 	@Test
 	public void testCalculateStats() throws Exception {
-		SQLExecute("INSERT INTO " + testSchema
-				+ ".indicators_metadata ("
+		String layerName = "unredd:provinces";
+		SQLExecute("INSERT INTO redd_stats_metadata ("
 				+ "name, "//
 				+ "title, "//
 				+ "subtitle, "//
@@ -50,7 +57,7 @@ public class StatsTest extends AbstractIntegrationTest {
 				+ "'Cobertura',"//
 				+ "'km²',"//
 				+ "2,"//
-				+ "'unredd:drc_provinces',"//
+				+ "'" + layerName + "',"//
 				+ "'" + testSchema + ".stats_admin',"//
 				+ "'gid',"//
 				+ "'" + testSchema + ".stats_cobertura',"//
@@ -59,12 +66,30 @@ public class StatsTest extends AbstractIntegrationTest {
 				+ "'" + testSchema + ".stats_results',"//
 				+ "'2D'"//
 				+ ")");
-		SQLExecute("SELECT generar_stats(1);");
+		Integer indicatorId = (Integer) SQLQuery("select id from redd_stats_metadata;");
+		SQLExecute("SELECT redd_stats_run(" + indicatorId + ");");
 
-		fail();
+		// Check total coverage
+		Float sum = (Float) SQLQuery("SELECT sum(ha) from " + testSchema
+				+ ".stats_results");
+		assertTrue(Math.abs(sum - 0.0015) < 0.00001);
+
+		// Get indicators must return 1 entry
+		CloseableHttpResponse ret = GET("indicators", "layerId", layerName);
+		assertEquals(200, ret.getStatusLine().getStatusCode());
+		JSONArray indicators = (JSONArray) JSONSerializer.toJSON(IOUtils
+				.toString(ret.getEntity().getContent()));
+		assertEquals(indicators.size(), 1);
+
+		ret = GET("indicator", "indicatorId", indicators.getJSONObject(0)
+				.getString("id"), "layerId", layerName, "objectId", "1");
+		assertEquals(200, ret.getStatusLine().getStatusCode());
+		assertTrue(ret.getEntity().getContentType().getValue()
+				.contains("text/html"));
 	}
 
 	@Test
+	@Ignore
 	public void testIndicators() throws Exception {
 		SQLExecute("INSERT INTO " + testSchema
 				+ ".indicators_metadata ("

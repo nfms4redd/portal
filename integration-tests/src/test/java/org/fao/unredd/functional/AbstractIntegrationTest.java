@@ -135,12 +135,18 @@ public class AbstractIntegrationTest {
 		connection.close();
 	}
 
-	protected void executeStatement(String resourceName, String... params)
+	/**
+	 * Executes statements delimited by --- in the specified resource.
+	 */
+	protected void executeDelimitedScript(String resourceName)
 			throws IOException, SQLException {
 		InputStream stream = StatsTest.class.getResourceAsStream(resourceName);
 		String script = IOUtils.toString(stream);
-		executeSQLStatement(script, params);
 		stream.close();
+		String[] lines = script.split(Pattern.quote("---"));
+		for (String line : lines) {
+			executeSQLStatement(line);
+		}
 	}
 
 	private void executeSQLStatement(String script, String... params)
@@ -152,7 +158,7 @@ public class AbstractIntegrationTest {
 		SQLExecute(script);
 	}
 
-	protected void executeScript(String resourceName, String... params)
+	protected void executeLines(String resourceName, String... params)
 			throws IOException, SQLException {
 		InputStream stream = StatsTest.class.getResourceAsStream(resourceName);
 		BufferedReader reader = new BufferedReader(
