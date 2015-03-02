@@ -20,8 +20,8 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 
 	private String tableName;
 
-	public DBFeedbackPersistence(String tableName) {
-		this.tableName = tableName;
+	public DBFeedbackPersistence(String schemaName) {
+		this.tableName = schemaName + ".redd_feedback";
 	}
 
 	@Override

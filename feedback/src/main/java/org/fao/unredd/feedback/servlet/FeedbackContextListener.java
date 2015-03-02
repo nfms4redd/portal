@@ -31,7 +31,7 @@ public class FeedbackContextListener implements ServletContextListener {
 
 		try {
 			DBFeedbackPersistence feedbackPersistence = new DBFeedbackPersistence(
-					properties.getProperty("feedback-db-table"));
+					properties.getProperty("feedback-db-schema"));
 			Mailer mailer = new Mailer(properties);
 			Feedback feedback = new Feedback(feedbackPersistence, mailer);
 			feedback.createTable();
