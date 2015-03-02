@@ -18,7 +18,8 @@ package org.fao.unredd.layers;
 /**
  * Describes one of the outputs a layer can have.
  * 
- * @author fergonco, manureta
+ * @author fergonco
+ * @author manureta
  * 
  */
 public class OutputDescriptor {

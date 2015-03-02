@@ -59,7 +59,9 @@ public class DBLayer implements Layer {
 						boolean ret = false;
 
 						PreparedStatement statement = connection
-								.prepareStatement("select * from indicators.indicators_metadata WHERE layer_name=?");
+								.prepareStatement("select * from "
+										+ DBLayerFactory.REDD_STATS_METADATA
+										+ " WHERE layer_name=?");
 						statement.setString(1, qName);
 						ResultSet resultSet = statement.executeQuery();
 

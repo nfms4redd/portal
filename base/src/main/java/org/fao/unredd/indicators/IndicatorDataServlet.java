@@ -34,6 +34,7 @@ public class IndicatorDataServlet extends HttpServlet {
 					ChartGenerator chartGenerator = new ChartGenerator(
 							(layer.getOutput(indicatorId)));
 					resp.setContentType(chartGenerator.getContentType());
+					resp.setCharacterEncoding("utf-8");
 					chartGenerator.generate(objectId, resp.getWriter());
 					resp.flushBuffer();
 				} else {

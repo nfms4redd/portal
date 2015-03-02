@@ -22,7 +22,7 @@ import java.sql.SQLException;
  * Represents the configuration for a layer.
  * 
  * @author fergonco
- * @destructor manureta
+ * @author manureta
  */
 public interface Layer {
 

@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.fao.unredd.portal.DBUtils;
 import org.fao.unredd.portal.PersistenceException;
@@ -44,9 +45,31 @@ public class Output extends OutputDescriptor {
 	private String division_field_id;
 	private String graphic_type;
 
-	private ArrayList<String> series = null;
-	private ArrayList<String> labels = null;
-	private ArrayList<ArrayList<String>> values = null;
+	private ArrayList<String> serieNames = null;
+	private ArrayList<TreeSet<MeasurePoint>> values = null;
+
+	private class MeasurePoint implements Comparable<MeasurePoint> {
+		private Date date;
+		private String value;
+
+		public MeasurePoint(Date dateLabel, String value) {
+			this.date = dateLabel;
+			this.value = value;
+		}
+
+		@Override
+		public int compareTo(MeasurePoint that) {
+			return this.date.compareTo(that.date);
+		}
+
+		/**
+		 * @return an instance of MeasurePoint in the same date but with no data
+		 */
+		public MeasurePoint createNull() {
+			return new MeasurePoint(date, "null");
+		}
+
+	}
 
 	public Output(String id, String name, String fieldId, String title) {
 		super(id, name, fieldId, title);
@@ -57,44 +80,46 @@ public class Output extends OutputDescriptor {
 		if (this.values == null) {
 			this.cargarDatos(objectid);
 		}
-		return this.values;
-	}
-
-	private void addValues(ArrayList<String> array2ArrayList) {
-		// TODO Auto-generated method stub
-
-		this.values.add(array2ArrayList);
-
+		ArrayList<ArrayList<String>> ret = new ArrayList<ArrayList<String>>();
+		for (TreeSet<MeasurePoint> serie : values) {
+			ArrayList<String> serieLabels = new ArrayList<String>();
+			for (MeasurePoint measurePoint : serie) {
+				serieLabels.add(measurePoint.value);
+			}
+			ret.add(serieLabels);
+		}
+		return ret;
 	}
 
 	public List<String> getSeries(String objectid) {
 		// String[] ret = {"TF","OT","OTF"};
-		if (this.series == null) {
+		if (this.serieNames == null) {
 			this.cargarDatos(objectid);
 		}
-		return this.series;
+		return this.serieNames;
 	}
 
 	private void setSeries(ArrayList<String> series) {
 		// TODO Auto-generated method stub
-		this.series = series;
+		this.serieNames = series;
 	}
 
 	private void addSerie(String string) {
 		// TODO Auto-generated method stub
-		this.series.add(string);
+		this.serieNames.add(string);
 	}
 
 	public List<String> getLabels(String objectid) {
-		if (this.labels == null) {
+		if (this.values == null) {
 			this.cargarDatos(objectid);
 		}
-		return this.labels;
-	}
 
-	private void setLabels(ArrayList<String> labels) {
-		// TODO Auto-generated method stub
-		this.labels = labels;
+		List<String> labels = new ArrayList<String>();
+		TreeSet<MeasurePoint> serie = values.get(0);
+		for (MeasurePoint measurePoint : serie) {
+			labels.add(measurePoint.date.toString());
+		}
+		return labels;
 	}
 
 	public String getSubtitle() {
@@ -190,43 +215,72 @@ public class Output extends OutputDescriptor {
 							PreparedStatement statement = connection
 									.prepareStatement("SELECT "
 											// + this.getDivision_field_id()
-											+ "division_id,class,array_agg(fecha_result) labels,array_agg(ha) data_values FROM "
-											+ "(SELECT division_id,class,fecha_result, ha "
+											+ "division_id,variable,array_agg(fecha) labels,array_agg(valor) data_values FROM "
+											+ "(SELECT division_id,variable,fecha, valor "
 											+ "FROM "
 											+ getTable_name_data()
 											+ " WHERE "
 											+ " division_id  =  ? "
-											+ "ORDER BY fecha_result asc ) foo	GROUP BY "
-											+ "division_id,class ");
+											+ "ORDER BY fecha asc ) foo	GROUP BY "
+											+ "division_id, variable");
 
 							statement.setString(1, objectid);
 							ResultSet resultSet = statement.executeQuery();
 
-							series = new ArrayList<String>();
-							labels = new ArrayList<String>();
-							values = new ArrayList<ArrayList<String>>();
+							serieNames = new ArrayList<String>();
+							values = new ArrayList<TreeSet<MeasurePoint>>();
 
 							while (resultSet.next()) {
-								String clases = resultSet.getString("class");
+								String clases = resultSet.getString("variable");
 								addSerie(clases);
 
-								setLabels(Array2ArrayListDates(resultSet
-										.getArray("labels")));
-								addValues(Array2ArrayList(resultSet
-										.getArray("data_values")));
+								addSerie(Array2ArrayListDates(resultSet
+										.getArray("labels")),
+										Array2ArrayList(resultSet
+												.getArray("data_values")));
 
 							}
+							fillNulls();
+
 							resultSet.close();
 							statement.close();
 							connection.close();
 
 						}
+
 					});
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			// TODO if error because not exsist table, create table
 			// e.printStackTrace();
 		}
+	}
+
+	/**
+	 * adds null measure points to all series so that they all have the same
+	 * dates
+	 */
+	private void fillNulls() {
+		for (TreeSet<MeasurePoint> serie : values) {
+			for (MeasurePoint measurePoint : serie) {
+				for (TreeSet<MeasurePoint> serieToFill : values) {
+					if (serieToFill == serie) {
+						continue;
+					}
+					if (!serieToFill.contains(measurePoint)) {
+						serieToFill.add(measurePoint.createNull());
+					}
+				}
+			}
+		}
+	}
+
+	private void addSerie(ArrayList<Date> dates, ArrayList<String> values) {
+		TreeSet<MeasurePoint> serie = new TreeSet<Output.MeasurePoint>();
+		for (int i = 0; i < dates.size(); i++) {
+			serie.add(new MeasurePoint(dates.get(i), values.get(i)));
+		}
+		this.values.add(serie);
 	}
 
 	private ArrayList<String> Array2ArrayList(Array array) {
@@ -244,13 +298,13 @@ public class Output extends OutputDescriptor {
 		return ret;
 	}
 
-	private ArrayList<String> Array2ArrayListDates(Array array) {
-		ArrayList<String> ret = null;
-		ret = new ArrayList<String>();
+	private ArrayList<Date> Array2ArrayListDates(Array array) {
+		ArrayList<Date> ret = null;
+		ret = new ArrayList<Date>();
 		try {
 			Date[] tmparray = (Date[]) array.getArray();
 			for (int i = 0; i < tmparray.length; i++) {
-				ret.add(tmparray[i].toString());
+				ret.add(tmparray[i]);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
