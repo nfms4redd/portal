@@ -63,7 +63,9 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 
 	var submit = function() {
 		var mailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		if (!mailRegex.test(txtEmail.val())) {
+		if (cmbLayer.val() == null) {
+			bus.send("error", i18n["Feedback.no-layer-selected"]);
+		} else if (!mailRegex.test(txtEmail.val())) {
 			bus.send("error", i18n["Feedback.invalid-email-address"]);
 		} else if (!editToolbar.hasFeatures()) {
 			bus.send("error", i18n["Feedback.no-geometries"]);
@@ -97,12 +99,16 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 	}
 
 	var activateFeedback = function() {
-		$("#button_feedback").addClass('selected');
-		txtEmail.val("");
-		txtComment.val("");
-		bus.send("activate-exclusive-control", editToolbar);
-		map.addLayer(feedbackLayer);
-		dlg.dialog("open");
+		if (cmbLayer.find("option").length == 0) {
+			bus.send("error", i18n["Feedback.no_layer_visible"]);
+		} else {
+			$("#button_feedback").addClass('selected');
+			txtEmail.val("");
+			txtComment.val("");
+			bus.send("activate-exclusive-control", editToolbar);
+			map.addLayer(feedbackLayer);
+			dlg.dialog("open");
+		}
 	}
 
 	var deactivateFeedback = function() {
