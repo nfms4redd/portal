@@ -56,32 +56,18 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "jquer
 		}
 
 	});
-	
-	bus.listen("time-slider.selection",function(obj,d){
 
-		console.log(aTimestampsLayers);
-		$.each(aTimestampsLayers, function(layerid,steps){
-			var position_i=-1,position_min=-1,position_max=-1;
-			console.log(layerid);
-			$.each(steps,function(position,date_value){
-				if (date_value.valueOf()==d.valueOf()) {
-					position_i=position;
-					
-				} else if (date_value.valueOf()<d.valueOf()) {
-					position_min=position;
-					//console.log(date_value+' menor');
-				}else{
-					if (position_max==-1) {position_max=position;};
-					//console.log(date_value+' mayor');
-				};
-				});
-			console.log(layerid+' -> '+position_i+', '+position_min+', '+position_max);
-			var pos;
-			if (position_i>-1)
-				{pos=position_i;}
-			else{ pos=position_min;}
-			$('#layer_time_slider_'+layerid).slider('value',pos);
+	bus.listen("layer-timestamp-selected", function(e, layerId, d) {
+		if (layerId in aTimestampsLayers) {
+			var steps = aTimestampsLayers[layerId];
+			var position_i = -1;
+			$.each(steps, function(position, date_value) {
+				if (date_value.valueOf() == d.valueOf()) {
+					position_i = position;
+				}
+				$('#layer_time_slider_' + layerId).slider('value', position_i);
+				$('#layer_time_slider_label_' + layerId).text(d.getLocalizedDate());
+			});
 		}
-		);
 	});
 });
