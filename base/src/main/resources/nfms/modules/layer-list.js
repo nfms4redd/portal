@@ -182,6 +182,12 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "f
 		}
 	});
 
+	var updateLabel = function(layerId, date) {
+		var tdLayerName = $("#layer-row-" + layerId + " .layer_name");
+		tdLayerName.find("span").remove();
+		$("<span/>").html(" (" + date.getUTCFullYear() + ")").appendTo(tdLayerName);
+	};
+	
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
 			var layer = temporalLayers[i];
@@ -204,17 +210,13 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "f
 				closestPrevious.setISO8601(timestamps[0]);
 			}
 
-			var tdLayerName = $("#layer-row-" + layer.id + " .layer_name");
-			tdLayerName.find("span").remove();
-			$("<span/>").html(" (" + closestPrevious.getUTCFullYear() + ")").appendTo(tdLayerName);
-
+			updateLabel(layer.id, closestPrevious);
+			
 			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious ]);
 		}
 	});
 	bus.listen("layer-time-slider.selection", function(event, layerid, date) {
-		var tdLayerName = $("#layer-row-" + layerid + " .layer_name");
-		tdLayerName.find("span").remove();
-		$("<span/>").html(" (" + date.getUTCFullYear() + ")").appendTo(tdLayerName);
-
+		updateLabel(layerid, date);
+		bus.send("layer-timestamp-selected", [ layerid, date ]);
 	});
 });
