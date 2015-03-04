@@ -162,11 +162,9 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "f
 				}
 			}
 
-			$.each(portalLayer.wmsLayers, function(index, wmsLayer) {
-				if (wmsLayer.hasOwnProperty("timestamps")) {
-					temporalLayers.push(wmsLayer);
-				}
-			});
+			if (portalLayer.hasOwnProperty("timestamps")) {
+				temporalLayers.push(portalLayer);
+			}
 
 			tblLayerGroup.append(trLayer);
 			divLayers.accordion("refresh");

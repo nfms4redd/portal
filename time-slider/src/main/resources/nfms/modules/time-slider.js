@@ -7,16 +7,15 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 	divTimeSlideContainer.hide();
 	toolbar.append(divTimeSlideContainer);
 	
-	bus.listen("add-layer", function(event, layerInfo) {
-		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
-			if (wmsLayer.hasOwnProperty("timestamps")) {
-				var layerTimestamps = wmsLayer.timestamps;
 
-				for (var i = 0; i < layerTimestamps.length; i++) {
-					timestampSet[layerTimestamps[i]] = true;
-				}
+	bus.listen("add-layer", function(event, layerInfo) {
+		if (layerInfo.hasOwnProperty("timestamps")) {
+			var layerTimestamps = layerInfo.timestamps;
+
+			for (var i = 0; i < layerTimestamps.length; i++) {
+				timestampSet[layerTimestamps[i]] = true;
 			}
-		});
+		}
 	});
 
 	bus.listen("layers-loaded", function() {

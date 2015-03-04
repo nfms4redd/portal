@@ -119,14 +119,20 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	});
 
 	bus.listen("layer-timestamp-selected", function(event, layerId, timestamp) {
-		var layer = map.getLayer(layerId);
-		/*
-		 * On application startup some events can be produced before the map has
-		 * the reference to the layers so we have to check if layer is null
-		 */
-		if (layer !== null && timestamp !== null) {
-			layer.mergeNewParams({
-				'time' : timestamp.toISO8601String()
+		var mapLayers = mapLayersByLayerId[layerId];
+		if (mapLayers) {
+			$.each(mapLayers, function(index, mapLayerId) {
+				var layer = map.getLayer(mapLayerId);
+				/*
+				 * On application startup some events can be produced before the
+				 * map has the reference to the layers so we have to check if
+				 * layer is null
+				 */
+				if (layer !== null && timestamp !== null) {
+					layer.mergeNewParams({
+						'time' : timestamp.toISO8601String()
+					});
+				}
 			});
 		}
 	});

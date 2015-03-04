@@ -6,15 +6,13 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "jquer
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var timestamps = [];
-		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
-			if (wmsLayer.hasOwnProperty("timestamps")) {
-				for (var i = 0; i < wmsLayer.timestamps.length; i++) {
-					var d = new Date();
-					d.setISO8601(wmsLayer.timestamps[i]);
-					timestamps.push(d);
-				}
+		if (layerInfo.hasOwnProperty("timestamps")) {
+			for (var i = 0; i < layerInfo.timestamps.length; i++) {
+				var d = new Date();
+				d.setISO8601(layerInfo.timestamps[i]);
+				timestamps.push(d);
 			}
-		});
+		}
 
 		if (timestamps.length > 0) {
 			timestamps.sort(function(a, b) {
@@ -58,16 +56,14 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "jquer
 	});
 
 	bus.listen("layer-timestamp-selected", function(e, layerId, d) {
-		if (layerId in aTimestampsLayers) {
-			var steps = aTimestampsLayers[layerId];
-			var position_i = -1;
-			$.each(steps, function(position, date_value) {
-				if (date_value.valueOf() == d.valueOf()) {
-					position_i = position;
-				}
-				$('#layer_time_slider_' + layerId).slider('value', position_i);
-				$('#layer_time_slider_label_' + layerId).text(d.getLocalizedDate());
-			});
-		}
+		var steps = aTimestampsLayers[layerId];
+		var position_i = -1;
+		$.each(steps, function(position, date_value) {
+			if (date_value.valueOf() == d.valueOf()) {
+				position_i = position;
+			}
+			$('#layer_time_slider_' + layerId).slider('value', position_i);
+			$('#layer_time_slider_label_' + layerId).text(d.getLocalizedDate());
+		});
 	});
 });

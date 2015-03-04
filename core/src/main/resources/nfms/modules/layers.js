@@ -47,6 +47,9 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				if (portalLayer.hasOwnProperty("infoFile")) {
 					portalLayer.infoLink = "static/loc/" + customization.languageCode + "/html/" + portalLayer.infoFile;
 				}
+				if (portalLayer.hasOwnProperty("timeInstances")) {
+					portalLayer.timestamps = portalLayer.timeInstances.split(",")
+				}
 
 				wmsLayerIds = (portalLayer.isPlaceholder)?null:portalLayer.layers;
 
@@ -60,9 +63,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 						continue;
 					}
 					wmsLayer = wmsLayers[0];
-					if (wmsLayer.hasOwnProperty("wmsTime")) {
-						wmsLayer.timestamps = wmsLayer.wmsTime.split(",")
-					}
                     wmsLayer.zIndex = layerRoot.wmsLayers.indexOf(wmsLayer);
 					layerInfoArray.push(wmsLayer);
 				}
