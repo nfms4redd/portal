@@ -20,8 +20,7 @@
 			"baseUrl" : "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi?",
 			"wmsName" : "nexrad-n0r-wmst",
 			"imageFormat" : "image/png",
-			"visible" : true,
-			"wmsTime" : "2010-03-01T00:00,2010-03-02T00:00,2010-03-03T00:00"
+			"visible" : true
 		}, {
 			"id" : "forestClassification",
 			"label" : "${facet_forest_classification}",
@@ -42,7 +41,7 @@
 			"legend" : "forest_mask.png",
 			"sourceLink" : "http://osfac.net/facet.html",
 			"sourceLabel" : "FACET",
-			"wmsTime" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z"
+			"queryable" : true
 		}, {
 			"id" : "forestClassification2",
 			"label" : "grouped facet forest classification",
@@ -124,6 +123,7 @@
 			"id" : "forest_mask",
 			"label" : "${forest_mask}",
 			"layers" : [ "forest_mask" ],
+			"timeInstances" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z",
 			"feedback" : true
 		}, {
 			"id" : "countryBoundaries",
@@ -147,6 +147,7 @@
 			"id" : "nexrad_layer",
 			"active" : false,
 			"label" : "Nexrad",
+			"timeInstances" : "2010-03-01T00:00,2010-03-02T00:00,2010-03-03T00:00",
 			"layers" : [ "nexrad" ]
 		}, {
 			"id" : "provinces_title_placeholder",
