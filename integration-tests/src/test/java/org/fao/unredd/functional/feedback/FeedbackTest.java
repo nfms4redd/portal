@@ -15,7 +15,7 @@ public class FeedbackTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testCommentAndVerify() throws Exception {
-		String email = "onuredd@gmail.com";
+		String email = "fergonco@gmail.com";
 		String geometry = "POINT(0 1)";
 		String comment = "boh";
 		String layerName = "classification";
@@ -29,23 +29,23 @@ public class FeedbackTest extends AbstractIntegrationTest {
 		// Get the verification code from the database
 		String verificationCode = SQLQuery(
 				"SELECT verification_code FROM " + testSchema
-						+ ".comments ORDER BY date DESC").toString();
+						+ ".redd_feedback ORDER BY date DESC").toString();
 
 		// Check the insert
 		assertEquals(email, SQLQuery("SELECT email FROM " + testSchema
-				+ ".comments WHERE verification_code='" + verificationCode
+				+ ".redd_feedback WHERE verification_code='" + verificationCode
 				+ "'"));
 		assertEquals(geometry, SQLQuery("SELECT ST_AsText(geometry) FROM "
-				+ testSchema + ".comments WHERE verification_code='"
+				+ testSchema + ".redd_feedback WHERE verification_code='"
 				+ verificationCode + "'"));
 		assertEquals(comment, SQLQuery("SELECT comment FROM " + testSchema
-				+ ".comments WHERE verification_code='" + verificationCode
+				+ ".redd_feedback WHERE verification_code='" + verificationCode
 				+ "'"));
 		assertEquals(layerName, SQLQuery("SELECT layer_name FROM " + testSchema
-				+ ".comments WHERE verification_code='" + verificationCode
+				+ ".redd_feedback WHERE verification_code='" + verificationCode
 				+ "'"));
 		assertEquals(layerDate, SQLQuery("SELECT layer_date FROM " + testSchema
-				+ ".comments WHERE verification_code='" + verificationCode
+				+ ".redd_feedback WHERE verification_code='" + verificationCode
 				+ "'"));
 
 		// Verify it the comment
@@ -58,12 +58,12 @@ public class FeedbackTest extends AbstractIntegrationTest {
 
 		// Check validation has not been notified to author
 		Long notifiedCount = (Long) SQLQuery("SELECT count(*) FROM "
-				+ testSchema + ".comments WHERE state=3");
+				+ testSchema + ".redd_feedback WHERE state=3");
 		assertEquals(0, notifiedCount.longValue());
 
 		// Validate the entry and wait (more than the notification delay)
 		SQLExecute("UPDATE " + testSchema
-				+ ".comments SET state=2 WHERE verification_code='"
+				+ ".redd_feedback SET state=2 WHERE verification_code='"
 				+ verificationCode + "'");
 		synchronized (this) {
 			wait(4000);
@@ -71,7 +71,7 @@ public class FeedbackTest extends AbstractIntegrationTest {
 
 		// Check the entry has been marked as "notified"
 		notifiedCount = (Long) SQLQuery("SELECT count(*) FROM " + testSchema
-				+ ".comments WHERE state=3");
+				+ ".redd_feedback WHERE state=3");
 		assertEquals(1, notifiedCount.longValue());
 	}
 
