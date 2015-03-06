@@ -40,16 +40,17 @@ public class ConfigServlet extends HttpServlet {
 				buildCustomizationObject(getServletContext(), config, locale,
 						title));
 		moduleConfig.element("i18n", buildI18NObject(bundle));
-		moduleConfig.element("layers",
-				JSONSerializer.toJSON(config.getLayers(locale, req)));
 		moduleConfig.element("url-parameters",
 				JSONSerializer.toJSON(req.getParameterMap()));
-		// plugin elements
+		/*
+		 * Plugin configuration. default plugin conf and overridden by multiple
+		 * potential means (by default, by portal plugin-conf.json)
+		 */
 		@SuppressWarnings("unchecked")
 		Map<String, JSONObject> pluginConfiguration = (Map<String, JSONObject>) getServletContext()
 				.getAttribute("plugin-configuration");
 		Map<String, JSONObject> pluginConfigurationOverride = config
-				.getPluginConfiguration(req);
+				.getPluginConfiguration(locale, req);
 		for (String configurationItem : pluginConfigurationOverride.keySet()) {
 			moduleConfig.element(configurationItem,
 					pluginConfigurationOverride.get(configurationItem));

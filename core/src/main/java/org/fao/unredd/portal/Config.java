@@ -50,11 +50,6 @@ public interface Config {
 	 */
 	Map<String, String>[] getLanguages();
 
-	String getLayers(Locale locale, HttpServletRequest request)
-			throws IOException, ConfigurationException;
-
-	File getLayersFile(HttpServletRequest request);
-
 	ResourceBundle getMessages(Locale locale) throws ConfigurationException;
 
 	String[] getPropertyAsArray(String property);
@@ -63,9 +58,25 @@ public interface Config {
 
 	String getIndicatorsFolder();
 
-	Map<String, JSONObject> getPluginConfiguration(HttpServletRequest request)
-			throws IOException;
+	/**
+	 * Plugin configuration provided by the list of
+	 * {@link ModuleConfigurationProvider} By default one provider will read the
+	 * plugin-conf.json file at the portal configuration folder
+	 * 
+	 * @param locale
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	Map<String, JSONObject> getPluginConfiguration(Locale locale,
+			HttpServletRequest request) throws IOException;
 
+	/**
+	 * Add providers to modify the behavior of
+	 * {@link #getPluginConfiguration(HttpServletRequest)} and
+	 * 
+	 * @param provider
+	 */
 	void addModuleConfigurationProvider(ModuleConfigurationProvider provider);
 
 }

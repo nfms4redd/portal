@@ -1,5 +1,6 @@
 package org.fao.unredd.geoexplorerReader;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +17,7 @@ import org.fao.unredd.portal.ConfigurationException;
 import org.fao.unredd.portal.DBUtils;
 import org.fao.unredd.portal.ModuleConfigurationProvider;
 import org.fao.unredd.portal.PersistenceException;
+import org.fao.unredd.portal.PortalRequestConfiguration;
 
 public class GeoExplorerDBConfigurationProvider implements
 		ModuleConfigurationProvider {
@@ -25,7 +27,8 @@ public class GeoExplorerDBConfigurationProvider implements
 
 	@Override
 	public Map<String, JSONObject> getConfigurationMap(
-			HttpServletRequest request) throws ConfigurationException {
+			PortalRequestConfiguration configurationContext,
+			HttpServletRequest request) throws IOException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 		try {
 			String mapIdParameter = request.getParameter("mapId");

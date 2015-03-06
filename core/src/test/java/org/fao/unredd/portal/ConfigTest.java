@@ -2,10 +2,12 @@ package org.fao.unredd.portal;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,17 +28,21 @@ public class ConfigTest {
 		conf2.element("a", "z");
 		conf2.element("c", "c");
 
-		HttpServletRequest request = mock(HttpServletRequest.class);
 		ModuleConfigurationProvider provider1 = mock(ModuleConfigurationProvider.class);
-		when(provider1.getConfigurationMap(request)).thenReturn(
+		when(
+				provider1.getConfigurationMap(any(PortalRequestConfiguration.class),
+						any(HttpServletRequest.class))).thenReturn(
 				buildMap("myModule", conf1));
 		ModuleConfigurationProvider provider2 = mock(ModuleConfigurationProvider.class);
-		when(provider2.getConfigurationMap(request)).thenReturn(
+		when(
+				provider2.getConfigurationMap(any(PortalRequestConfiguration.class),
+						any(HttpServletRequest.class))).thenReturn(
 				buildMap("myModule", conf2));
 		config.addModuleConfigurationProvider(provider1);
 		config.addModuleConfigurationProvider(provider2);
 
-		JSONObject pluginConf = config.getPluginConfiguration(request).get(
+		JSONObject pluginConf = config.getPluginConfiguration(
+				Locale.getDefault(), mock(HttpServletRequest.class)).get(
 				"myModule");
 
 		assertTrue(pluginConf.has("a") && pluginConf.has("b")

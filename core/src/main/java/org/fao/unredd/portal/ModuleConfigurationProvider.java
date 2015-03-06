@@ -13,12 +13,15 @@ public interface ModuleConfigurationProvider {
 	 * Returns a map where the keys are the names of the modules and the
 	 * JSONObjects are the configuration of each module
 	 * 
+	 * @param configurationContext
 	 * @param request
 	 *            Request that loads the application
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	Map<String, JSONObject> getConfigurationMap(HttpServletRequest request)
-			throws IOException;
+	Map<String, JSONObject> getConfigurationMap(
+			PortalRequestConfiguration configurationContext,
+			HttpServletRequest request) throws IOException;
 
 }

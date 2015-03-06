@@ -1,11 +1,8 @@
 package org.fao.unredd.portal;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -25,14 +22,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.fao.unredd.jwebclientAnalyzer.PluginDescriptor;
 
 /**
  * Utility class to access the custom resources placed in PORTAL_CONFIG_DIR.
  * 
  * @author Oscar Fonts
+ * @author Fernando Gonzalez
  */
 public class DefaultConfig implements Config {
 
@@ -47,7 +43,6 @@ public class DefaultConfig implements Config {
 	private String configInitParameter;
 	private boolean useCache;
 	private HashMap<Locale, ResourceBundle> localeBundles = new HashMap<Locale, ResourceBundle>();
-	private String layersContent;
 	private ArrayList<ModuleConfigurationProvider> moduleConfigurationProviders = new ArrayList<ModuleConfigurationProvider>();
 
 	public DefaultConfig(String rootPath, String configInitParameter,
@@ -55,8 +50,6 @@ public class DefaultConfig implements Config {
 		this.rootPath = rootPath;
 		this.configInitParameter = configInitParameter;
 		this.useCache = useCache;
-
-		moduleConfigurationProviders.add(new PluginJSONConfigurationProvider());
 	}
 
 	@Override
@@ -151,18 +144,7 @@ public class DefaultConfig implements Config {
 		return new File(getDir(), "messages");
 	}
 
-	@Override
-	public String getLayers(Locale locale, HttpServletRequest request)
-			throws IOException, ConfigurationException {
-		if (layersContent == null || !useCache) {
-			layersContent = getLocalizedFileContents(getLayersFile(request),
-					locale);
-		}
-		return layersContent;
-	}
-
-	@Override
-	public File getLayersFile(HttpServletRequest request) {
+	public File getLayersFile() {
 		return new File(getDir() + "/layers.json");
 	}
 
@@ -189,32 +171,23 @@ public class DefaultConfig implements Config {
 		return bundle;
 	}
 
-	private String getLocalizedFileContents(File file, Locale locale)
-			throws IOException, ConfigurationException {
-		try {
-			BufferedInputStream bis = new BufferedInputStream(
-					new FileInputStream(file));
-			String template = IOUtils.toString(bis, "UTF-8");
-			bis.close();
-			Pattern patt = Pattern.compile("\\$\\{([\\w.]*)\\}");
-			Matcher m = patt.matcher(template);
-			StringBuffer sb = new StringBuffer(template.length());
-			ResourceBundle messages = getMessages(locale);
-			while (m.find()) {
-				String text;
-				try {
-					text = messages.getString(m.group(1));
-					m.appendReplacement(sb, text);
-				} catch (MissingResourceException e) {
-					// do not replace
-				}
+	private String localize(String template, Locale locale)
+			throws ConfigurationException {
+		Pattern patt = Pattern.compile("\\$\\{([\\w.]*)\\}");
+		Matcher m = patt.matcher(template);
+		StringBuffer sb = new StringBuffer(template.length());
+		ResourceBundle messages = getMessages(locale);
+		while (m.find()) {
+			String text;
+			try {
+				text = messages.getString(m.group(1));
+				m.appendReplacement(sb, text);
+			} catch (MissingResourceException e) {
+				// do not replace
 			}
-			m.appendTail(sb);
-			return sb.toString();
-		} catch (UnsupportedEncodingException e) {
-			logger.error("Unsupported encoding", e);
-			return "";
 		}
+		m.appendTail(sb);
+		return sb.toString();
 	}
 
 	@Override
@@ -254,12 +227,13 @@ public class DefaultConfig implements Config {
 	}
 
 	@Override
-	public Map<String, JSONObject> getPluginConfiguration(
+	public Map<String, JSONObject> getPluginConfiguration(Locale locale,
 			HttpServletRequest request) throws IOException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 		for (ModuleConfigurationProvider provider : moduleConfigurationProviders) {
 			Map<String, JSONObject> moduleConfigurations = provider
-					.getConfigurationMap(request);
+					.getConfigurationMap(new PortalConfigurationContextImpl(
+							locale), request);
 			Set<String> moduleNames = moduleConfigurations.keySet();
 			for (String moduleName : moduleNames) {
 				JSONObject moduleConfiguration = ret.get(moduleName);
@@ -283,24 +257,23 @@ public class DefaultConfig implements Config {
 		moduleConfigurationProviders.add(provider);
 	}
 
-	private class PluginJSONConfigurationProvider implements
-			ModuleConfigurationProvider {
+	private class PortalConfigurationContextImpl implements
+			PortalRequestConfiguration {
+
+		private Locale locale;
+
+		public PortalConfigurationContextImpl(Locale locale) {
+			this.locale = locale;
+		}
 
 		@Override
-		public Map<String, JSONObject> getConfigurationMap(
-				HttpServletRequest request) throws IOException {
-			File configProperties = new File(getDir() + "/plugin-conf.json");
-			BufferedInputStream stream;
-			try {
-				stream = new BufferedInputStream(new FileInputStream(
-						configProperties));
-			} catch (FileNotFoundException e) {
-				return new HashMap<String, JSONObject>();
-			}
-			String content = IOUtils.toString(stream);
-			stream.close();
-			PluginDescriptor pluginDescriptor = new PluginDescriptor(content);
-			return pluginDescriptor.getConfigurationMap();
+		public String localize(String template) {
+			return DefaultConfig.this.localize(template, locale);
+		}
+
+		@Override
+		public File getConfigurationDirectory() {
+			return getDir();
 		}
 
 	}
