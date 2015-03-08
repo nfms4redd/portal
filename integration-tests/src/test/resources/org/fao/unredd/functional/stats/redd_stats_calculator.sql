@@ -1,20 +1,20 @@
-DROP FUNCTION IF EXISTS redd_stats_run (integer) ;
+DROP FUNCTION IF EXISTS redd_stats_run (integer, varchar) ;
 ---
-CREATE OR REPLACE FUNCTION redd_stats_run(IN indicators_id integer)
+CREATE OR REPLACE FUNCTION redd_stats_run(IN indicators_id integer, IN dbSchema varchar)
   RETURNS bool AS
 $BODY$
 DECLARE
 	indicador RECORD;
 BEGIN
 
-FOR indicador IN EXECUTE format('SELECT * FROM redd_stats_metadata WHERE id=%s', indicators_id) LOOP
+FOR indicador IN EXECUTE format('SELECT * FROM %s.redd_stats_metadata WHERE id=%s', dbSchema, indicators_id) LOOP
 	RAISE NOTICE 'Procesando grafico %', indicador.name;
 
 	EXECUTE format('DROP TABLE IF EXISTS %s',indicador.table_name_data);
 	
 	RAISE NOTICE 'Generando tabla de datos %',indicador.title;
-	EXECUTE format('CREATE TABLE %s AS SELECT * FROM redd_stats_calculo(''redd_stats_fajas'',''%s'',''%s'',''%s'',''%s'',''%s'')',
-		indicador.table_name_data, indicador.table_name_division, indicador.division_field_id, indicador.class_table_name, indicador.class_field_name, indicador.date_field_name);
+	EXECUTE format('CREATE TABLE %s AS SELECT * FROM redd_stats_calculo(''%s.redd_stats_fajas'',''%s'',''%s'',''%s'',''%s'',''%s'')',
+		indicador.table_name_data, dbSchema, indicador.table_name_division, indicador.division_field_id, indicador.class_table_name, indicador.class_field_name, indicador.date_field_name);
 
 	END LOOP;
 

@@ -15,14 +15,11 @@
  */
 package org.fao.unredd.layers.bd;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.commons.io.IOUtils;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.portal.DBUtils;
@@ -36,7 +33,12 @@ import org.fao.unredd.portal.PersistenceException;
  */
 public class DBLayerFactory implements LayerFactory {
 
-	public static final String REDD_STATS_METADATA = "redd_stats_metadata";
+	private String schemaName;
+
+	public DBLayerFactory(String schemaName) {
+		super();
+		this.schemaName = schemaName;
+	}
 
 	@Override
 	public boolean exists(final String layerName) {
@@ -50,7 +52,8 @@ public class DBLayerFactory implements LayerFactory {
 
 							PreparedStatement statement = connection
 									.prepareStatement("select count(*) count from "
-											+ REDD_STATS_METADATA
+											+ schemaName
+											+ ".redd_stats_metadata"
 											+ " WHERE layer_name=?");
 							statement.setString(1, layerName);
 							ResultSet resultSet = statement.executeQuery();
@@ -81,32 +84,11 @@ public class DBLayerFactory implements LayerFactory {
 		// TODO Auto-generated method stub
 		Layer nuevaLayer = null;
 		try {
-			nuevaLayer = new DBLayer(layerName);
+			nuevaLayer = new DBLayer(schemaName, layerName);
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return nuevaLayer;
-	}
-
-	public void createTable() throws PersistenceException {
-		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
-			@Override
-			public void process(Connection connection) throws SQLException {
-				try {
-					InputStream stream = this.getClass().getResourceAsStream(
-							"metadata-table-creation.sql");
-					String script = IOUtils.toString(stream);
-					stream.close();
-					PreparedStatement statement = connection
-							.prepareStatement(script);
-					statement.execute();
-					statement.close();
-				} catch (IOException e) {
-					// Should never happen
-					throw new RuntimeException("bug");
-				}
-			}
-		});
 	}
 }

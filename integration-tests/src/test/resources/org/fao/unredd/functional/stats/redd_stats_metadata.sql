@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS redd_stats_metadata (
+CREATE TABLE redd_stats_metadata (
 	id serial NOT NULL,
 	name character varying,
 	title character varying,

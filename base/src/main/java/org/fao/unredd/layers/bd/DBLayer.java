@@ -42,7 +42,8 @@ public class DBLayer implements Layer {
 	public Outputs var_outputs;
 	public ArrayList<Output> tempoutputs;
 
-	public DBLayer(String layerName) throws PersistenceException {
+	public DBLayer(final String dbSchemaName, String layerName)
+			throws PersistenceException {
 		// TODO Auto-generated constructor stub
 		String[] workspaceAndName = layerName.split(Pattern.quote(":"));
 		if (workspaceAndName.length != 2) {
@@ -60,7 +61,7 @@ public class DBLayer implements Layer {
 
 						PreparedStatement statement = connection
 								.prepareStatement("select * from "
-										+ DBLayerFactory.REDD_STATS_METADATA
+										+ dbSchemaName + ".redd_stats_metadata"
 										+ " WHERE layer_name=?");
 						statement.setString(1, qName);
 						ResultSet resultSet = statement.executeQuery();

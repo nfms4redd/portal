@@ -74,31 +74,6 @@ public class DBFeedbackPersistence implements FeedbackPersistence {
 	}
 
 	@Override
-	public void createTable() throws PersistenceException {
-		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
-			@Override
-			public void process(Connection connection) throws SQLException {
-				PreparedStatement statement = connection
-						.prepareStatement("CREATE TABLE IF NOT EXISTS "
-								+ tableName + " ("//
-								+ "id serial,"//
-								+ "geometry geometry('GEOMETRY', 900913),"//
-								+ "comment varchar NOT NULL,"//
-								+ "layer_name varchar NOT NULL,"//
-								+ "layer_date varchar,"//
-								+ "date timestamp NOT NULL,"//
-								+ "email varchar NOT NULL,"//
-								+ "verification_code varchar,"//
-								+ "language varchar,"//
-								+ "state int" + ")");
-				statement.execute();
-
-				statement.close();
-			}
-		});
-	}
-
-	@Override
 	public boolean existsUnverified(final String verificationCode)
 			throws PersistenceException {
 		return DBUtils.processConnection("unredd-portal",

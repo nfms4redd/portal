@@ -3,10 +3,6 @@ package org.fao.unredd.functional.stats;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONSerializer;
 
@@ -14,7 +10,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.fao.unredd.functional.AbstractIntegrationTest;
 import org.fao.unredd.functional.IntegrationTest;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,18 +17,11 @@ import org.junit.experimental.categories.Category;
 @Category(IntegrationTest.class)
 public class StatsTest extends AbstractIntegrationTest {
 
-	@Before
-	public void installFunctions() throws IOException, SQLException {
-		executeDelimitedScript("stats-calculator-install.sql");
-		executeDelimitedScript("redd_stats_fajas.sql");
-		executeLines("data.sql", "schemaName", testSchema);
-		SQLExecute("DELETE FROM redd_stats_metadata;");
-	}
-
 	@Test
 	public void testCalculateStats() throws Exception {
 		String layerName = "unredd:provinces";
-		SQLExecute("INSERT INTO redd_stats_metadata ("
+		SQLExecute("INSERT INTO " + testSchema
+				+ ".redd_stats_metadata ("
 				+ "name, "//
 				+ "title, "//
 				+ "subtitle, "//
@@ -66,8 +54,10 @@ public class StatsTest extends AbstractIntegrationTest {
 				+ "'" + testSchema + ".stats_results',"//
 				+ "'2D'"//
 				+ ")");
-		Integer indicatorId = (Integer) SQLQuery("select id from redd_stats_metadata;");
-		SQLExecute("SELECT redd_stats_run(" + indicatorId + ");");
+		Integer indicatorId = (Integer) SQLQuery("select id from " + testSchema
+				+ ".redd_stats_metadata;");
+		SQLExecute("SELECT redd_stats_run(" + indicatorId + ", '" + testSchema
+				+ "');");
 
 		// Check total coverage
 		Float sum = (Float) SQLQuery("SELECT sum(valor) from " + testSchema

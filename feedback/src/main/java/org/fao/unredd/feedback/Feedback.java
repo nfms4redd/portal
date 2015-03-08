@@ -97,8 +97,4 @@ public class Feedback {
 		}
 	}
 
-	public void createTable() throws PersistenceException {
-		persistence.createTable();
-	}
-
 }

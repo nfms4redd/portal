@@ -10,8 +10,6 @@ public interface FeedbackPersistence {
 
 	void cleanOutOfDate() throws PersistenceException;
 
-	void createTable() throws PersistenceException;
-
 	boolean existsUnverified(String verificationCode)
 			throws PersistenceException;
 

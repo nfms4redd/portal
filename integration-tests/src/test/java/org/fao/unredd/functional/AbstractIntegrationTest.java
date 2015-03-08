@@ -108,6 +108,19 @@ public class AbstractIntegrationTest {
 		new Resource(handler, "jdbc/unredd-portal", dataSource);
 
 		server.start();
+
+		// Install data tables in integration_tests
+		SQLExecute(getScript("redd_feedback.sql").replaceAll("redd_feedback",
+				"integration_tests.redd_feedback"));
+		SQLExecute(getScript("redd_stats_metadata.sql").replaceAll(
+				"redd_stats_metadata", "integration_tests.redd_stats_metadata"));
+		// Install functions in public
+		executeDelimitedScript("redd_stats_calculator.sql");
+		SQLExecute(getScript("redd_stats_fajas.sql").replaceAll(
+				"redd_stats_fajas", "integration_tests.redd_stats_fajas"));
+
+		// Install test data
+		executeLines("data.sql", "schemaName", testSchema);
 	}
 
 	@After
@@ -138,15 +151,20 @@ public class AbstractIntegrationTest {
 	/**
 	 * Executes statements delimited by --- in the specified resource.
 	 */
-	protected void executeDelimitedScript(String resourceName)
+	private void executeDelimitedScript(String resourceName)
 			throws IOException, SQLException {
-		InputStream stream = StatsTest.class.getResourceAsStream(resourceName);
-		String script = IOUtils.toString(stream);
-		stream.close();
+		String script = getScript(resourceName);
 		String[] lines = script.split(Pattern.quote("---"));
 		for (String line : lines) {
 			executeSQLStatement(line);
 		}
+	}
+
+	private String getScript(String resourceName) throws IOException {
+		InputStream stream = StatsTest.class.getResourceAsStream(resourceName);
+		String script = IOUtils.toString(stream);
+		stream.close();
+		return script;
 	}
 
 	private void executeSQLStatement(String script, String... params)

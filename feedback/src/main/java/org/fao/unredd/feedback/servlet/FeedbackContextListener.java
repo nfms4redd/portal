@@ -31,15 +31,10 @@ public class FeedbackContextListener implements ServletContextListener {
 
 		try {
 			DBFeedbackPersistence feedbackPersistence = new DBFeedbackPersistence(
-					properties.getProperty("feedback-db-schema"));
+					properties.getProperty("db-schema"));
 			Mailer mailer = new Mailer(properties);
 			Feedback feedback = new Feedback(feedbackPersistence, mailer);
-			feedback.createTable();
 			servletContext.setAttribute("feedback", feedback);
-		} catch (PersistenceException e) {
-			logger.error(
-					"Could not create feedback table. Feedback function will not work properly.",
-					e);
 		} catch (MissingArgumentException e) {
 			logger.error("All mail parameters must be configured. "
 					+ e.getArgumentName() + " missing");
