@@ -41,6 +41,10 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 			var layer;
 			if (wmsLayer.type == "osm") {
 				layer = new OpenLayers.Layer.OSM(wmsLayer.id, wmsLayer.osmUrls);
+			} else if (wmsLayer.type == "gmaps") {
+				layer = new OpenLayers.Layer.Google(wmsLayer.id, {
+					type : google.maps.MapTypeId[wmsLayer["gmaps-type"]]
+				});
 			} else if (wmsLayer.type == "wfs") {
 				layer = new OpenLayers.Layer.Vector("WFS", {
 					strategies : [ new OpenLayers.Strategy.Fixed() ],

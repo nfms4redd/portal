@@ -8,12 +8,16 @@
 				"http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
 				"http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
 			]
-		},
-		{
+		}, {
 			"id" : "blue-marble",
 			"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
 			"wmsName" : "unredd:blue_marble",
 			"imageFormat" : "image/jpeg",
+			"visible" : true
+		}, {
+			"id" : "google-maps",
+			"type" : "gmaps",
+			"gmaps-type" : "SATELLITE",
 			"visible" : true
 		}, {
 			"id" : "nexrad",
@@ -113,6 +117,12 @@
 			"layers" : [ "cycle-osm" ]
 		},
 		{
+			"id" : "google-maps-context",
+			"active" : false,
+			"label" : "Google maps",
+			"layers" : [ "google-maps" ]
+		},
+		{
 			"id" : "forestClassification",
 			"active" : true,
 			"infoFile" : "forest_classification_def.html",
@@ -178,7 +188,7 @@
 				{
 					"id" : "innerbase",
 					"label" : "General purpose",
-					"items": ["blue-marble", "osm-layer"]
+					"items": ["blue-marble", "osm-layer", "google-maps-context"]
 				}, {
 					"id" : "innerforest",
 					"label" : "Forest classifications",
