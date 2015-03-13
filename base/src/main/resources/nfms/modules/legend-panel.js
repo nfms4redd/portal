@@ -18,15 +18,15 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 			divContent.appendTo(dialog);
 			divContent.attr("id", "legend_pane_content");
 			dialog.dialog({
-				position : [ 'right', 'bottom' ],
+				position : [ 'right', 'center' ],
 				closeOnEscape : false,
 				autoOpen : false,
 				height : 300,
 				minHeight : 400,
 				maxHeight : 400,
-				width : 430,
+				width : 325,
 				zIndex : 2000,
-				resizable : false
+				resizable : true
 			});
 		}
 
@@ -92,7 +92,7 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 
 				var trTitle = $("<tr/>").appendTo(tblLegend).addClass("legend_header");
 				$("<td/>").appendTo(trTitle).addClass("legend_layer_name").html(legendInfo.label);
-				if (legendInfo.hasOwnProperty("sourceLink") && legendInfo.hasOwnProperty("sourceLabel")) {
+				if (typeof legendInfo["sourceLink"] != "undefined" && typeof legendInfo["sourceLabel"] != "undefined") {
 					var tdSourceLink = $("<td/>").appendTo(trTitle).addClass("data_source_link");
 					$("<span/>").appendTo(tdSourceLink).addClass("lang").html(i18n["data_source"] + ":");
 					$("<a/>").appendTo(tdSourceLink).attr("target", "_blank").attr("href", legendInfo.sourceLink).html(legendInfo.sourceLabel);
