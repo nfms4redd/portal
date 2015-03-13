@@ -29,9 +29,7 @@
 			"wmsName" : "unredd:drc_forest_classification",
 			"imageFormat" : "image/png8",
 			"visible" : true,
-			"legend" : "forest_classification.png",
-			"sourceLink" : "http://osfac.net/facet.html",
-			"sourceLabel" : "FACET"
+			"legend" : "forest_classification.png"
 		}, {
 			"id" : "forest_mask",
 			"label" : "${forest_mask}",
