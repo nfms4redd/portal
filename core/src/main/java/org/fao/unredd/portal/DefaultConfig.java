@@ -212,12 +212,15 @@ public class DefaultConfig implements Config {
 
 	private String getProperty(String propertyName)
 			throws ConfigurationException {
-		String value = getProperties().getProperty(propertyName);
+		Properties props = getProperties();
+		String value = props.getProperty(propertyName);
 		if (value != null) {
 			return value;
 		} else {
 			throw new ConfigurationException("No \"" + propertyName
-					+ "\" property in configuration");
+					+ "\" property in configuration. File: "
+					+ getPortalPropertiesFile().getAbsolutePath()
+					+ ". Contents: " + props.keySet().size());
 		}
 	}
 
