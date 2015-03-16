@@ -75,20 +75,13 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 		try {
 			InputStream mainStream = new FileInputStream(mainTemplate);
 			processTemplate(analyzer, mainStream, mainOutputPath);
-			mainStream.close();
 		} catch (IOException e) {
 			throw new MojoExecutionException("Cannot access main template", e);
 		}
 
-		try {
-			InputStream buildStream = getClass().getResourceAsStream(
-					"/buildconfig.js");
-			processTemplate(analyzer, buildStream, buildconfigOutputPath);
-			buildStream.close();
-		} catch (IOException e) {
-			throw new MojoExecutionException(
-					"Cannot access buildconfig template", e);
-		}
+		InputStream buildStream = getClass().getResourceAsStream(
+				"/buildconfig.js");
+		processTemplate(analyzer, buildStream, buildconfigOutputPath);
 	}
 
 	private void processTemplate(JEEContextAnalyzer analyzer,
@@ -100,9 +93,12 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 		RequireTemplate template = new RequireTemplate(templateStream,
 				webResourcesDir, paths, shims, moduleNames);
 		try {
+			String content = template.generate();
+			templateStream.close();
+
 			OutputStream outputStream = new BufferedOutputStream(
 					new FileOutputStream(outputPath));
-			IOUtils.write(template.generate(), outputStream);
+			IOUtils.write(content, outputStream);
 			outputStream.close();
 		} catch (IOException e) {
 		}
