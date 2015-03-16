@@ -110,6 +110,8 @@ public class DefaultConfig implements Config {
 				properties.load(new FileInputStream(file));
 			} catch (IOException e) {
 				logger.error("Error reading portal properties file", e);
+				// try it again, at least we get more logs
+				properties = null;
 			}
 		}
 		return properties;
