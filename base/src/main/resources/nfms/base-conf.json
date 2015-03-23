@@ -11,7 +11,7 @@
 	},
 	"requirejs" : {
 		"paths" : {
-			"jquery-ui" : "../jslib/jquery-ui-1.10.4.custom",
+			"jquery-ui" : "../jslib/jquery-ui-1.11.4",
 			"fancy-box" : "../jslib/jquery.fancybox.pack",
 			"openlayers" : "../jslib/OpenLayers/OpenLayers.debug",
 			"mustache" : "../jslib/jquery.mustache"
