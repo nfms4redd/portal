@@ -6,7 +6,7 @@
 			"show-logos" : false
 		},
 		"info-dialog" : {
-			"open-in-center" : center
+			"open-in-center" : false
 		},
 		"error-management" : {
 			"div-id" : null
