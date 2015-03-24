@@ -13,6 +13,8 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 
 	var feedbackLayer = new OpenLayers.Layer.Vector("Feedback");
 
+	var btn = $("<a/>").attr("id", "feedback-button").addClass("blue_button").html("Feedback");
+
 	var initializeDialog = function() {
 		dlg = $("<div/>").attr("id", "feedback_popup");
 		$("<label/>").addClass("feedback-form-left").html("Capa:").appendTo(dlg);
@@ -48,7 +50,11 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 			width : "auto",
 			zIndex : 2000,
 			resizable : false,
-			position : [ 270, 150 ],
+			position : {
+				my : "left top",
+				at : "left bottom+40",
+				of : btn
+			},
 			title : i18n["feedback_title"],
 			close : deactivateFeedback
 		});
@@ -133,7 +139,6 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 	initializeDialog();
 
 	// Install feedback button
-	var btn = $("<a/>").attr("id", "feedback-button").addClass("blue_button").html("Feedback");
 	btn.appendTo(toolbar);
 	btn.click(function() {
 		if (!btn.hasClass("selected")) {

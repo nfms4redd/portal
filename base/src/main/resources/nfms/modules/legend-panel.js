@@ -18,7 +18,11 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 			divContent.appendTo(dialog);
 			divContent.attr("id", "legend_pane_content");
 			dialog.dialog({
-				position : [ 'right', 'center' ],
+				position : {
+						my : "right top",
+						at : "right bottom+15",
+						of : "#toggle_legend"
+					},
 				closeOnEscape : false,
 				autoOpen : false,
 				height : 300,

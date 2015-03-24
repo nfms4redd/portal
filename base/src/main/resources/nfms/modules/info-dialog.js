@@ -39,7 +39,6 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 				bus.send("clear-highlighted-features");
 				map.getLayer("Highlighted Features").destroyFeatures();
 			},
-
 			autoOpen : false
 		});
 
@@ -85,12 +84,14 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 				bus.send("ajax", {
 					url : 'indicators?layerId=' + layerId,
 					success : function(indicators, textStatus, jqXHR) {
-						//TODO if there is more than one indicator, offer the choice to the user.
+						// TODO if there is more than one indicator, offer the
+						// choice to the user.
 						if (indicators.length > 0) {
-							$(indicators).each(function( i, val ) { console.log(val.id+'-> '+val.fieldId);
-								// Muestra un icono para cada grafico con el texto alternativo con el titulo del grafico.								
+							$(indicators).each(function(i, val) {
+								// Muestra un icono para cada grafico con el
+								// texto alternativo con el titulo del grafico.
 								var aIndicators = $("<a/>").addClass("fancybox.iframe").appendTo(tdIndicators);
-								aIndicators.css("padding","1px");
+								aIndicators.css("padding", "1px");
 								$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
 								aIndicators.attr("href", "indicator?objectId=" + feature.attributes[val.fieldId] + "&layerId=" + layerId + "&indicatorId=" + val.id);
 								aIndicators.attr("alt", val.title);
@@ -106,7 +107,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 									openEffect : 'none',
 									closeEffect : 'fade'
 								});
-								//TODO Agregar separador entre iconos.
+								// TODO Agregar separador entre iconos.
 							});// END each
 						}
 					},
@@ -141,13 +142,22 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 			if (!infoPopup.dialog('isOpen')) {
 				var position;
 				if (openInCenter) {
-					position = "center";
+					position = {
+						my : "center",
+						at : "center",
+						of : window
+					};
 				} else {
-					var dialogX = x + 100;
-					var dialogY = y - 200;
-					position = [ dialogX, dialogY ];
+					var dialogX = x;
+					var dialogY = y;
+					position = {
+						my : "left top",
+						at : "left+" + dialogX + " top+" + dialogY,
+						of : window,
+						collision : "fit"
+					};
 				}
-				
+
 				infoPopup.dialog('option', 'position', position);
 
 				// Finally open the dialog
