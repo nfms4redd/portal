@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -48,7 +49,7 @@ public class IndexHTMLServlet extends HttpServlet {
 			@SuppressWarnings("unchecked")
 			ArrayList<String> classPathStylesheets = (ArrayList<String>) servletContext
 					.getAttribute("css-paths");
-			styleSheets.addAll(classPathStylesheets);
+			styleSheets.addAll(sortCSS(classPathStylesheets));
 			styleSheets.addAll(getStyleSheets(config, "modules"));
 		}
 		context.put("styleSheets", styleSheets);
@@ -79,8 +80,25 @@ public class IndexHTMLServlet extends HttpServlet {
 		t.merge(context, resp.getWriter());
 	}
 
+	/**
+	 * Put the module CSS in last position
+	 * 
+	 * @param cssRelativePaths
+	 * @return
+	 */
+	private List<String> sortCSS(List<String> cssRelativePaths) {
+		List<String> ret = new ArrayList<String>();
+		for (String cssPath : cssRelativePaths) {
+			if (cssPath.startsWith("modules")) {
+				ret.add(cssPath);
+			} else {
+				ret.add(0, cssPath);
+			}
+		}
+		return ret;
+	}
+
 	private ArrayList<String> getStyleSheets(Config config, String path) {
-		ArrayList<String> styleSheets = new ArrayList<String>();
 		File styleFolder = new File(config.getDir(), path);
 		return getStyleSheets(styleFolder, path);
 	}
