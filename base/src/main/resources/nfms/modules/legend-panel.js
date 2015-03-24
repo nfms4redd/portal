@@ -1,8 +1,8 @@
 define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, customization, bus) {
 
 	/*
-	 * keep the information about layer legends that will be necessary when
-	 * they become visible
+	 * keep the information about layer legends that will be necessary when they
+	 * become visible
 	 */
 	var legendArrayInfo = {};
 
@@ -19,10 +19,10 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 			divContent.attr("id", "legend_pane_content");
 			dialog.dialog({
 				position : {
-						my : "right top",
-						at : "right bottom+15",
-						of : "#toggle_legend"
-					},
+					my : "right top",
+					at : "right bottom+15",
+					of : "#toggle_legend"
+				},
 				closeOnEscape : false,
 				autoOpen : false,
 				height : 300,
@@ -102,7 +102,7 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 					$("<a/>").appendTo(tdSourceLink).attr("target", "_blank").attr("href", legendInfo.sourceLink).html(legendInfo.sourceLabel);
 				}
 				var trImage = $("<tr/>").appendTo(tblLegend).addClass("legend_image");
-				var tdImage = $("<td/>").appendTo(trImage);
+				var tdImage = $("<td/>").attr("colspan", "2").appendTo(trImage);
 				$("<img/>").attr("src", imagePath).appendTo(tdImage);
 			} else {
 				$("#" + idPrefix + legendInfo.id).remove();
