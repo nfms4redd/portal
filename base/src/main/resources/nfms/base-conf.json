@@ -14,7 +14,8 @@
 			"jquery-ui" : "../jslib/jquery-ui-1.11.4",
 			"fancy-box" : "../jslib/jquery.fancybox.pack",
 			"openlayers" : "../jslib/OpenLayers/OpenLayers.debug",
-			"mustache" : "../jslib/jquery.mustache"
+			"mustache" : "../jslib/jquery.mustache",
+			"moment" : "../jslib/moment"
 		},
 		"shim" : {
 			"fancy-box" : [ "jquery" ],

@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n) {
+define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n, moment) {
 
 	var layerActions = new Array();
 
@@ -180,10 +180,17 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "f
 		}
 	});
 
-	var updateLabel = function(layerId, date) {
+	var updateLabel = function(layerId, layerFormat, date) {
 		var tdLayerName = $("#layer-row-" + layerId + " .layer_name");
 		tdLayerName.find("span").remove();
-		$("<span/>").html(" (" + date.getUTCFullYear() + ")").appendTo(tdLayerName);
+		var format;
+		if (layerFormat) {
+			format = layerFormat;
+		} else {
+			format = "YYYY";
+		}
+		var dateStr = moment(date).format(format);
+		$("<span/>").html(" (" + dateStr + ")").appendTo(tdLayerName);
 	};
 	
 	bus.listen("time-slider.selection", function(event, date) {
@@ -208,7 +215,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "f
 				closestPrevious.setISO8601(timestamps[0]);
 			}
 
-			updateLabel(layer.id, closestPrevious);
+			updateLabel(layer.id, layer["date-format"], closestPrevious);
 			
 			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious ]);
 		}
