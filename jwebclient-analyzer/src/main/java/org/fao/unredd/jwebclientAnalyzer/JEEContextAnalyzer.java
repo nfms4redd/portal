@@ -41,7 +41,6 @@ public class JEEContextAnalyzer {
 				pluginConfDir);
 		WebResourcesEntryListener webResourcesListener = new WebResourcesEntryListener(
 				webResourcesDir);
-
 		scanClasses(context, pluginConfListener, webResourcesListener);
 		scanJars(context, pluginConfListener, webResourcesListener);
 	}
@@ -60,32 +59,34 @@ public class JEEContextAnalyzer {
 
 	private void scanDir(Context context, final File dir,
 			ContextEntryListener listener) {
-		Iterator<File> allFiles = FileUtils.iterateFiles(dir,
-				relevantExtensions, TrueFileFilter.INSTANCE);
+		if (dir.isDirectory()) {
+			Iterator<File> allFiles = FileUtils.iterateFiles(dir,
+					relevantExtensions, TrueFileFilter.INSTANCE);
 
-		final File referenceFolder = dir.getParentFile();
-		int rootPathLength = referenceFolder.getAbsolutePath().length() + 1;
-		while (allFiles.hasNext()) {
-			File file = allFiles.next();
-			String name = file.getAbsolutePath();
-			final String relativePath = name.substring(rootPathLength);
-			try {
-				ContextEntryReader contentReader = new ContextEntryReader() {
+			final File referenceFolder = dir.getParentFile();
+			int rootPathLength = referenceFolder.getAbsolutePath().length() + 1;
+			while (allFiles.hasNext()) {
+				File file = allFiles.next();
+				String name = file.getAbsolutePath();
+				final String relativePath = name.substring(rootPathLength);
+				try {
+					ContextEntryReader contentReader = new ContextEntryReader() {
 
-					@Override
-					public String getContent() throws IOException {
-						InputStream input = new BufferedInputStream(
-								new FileInputStream(new File(referenceFolder,
-										relativePath)));
-						String content = IOUtils.toString(input);
-						input.close();
+						@Override
+						public String getContent() throws IOException {
+							InputStream input = new BufferedInputStream(
+									new FileInputStream(new File(
+											referenceFolder, relativePath)));
+							String content = IOUtils.toString(input);
+							input.close();
 
-						return content;
-					}
-				};
-				listener.accept(relativePath, contentReader);
-			} catch (IOException e) {
-				logger.info("Cannot analyze file:" + relativePath);
+							return content;
+						}
+					};
+					listener.accept(relativePath, contentReader);
+				} catch (IOException e) {
+					logger.info("Cannot analyze file:" + relativePath);
+				}
 			}
 		}
 	}
@@ -203,16 +204,24 @@ public class JEEContextAnalyzer {
 		@Override
 		public void accept(String path, ContextEntryReader contentReader)
 				throws IOException {
-			boolean modules = path.startsWith(dir + "/modules");
-			boolean styles = path.startsWith(dir + "/styles");
+			String stylesPrefix = dir + "/styles";
+			String modulesPrefix = dir + "/modules";
 			File pathFile = new File(path);
-			if ((styles || modules) && path.endsWith(".css")) {
-				css.add(pathFile.getParentFile().getName() + "/"
-						+ pathFile.getName());
-			} else if (modules && path.endsWith(".js")) {
-				String name = pathFile.getName();
-				name = name.substring(0, name.length() - 3);
-				js.add(name);
+			if (path.startsWith(modulesPrefix)) {
+				if (path.endsWith(".css")) {
+					String output = path.substring(dir.length() + 1);
+					css.add(output);
+				}
+				if (path.endsWith(".js")) {
+					String name = pathFile.getName();
+					name = name.substring(0, name.length() - 3);
+					js.add(name);
+				}
+			} else {
+				if (path.startsWith(stylesPrefix) && path.endsWith(".css")) {
+					String output = path.substring(dir.length() + 1);
+					css.add(output);
+				}
 			}
 		}
 	}

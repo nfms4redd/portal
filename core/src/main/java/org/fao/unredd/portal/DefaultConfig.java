@@ -101,7 +101,7 @@ public class DefaultConfig implements Config {
 	}
 
 	@Override
-	public Properties getProperties() {
+	public synchronized Properties getProperties() {
 		if (properties == null || !useCache) {
 			File file = getPortalPropertiesFile();
 			logger.debug("Reading portal properties file " + file);
