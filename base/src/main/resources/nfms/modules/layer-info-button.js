@@ -4,7 +4,8 @@ define([ "message-bus", "fancy-box" ], function(bus) {
 
 		var showInfoAction = function(portalLayer) {
 			if (portalLayer.hasOwnProperty("infoFile")) {
-				aLink = $("<a/>").attr("href", portalLayer.infoFile);
+				console.log(portalLayer);
+				aLink = $("<a/>").attr("href", portalLayer.infoLink);
 				aLink.addClass("layer_info_button");
 				aLink.fancybox({
 					"closeBtn" : "true",
