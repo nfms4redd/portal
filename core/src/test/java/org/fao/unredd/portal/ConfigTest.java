@@ -19,7 +19,7 @@ import org.junit.Test;
 public class ConfigTest {
 
 	@Test
-	public void testConfigurationProvidersDontOverride() throws Exception {
+	public void testConfigurationProvidersMerge() throws Exception {
 		Config config = new DefaultConfig("", "", false);
 		JSONObject conf1 = new JSONObject();
 		conf1.element("a", "a");
@@ -30,12 +30,14 @@ public class ConfigTest {
 
 		ModuleConfigurationProvider provider1 = mock(ModuleConfigurationProvider.class);
 		when(
-				provider1.getConfigurationMap(any(PortalRequestConfiguration.class),
+				provider1.getConfigurationMap(
+						any(PortalRequestConfiguration.class),
 						any(HttpServletRequest.class))).thenReturn(
 				buildMap("myModule", conf1));
 		ModuleConfigurationProvider provider2 = mock(ModuleConfigurationProvider.class);
 		when(
-				provider2.getConfigurationMap(any(PortalRequestConfiguration.class),
+				provider2.getConfigurationMap(
+						any(PortalRequestConfiguration.class),
 						any(HttpServletRequest.class))).thenReturn(
 				buildMap("myModule", conf2));
 		config.addModuleConfigurationProvider(provider1);
@@ -50,7 +52,7 @@ public class ConfigTest {
 		assertEquals("c", pluginConf.get("c"));
 		assertEquals("b", pluginConf.get("b"));
 		// No defined priority when two providers have the same element
-		assertTrue(pluginConf.get("a") == "a" || pluginConf.get("b") == "b");
+		assertTrue(pluginConf.get("a") == "a" || pluginConf.get("a") == "z");
 	}
 
 	private Map<String, JSONObject> buildMap(String pluginName, JSONObject conf) {
