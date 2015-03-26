@@ -32,11 +32,7 @@ public interface Config {
 	public static final String PROPERTY_MAP_CENTER = "map.centerLonLat";
 	public static final String PROPERTY_LANGUAGES = "languages";
 
-	File getPortalPropertiesFile();
-
 	File getDir();
-
-	boolean isMinifiedJs();
 
 	Properties getProperties();
 
@@ -55,8 +51,6 @@ public interface Config {
 	String[] getPropertyAsArray(String property);
 
 	String getDefaultLang();
-
-	String getIndicatorsFolder();
 
 	/**
 	 * Plugin configuration provided by the list of

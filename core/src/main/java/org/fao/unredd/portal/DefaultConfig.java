@@ -52,8 +52,7 @@ public class DefaultConfig implements Config {
 		this.useCache = useCache;
 	}
 
-	@Override
-	public File getPortalPropertiesFile() {
+	private File getPortalPropertiesFile() {
 		return new File(getDir() + "/portal.properties");
 	}
 
@@ -93,11 +92,6 @@ public class DefaultConfig implements Config {
 		}
 
 		return dir;
-	}
-
-	@Override
-	public boolean isMinifiedJs() {
-		return Boolean.parseBoolean(System.getProperty("MINIFIED_JS", "false"));
 	}
 
 	@Override
@@ -146,10 +140,6 @@ public class DefaultConfig implements Config {
 		return new File(getDir(), "messages");
 	}
 
-	public File getLayersFile() {
-		return new File(getDir() + "/layers.json");
-	}
-
 	@Override
 	public ResourceBundle getMessages(Locale locale)
 			throws ConfigurationException {
@@ -169,7 +159,6 @@ public class DefaultConfig implements Config {
 					urlClassLoader);
 			localeBundles.put(locale, bundle);
 		}
-
 		return bundle;
 	}
 
@@ -224,11 +213,6 @@ public class DefaultConfig implements Config {
 					+ getPortalPropertiesFile().getAbsolutePath()
 					+ ". Contents: " + props.keySet().size());
 		}
-	}
-
-	@Override
-	public String getIndicatorsFolder() {
-		return getDir() + "/indicators";
 	}
 
 	@Override
