@@ -1,11 +1,7 @@
 package org.fao.unredd.portal;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
-
 /**
  * Utility class to access the custom resources placed in PORTAL_CONFIG_DIR.
  * 
@@ -34,79 +28,28 @@ public class DefaultConfig implements Config {
 
 	private static final String PROPERTY_DEFAULT_LANG = "languages.default";
 
-	private static Logger logger = Logger.getLogger(DefaultConfig.class);
-
-	private File dir = null;
 	private Properties properties;
 
-	private String rootPath;
-	private String configInitParameter;
+	private ConfigFolder folder;
 	private boolean useCache;
 	private HashMap<Locale, ResourceBundle> localeBundles = new HashMap<Locale, ResourceBundle>();
+	private Map<ModuleConfigurationProvider, Map<String, JSONObject>> pluginConfigurations = new HashMap<ModuleConfigurationProvider, Map<String, JSONObject>>();
 	private ArrayList<ModuleConfigurationProvider> moduleConfigurationProviders = new ArrayList<ModuleConfigurationProvider>();
 
-	public DefaultConfig(String rootPath, String configInitParameter,
-			boolean useCache) {
-		this.rootPath = rootPath;
-		this.configInitParameter = configInitParameter;
+	public DefaultConfig(ConfigFolder folder, boolean useCache) {
+		this.folder = folder;
 		this.useCache = useCache;
-	}
-
-	private File getPortalPropertiesFile() {
-		return new File(getDir() + "/portal.properties");
 	}
 
 	@Override
 	public File getDir() {
-		if (dir == null) {
-			String defaultDir = rootPath + File.separator + "WEB-INF"
-					+ File.separator + "default_config";
-
-			// Get the portal config dir property from Java system properties
-			String portalConfigDir = System.getProperty("PORTAL_CONFIG_DIR");
-
-			// If not set in the system properties, get it from the Servlet
-			// context parameters (web.xml)
-			if (portalConfigDir == null)
-				portalConfigDir = configInitParameter;
-
-			// Otherwise:
-			if (portalConfigDir == null) {
-				// if not set already, use the default portal config dir
-				logger.warn("PORTAL_CONFIG_DIR property not found. Using default config.");
-				dir = new File(defaultDir);
-			} else {
-				// if set but not existing, use the default portal config dir
-				dir = new File(portalConfigDir);
-				if (!dir.exists()) {
-					logger.warn("PORTAL_CONFIG_DIR is set to "
-							+ dir.getAbsolutePath()
-							+ ", but it doesn't exist. Using default config.");
-					dir = new File(defaultDir);
-				}
-			}
-
-			logger.info("============================================================================");
-			logger.info("PORTAL_CONFIG_DIR: " + dir.getAbsolutePath());
-			logger.info("============================================================================");
-		}
-
-		return dir;
+		return folder.getFilePath();
 	}
 
 	@Override
 	public synchronized Properties getProperties() {
 		if (properties == null || !useCache) {
-			File file = getPortalPropertiesFile();
-			logger.debug("Reading portal properties file " + file);
-			properties = new Properties();
-			try {
-				properties.load(new FileInputStream(file));
-			} catch (IOException e) {
-				logger.error("Error reading portal properties file", e);
-				// try it again, at least we get more logs
-				properties = null;
-			}
+			properties = folder.getProperties();
 		}
 		return properties;
 	}
@@ -136,27 +79,12 @@ public class DefaultConfig implements Config {
 		return ret.toArray(new Map[ret.size()]);
 	}
 
-	private File getTranslationFolder() {
-		return new File(getDir(), "messages");
-	}
-
 	@Override
 	public ResourceBundle getMessages(Locale locale)
 			throws ConfigurationException {
 		ResourceBundle bundle = localeBundles.get(locale);
 		if (bundle == null || !useCache) {
-			URLClassLoader urlClassLoader;
-			try {
-				urlClassLoader = new URLClassLoader(
-						new URL[] { getTranslationFolder().toURI().toURL() });
-			} catch (MalformedURLException e) {
-				logger.error(
-						"Something is wrong with the configuration directory",
-						e);
-				throw new ConfigurationException(e);
-			}
-			bundle = ResourceBundle.getBundle("messages", locale,
-					urlClassLoader);
+			bundle = folder.getMessages(locale);
 			localeBundles.put(locale, bundle);
 		}
 		return bundle;
@@ -209,9 +137,9 @@ public class DefaultConfig implements Config {
 			return value;
 		} else {
 			throw new ConfigurationException("No \"" + propertyName
-					+ "\" property in configuration. File: "
-					+ getPortalPropertiesFile().getAbsolutePath()
-					+ ". Contents: " + props.keySet().size());
+					+ "\" property in configuration. Conf folder: "
+					+ folder.getFilePath().getAbsolutePath() + ". Contents: "
+					+ props.keySet().size());
 		}
 	}
 
@@ -220,9 +148,18 @@ public class DefaultConfig implements Config {
 			HttpServletRequest request) throws IOException {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 		for (ModuleConfigurationProvider provider : moduleConfigurationProviders) {
-			Map<String, JSONObject> moduleConfigurations = provider
-					.getConfigurationMap(new PortalConfigurationContextImpl(
-							locale), request);
+
+			// Get the configuration
+			Map<String, JSONObject> moduleConfigurations = pluginConfigurations
+					.get(provider);
+			if (moduleConfigurations == null || !useCache
+					|| !provider.canBeCached()) {
+				moduleConfigurations = provider.getConfigurationMap(
+						new PortalConfigurationContextImpl(locale), request);
+				pluginConfigurations.put(provider, moduleConfigurations);
+			}
+
+			// Merge the configuration in the result
 			Set<String> moduleNames = moduleConfigurations.keySet();
 			for (String moduleName : moduleNames) {
 				JSONObject moduleConfiguration = ret.get(moduleName);
@@ -263,6 +200,11 @@ public class DefaultConfig implements Config {
 		@Override
 		public File getConfigurationDirectory() {
 			return getDir();
+		}
+
+		@Override
+		public boolean usingCache() {
+			return useCache;
 		}
 
 	}

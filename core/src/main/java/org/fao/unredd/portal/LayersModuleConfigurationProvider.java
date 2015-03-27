@@ -29,4 +29,9 @@ public class LayersModuleConfigurationProvider implements
 		ret.put("layers", layersContent);
 		return ret;
 	}
+
+	@Override
+	public boolean canBeCached() {
+		return true;
+	}
 }

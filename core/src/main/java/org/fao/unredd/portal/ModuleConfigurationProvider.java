@@ -24,4 +24,13 @@ public interface ModuleConfigurationProvider {
 			PortalRequestConfiguration configurationContext,
 			HttpServletRequest request) throws IOException;
 
+	/**
+	 * True if the value returned by
+	 * {@link #getConfigurationMap(PortalRequestConfiguration, HttpServletRequest)}
+	 * can be cached so that the method is not called in every request.
+	 * 
+	 * @return
+	 */
+	boolean canBeCached();
+
 }

@@ -38,4 +38,9 @@ public class PluginJSONConfigurationProvider implements
 		return pluginDescriptor.getConfigurationMap();
 	}
 
+	@Override
+	public boolean canBeCached() {
+		return true;
+	}
+
 }

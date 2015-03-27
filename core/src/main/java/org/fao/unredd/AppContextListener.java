@@ -10,6 +10,7 @@ import javax.servlet.ServletContextListener;
 
 import org.fao.unredd.jwebclientAnalyzer.Context;
 import org.fao.unredd.jwebclientAnalyzer.JEEContextAnalyzer;
+import org.fao.unredd.portal.ConfigFolder;
 import org.fao.unredd.portal.DefaultConfig;
 import org.fao.unredd.portal.LayersModuleConfigurationProvider;
 import org.fao.unredd.portal.PluginJSONConfigurationProvider;
@@ -24,8 +25,8 @@ public class AppContextListener implements ServletContextListener {
 				.getInitParameter("PORTAL_CONFIG_DIR");
 		boolean configCache = Boolean.parseBoolean(System
 				.getenv("NFMS_CONFIG_CACHE"));
-		DefaultConfig config = new DefaultConfig(rootPath, configInitParameter,
-				configCache);
+		DefaultConfig config = new DefaultConfig(new ConfigFolder(rootPath,
+				configInitParameter), configCache);
 		config.addModuleConfigurationProvider(new PluginJSONConfigurationProvider());
 		config.addModuleConfigurationProvider(new LayersModuleConfigurationProvider());
 		servletContext.setAttribute("config", config);

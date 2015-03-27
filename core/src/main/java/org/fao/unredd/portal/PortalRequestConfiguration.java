@@ -14,4 +14,11 @@ public interface PortalRequestConfiguration {
 
 	File getConfigurationDirectory();
 
+	/**
+	 * Whether the portal is configured to cache the configuration or not
+	 * 
+	 * @return
+	 */
+	boolean usingCache();
+
 }
