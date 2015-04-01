@@ -74,4 +74,9 @@ public class GeoExplorerDBConfigurationProvider implements
 		return (JSONObject) JSONSerializer.toJSON(config);
 	}
 
+	@Override
+	public boolean canBeCached() {
+		return false;
+	}
+
 }
