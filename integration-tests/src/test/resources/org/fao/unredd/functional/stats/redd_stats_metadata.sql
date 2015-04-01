@@ -1,6 +1,5 @@
 CREATE TABLE redd_stats_metadata (
 	id serial NOT NULL,
-	name character varying,
 	title character varying,
 	subtitle character varying,
 	description character varying,

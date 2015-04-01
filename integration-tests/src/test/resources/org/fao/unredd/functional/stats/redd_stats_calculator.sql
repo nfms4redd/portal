@@ -8,7 +8,7 @@ DECLARE
 BEGIN
 
 FOR indicador IN EXECUTE format('SELECT * FROM %s.redd_stats_metadata WHERE id=%s', dbSchema, indicators_id) LOOP
-	RAISE NOTICE 'Procesando grafico %', indicador.name;
+	RAISE NOTICE 'Procesando grafico %', indicador.title;
 
 	EXECUTE format('DROP TABLE IF EXISTS %s',indicador.table_name_data);
 	

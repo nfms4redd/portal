@@ -72,11 +72,10 @@ public class DBLayer implements Layer {
 							// Cargar los datos para este layer de todos los
 							// OutputDescriptors (diferentes graficos)
 							int id = resultSet.getInt("id");
-							String name = resultSet.getString("name");
 							String division_field_id = resultSet
 									.getString("division_field_id");
 							String title = resultSet.getString("title");
-							Output output = new Output("" + id, name,
+							Output output = new Output("" + id,
 									division_field_id, title);
 							// Ver de agregar estos meta datos al Output.
 							output.setSubtitle(resultSet.getString("subtitle"));

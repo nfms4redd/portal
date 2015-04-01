@@ -71,8 +71,8 @@ public class Output extends OutputDescriptor {
 
 	}
 
-	public Output(String id, String name, String fieldId, String title) {
-		super(id, name, fieldId, title);
+	public Output(String id, String fieldId, String title) {
+		super(id, fieldId, title);
 	}
 
 	public ArrayList<ArrayList<String>> getData(String objectid) {
@@ -97,11 +97,6 @@ public class Output extends OutputDescriptor {
 			this.cargarDatos(objectid);
 		}
 		return this.serieNames;
-	}
-
-	private void setSeries(ArrayList<String> series) {
-		// TODO Auto-generated method stub
-		this.serieNames = series;
 	}
 
 	private void addSerie(String string) {

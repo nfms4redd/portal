@@ -28,18 +28,16 @@ public class OutputTest {
 
 	@Test
 	public void testSerialization() throws Exception {
-		Outputs indicators = new Outputs(new Output("a", "b", "c", "d"));
+		Outputs indicators = new Outputs(new Output("a", "c", "d"));
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode tree = mapper.readTree(indicators.toJSON());
 		assertEquals(1, tree.size());
 		JsonNode indicatorNode = tree.get(0);
 		assertEquals("a", indicatorNode.get("id").asText());
-		assertEquals("b", indicatorNode.get("name").asText());
 		assertEquals("c", indicatorNode.get("fieldId").asText());
 		assertEquals("d", indicatorNode.get("title").asText());
 		Iterator<String> nameIterator = indicatorNode.getFieldNames();
-		nameIterator.next();
 		nameIterator.next();
 		nameIterator.next();
 		nameIterator.next();

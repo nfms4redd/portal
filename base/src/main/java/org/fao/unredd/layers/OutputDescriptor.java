@@ -30,11 +30,6 @@ public class OutputDescriptor {
 	private String id;
 
 	/**
-	 * The name of the output
-	 */
-	private String name;
-
-	/**
 	 * The fieldId that identifies the objects in the layer for whom this output
 	 * contains information
 	 */
@@ -46,17 +41,15 @@ public class OutputDescriptor {
 	 */
 	private String title;
 
-	public OutputDescriptor(String id, String name, String fieldId, String title) {
+	public OutputDescriptor(String id, String fieldId, String title) {
 		super();
 		this.id = id;
-		this.name = name;
 		this.fieldId = fieldId;
 		this.title = title;
 	}
 
 	public String toJSON() {
 		return "{" + "\"id\":\"" + id + "\"," + //
-				"\"name\":\"" + name + "\"," + //
 				"\"title\":\"" + title + "\"," + //
 				"\"fieldId\":\"" + fieldId + "\"" + "}";
 	}
@@ -67,10 +60,6 @@ public class OutputDescriptor {
 
 	public String getFieldId() {
 		return fieldId;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String getTitle() {
