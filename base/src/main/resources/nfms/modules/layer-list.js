@@ -221,7 +221,11 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		}
 	});
 	bus.listen("layer-time-slider.selection", function(event, layerid, date) {
-		updateLabel(layerid, date);
-		bus.send("layer-timestamp-selected", [ layerid, date ]);
+		$.each(temporalLayers, function(index, temporalLayer) {
+			if (temporalLayer.id == layerid) {
+				updateLabel(layerid, temporalLayer["date-format"], date);
+				bus.send("layer-timestamp-selected", [ layerid, date ]);
+			}
+		});
 	});
 });
