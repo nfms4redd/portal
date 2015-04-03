@@ -25,7 +25,7 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 ---
-DROP FUNCTION redd_stats_calculo (text,text,text,text,text,text);
+DROP FUNCTION IF EXISTS redd_stats_calculo (text,text,text,text,text,text);
 ---
 CREATE OR REPLACE FUNCTION redd_stats_calculo(IN fajas_table_name text, IN divisions_table_name text, IN division_id_field_name text, IN classification_table_name text, IN class_field_name text, IN date_field_name text)
   RETURNS TABLE(division_id character varying, variable character varying, fecha date, valor real) AS
@@ -41,7 +41,7 @@ BEGIN
 
 		RAISE NOTICE 'procesando faja %', faja.srid;
 
-		faja_geom := ST_Transform(faja.geom, faja.srid);
+		faja_geom := ST_Transform(faja.geom, faja.srid::integer);
 
 		-- Transformamos las divisiones y la clasificacion al CRS de la faja
 		RAISE NOTICE 'proyectando al crs de la faja';
