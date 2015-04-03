@@ -2,6 +2,7 @@
 	display: inline-block;
 	width: 50%;
 	margin-left: 10px;
+	float: right;
 }
 
 .layer-time-slider-title {

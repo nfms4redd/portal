@@ -1,9 +1,18 @@
-define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "jquery-ui" ], function($, bus, layout, map, layerListSelector) {
-    var aLayers=[];
+define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "moment", "jquery-ui" ], function($, bus, layout, map, layerListSelector, moment) {
     var aTimestampsLayers={};
 	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders").addClass("layer_container_panel");
 	layerListSelector.registerLayerPanel("layer_slider_selector", "Temporal", divTimeSliders);
 
+	var formatDate = function(date, dateFormat) {
+		var format;
+		if (dateFormat) {
+			format = dateFormat;
+		} else {
+			format = "MMM-YYYY";
+		}
+		return moment(date).format(format);
+	}
+	
 	bus.listen("add-layer", function(event, layerInfo) {
 		var timestamps = [];
 		if (layerInfo.hasOwnProperty("timestamps")) {
@@ -42,28 +51,37 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "jquer
 				},
 				slide : function(event, ui) {
 					var date = timestamps[ui.value];
-					divTimeSliderLabel.text(date.getLocalizedDate());
+					divTimeSliderLabel.text(formatDate(date, layerInfo["date-format"]));
 				},
 				max : timestamps.length - 1,
 				value : timestamps.length - 1
 			});
 
-			divTimeSliderLabel.text(timestamps[timestamps.length - 1].getLocalizedDate());
+			divTimeSliderLabel.text(formatDate(timestamps[timestamps.length - 1], layerInfo["date-format"]));
 		
-		   aTimestampsLayers[layerInfo.id]=timestamps;
+   		    var timestampInfo = {
+				"timestamps" : timestamps
+			};
+			if (layerInfo["date-format"]) {
+				timestampInfo["date-format"] = layerInfo["date-format"];
+			}
+
+			aTimestampsLayers[layerInfo.id] = timestampInfo;
 		}
 
 	});
 
 	bus.listen("layer-timestamp-selected", function(e, layerId, d) {
-		var steps = aTimestampsLayers[layerId];
+		var timestampInfo = aTimestampsLayers[layerId];
 		var position_i = -1;
-		$.each(steps, function(position, date_value) {
+		$.each(timestampInfo["timestamps"], function(position, date_value) {
 			if (date_value.valueOf() == d.valueOf()) {
 				position_i = position;
+				$('#layer_time_slider_' + layerId).slider('value', position_i);
+
+				var strDate = formatDate(d, timestampInfo["date-format"]);
+				$('#layer_time_slider_label_' + layerId).text(strDate);
 			}
-			$('#layer_time_slider_' + layerId).slider('value', position_i);
-			$('#layer_time_slider_label_' + layerId).text(d.getLocalizedDate());
 		});
 	});
 });
