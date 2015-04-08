@@ -13,7 +13,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 	var table = $('<table style="width:100%;margin:auto"></table>');
 	divActiveLayers.append(table);
 
-	layerListSelector.registerLayerPanel("active_layers_selector", i18n.selected_layers, divActiveLayers);
+	layerListSelector.registerLayerPanel("layers_transparency_selector", i18n.selected_layers, divActiveLayers);
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		// set the visibility flag to true if the layer is active and if it is
