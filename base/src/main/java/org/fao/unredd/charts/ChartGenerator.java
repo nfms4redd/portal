@@ -16,7 +16,7 @@
 package org.fao.unredd.charts;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.StringWriter;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -35,7 +35,7 @@ public class ChartGenerator {
 		inputData = output;
 	}
 
-	public void generate(String objectId, Writer writer) throws IOException {
+	public String generate(String objectId) throws IOException {
 		VelocityEngine engine = new VelocityEngine();
 		engine.setProperty("resource.loader", "class");
 		engine.setProperty("class.resource.loader.class",
@@ -69,8 +69,11 @@ public class ChartGenerator {
 			template = "/org/fao/unredd/charts/highcharts-template.vtl";
 		}
 		Template t = engine.getTemplate(template);
+
+		StringWriter writer = new StringWriter();
 		t.merge(context, writer);
 		writer.flush();
+		return writer.getBuffer().toString();
 	}
 
 	private Object nullToEmptyString(Object value) {

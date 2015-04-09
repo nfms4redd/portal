@@ -35,7 +35,8 @@ public class IndicatorDataServlet extends HttpServlet {
 							(layer.getOutput(indicatorId)));
 					resp.setContentType(chartGenerator.getContentType());
 					resp.setCharacterEncoding("utf-8");
-					chartGenerator.generate(objectId, resp.getWriter());
+					String chartOutput = chartGenerator.generate(objectId);
+					resp.getWriter().write(chartOutput);
 					resp.flushBuffer();
 				} else {
 					throw new StatusServletException(400, "The layer "
