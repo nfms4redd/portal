@@ -29,15 +29,20 @@ public class ErrorFilter implements Filter {
 		try {
 			chain.doFilter(request, response);
 		} catch (Throwable e) {
-			logger.error("Error handling request", e);
 
 			String errorMsg = "Server error: ";
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
+			int status;
 			if (e instanceof StatusServletException) {
-				httpResponse
-						.setStatus(((StatusServletException) e).getStatus());
+				status = ((StatusServletException) e).getStatus();
 			} else {
-				httpResponse.setStatus(500);
+				status = 500;
+			}
+			httpResponse.setStatus(status);
+			if (status == 500) {
+				logger.error("Error handling request", e);
+			} else {
+				logger.error("Error handling request: " + e.getMessage());
 			}
 			while (e != null) {
 				errorMsg += e.getMessage() + ". ";
