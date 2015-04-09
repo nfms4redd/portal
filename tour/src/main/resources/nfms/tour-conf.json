@@ -1,0 +1,32 @@
+{
+    "default-conf": {
+        "tour": {
+            "steps" : [
+            	{
+                	"id": "layers_container",
+                	"text": "Esta es la lista con las capas. Pincha en un grupo y se desplegarán las capas contenidas en él",
+                	"gravity": "s",
+                	"next": {
+                		"show-layer-group" : ["base"]
+                	}
+            	},
+            	{
+                	"id": "time_slider_pane",
+                	"text": "Con esta barra se puede cambiar el instante temporal que se visualizará en el mapa",
+                	"gravity": "n"
+            	} 
+            	
+            ]
+        }
+    },
+    "requirejs": {
+        "paths": {
+            "tipsy": "../jslib/jquery.tipsy"
+        },
+        "shim": {
+            "tipsy": [
+                "jquery"
+            ]
+        }
+    }
+}
