@@ -1,38 +1,44 @@
 define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(module, toolbar, bus, $) {
 
-	var steps;
+	var steps = module.config().steps;
 
 	var showStep = function(stepIndex) {
 		var step = steps[stepIndex];
-		$("#" + step.id).tipsy("show");
-		if (!step.listener) {
-			$("#tour-next-" + stepIndex).click(function() {
-				$("#" + step.id).tipsy("hide");
-				console.log(step.next);
-				for (event in step.next) {
-					console.log(event);
-					bus.send(event, step.next[event]);
-				}
-				showStep(stepIndex + 1);
-			});
-			step.listener = true;
-		}
-	};
 
-	bus.listen("modules-loaded", function() {
-		steps = module.config().steps;
-		for (var i = 0; i < steps.length; i++) {
-			var step = steps[i];
-			var text = step.text + "<br/><br/><button id='tour-next-" + i + "'>Next</button>";
-			$("#" + step.id).attr("tour-info", text).tipsy({
-				gravity : step.gravity,
-				trigger : "manual",
-				title : "tour-info",
-				html : true
-			});
-			step["listener"] = false;
+		var text = step.text + "<br/><br/><button id='tour-next-" + stepIndex + "'>Seguir</button>";
+		var tipsyConf = {
+			trigger : "manual",
+			title : "tour-info",
+			html : true,
+			opacity : 1
+		};
+		if (step["gravity"]) {
+			tipsyConf["gravity"] = step.gravity;
+		} else {
+			tipsyConf["gravity"] = $.fn.tipsy.autoNS;
 		}
-	});
+		$("#" + step.id).attr("tour-info", text).tipsy(tipsyConf);
+
+		$("#" + step.id).tipsy("show");
+		$("#tour-next-" + stepIndex).click(function() {
+			$("#" + step.id).tipsy("hide");
+			for (event in step.next) {
+				var times = 1;
+				if (!isNaN(parseInt(event.charAt(0)))) {
+					times = parseInt(event.charAt(0));
+					event = event.substr(1);
+				}
+				for (var i = 0; i < times; i++) {
+					var parameters = step.next[event];
+					if (typeof parameters == "string" && parameters.charAt(0) == "X") {
+						parameters = eval(parameters.substr(1));
+					}
+					bus.send(event, parameters);
+				}
+			}
+			showStep(stepIndex + 1);
+		});
+	};
 
 	var btn = $("<a/>").attr("id", "tour-button").addClass("blue_button").html("Guía interactiva");
 	btn.appendTo(toolbar);
