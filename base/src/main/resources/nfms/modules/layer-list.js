@@ -102,6 +102,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				if (wmsLayerWithLegend) {
 					inlineLegend = $("<td/>");
 					inlineLegend.addClass("inline-legend-button");
+					inlineLegend.attr("id", "inline-legend-button-" + portalLayer.id);
 
 					if (portalLayer.active) {
 						inlineLegend.addClass("visible");
