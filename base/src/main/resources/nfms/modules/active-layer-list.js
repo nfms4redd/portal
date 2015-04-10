@@ -57,7 +57,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 				tr1.append($('<td colspan="' + colspan + '">' + layerInfo.label + '</td>'));
 
 				// Transparency slider
-				var transparencyDiv = $('<div style="margin-top:4px; margin-bottom:12px;" id="' + 'layerId' + '_transparency_slider"></div>');
+				var transparencyDiv = $('<div style="margin-top:4px; margin-bottom:12px;" id="' + layerId + '_transparency_slider"></div>');
 				var td = $('<td colspan="2"></td>');
 				td.append(transparencyDiv);
 				var tr2 = $('<tr id="' + layerId + '_tr2"></tr>');
@@ -67,7 +67,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 				table.append(tr1);
 				table.append(tr2);
 
-				$(transparencyDiv).slider({
+				transparencyDiv.slider({
 					min : 0,
 					max : 100,
 					value : 100,
@@ -87,6 +87,14 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 			} else {
 				delLayer(layerId);
 			}
+		}
+	});
+
+	bus.listen("transparency-slider-changed", function(event, layerId, opacity) {
+		var slider = $("#" + layerId + "_transparency_slider");
+		var opacityPercentage = 100 * opacity;
+		if (slider.slider("value") != opacityPercentage) {
+			slider.slider("value", opacityPercentage);
 		}
 	});
 
