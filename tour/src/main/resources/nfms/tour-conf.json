@@ -3,6 +3,50 @@
         "tour": {
             "steps" : [
             	{
+                	"id": "map",
+                	"text": "Este es el mapa donde se muestran los datos",
+                	"gravity": "s"
+            	},
+            	{
+                	"id": "map",
+                	"text": "Como todos los mapas dinámicos, tiene herramientas para navegar"
+            	},
+            	{
+                	"id": "map",
+                	"text": "Con el ratón podemos arrastrar para desplazar el mapa, y acercarnos y alejarnos con la rueda",
+                	"next": {
+                		"zoom-out" : []
+                	}
+            	},
+            	{
+                	"id": "zoom_out",
+                	"text": "Con este botón podemos alejarnos",
+                	"gravity" : "w",
+                	"next": {
+                		"zoom-in" : []
+                	}
+            	},
+            	{
+                	"id": "zoom_in",
+                	"text": "Con este acercarnos",
+                	"gravity" : "w",
+                	"next": {
+                		"9zoom-in" : []
+                	}
+            	},
+            	{
+                	"id": "map",
+                	"text": "Y si no sabemos donde nos encontramos...",
+                	"next": {
+                		"initial-zoom" : []
+                	}
+            	},
+            	{
+                	"id": "zoom_to_max_extent",
+                	"text": "... podemos pinchar en este botón y volver al encuadre inicial",
+                	"gravity" : "w",
+            	},
+            	{
                 	"id": "all_layers",
                 	"text": "Esta es la lista con las capas. Pincha en un grupo y se desplegarán las capas contenidas en él",
                 	"gravity": "s",
@@ -10,7 +54,7 @@
                 		"show-layer-group" : ["base"]
                 	}
             	},
- /*           	{
+            	{
                 	"id": "layer-row-blue-marble",
                 	"text": "Aquí están cada una de las capas que se visualizan en el mapa. Veamos qué opciones hay.",
                 	"gravity": "w"
@@ -87,7 +131,6 @@
                 		"transparency-slider-changed": [ "forestClassification", 0.25 ]
                 	}
             	},
-*/
             	{
                 	"id": "forestClassification_transparency_slider",
                 	"text": "En el mapa ahora la clasificación forestal es transparente.",
@@ -120,10 +163,39 @@
                 	"id": "time_slider_pane",
                 	"text": "La fecha del mapa se puede cambiar desde esta barra",
                 	"next": {
-                		"time-slider.selection" : "Xnew Date(Date.UTC(2000, 0, 1, 0, 0, 0, 0))"
+                		"time-slider.selection" : [ "Xnew Date(Date.UTC(2000, 0, 1, 0, 0, 0, 0))" ]
                 	}
+            	},
+            	{
+                	"id": "layer-row-forest_mask",
+                	"text": "Y eso debe cambiar la imagen del mapa y el año que hay entre paréntesis en la capa"
+            	},
+            	{
+                	"id": "layer_slider_selector",
+                	"text": "Pero además podemos cambiar la instancia temporal de las capas de forma individual mediante el panel \"Temporal\"",
+                	"gravity" : "n",
+                	"next": {
+	               		"show-layer-panel" : [ "layer_slider_selector" ]
+                	}
+            	},
+            	{
+                	"id": "layerTimeSliders",
+                	"text": "En este panel apareceran barras temporales para cada capa que tenga varias instancias temporales y esté visible...",
+                	"gravity" : "w"
+            	},
+            	{
+                	"id": "layerTimeSliders",
+                	"text": "...lo que nos permite modificar el instante temporal individualmente para una capa.",
+                	"gravity" : "w",
+                	"next": {
+	               		"layer-time-slider.selection" : [ "forest_mask",  "Xnew Date(Date.UTC(2010, 0, 1, 0, 0, 0, 0))"]
+                	}
+            	},
+            	{
+                	"id": "layerTimeSliders",
+                	"text": "Tras lo cual, nos queda el mapa en una fecha y sólo esta capa en otra",
+                	"gravity" : "w"
             	}
-            	
             ]
         }
     },

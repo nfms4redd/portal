@@ -30,8 +30,11 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 				}
 				for (var i = 0; i < times; i++) {
 					var parameters = step.next[event];
-					if (typeof parameters == "string" && parameters.charAt(0) == "X") {
-						parameters = eval(parameters.substr(1));
+					for (paramIndex in parameters) {
+						var parameter = parameters[paramIndex];
+						if (typeof parameter == "string" && parameter.charAt(0) == "X") {
+							parameters[paramIndex] = eval(parameter.substr(1));
+						}
 					}
 					bus.send(event, parameters);
 				}
