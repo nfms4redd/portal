@@ -72,7 +72,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 				var tr = $("<tr/>").appendTo(tblData);
 
 				// Zoom to object button
-				var imgZoomToArea = $("<img/>").attr("src", "modules/images/zoom-to-object.png");
+				var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + index).attr("src", "modules/images/zoom-to-object.png");
 				imgZoomToArea.css("cursor", "pointer");
 				$("<td/>").addClass("command").append(imgZoomToArea).appendTo(tr).click(function() {
 					bus.send("zoom-to", feature.geometry.getBounds().scale(1.2));

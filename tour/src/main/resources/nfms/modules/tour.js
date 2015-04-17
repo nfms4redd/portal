@@ -2,6 +2,8 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 
 	var steps = module.config().steps;
 
+	var infoFeatures;
+
 	var showStep = function(stepIndex) {
 		var step = steps[stepIndex];
 
@@ -39,7 +41,15 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 					bus.send(event, parameters);
 				}
 			}
-			showStep(stepIndex + 1);
+			
+			if (step.wait) {
+				bus.listen(step.wait, function() {
+					showStep(stepIndex + 1);
+				});
+			} else {
+				showStep(stepIndex + 1);
+			}
+			
 		});
 	};
 
@@ -48,6 +58,19 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 	btn.click(function() {
 		showStep(0);
 		return false;
+	});
+
+	/*
+	 * helpers to highlight and zoom info features
+	 */
+	bus.listen("info-features", function(event, features, x, y) {
+		infoFeatures = features;
+	});
+	bus.listen("highlight-info-feature", function(event, index) {
+		bus.send("highlight-feature", infoFeatures[index]);
+	});
+	bus.listen("zoom-info-feature", function(event, index) {
+		bus.send("zoom-to", infoFeatures[index].geometry.getBounds().scale(1.2));
 	});
 
 });

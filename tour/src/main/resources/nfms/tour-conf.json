@@ -7,6 +7,7 @@
                 	"text": "Este es el mapa donde se muestran los datos",
                 	"gravity": "s"
             	},
+/*
             	{
                 	"id": "map",
                 	"text": "Como todos los mapas dinámicos, tiene herramientas para navegar"
@@ -195,6 +196,50 @@
                 	"id": "layerTimeSliders",
                 	"text": "Tras lo cual, nos queda el mapa en una fecha y sólo esta capa en otra",
                 	"gravity" : "w"
+            	},
+            	*/
+            	{
+                	"id": "map",
+                	"text": "Pero en el portal no sólo es posible visualizar los datos...",
+                	"gravity" : "s"
+            	},
+            	{
+                	"id": "map",
+                	"text": "... sino también obtener información pinchando en ellos",
+                	"gravity" : "s"
+            	},
+            	{
+                	"id": "map",
+                	"text": "Basta con hacer clic en un punto del mapa",
+                	"gravity" : "s",
+                	"next": {
+	               		"map-click" : [ -3, 18 ]
+                	},
+					"wait" : "info-features"
+            	},
+            	{
+                	"id": "result_area",
+                	"text": "y nos aparecerán en el diálogo de información los datos de los objetos en los que hemos pinchado.",
+                	"gravity" : "s",
+                	"next" : {
+                		"highlight-info-feature" : [ 0 ]
+                	}
+            	},
+            	{
+                	"id": "result_area",
+                	"text": "Pasando el ratón por las tablas podemos ver el objeto resaltado en el mapa.",
+                	"gravity" : "s",
+                	"next" : {
+                		"zoom-info-feature" : [ 0 ]
+                	}
+            	},
+            	{
+                	"id": "info-magnifier-0",
+                	"text": "Y pinchando en la lupa podemos hacer zoom al objeto",
+                	"gravity" : "s",
+                	"next" : {
+                		"clear-highlighted-features" : []
+                	}
             	}
             ]
         }
