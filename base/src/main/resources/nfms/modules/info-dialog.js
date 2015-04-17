@@ -17,10 +17,15 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 		epsg4326 = new OpenLayers.Projection("EPSG:4326");
 		epsg900913 = new OpenLayers.Projection("EPSG:900913");
 		for (i = 0; i < features.length; i++) {
-			if (customization["highlight-bounds"] == "true") {
-				features[i].geometry = features[i].geometry.getBounds().toGeometry();
+			/*
+			 * Raster layers in GeoServer return no Geometry
+			 */
+			if (features[i].geometry) {
+				if (customization["highlight-bounds"] == "true") {
+					features[i].geometry = features[i].geometry.getBounds().toGeometry();
+				}
+				features[i].geometry.transform(epsg4326, epsg900913);
 			}
-			features[i].geometry.transform(epsg4326, epsg900913);
 		}
 
 		infoPopup = $("#info_popup");
@@ -74,9 +79,13 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 				// Zoom to object button
 				var imgZoomToArea = $("<img/>").attr("src", "modules/images/zoom-to-object.png");
 				imgZoomToArea.css("cursor", "pointer");
-				$("<td/>").addClass("command").append(imgZoomToArea).appendTo(tr).click(function() {
-					bus.send("zoom-to", feature.geometry.getBounds().scale(1.2));
-				});
+				var tdMagnifier = $("<td/>").addClass("command").appendTo(tr);
+				if (feature.geometry) {
+					tdMagnifier.append(imgZoomToArea);
+					tdMagnifier.click(function() {
+						bus.send("zoom-to", feature.geometry.getBounds().scale(1.2));
+					});
+				}
 
 				// Indicators button
 				var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
