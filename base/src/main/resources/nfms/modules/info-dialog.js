@@ -2,6 +2,8 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 
 	var wmsNamePortalLayerName = {};
 
+	var infoFeatures;
+	
 	bus.listen("add-layer", function(event, layerInfo) {
 		var portalLayerName = layerInfo["label"];
 		$.each(layerInfo.wmsLayers, function(i, wmsLayer) {
@@ -12,6 +14,8 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 
 	bus.listen("info-features", function(event, features, x, y) {
 		var i, infoPopup, epsg4326, epsg900913;
+
+		infoFeatures = features;
 
 		// re-project to Google projection
 		epsg4326 = new OpenLayers.Projection("EPSG:4326");
@@ -31,7 +35,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 		}
 		infoPopup.dialog({
 			title : i18n["info_dialog_title"],
-			closeOnEscape : true,
+			closeOnEscape : false,
 			width : 700,
 			height : 200,
 			resizable : true,
@@ -69,6 +73,8 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 				$("<th/>").addClass("data").html(attribute).appendTo(tr);
 			}
 			$.each(layerFeatures, function(index, feature) {
+				feature["layerId"] = layerId;
+				
 				var tr = $("<tr/>").appendTo(tblData);
 
 				// Zoom to object button
@@ -80,35 +86,12 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 
 				// Indicators button
 				var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
-				var tdIndicators = $("<td/>").addClass("command").append(imgWait).appendTo(tr);
+				var tdIndicators = $("<td/>").attr("id", "info-indicator-" + index).addClass("command").append(imgWait).appendTo(tr);
 				bus.send("ajax", {
 					url : 'indicators?layerId=' + layerId,
 					success : function(indicators, textStatus, jqXHR) {
-						// TODO if there is more than one indicator, offer the
-						// choice to the user.
 						if (indicators.length > 0) {
-							$(indicators).each(function(i, val) {
-								// Muestra un icono para cada grafico con el
-								// texto alternativo con el titulo del grafico.
-								var aIndicators = $("<a/>").addClass("fancybox.iframe").appendTo(tdIndicators);
-								aIndicators.css("padding", "1px");
-								$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
-								aIndicators.attr("href", "indicator?objectId=" + feature.attributes[val.fieldId] + "&layerId=" + layerId + "&indicatorId=" + val.id);
-								aIndicators.attr("alt", val.title);
-								aIndicators.attr("title", val.title);
-								aIndicators.fancybox({
-									maxWidth : 840,
-									maxHeight : 600,
-									fitToView : false,
-									width : 840,
-									height : 590,
-									autoSize : false,
-									closeClick : false,
-									openEffect : 'none',
-									closeEffect : 'fade'
-								});
-								// TODO Agregar separador entre iconos.
-							});// END each
+							bus.send("feature-indicators-received", [ index, indicators ]);
 						}
 					},
 					errorMsg : "Could not obtain the indicator",
@@ -167,6 +150,42 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 		}
 	});
 
+	bus.listen("feature-indicators-received", function(event, infoFeatureIndex, indicators) {
+		infoFeatures[infoFeatureIndex]["indicators"] = indicators;
+		// TODO if there is more than one indicator, offer the
+		// choice to the user.
+		$(indicators).each(function(indicatorIndex, indicator) {
+			// Muestra un icono para cada grafico con el
+			// texto alternativo con el titulo del grafico.
+			var aIndicators = $("<a/>").attr("id", "info-indicator-" + infoFeatureIndex + "-" + indicatorIndex).addClass("fancybox.iframe").appendTo($("#info-indicator-" + infoFeatureIndex));
+			aIndicators.css("padding", "1px");
+			$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
+			aIndicators.attr("alt", indicator.title);
+			aIndicators.attr("title", indicator.title);
+			aIndicators.click(function() {
+				bus.send("show-feature-indicator", [ infoFeatureIndex, indicatorIndex]);
+			});
+			// TODO Agregar separador entre iconos.
+		});// END each
+	})
+
+	bus.listen("show-feature-indicator", function(event, featureIndex, indicatorIndex){
+		var feature = infoFeatures[featureIndex];
+		var indicator = feature["indicators"][indicatorIndex];
+		var layerId = feature["layerId"];
+		bus.send("show-info", [ indicator.title, "indicator?objectId=" + feature.attributes[indicator.fieldId] + "&layerId=" + layerId + "&indicatorId=" + indicator.id, {
+			maxWidth : 800,
+			maxHeight : 520,
+			fitToView : false,
+			width : 800,
+			height : 520,
+			autoSize : false,
+			closeClick : false,
+			openEffect : 'none',
+			closeEffect : 'fade'
+		} ]);
+	});
+	
 	bus.listen("highlight-feature", function(event, feature) {
 		var highlightLayer = map.getLayer("Highlighted Features");
 		highlightLayer.removeAllFeatures();
