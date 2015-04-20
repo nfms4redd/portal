@@ -197,7 +197,6 @@
                 	"text": "Tras lo cual, nos queda el mapa en una fecha y sólo esta capa en otra",
                 	"gravity" : "w"
             	},
-            	*/
             	{
                 	"id": "map",
                 	"text": "Pero en el portal no sólo es posible visualizar los datos...",
@@ -208,7 +207,7 @@
                 	"text": "... sino también obtener información pinchando en ellos",
                 	"gravity" : "s"
             	},
-            	{
+*/            	{
                 	"id": "map",
                 	"text": "Basta con hacer clic en un punto del mapa",
                 	"gravity" : "s",
@@ -217,7 +216,7 @@
                 	},
 					"wait" : "info-features"
             	},
-            	{
+/*            	{
                 	"id": "result_area",
                 	"text": "y nos aparecerán en el diálogo de información los datos de los objetos en los que hemos pinchado.",
                 	"gravity" : "s",
@@ -240,6 +239,33 @@
                 	"next" : {
                 		"clear-highlighted-features" : []
                 	}
+            	},
+            	{
+                	"id": "info-indicator-0",
+                	"text": "Cuando este icono aparece, significa que se pueden mostrar algunos informes estadísticos acerca de este objeto",
+                	"gravity" : "s"
+            	},
+            	*/
+            	{
+                	"id": "info-indicator-0",
+                	"text": "Sólo tenemos que pinchar en él",
+                	"gravity" : "s",
+                	"next" : {
+                		"show-feature-indicator" : [ 0, 0 ]
+                	}
+            	},
+            	{
+                	"id": "map",
+                	"text": "El panel se puede cerrar pulsando escape o el aspa que hay en la ventana emergente.",
+                	"gravity" : "s",
+                	"next": {
+                		"hide-info" : ""
+                	}
+            	},
+            	{
+                	"id": "map",
+                	"text": "Esto es todo.",
+                	"gravity" : "s"
             	}
             ]
         }
