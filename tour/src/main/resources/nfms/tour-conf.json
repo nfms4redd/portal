@@ -7,7 +7,6 @@
                 	"text": "Este es el mapa donde se muestran los datos",
                 	"gravity": "s"
             	},
-/*
             	{
                 	"id": "map",
                 	"text": "Como todos los mapas dinámicos, tiene herramientas para navegar"
@@ -207,7 +206,7 @@
                 	"text": "... sino también obtener información pinchando en ellos",
                 	"gravity" : "s"
             	},
-*/            	{
+            	{
                 	"id": "map",
                 	"text": "Basta con hacer clic en un punto del mapa",
                 	"gravity" : "s",
@@ -216,7 +215,7 @@
                 	},
 					"wait" : "info-features"
             	},
-/*            	{
+            	{
                 	"id": "result_area",
                 	"text": "y nos aparecerán en el diálogo de información los datos de los objetos en los que hemos pinchado.",
                 	"gravity" : "s",
@@ -245,7 +244,6 @@
                 	"text": "Cuando este icono aparece, significa que se pueden mostrar algunos informes estadísticos acerca de este objeto",
                 	"gravity" : "s"
             	},
-            	*/
             	{
                 	"id": "info-indicator-0",
                 	"text": "Sólo tenemos que pinchar en él",
