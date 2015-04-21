@@ -45,6 +45,11 @@
 			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>tour</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>ec.gob.dnf.portal</groupId>
 			<artifactId>herramientas</artifactId>
 			<version>0.0.1-SNAPSHOT</version>

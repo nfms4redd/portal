@@ -163,6 +163,15 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 			});
 		}
 	});
+	
+	/*
+	 * To simulate clicks. Used at least in the tour
+	 */
+	bus.listen("map-click", function(event, lat, lon){
+		var mapPoint = new OpenLayers.LonLat(lon, lat);
+		mapPoint.transform(new OpenLayers.Projection("EPSG:4326"), map.projection);
+		map.events.triggerEvent("click", {xy: map.getPixelFromLonLat(mapPoint)});
+	});
 
 	return map;
 });

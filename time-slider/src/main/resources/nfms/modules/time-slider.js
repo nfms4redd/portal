@@ -19,7 +19,7 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 	});
 
 	bus.listen("layers-loaded", function() {
-		var timestamps, div, divTimeSliderLabel, lastTimestampIndex;
+		var timestamps, div, lastTimestampIndex;
 
 		timestamps = $.map(timestampSet, function(value, key) {
 			return key;
@@ -28,12 +28,12 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 
 		if (timestamps.length > 0) {
 			div = divTimeSlideContainer;
+			
+			var divTimeSliderLabel = $('<span id="time_slider_label"/>');
+			div.append(divTimeSliderLabel);
 
 			var divTimeSlider = $('<div id="time_slider"/>');
 			div.append(divTimeSlider);
-
-			divTimeSliderLabel = $('<div id="time_slider_label"/>');
-			div.append(divTimeSliderLabel);
 
 			divTimeSlider.slider({
 				change : function(event, ui) {
@@ -55,6 +55,22 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 			// Send time-slider.selection message to show the date on the layer selection pane
 			// right after page load
 			divTimeSlider.slider("value", lastTimestampIndex);
+
+			bus.listen("time-slider.selection", function(event, date){
+				var position = divTimeSlider.slider("value");
+				var d = new Date();
+				d.setISO8601(timestamps[position]);
+				if (d.getTime() != date.getTime()) {
+					for (var i = 0; i < timestamps.length; i++) {
+						d.setISO8601(timestamps[i]);
+						if (d.getTime() == date.getTime()) {
+							divTimeSlider.slider("value", i);
+							divTimeSliderLabel.text(date.getLocalizedDate());
+							break;
+						}
+					}
+				}
+			});
 		}
 	});
 });

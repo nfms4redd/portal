@@ -29,12 +29,21 @@ define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui"
 			div.hide();
 		}
 
+		bus.listen("show-layer-panel", function(event, paneId) {
+			if (paneId == id) {
+				btn.prop("checked", true);
+				btn.button("refresh");
+				btn.change();
+			}
+		});
+
 		// Workaround for http://bugs.jqueryui.com/ticket/7665
 		lbl.click(function() {
 			btn.checked = !btn.checked;
 			btn.button("refresh");
 			btn.change();
 			bus.send("show-layer-panel", [ id ]);
+
 			return false;
 		});
 

@@ -6,7 +6,10 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 
 	var divLayers = null;
 
-	bus.listen("register-layer-action", function (event, action) {
+	var groupIdAccordionIndex = {};
+	var numTopLevelGroups = 0;
+
+	bus.listen("register-layer-action", function(event, action) {
 		layerActions.push(action);
 	});
 
@@ -64,6 +67,8 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 			divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
 			divContent.append(tblLayerGroup);
 			divLayers.append(divContent).accordion("refresh");
+			groupIdAccordionIndex[groupInfo.id] = numTopLevelGroups;
+			numTopLevelGroups++;
 		}
 	});
 
@@ -97,6 +102,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				if (wmsLayerWithLegend) {
 					inlineLegend = $("<td/>");
 					inlineLegend.addClass("inline-legend-button");
+					inlineLegend.attr("id", "inline-legend-button-" + portalLayer.id);
 
 					if (portalLayer.active) {
 						inlineLegend.addClass("visible");
@@ -192,7 +198,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		var dateStr = moment(date).format(format);
 		$("<span/>").html(" (" + dateStr + ")").appendTo(tdLayerName);
 	};
-	
+
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
 			var layer = temporalLayers[i];
@@ -216,7 +222,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 			}
 
 			updateLabel(layer.id, layer["date-format"], closestPrevious);
-			
+
 			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious ]);
 		}
 	});
@@ -227,5 +233,13 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				bus.send("layer-timestamp-selected", [ layerid, date ]);
 			}
 		});
+	});
+
+	bus.listen("show-layer-group", function(event, groupId) {
+		if (groupIdAccordionIndex.hasOwnProperty(groupId)) {
+			divLayers.accordion({
+				"active" : groupIdAccordionIndex[groupId]
+			});
+		}
 	});
 });
