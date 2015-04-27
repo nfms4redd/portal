@@ -55,7 +55,8 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 		// standard one
 
 		var layerNameFeatures = {};
-		$.each(features, function(layerId, feature) {
+		$.each(features, function(index, feature) {
+			feature["index"] = index;
 			qualifiedLayerId = feature.gml.featureNSPrefix + ":" + feature.gml.featureType;
 
 			if (!layerNameFeatures.hasOwnProperty(qualifiedLayerId)) {
@@ -83,7 +84,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 				var tr = $("<tr/>").appendTo(tblData);
 
 				// Zoom to object button
-				var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + index).attr("src", "modules/images/zoom-to-object.png");
+				var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + feature["index"]).attr("src", "modules/images/zoom-to-object.png");
 				imgZoomToArea.css("cursor", "pointer");
 				var tdMagnifier = $("<td/>").addClass("command").appendTo(tr);
 				if (feature.geometry) {
@@ -95,12 +96,12 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 
 				// Indicators button
 				var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
-				var tdIndicators = $("<td/>").attr("id", "info-indicator-" + index).addClass("command").append(imgWait).appendTo(tr);
+				var tdIndicators = $("<td/>").attr("id", "info-indicator-" + feature["index"]).addClass("command").append(imgWait).appendTo(tr);
 				bus.send("ajax", {
 					url : 'indicators?layerId=' + layerId,
 					success : function(indicators, textStatus, jqXHR) {
 						if (indicators.length > 0) {
-							bus.send("feature-indicators-received", [ index, indicators ]);
+							bus.send("feature-indicators-received", [ feature["index"], indicators ]);
 						}
 					},
 					errorMsg : "Could not obtain the indicator",
