@@ -1,4 +1,5 @@
 {
+	"default-server" : "http://demo1.geo-solutions.it",
 	"wmsLayers" : [
 		{
 			"id" : "cycle-osm",
@@ -28,7 +29,7 @@
 		}, {
 			"id" : "forestClassification",
 			"label" : "${facet_forest_classification}",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/gwc/service/wms",
+			"baseUrl" : "/diss_geoserver/gwc/service/wms",
 			"wmsName" : "unredd:drc_forest_classification",
 			"imageFormat" : "image/png8",
 			"visible" : true,
@@ -38,7 +39,7 @@
 		}, {
 			"id" : "forest_mask",
 			"label" : "${forest_mask}",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"baseUrl" : "/diss_geoserver/wms",
 			"wmsName" : "unredd:drc_forest_mask_mosaic",
 			"imageFormat" : "image/png8",
 			"visible" : true,
@@ -49,7 +50,7 @@
 		}, {
 			"id" : "forestClassification2",
 			"label" : "grouped facet forest classification",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/unredd/wms",
+			"baseUrl" : "/diss_geoserver/unredd/wms",
 			"wmsName" : "drc_forest_classification",
 			"visible" : true,
 			"legend" : "forest_classification.png",
@@ -58,7 +59,7 @@
 		}, {
 			"id" : "forest_mask2",
 			"label" : "Grouped forest mask",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/unredd/wms",
+			"baseUrl" : "/diss_geoserver/unredd/wms",
 			"wmsName" : "drc_forest_mask_mosaic",
 			"visible" : true,
 			"legend" : "forest_mask.png",
@@ -66,7 +67,7 @@
 			"sourceLabel" : "FACET2"
 		}, {
 			"id" : "countryBoundaries",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"baseUrl" : "/diss_geoserver/wms",
 			"wmsName" : "unredd:drc_boundary",
 			"imageFormat" : "image/png8",
 			"visible" : true,
@@ -75,7 +76,7 @@
 			"queryable" : true
 		}, {
 			"id" : "provinces",
-			"baseUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms",
+			"baseUrl" : "/diss_geoserver/wms",
 			"wmsName" : "unredd:drc_provinces",
 			"imageFormat" : "image/png8",
 			"visible" : true,
@@ -140,14 +141,14 @@
 			"active" : true,
 			"label" : "${country_boundaries}",
 			"layers" : [ "countryBoundaries" ],
-			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
+			"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
 		}, {
 			"id" : "provinces",
 			"active" : true,
 			"infoFile" : "provinces_def.html",
 			"label" : "${provinces}",
 			"layers" : [ "provinces" ],
-			"inlineLegendUrl" : "http://demo1.geo-solutions.it/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
+			"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
 		}, {
 			"id" : "forest",
 			"active" : false,

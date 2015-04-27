@@ -6,7 +6,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		});
 	};
 
-	var processGroup = function(layerRoot, parentId, group) {
+	var processGroup = function(defaultServer, layerRoot, parentId, group) {
 		var items, item, portalLayers, portalLayer, wmsLayerIds,
 			wmsLayers, wmsLayer, i, j, layerInfoArray;
 
@@ -29,7 +29,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		for (i = 0; i < items.length; i++) {
 			item = items[i];
 			if (typeof item === 'object') {
-				processGroup(layerRoot, group.id, item);
+				processGroup(defaultServer, layerRoot, group.id, item);
 			} else {
 				portalLayers = findById(layerRoot.portalLayers, item);
 				if (portalLayers.length !== 1) {
@@ -50,6 +50,12 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				if (portalLayer.hasOwnProperty("timeInstances")) {
 					portalLayer.timestamps = portalLayer.timeInstances.split(",")
 				}
+                //Complete the URL with defaultServer
+				if (portalLayer["inlineLegendUrl"]) {
+					if (portalLayer["inlineLegendUrl"].charAt(0) == "/") {
+						portalLayer["inlineLegendUrl"] = defaultServer + portalLayer["inlineLegendUrl"];
+					}
+				}
 
 				wmsLayerIds = (portalLayer.isPlaceholder)?null:portalLayer.layers;
 
@@ -64,6 +70,14 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 					}
 					wmsLayer = wmsLayers[0];
                     wmsLayer.zIndex = layerRoot.wmsLayers.indexOf(wmsLayer);
+
+                    //Complete the URL with defaultServer
+					if (wmsLayer["baseUrl"]) {
+						if (wmsLayer["baseUrl"].charAt(0) == "/") {
+							wmsLayer["baseUrl"] = defaultServer + wmsLayer["baseUrl"];
+						}
+					}
+					
 					layerInfoArray.push(wmsLayer);
 				}
 
@@ -76,16 +90,23 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	};
 
-
 	bus.listen("modules-loaded", function() {
 		var i;
 		var layerRoot = module.config();
+		var defaultServer = null;
+		if (layerRoot["default-server"]) {
+			defaultServer = layerRoot["default-server"];
+			defaultServer = $.trim(defaultServer);
+			if (defaultServer.substring(0, 7) != "http://") {
+				defaultServer = "http://" + defaultServer;
+			}
+		}
 		var groups = layerRoot.groups;
 
 		bus.send("before-adding-layers");
 		
 		for (i = 0; i < groups.length; i++) {
-			processGroup(layerRoot, null, groups[i]);
+			processGroup(defaultServer, layerRoot, null, groups[i]);
 		}
 
 		bus.send("layers-loaded");
