@@ -142,6 +142,8 @@
 			"label" : "${country_boundaries}",
 			"layers" : [ "countryBoundaries" ],
 			"inlineLegendUrl" : "auto"
+			"timeInstances" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z",
+			"timeStyles" : "boundary2000,boundary2005,boundary2010",
 		}, {
 			"id" : "provinces",
 			"active" : true,

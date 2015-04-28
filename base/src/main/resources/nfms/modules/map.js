@@ -123,7 +123,7 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 		defaultExclusiveControl = control;
 	});
 
-	bus.listen("layer-timestamp-selected", function(event, layerId, timestamp) {
+	bus.listen("layer-timestamp-selected", function(event, layerId, timestamp, style) {
 		var mapLayers = mapLayersByLayerId[layerId];
 		if (mapLayers) {
 			$.each(mapLayers, function(index, mapLayerId) {
@@ -134,9 +134,13 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 				 * layer is null
 				 */
 				if (layer !== null && timestamp !== null) {
-					layer.mergeNewParams({
+					var newParams = {
 						'time' : timestamp.toISO8601String()
-					});
+					};
+					if (style != null) {
+						newParams["styles"] = style;
+					}
+					layer.mergeNewParams(newParams);
 				}
 			});
 		}
