@@ -141,6 +141,8 @@
 			"active" : true,
 			"label" : "${country_boundaries}",
 			"layers" : [ "countryBoundaries" ],
+			"timeInstances" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z",
+			"timeStyles" : "boundary2000,boundary2005,boundary2010",
 			"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
 		}, {
 			"id" : "provinces",

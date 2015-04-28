@@ -202,28 +202,48 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
 			var layer = temporalLayers[i];
-			var timestamps = layer.timestamps;
-			var closestPrevious = null;
-			timestamps.sort();
-			for (var j = 0; j < timestamps.length; j++) {
-				var timestampString = timestamps[j];
+			var layerTimestamps = layer.timestamps;
+			var layerTimestampStyles = null;
+			if (layer.hasOwnProperty("timeStyles")) {
+				layerTimestampStyles = layer.timeStyles.split(",");
+			}
+			var timestampInfos = [];
+			for (var j = 0; j < layerTimestamps.length; j++) {
 				var timestamp = new Date();
-				timestamp.setISO8601(timestampString);
-				if (timestamp <= date) {
-					closestPrevious = timestamp;
+				timestamp.setISO8601(layerTimestamps[j]);
+				var style = null;
+				if (layerTimestampStyles != null) {
+					style = layerTimestampStyles[j];
+				}
+				var timestampInfo = {
+					"timestamp" : timestamp,
+					"style" : style
+				};
+				timestampInfos.push(timestampInfo);
+			}
+
+			timestampInfos.sort(function(infoA, infoB) {
+				return infoA.timestamp.getTime() - infoB.timestamp.getTime();
+			});
+
+			var closestPrevious = null;
+
+			for (var j = 0; j < timestampInfos.length; j++) {
+				var timestampInfo = timestampInfos[j];
+				if (timestampInfo.timestamp.getTime() <= date.getTime()) {
+					closestPrevious = timestampInfo;
 				} else {
 					break;
 				}
 			}
 
 			if (closestPrevious == null) {
-				closestPrevious = new Date();
-				closestPrevious.setISO8601(timestamps[0]);
+				closestPrevious = timestampInfos[0];
 			}
 
-			updateLabel(layer.id, layer["date-format"], closestPrevious);
+			updateLabel(layer.id, layer["date-format"], closestPrevious.timestamp);
 
-			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious ]);
+			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious.timestamp, closestPrevious.style ]);
 		}
 	});
 	bus.listen("layer-time-slider.selection", function(event, layerid, date) {
