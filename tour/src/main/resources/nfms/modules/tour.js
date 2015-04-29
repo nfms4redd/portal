@@ -7,7 +7,7 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 	var showStep = function(stepIndex) {
 		var step = steps[stepIndex];
 
-		var text = step.text + "<br/><br/><button id='tour-next-" + stepIndex + "'>Seguir</button>";
+		var text = step.text + "<br/><br/><button id='tour-next-" + stepIndex + "' style='margin-right:10px'>Seguir</button><button id='tour-close-" + stepIndex + "' style='margin-left:10px'>Cerrar</button>";
 		var tipsyConf = {
 			trigger : "manual",
 			title : "tour-info",
@@ -50,6 +50,9 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 				showStep(stepIndex + 1);
 			}
 			
+		});
+		$("#tour-close-" + stepIndex).click(function() {
+			$("#" + step.id).tipsy("hide");
 		});
 	};
 

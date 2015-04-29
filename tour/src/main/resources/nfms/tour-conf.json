@@ -5,7 +5,10 @@
             	{
                 	"id": "map",
                 	"text": "Este es el mapa donde se muestran los datos",
-                	"gravity": "s"
+                	"gravity": "s",
+                	"next": {
+                		"initial-zoom" : []
+                	}
             	},
             	{
                 	"id": "map",
