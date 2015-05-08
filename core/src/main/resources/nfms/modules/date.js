@@ -29,7 +29,6 @@ define(["i18n"], function(i18n) {
 				offset *= ((d[15] === '-') ? 1 : -1);
 			}
 
-			offset -= date.getTimezoneOffset();
 			time = (Number(date) + (offset * 60 * 1000));
 
 			this.setTime(Number(time));
@@ -43,13 +42,13 @@ define(["i18n"], function(i18n) {
 		function pad(n) {
 			return n < 10 ? '0' + n : n;
 		}
-		return this.getUTCFullYear() + '-'//
-				+ pad(this.getUTCMonth() + 1) + '-'//
-				+ pad(this.getUTCDate()) + 'T'//
-				+ pad(this.getUTCHours()) + ':'//
-				+ pad(this.getUTCMinutes()) + ':'//
-				+ pad(this.getUTCSeconds()) + '.'//
-				+ pad(this.getUTCMilliseconds()) + 'Z';
+		return this.getFullYear() + '-'//
+				+ pad(this.getMonth() + 1) + '-'//
+				+ pad(this.getDate()) + 'T'//
+				+ pad(this.getHours()) + ':'//
+				+ pad(this.getMinutes()) + ':'//
+				+ pad(this.getSeconds()) + '.'//
+				+ pad(this.getMilliseconds()) + 'Z';
 	};
 
 	Date.prototype.getLocalizedDate = function() {
