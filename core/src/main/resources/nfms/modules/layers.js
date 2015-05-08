@@ -6,6 +6,19 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		});
 	};
 
+	var getGetLegendGraphicUrl = function(wmsLayer) {
+		var url = wmsLayer.baseUrl;
+		if (url.indexOf("?") === -1) {
+			url = url + "?";
+		} else {
+			url = url + "$";
+		}
+		url += "REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&TRANSPARENT=true&LAYER=";
+		url += wmsLayer.wmsName;
+		
+		return url;
+	}
+
 	var processGroup = function(defaultServer, layerRoot, parentId, group) {
 		var items, item, portalLayers, portalLayer, wmsLayerIds,
 			wmsLayers, wmsLayer, i, j, layerInfoArray;
@@ -50,12 +63,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				if (portalLayer.hasOwnProperty("timeInstances")) {
 					portalLayer.timestamps = portalLayer.timeInstances.split(",")
 				}
-                //Complete the URL with defaultServer
-				if (portalLayer["inlineLegendUrl"]) {
-					if (portalLayer["inlineLegendUrl"].charAt(0) == "/") {
-						portalLayer["inlineLegendUrl"] = defaultServer + portalLayer["inlineLegendUrl"];
-					}
-				}
 
 				wmsLayerIds = (portalLayer.isPlaceholder)?null:portalLayer.layers;
 
@@ -78,11 +85,31 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 						}
 					}
 					
+					// Generate auto legends
+					if (wmsLayer.hasOwnProperty("legend")) {
+						if (wmsLayer.legend == "auto") {
+							wmsLayer["legendUrl"] = getGetLegendGraphicUrl(wmsLayer);
+						} else {
+							wmsLayer["legendUrl"] = "static/loc/" + customization.languageCode + "/images/" + wmsLayer.legend;
+						}
+					}
+					
 					layerInfoArray.push(wmsLayer);
 				}
 
 				portalLayer.groupId = group.id
 				portalLayer.wmsLayers = layerInfoArray;
+				
+                //Complete the URL with defaultServer or generate if auto
+				if (portalLayer["inlineLegendUrl"]) {
+					if (portalLayer["inlineLegendUrl"] == "auto") {
+						var firstWMSLayer = portalLayer.wmsLayers[0];
+						var url = getGetLegendGraphicUrl(firstWMSLayer);
+						portalLayer["inlineLegendUrl"] = url;
+					} else if (portalLayer["inlineLegendUrl"].charAt(0) == "/") {
+						portalLayer["inlineLegendUrl"] = defaultServer + portalLayer["inlineLegendUrl"];
+					}
+				}
 
 				bus.send("add-layer", portalLayer);
 				bus.send("layer-visibility", [ portalLayer.id, portalLayer.active || false ]);

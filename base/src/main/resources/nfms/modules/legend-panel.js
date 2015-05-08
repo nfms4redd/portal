@@ -69,8 +69,8 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 			if (wmsLayer.hasOwnProperty("legend")) {
 				legendArray.push({
 					id : wmsLayer.id,
-					legend : wmsLayer.legend,
 					label : wmsLayer.label,
+					legendUrl : wmsLayer.legendUrl,
 					sourceLink : wmsLayer.sourceLink,
 					sourceLabel : wmsLayer.sourceLabel
 				});
@@ -82,14 +82,13 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 	});
 
 	bus.listen("layer-visibility", function(event, layerId, visibility) {
-		var idPrefix, imagePath, tblLegend;
+		var idPrefix, tblLegend;
 
 		idPrefix = "legend_panel_";
 		var legendArray = legendArrayInfo[layerId] || [];
 		for (var i = 0; i < legendArray.length; i++) {
 			var legendInfo = legendArray[i];
 			if (visibility) {
-				imagePath = "static/loc/" + customization.languageCode + "/images/" + legendInfo.legend;
 				tblLegend = $("<table/>").appendTo(getDivContent());
 				tblLegend.attr("id", idPrefix + legendInfo.id);
 				tblLegend.addClass("layer_legend");
@@ -103,7 +102,7 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 				}
 				var trImage = $("<tr/>").appendTo(tblLegend).addClass("legend_image");
 				var tdImage = $("<td/>").attr("colspan", "2").appendTo(trImage);
-				$("<img/>").attr("src", imagePath).appendTo(tdImage);
+				$("<img/>").attr("src", legendInfo.legendUrl).appendTo(tdImage);
 			} else {
 				$("#" + idPrefix + legendInfo.id).remove();
 			}

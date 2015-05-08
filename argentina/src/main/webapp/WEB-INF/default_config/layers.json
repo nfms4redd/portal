@@ -1,5 +1,5 @@
 {
-	"default-server" : "demo1.geo-solutions.it",
+	"default-server" : "http://demo1.geo-solutions.it",
 	"wmsLayers" : [
 		{
 			"id" : "cycle-osm",
@@ -39,11 +39,11 @@
 		}, {
 			"id" : "forest_mask",
 			"label" : "${forest_mask}",
+			"legend" : "auto",
 			"baseUrl" : "/diss_geoserver/wms",
 			"wmsName" : "unredd:drc_forest_mask_mosaic",
 			"imageFormat" : "image/png8",
 			"visible" : true,
-			"legend" : "forest_mask.png",
 			"sourceLink" : "http://osfac.net/facet.html",
 			"sourceLabel" : "FACET",
 			"queryable" : true
@@ -141,14 +141,14 @@
 			"active" : true,
 			"label" : "${country_boundaries}",
 			"layers" : [ "countryBoundaries" ],
-			"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_boundary&TRANSPARENT=true"
+			"inlineLegendUrl" : "auto"
 		}, {
 			"id" : "provinces",
 			"active" : true,
 			"infoFile" : "provinces_def.html",
 			"label" : "${provinces}",
 			"layers" : [ "provinces" ],
-			"inlineLegendUrl" : "/diss_geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=unredd:drc_provinces&TRANSPARENT=true"
+			"inlineLegendUrl" : "auto"
 		}, {
 			"id" : "forest",
 			"active" : false,
