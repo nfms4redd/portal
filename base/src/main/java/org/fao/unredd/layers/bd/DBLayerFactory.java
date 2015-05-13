@@ -53,7 +53,7 @@ public class DBLayerFactory implements LayerFactory {
 							PreparedStatement statement = connection
 									.prepareStatement("select count(*) count from "
 											+ schemaName
-											+ ".redd_stats_metadata"
+											+ ".redd_stats_charts"
 											+ " WHERE layer_name=?");
 							statement.setString(1, layerName);
 							ResultSet resultSet = statement.executeQuery();

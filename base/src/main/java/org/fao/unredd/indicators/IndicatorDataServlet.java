@@ -11,6 +11,8 @@ import org.fao.unredd.charts.ChartGenerator;
 import org.fao.unredd.layers.Layer;
 import org.fao.unredd.layers.LayerFactory;
 import org.fao.unredd.layers.NoSuchIndicatorException;
+import org.fao.unredd.layers.Output;
+import org.fao.unredd.portal.PersistenceException;
 import org.fao.unredd.portal.StatusServletException;
 
 public class IndicatorDataServlet extends HttpServlet {
@@ -31,8 +33,8 @@ public class IndicatorDataServlet extends HttpServlet {
 						.getAttribute("layer-factory");
 				if (layerFactory.exists(layerId)) {
 					Layer layer = layerFactory.newLayer(layerId);
-					ChartGenerator chartGenerator = new ChartGenerator(
-							(layer.getOutput(indicatorId)));
+					Output output = layer.getOutput(indicatorId);
+					ChartGenerator chartGenerator = new ChartGenerator(output);
 					resp.setContentType(chartGenerator.getContentType());
 					resp.setCharacterEncoding("utf-8");
 					String chartOutput = chartGenerator.generate(objectId);
@@ -45,6 +47,9 @@ public class IndicatorDataServlet extends HttpServlet {
 			} catch (NoSuchIndicatorException e) {
 				throw new StatusServletException(400, "The indicator "
 						+ indicatorId + " does not exist");
+			} catch (PersistenceException e) {
+				throw new StatusServletException(500,
+						"Database error creating the chart", e);
 			}
 		}
 	}
