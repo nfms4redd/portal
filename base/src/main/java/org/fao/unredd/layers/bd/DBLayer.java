@@ -61,7 +61,7 @@ public class DBLayer implements Layer {
 
 						PreparedStatement statement = connection
 								.prepareStatement("select * from "
-										+ dbSchemaName + ".redd_stats_metadata"
+										+ dbSchemaName + ".redd_stats_charts"
 										+ " WHERE layer_name=?");
 						statement.setString(1, qName);
 						ResultSet resultSet = statement.executeQuery();
@@ -75,27 +75,16 @@ public class DBLayer implements Layer {
 							String division_field_id = resultSet
 									.getString("division_field_id");
 							String title = resultSet.getString("title");
-							Output output = new Output("" + id,
-									division_field_id, title);
+							Output output = new Output(dbSchemaName, id, ""
+									+ id, division_field_id, title);
 							// Ver de agregar estos meta datos al Output.
 							output.setSubtitle(resultSet.getString("subtitle"));
-							output.setDescription(resultSet
-									.getString("description"));
-							output.setY_label(resultSet.getString("y_label"));
-							output.setUnits(resultSet.getString("units"));
-							output.setTooltipsdecimals(resultSet
-									.getInt("tooltipsdecimals"));
-							output.setLayer_name(resultSet
-									.getString("layer_name"));
+							output.setData_table_date_field(resultSet
+									.getString("data_table_date_field"));
+							output.setData_table_id_field(resultSet
+									.getString("data_table_id_field"));
 							output.setTable_name_data(resultSet
 									.getString("table_name_data"));
-							output.setDivision_field_id(resultSet
-									.getString("division_field_id"));
-							output.setGraphicType(resultSet
-									.getString("graphic_type"));
-							// TODO: Agregar un metodo al output para obtener
-							// los datos de
-							// un determinado Feautre-id
 
 							temp.add(output);
 

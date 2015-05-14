@@ -22,6 +22,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.fao.unredd.layers.Output;
+import org.fao.unredd.portal.PersistenceException;
 
 /**
  * 
@@ -35,7 +36,8 @@ public class ChartGenerator {
 		inputData = output;
 	}
 
-	public String generate(String objectId) throws IOException {
+	public String generate(String objectId) throws IOException,
+			PersistenceException {
 		VelocityEngine engine = new VelocityEngine();
 		engine.setProperty("resource.loader", "class");
 		engine.setProperty("class.resource.loader.class",
@@ -45,29 +47,11 @@ public class ChartGenerator {
 
 		context.put("title", nullToEmptyString(inputData.getTitle()));
 		context.put("subtitle", nullToEmptyString(inputData.getSubtitle()));
-		context.put("y-label", nullToEmptyString(inputData.getY_label()));
-		context.put("units", nullToEmptyString(inputData.getUnits()));
-		context.put("tooltipDecimals",
-				nullToEmptyString(inputData.getTooltipsdecimals()));
 
-		context.put("datas", inputData.getData(objectId).iterator());
-		context.put("series", inputData.getSeries(objectId));
-		context.put("dates", inputData.getLabels(objectId).iterator());
+		context.put("dates", inputData.getLabels(objectId));
+		context.put("axes", inputData.getAxes(objectId));
 
-		context.put("hover", nullToEmptyString(inputData.getHover()));
-		context.put("footer", nullToEmptyString(inputData.getFooter()));
-
-		String template = "";
-		if (inputData.getGraphicType().equals("3D")) {
-			template = "/org/fao/unredd/charts/highcharts-3D-template.vtl";
-		} else if (inputData.getGraphicType().equals("2D")) {
-			template = "/org/fao/unredd/charts/highcharts-2D-template.vtl";
-		} else if (inputData.getGraphicType().equals("2D-Bar")) {
-			template = "/org/fao/unredd/charts/highcharts-2D-Bar-template.vtl";
-		} else {
-
-			template = "/org/fao/unredd/charts/highcharts-template.vtl";
-		}
+		String template = "/org/fao/unredd/charts/highcharts-template.vtl";
 		Template t = engine.getTemplate(template);
 
 		StringWriter writer = new StringWriter();
@@ -81,7 +65,7 @@ public class ChartGenerator {
 	}
 
 	public String getContentType() {
-		return "text/html;charset=UTF-8";
+		return "application/json;charset=UTF-8";
 	}
 
 }
