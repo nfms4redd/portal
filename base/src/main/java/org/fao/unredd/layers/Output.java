@@ -15,13 +15,13 @@
  */
 package org.fao.unredd.layers;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -36,83 +36,38 @@ import org.fao.unredd.portal.PersistenceException;
 public class Output extends OutputDescriptor {
 
 	private String subtitle;
-	private String description;
-	private String y_label;
-	private String units;
-	private int tooltipsdecimals;
-	private String layer_name;
 	private String table_name_data;
-	private String division_field_id;
-	private String graphic_type;
+	private String data_table_id_field;
+	private String data_table_date_field;
 
-	private ArrayList<String> serieNames = null;
-	private ArrayList<TreeSet<MeasurePoint>> values = null;
+	private String dbSchemaName;
+	private int chartId;
+	private ArrayList<Axis> axes = null;
+	private TreeSet<Date> dates = null;
 
-	private class MeasurePoint implements Comparable<MeasurePoint> {
-		private Date date;
-		private String value;
-
-		public MeasurePoint(Date dateLabel, String value) {
-			this.date = dateLabel;
-			this.value = value;
-		}
-
-		@Override
-		public int compareTo(MeasurePoint that) {
-			return this.date.compareTo(that.date);
-		}
-
-		/**
-		 * @return an instance of MeasurePoint in the same date but with no data
-		 */
-		public MeasurePoint createNull() {
-			return new MeasurePoint(date, "null");
-		}
-
-	}
-
-	public Output(String id, String fieldId, String title) {
+	public Output(String dbSchemaName, int chartId, String id, String fieldId,
+			String title) {
 		super(id, fieldId, title);
+		this.dbSchemaName = dbSchemaName;
+		this.chartId = chartId;
 	}
 
-	public ArrayList<ArrayList<String>> getData(String objectid) {
-		// String[][] ret = {{"1","2","3"},{"2","3","4"},{"2","4","5"}};
-		if (this.values == null) {
-			this.cargarDatos(objectid);
+	public ArrayList<Axis> getAxes(String objectId) throws PersistenceException {
+		if (this.axes == null) {
+			this.cargarDatos(objectId);
 		}
-		ArrayList<ArrayList<String>> ret = new ArrayList<ArrayList<String>>();
-		for (TreeSet<MeasurePoint> serie : values) {
-			ArrayList<String> serieLabels = new ArrayList<String>();
-			for (MeasurePoint measurePoint : serie) {
-				serieLabels.add(measurePoint.value);
-			}
-			ret.add(serieLabels);
-		}
-		return ret;
+
+		return axes;
 	}
 
-	public List<String> getSeries(String objectid) {
-		// String[] ret = {"TF","OT","OTF"};
-		if (this.serieNames == null) {
-			this.cargarDatos(objectid);
-		}
-		return this.serieNames;
-	}
-
-	private void addSerie(String string) {
-		// TODO Auto-generated method stub
-		this.serieNames.add(string);
-	}
-
-	public List<String> getLabels(String objectid) {
-		if (this.values == null) {
+	public List<String> getLabels(String objectid) throws PersistenceException {
+		if (this.dates == null) {
 			this.cargarDatos(objectid);
 		}
 
 		List<String> labels = new ArrayList<String>();
-		TreeSet<MeasurePoint> serie = values.get(0);
-		for (MeasurePoint measurePoint : serie) {
-			labels.add(measurePoint.date.toString());
+		for (Date date : dates) {
+			labels.add(date.toString());
 		}
 		return labels;
 	}
@@ -125,186 +80,92 @@ public class Output extends OutputDescriptor {
 		this.subtitle = subtitle;
 	}
 
-	public String getDescription() {
-		return description;
+	public void setData_table_date_field(String data_table_date_field) {
+		this.data_table_date_field = data_table_date_field;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getY_label() {
-		return y_label;
-	}
-
-	public void setY_label(String y_label) {
-		this.y_label = y_label;
-	}
-
-	public String getUnits() {
-		return units;
-	}
-
-	public void setUnits(String units) {
-		this.units = units;
-	}
-
-	public int getTooltipsdecimals() {
-		return tooltipsdecimals;
-	}
-
-	public void setTooltipsdecimals(int tooltipsdecimals) {
-		this.tooltipsdecimals = tooltipsdecimals;
-	}
-
-	public String getLayer_name() {
-		return layer_name;
-	}
-
-	public void setLayer_name(String layer_name) {
-		this.layer_name = layer_name;
-	}
-
-	public String getTable_name_data() {
-		return table_name_data;
+	public void setData_table_id_field(String data_table_id_field) {
+		this.data_table_id_field = data_table_id_field;
 	}
 
 	public void setTable_name_data(String table_name_data) {
 		this.table_name_data = table_name_data;
 	}
 
-	public String getDivision_field_id() {
-		return division_field_id;
-	}
+	private void cargarDatos(final String objectid) throws PersistenceException {
+		DBUtils.processConnection("unredd-portal", new DBUtils.DBProcessor() {
 
-	public void setDivision_field_id(String division_field_id) {
-		this.division_field_id = division_field_id;
-	}
-
-	public void setGraphicType(String graphic_type) {
-		this.graphic_type = graphic_type;
-	}
-
-	public String getGraphicType() {
-		return graphic_type;
-	}
-
-	public String getHover() {
-		return "hover";
-	}
-
-	public String getFooter() {
-		return "MR";
-	}
-
-	private void cargarDatos(final String objectid) {
-
-		try {
-			DBUtils.processConnection("unredd-portal",
-					new DBUtils.DBProcessor() {
-
-						@Override
-						public void process(Connection connection)
-								throws SQLException {
-
-							PreparedStatement statement = connection
-									.prepareStatement("SELECT "
-											// + this.getDivision_field_id()
-											+ "division_id,variable,array_agg(fecha) labels,array_agg(valor) data_values FROM "
-											+ "(SELECT division_id,variable,fecha, valor "
-											+ "FROM "
-											+ getTable_name_data()
-											+ " WHERE "
-											+ " division_id  =  ? "
-											+ "ORDER BY fecha asc ) foo	GROUP BY "
-											+ "division_id, variable");
-
-							statement.setString(1, objectid);
-							ResultSet resultSet = statement.executeQuery();
-
-							serieNames = new ArrayList<String>();
-							values = new ArrayList<TreeSet<MeasurePoint>>();
-
-							while (resultSet.next()) {
-								String clases = resultSet.getString("variable");
-								addSerie(clases);
-
-								addSerie(Array2ArrayListDates(resultSet
-										.getArray("labels")),
-										Array2ArrayList(resultSet
-												.getArray("data_values")));
-
-							}
-							fillNulls();
-
-							resultSet.close();
-							statement.close();
-							connection.close();
-
-						}
-
-					});
-		} catch (PersistenceException e) {
-			// TODO Auto-generated catch block
-			// TODO if error because not exsist table, create table
-			// e.printStackTrace();
-		}
-	}
-
-	/**
-	 * adds null measure points to all series so that they all have the same
-	 * dates
-	 */
-	private void fillNulls() {
-		for (TreeSet<MeasurePoint> serie : values) {
-			for (MeasurePoint measurePoint : serie) {
-				for (TreeSet<MeasurePoint> serieToFill : values) {
-					if (serieToFill == serie) {
-						continue;
+			@Override
+			public void process(Connection connection) throws SQLException {
+				dates = new TreeSet<Date>();
+				axes = new ArrayList<Axis>();
+				PreparedStatement statement = connection
+						.prepareStatement("SELECT * FROM " + dbSchemaName
+								+ ".redd_stats_variables WHERE chart_id=?");
+				statement.setInt(1, chartId);
+				ResultSet resultSet = statement.executeQuery();
+				HashMap<String, Series> fieldSeries = new HashMap<String, Series>();
+				boolean opposite = false;
+				while (resultSet.next()) {
+					String axisLabel = resultSet.getString("y_label");
+					String units = resultSet.getString("units");
+					String graphicType = resultSet.getString("graphic_type");
+					Axis axis = findAxis(axisLabel, units, graphicType);
+					if (axis == null) {
+						axis = new Axis();
+						axis.setLabel(axisLabel);
+						axis.setUnits(units);
+						axis.setOpposite(opposite = !opposite);
+						axis.setType(graphicType);
+						axes.add(axis);
 					}
-					if (!serieToFill.contains(measurePoint)) {
-						serieToFill.add(measurePoint.createNull());
+					Series serie = axis.addSerie(resultSet
+							.getString("variable_name"));
+					String variableField = resultSet
+							.getString("data_table_variable_field");
+
+					fieldSeries.put(variableField, serie);
+				}
+				resultSet.close();
+				statement.close();
+				String sql = "SELECT \"" + data_table_date_field + "\"";
+				for (String variableName : fieldSeries.keySet()) {
+					sql += ", \"" + variableName + "\" ";
+				}
+				sql += "FROM " + table_name_data + " WHERE \""
+						+ data_table_id_field + "\"=? " + "ORDER BY \""
+						+ data_table_date_field + "\"";
+				statement = connection.prepareStatement(sql);
+				statement.setString(1, objectid);
+				resultSet = statement.executeQuery();
+
+				while (resultSet.next()) {
+					dates.add(resultSet.getDate(data_table_date_field));
+					for (String variableName : fieldSeries.keySet()) {
+						Series series = fieldSeries.get(variableName);
+						series.addValue(resultSet.getFloat(variableName));
 					}
 				}
+				resultSet.close();
+				statement.close();
+				connection.close();
+
 			}
-		}
+
+			private Axis findAxis(String axisLabel, String units,
+					String graphicType) {
+				for (Axis axis : axes) {
+					if (axis.getLabel().equals(axisLabel)
+							&& axis.getType().equals(graphicType)
+							&& axis.getUnits().equals(units)) {
+						return axis;
+					}
+				}
+
+				return null;
+			}
+
+		});
 	}
 
-	private void addSerie(ArrayList<Date> dates, ArrayList<String> values) {
-		TreeSet<MeasurePoint> serie = new TreeSet<Output.MeasurePoint>();
-		for (int i = 0; i < dates.size(); i++) {
-			serie.add(new MeasurePoint(dates.get(i), values.get(i)));
-		}
-		this.values.add(serie);
-	}
-
-	private ArrayList<String> Array2ArrayList(Array array) {
-		ArrayList<String> ret = null;
-		ret = new ArrayList<String>();
-		try {
-			Float[] tmparray = (Float[]) array.getArray();
-			for (int i = 0; i < tmparray.length; i++) {
-				ret.add(tmparray[i].toString());
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
-	private ArrayList<Date> Array2ArrayListDates(Array array) {
-		ArrayList<Date> ret = null;
-		ret = new ArrayList<Date>();
-		try {
-			Date[] tmparray = (Date[]) array.getArray();
-			for (int i = 0; i < tmparray.length; i++) {
-				ret.add(tmparray[i]);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ret;
-	}
 }

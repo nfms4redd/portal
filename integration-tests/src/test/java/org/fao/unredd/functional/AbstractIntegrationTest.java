@@ -113,7 +113,7 @@ public class AbstractIntegrationTest {
 		SQLExecute(getScript("redd_feedback.sql").replaceAll("redd_feedback",
 				"integration_tests.redd_feedback"));
 		SQLExecute(getScript("redd_stats_metadata.sql").replaceAll(
-				"redd_stats_metadata", "integration_tests.redd_stats_metadata"));
+				"CREATE TABLE ", "CREATE TABLE integration_tests."));
 		// Install functions in public
 		executeDelimitedScript("redd_stats_calculator.sql");
 		SQLExecute(getScript("redd_stats_fajas.sql").replaceAll(
@@ -160,7 +160,7 @@ public class AbstractIntegrationTest {
 		}
 	}
 
-	private String getScript(String resourceName) throws IOException {
+	protected String getScript(String resourceName) throws IOException {
 		InputStream stream = StatsTest.class.getResourceAsStream(resourceName);
 		String script = IOUtils.toString(stream);
 		stream.close();

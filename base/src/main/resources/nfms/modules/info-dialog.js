@@ -1,4 +1,4 @@
-define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], function(module, $, bus, map, i18n, customization) {
+define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "highcharts", "highcharts-theme-sand" ], function(module, $, bus, map, i18n, customization) {
 
 	var wmsNamePortalLayerName = {};
 
@@ -179,23 +179,23 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization" ], fu
 		});// END each
 	})
 
-	bus.listen("show-feature-indicator", function(event, featureIndex, indicatorIndex){
+	bus.listen("show-feature-indicator", function(event, featureIndex, indicatorIndex) {
 		var feature = infoFeatures[featureIndex];
 		var indicator = feature["indicators"][indicatorIndex];
 		var layerId = feature["layerId"];
-		bus.send("show-info", [ indicator.title, "indicator?objectId=" + feature.attributes[indicator.fieldId] + "&layerId=" + layerId + "&indicatorId=" + indicator.id, {
-			maxWidth : 800,
-			maxHeight : 520,
-			fitToView : false,
-			width : 800,
-			height : 520,
-			autoSize : false,
-			closeClick : false,
-			openEffect : 'none',
-			closeEffect : 'fade'
-		} ]);
+
+		bus.send("ajax", {
+			url : "indicator?objectId=" + feature.attributes[indicator.fieldId] + "&layerId=" + layerId + "&indicatorId=" + indicator.id,
+			success : function(chartData, textStatus, jqXHR) {
+				var chart = $("<div/>");
+				chart.highcharts(chartData);
+				bus.send("show-info", [indicator.title, chart]);
+			},
+			errorMsg : "Could not obtain the indicator"
+		});
+
 	});
-	
+
 	bus.listen("highlight-feature", function(event, feature) {
 		var highlightLayer = map.getLayer("Highlighted Features");
 		highlightLayer.removeAllFeatures();
