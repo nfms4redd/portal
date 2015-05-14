@@ -1,13 +1,12 @@
 CREATE TABLE redd_stats_charts (
-	id serial NOT NULL,
+	id serial PRIMARY KEY,
 	title character varying,
 	subtitle character varying,
 	layer_name character varying,
 	division_field_id character varying,
 	table_name_data character varying,
 	data_table_id_field character varying,
-	data_table_date_field character varying,
-	CONSTRAINT indicators_metadata_pkey PRIMARY KEY (id)
+	data_table_date_field character varying
 ) WITH ( OIDS=FALSE );
 
 CREATE TABLE redd_stats_variables (
