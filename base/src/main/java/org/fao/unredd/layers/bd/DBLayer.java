@@ -81,6 +81,8 @@ public class DBLayer implements Layer {
 							output.setSubtitle(resultSet.getString("subtitle"));
 							output.setData_table_date_field(resultSet
 									.getString("data_table_date_field"));
+							output.setData_table_date_field_format(resultSet
+									.getString("data_table_date_field_format"));
 							output.setData_table_id_field(resultSet
 									.getString("data_table_id_field"));
 							output.setTable_name_data(resultSet

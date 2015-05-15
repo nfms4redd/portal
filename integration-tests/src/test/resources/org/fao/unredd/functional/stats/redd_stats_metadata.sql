@@ -6,7 +6,8 @@ CREATE TABLE redd_stats_charts (
 	division_field_id character varying,
 	table_name_data character varying,
 	data_table_id_field character varying,
-	data_table_date_field character varying
+	data_table_date_field character varying,
+	data_table_date_field_format character varying
 ) WITH ( OIDS=FALSE );
 
 CREATE TABLE redd_stats_variables (

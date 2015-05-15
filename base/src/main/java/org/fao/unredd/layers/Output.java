@@ -39,6 +39,7 @@ public class Output extends OutputDescriptor {
 	private String table_name_data;
 	private String data_table_id_field;
 	private String data_table_date_field;
+	private String data_table_date_field_format;
 
 	private String dbSchemaName;
 	private int chartId;
@@ -82,6 +83,11 @@ public class Output extends OutputDescriptor {
 
 	public void setData_table_date_field(String data_table_date_field) {
 		this.data_table_date_field = data_table_date_field;
+	}
+
+	public void setData_table_date_field_format(
+			String data_table_date_field_format) {
+		this.data_table_date_field_format = data_table_date_field_format;
 	}
 
 	public void setData_table_id_field(String data_table_id_field) {
@@ -128,13 +134,19 @@ public class Output extends OutputDescriptor {
 				}
 				resultSet.close();
 				statement.close();
-				String sql = "SELECT \"" + data_table_date_field + "\"";
+				String dateField = "\"" + data_table_date_field + "\"";
+				if (data_table_date_field_format != null) {
+					dateField = "to_date(" + dateField + "::varchar, '"
+							+ data_table_date_field_format + "') as "
+							+ dateField;
+				}
+				String sql = "SELECT " + dateField;
 				for (String variableName : fieldSeries.keySet()) {
 					sql += ", \"" + variableName + "\" ";
 				}
 				sql += "FROM " + table_name_data + " WHERE \""
-						+ data_table_id_field + "\"=? " + "ORDER BY \""
-						+ data_table_date_field + "\"";
+						+ data_table_id_field + "\"::varchar=? "
+						+ "ORDER BY \"" + data_table_date_field + "\"";
 				statement = connection.prepareStatement(sql);
 				statement.setString(1, objectid);
 				resultSet = statement.executeQuery();

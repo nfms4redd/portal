@@ -2,11 +2,15 @@ package org.fao.unredd.functional.stats;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+
+import java.io.IOException;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.fao.unredd.functional.AbstractIntegrationTest;
 import org.fao.unredd.functional.IntegrationTest;
@@ -20,18 +24,19 @@ public class StatsTest extends AbstractIntegrationTest {
 	public void testStatsService() throws Exception {
 		String layerName = "bosques:provincias";
 		SQLExecute(getScript("stats-service-test.sql"));
-		// Get indicators must return 1 entry
-		CloseableHttpResponse ret = GET("indicators", "layerId", layerName);
-		assertEquals(200, ret.getStatusLine().getStatusCode());
-		JSONArray indicators = (JSONArray) JSONSerializer.toJSON(IOUtils
-				.toString(ret.getEntity().getContent()));
-		assertEquals(1, indicators.size());
+		JSONArray indicators = getIndicators(layerName);
 
-		ret = GET("indicator", "indicatorId", indicators.getJSONObject(0)
-				.getString("id"), "layerId", layerName, "objectId", "1");
+		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
+				.getJSONObject(0).getString("id"), "layerId", layerName,
+				"objectId", "1");
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
 				.toString(ret.getEntity().getContent()));
+		checkStatsServiceTest(root);
+
+	}
+
+	private void checkStatsServiceTest(JSONObject root) {
 		assertEquals("Cobertura forestal", root.getJSONObject("title")
 				.getString("text"));
 		assertEquals("Evolución de la cobertura forestal por provincia", root
@@ -59,22 +64,17 @@ public class StatsTest extends AbstractIntegrationTest {
 		JSONObject serie2 = root.getJSONArray("series").getJSONObject(1);
 		assertEquals("Bosque cultivado", serie2.getString("name"));
 		assertEquals(1000, serie2.getJSONArray("data").getInt(0));
-
 	}
 
 	@Test
 	public void testStatsServiceTwoAxisWithTwoSeries() throws Exception {
 		String layerName = "bosques:provincias";
 		SQLExecute(getScript("stats-service-test-twoaxis-twoseries.sql"));
-		// Get indicators must return 1 entry
-		CloseableHttpResponse ret = GET("indicators", "layerId", layerName);
-		assertEquals(200, ret.getStatusLine().getStatusCode());
-		JSONArray indicators = (JSONArray) JSONSerializer.toJSON(IOUtils
-				.toString(ret.getEntity().getContent()));
-		assertEquals(1, indicators.size());
+		JSONArray indicators = getIndicators(layerName);
 
-		ret = GET("indicator", "indicatorId", indicators.getJSONObject(0)
-				.getString("id"), "layerId", layerName, "objectId", "1");
+		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
+				.getJSONObject(0).getString("id"), "layerId", layerName,
+				"objectId", "1");
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
 				.toString(ret.getEntity().getContent()));
@@ -107,6 +107,33 @@ public class StatsTest extends AbstractIntegrationTest {
 		assertEquals(0, serie0.getInt("yAxis"));
 		assertEquals(1, serie1.getInt("yAxis"));
 		assertEquals(1, serie2.getInt("yAxis"));
+	}
+
+	private JSONArray getIndicators(String layerName)
+			throws ClientProtocolException, IOException {
+		// Get indicators must return 1 entry
+		CloseableHttpResponse ret = GET("indicators", "layerId", layerName);
+		assertEquals(200, ret.getStatusLine().getStatusCode());
+		JSONArray indicators = (JSONArray) JSONSerializer.toJSON(IOUtils
+				.toString(ret.getEntity().getContent()));
+		assertEquals(1, indicators.size());
+		return indicators;
+	}
+
+	@Test
+	public void testStatsServiceDataTypes() throws Exception {
+		String layerName = "bosques:provincias";
+		SQLExecute(getScript("stats-service-test-data-types.sql"));
+		JSONArray indicators = getIndicators(layerName);
+
+		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
+				.getJSONObject(0).getString("id"), "layerId", layerName,
+				"objectId", "1");
+		assertEquals(200, ret.getStatusLine().getStatusCode());
+		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
+				.toString(ret.getEntity().getContent()));
+
+		checkStatsServiceTest(root);
 	}
 
 	@Test

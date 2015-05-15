@@ -7,7 +7,8 @@ INSERT INTO integration_tests.redd_stats_charts VALUES (
     'id_provinc',
     'integration_tests.cobertura_forestal_provincias',
     'pcia_id',
-    'anio'
+    'anio',
+    null
 );
 
 -- Variables in chart
