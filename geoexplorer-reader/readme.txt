@@ -18,12 +18,6 @@ To make the plugin work it is necessary to:
 		}
 	}
 
-TODO:
+- Query the map with ?mapId=1 and see Tasmania.
 
-- Be able to specify the map in the geoexplorer database in a URL parameter
-
-- Set the zoom level and center
-
-- Set the GetLegendGraphics
-
-- Groups
+- The database can be set up for geoexplorer and the mapa shown at: http://192.168.0.18:8080/geoexplorer/composer/?mapId=1#maps/1

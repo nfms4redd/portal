@@ -17,7 +17,7 @@ define([ "message-bus", "module" ], function(bus, module) {
 
 		var layers = config["map"]["layers"];
 
-		for (i in layers) {
+		for (var i = layers.length -1; i >= 0; i--) {
 			var layer = layers[i];
 			if (layer["source"] == "local") {
 				bus.send("add-layer", {
@@ -26,6 +26,7 @@ define([ "message-bus", "module" ], function(bus, module) {
 					"label" : layer["title"],
 					"active" : layer["visibility"],
 					"wmsLayers" : [ {
+						"id" : "geoexplorer-" + i + "-wms",
 						"baseUrl" : localGeoserverURL + "/wms",
 						"wmsName" : layer["name"]
 					} ]
