@@ -8,7 +8,7 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "momen
 		if (dateFormat) {
 			format = dateFormat;
 		} else {
-			format = "MMM-YYYY";
+			format = "YYYY";
 		}
 		return moment(date).format(format);
 	}
