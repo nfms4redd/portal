@@ -45,6 +45,40 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 		return divContent;
 	};
 
+	var refreshLegendArray = function(legendArray) {
+		var idPrefix = "legend_panel_";
+		for (var i = 0; i < legendArray.length; i++) {
+			var legendInfo = legendArray[i];
+			if (legendInfo.visibility) {
+				var id = idPrefix + legendInfo.id;
+				var img = $("#" + id + "_img");
+				if (img.length == 0) {
+					var tblLegend = $("<table/>").appendTo(getDivContent());
+					tblLegend.attr("id", id);
+					tblLegend.addClass("layer_legend");
+
+					var trTitle = $("<tr/>").appendTo(tblLegend).addClass("legend_header");
+					$("<td/>").appendTo(trTitle).addClass("legend_layer_name").html(legendInfo.label);
+					if (typeof legendInfo["sourceLink"] != "undefined" && typeof legendInfo["sourceLabel"] != "undefined") {
+						var tdSourceLink = $("<td/>").appendTo(trTitle).addClass("data_source_link");
+						$("<span/>").appendTo(tdSourceLink).addClass("lang").html(i18n["data_source"] + ":");
+						$("<a/>").appendTo(tdSourceLink).attr("target", "_blank").attr("href", legendInfo.sourceLink).html(legendInfo.sourceLabel);
+					}
+					var trImage = $("<tr/>").appendTo(tblLegend).addClass("legend_image");
+					var tdImage = $("<td/>").attr("colspan", "2").appendTo(trImage);
+					img = $("<img/>").attr("id", id + "_img").appendTo(tdImage);
+				}
+				var url = legendInfo.legendUrl;
+				if (legendInfo.timeDependent && legendInfo.timestamp) {
+					url = url + "&STYLE=" + legendInfo.timestyle + "&TIME=" + legendInfo.timestamp.toISO8601String();
+				}
+				img.attr("src", url);
+			} else {
+				$("#" + idPrefix + legendInfo.id).remove();
+			}
+		}
+	}
+
 	bus.listen("open-legend", function(event, layerId) {
 		getDialog().dialog("open");
 		var table = $("#legend_panel_" + layerId);
@@ -72,7 +106,9 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 					label : wmsLayer.label,
 					legendUrl : wmsLayer.legendUrl,
 					sourceLink : wmsLayer.sourceLink,
-					sourceLabel : wmsLayer.sourceLabel
+					sourceLabel : wmsLayer.sourceLabel,
+					visibility : layerInfo.active,
+					timeDependent : layerInfo.hasOwnProperty("timeStyles")
 				});
 			}
 		});
@@ -81,31 +117,27 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 		}
 	});
 
-	bus.listen("layer-visibility", function(event, layerId, visibility) {
-		var idPrefix, tblLegend;
-
-		idPrefix = "legend_panel_";
-		var legendArray = legendArrayInfo[layerId] || [];
-		for (var i = 0; i < legendArray.length; i++) {
-			var legendInfo = legendArray[i];
-			if (visibility) {
-				tblLegend = $("<table/>").appendTo(getDivContent());
-				tblLegend.attr("id", idPrefix + legendInfo.id);
-				tblLegend.addClass("layer_legend");
-
-				var trTitle = $("<tr/>").appendTo(tblLegend).addClass("legend_header");
-				$("<td/>").appendTo(trTitle).addClass("legend_layer_name").html(legendInfo.label);
-				if (typeof legendInfo["sourceLink"] != "undefined" && typeof legendInfo["sourceLabel"] != "undefined") {
-					var tdSourceLink = $("<td/>").appendTo(trTitle).addClass("data_source_link");
-					$("<span/>").appendTo(tdSourceLink).addClass("lang").html(i18n["data_source"] + ":");
-					$("<a/>").appendTo(tdSourceLink).attr("target", "_blank").attr("href", legendInfo.sourceLink).html(legendInfo.sourceLabel);
+	bus.listen("layer-timestamp-selected", function(e, layerId, d, style) {
+		var legendArray = legendArrayInfo[layerId];
+		if (legendArray) {
+			$.each(legendArray, function(index, legendInfo) {
+				if (legendInfo.timeDependent) {
+					legendInfo["timestamp"] = d;
+					legendInfo["timestyle"] = style
 				}
-				var trImage = $("<tr/>").appendTo(tblLegend).addClass("legend_image");
-				var tdImage = $("<td/>").attr("colspan", "2").appendTo(trImage);
-				$("<img/>").attr("src", legendInfo.legendUrl).appendTo(tdImage);
-			} else {
-				$("#" + idPrefix + legendInfo.id).remove();
-			}
+			});
+
+			refreshLegendArray(legendArray);
 		}
 	});
+
+	bus.listen("layer-visibility", function(event, layerId, visibility) {
+		var legendArray = legendArrayInfo[layerId] || [];
+		$.each(legendArray, function(index, legendInfo) {
+			legendInfo["visibility"] = visibility;
+		});
+
+		refreshLegendArray(legendArray);
+	});
+
 });

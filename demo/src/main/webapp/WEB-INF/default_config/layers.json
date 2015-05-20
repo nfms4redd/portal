@@ -84,23 +84,12 @@
 			"sourceLabel" : "WRI",
 			"queryable" : true
 		}, {
-			"id" : "departamentos",
-			"baseUrl" : "http://localhost:8080/geoserver/wms",
-			"wmsName" : "idera:departamentos_g",
+			"id" : "incendios",
+			"baseUrl" : "http://geo2.ambiente.gob.ar/geoserver/bosques_umsef_db/wms",
+			"wmsName" : "bosques_umsef_db:provincias_incendios",
 			"imageFormat" : "image/png8",
-			"visible" : true,
-			"sourceLink" : "http://www.mapaeducativo.edu.ar",
-			"sourceLabel" : "WRI",
-			"queryable" : true
-		}, {
-			"id" : "stb",
-			"baseUrl" : "http://localhost:8080/geoserver/wms",
-			"wmsName" : "idera:stb_wgs84",
-			"imageFormat" : "image/png8",
-			"visible" : true,
-			"sourceLink" : "http://localhost",
-			"sourceLabel" : "WRI",
-			"queryable" : true
+			"legend" : "auto",
+			"visible" : true
 		}
 	],
 
@@ -166,18 +155,12 @@
 			"label" : "Provincias"
 		},
 		{
-			"id" : "departamentos",
+			"id" : "incendios",
 			"active" : true,
-			"infoFile" : "forest_classification_def.html",
-			"label" : "Departamentos de Argentina",
-			"layers" : [ "departamentos" ]
-		},
-		{
-			"id" : "stb",
-			"active" : true,
-			"infoFile" : "forest_classification_def.html",
-			"label" : "Selva Tucumano Boliviana",
-			"layers" : [ "stb" ]
+			"label" : "Incendios por provincias",
+			"layers" : [ "incendios" ],
+			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
+			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
 		}
 	],
 
@@ -200,7 +183,7 @@
 		}, {
 			"id" : "admin",
 			"label" : "${admin_areas}",
-			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces" ]
+			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces", "incendios" ]
 		}, {
 			"id" : "landcover",
 			"label" : "${land_cover_maps}",
