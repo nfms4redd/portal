@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertTrue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,11 +16,11 @@ public class RequireTemplateTest {
 	@Test
 	public void checkGenerate() throws IOException {
 
-		Map<String, String> paths = new HashMap<String, String>();
+		Map<String, String> paths = new LinkedHashMap<String, String>();
 		paths.put("foo", "http://boh");
 		paths.put("bar", "http://bohboh");
 		paths.put("boh", "http://bohbohboh");
-		Map<String, String> shims = new HashMap<String, String>();
+		Map<String, String> shims = new LinkedHashMap<String, String>();
 		shims.put("bar", "[\"foo\", \"boh\"]");
 		shims.put("boh", "[\"foo\"]");
 		List<String> moduleNames = new ArrayList<String>();
