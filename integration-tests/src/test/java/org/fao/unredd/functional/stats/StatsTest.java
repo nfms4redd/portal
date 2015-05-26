@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -58,12 +59,17 @@ public class StatsTest extends AbstractIntegrationTest {
 
 		// Values
 		assertEquals(2, root.getJSONArray("series").size());
-		JSONObject serie1 = root.getJSONArray("series").getJSONObject(0);
-		assertEquals("Bosque nativo", serie1.getString("name"));
-		assertEquals(100, serie1.getJSONArray("data").getInt(0));
-		JSONObject serie2 = root.getJSONArray("series").getJSONObject(1);
-		assertEquals("Bosque cultivado", serie2.getString("name"));
-		assertEquals(1000, serie2.getJSONArray("data").getInt(0));
+
+		Iterator<?> itr = root.getJSONArray("series").iterator();
+		while(itr.hasNext()) {
+			JSONObject serie = (JSONObject) itr.next();
+			String name = serie.getString("name");
+			int num = serie.getJSONArray("data").getInt(0);
+			assertTrue(
+				(name.equals("Bosque nativo") && num == 100) ||
+				(name.equals("Bosque cultivado") && num == 1000)
+			);
+		}
 	}
 
 	@Test
