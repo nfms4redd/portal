@@ -31,7 +31,7 @@
     -->
 
 	<Resource name="jdbc/unredd-portal" auth="Container" type="javax.sql.DataSource"
-		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://192.168.0.18:5432/spatialdata"
+		driverClassName="org.postgresql.Driver" url="jdbc:postgresql://postgis.unredd:5432/spatialdata"
 		username="spatial_user" password="unr3dd" maxActive="20" maxIdle="10"
 		maxWait="-1" />
 
