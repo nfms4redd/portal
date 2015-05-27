@@ -90,6 +90,15 @@
 			"imageFormat" : "image/png8",
 			"legend" : "auto",
 			"visible" : true
+		}, {
+			"id" : "provincias_demo",
+			"baseUrl" : "http://demo.geomati.co:8080/geoserver/bosques/wms",
+			"wmsName" : "bosques:provincias",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://demo.geomati.co:8080/geoserver/web",
+			"sourceLabel" : "WRI",
+			"queryable" : true
 		}
 	],
 
@@ -161,6 +170,11 @@
 			"layers" : [ "incendios" ],
 			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
 			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
+		}, {
+			"id" : "demo_layers",
+			"active" : false,
+			"label" : "Provincias Estadísticas",
+			"layers" : [ "provincias_demo" ]
 		}
 	],
 
@@ -183,7 +197,7 @@
 		}, {
 			"id" : "admin",
 			"label" : "${admin_areas}",
-			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces", "incendios" ]
+			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces", "incendios", "demo_layers" ]
 		}, {
 			"id" : "landcover",
 			"label" : "${land_cover_maps}",
