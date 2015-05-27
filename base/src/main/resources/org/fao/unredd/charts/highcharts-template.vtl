@@ -16,10 +16,10 @@
     	#foreach( $axis in $axes )
     	{
 	        "labels": {
-	            "format": "{value} $axis.units"
+	            "format": "{value}"
 	        },
 	        "title": {
-	            "text": "$axis.label"
+	            "text": "$axis.label ($axis.units)"
 	        },
 	        "opposite": $axis.opposite
     	}#if( $foreach.hasNext ), #end
