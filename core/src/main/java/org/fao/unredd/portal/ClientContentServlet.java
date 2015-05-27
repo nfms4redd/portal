@@ -39,11 +39,6 @@ public class ClientContentServlet extends HttpServlet {
 				return;
 			}
 			resp.setDateHeader("Last-Modified", lastModified);
-
-			// Set content type
-			FileNameMap fileNameMap = URLConnection.getFileNameMap();
-			String type = fileNameMap.getContentTypeFor(pathInfo);
-			resp.setContentType(type);
 			stream = new BufferedInputStream(new FileInputStream(file));
 		} else {
 			String path = "/nfms" + pathInfo;
@@ -54,6 +49,18 @@ public class ClientContentServlet extends HttpServlet {
 				stream = new BufferedInputStream(classPathResource);
 			}
 		}
+
+		// Set content type
+		String type;
+		if (pathInfo.endsWith("css")) {
+			type = "text/css";
+		} else if (pathInfo.endsWith("js")) {
+			type = "application/javascript";
+		} else {
+			FileNameMap fileNameMap = URLConnection.getFileNameMap();
+			type = fileNameMap.getContentTypeFor(pathInfo);
+		}
+		resp.setContentType(type);
 
 		if (stream == null) {
 			throw new StatusServletException(404,
