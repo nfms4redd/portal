@@ -1,6 +1,7 @@
 package org.fao.unredd.layers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Series {
 
@@ -17,6 +18,10 @@ public class Series {
 
 	public String getName() {
 		return name;
+	}
+
+	public boolean allPositiveValues() {
+		return Collections.min(data) >= 0;
 	}
 
 	public ArrayList<Float> getData() {

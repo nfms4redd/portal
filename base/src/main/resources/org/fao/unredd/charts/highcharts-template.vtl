@@ -15,6 +15,9 @@
     "yAxis": [
     	#foreach( $axis in $axes )
     	{
+       		#if( $axis.allPositiveValues() )
+       		"min": 0,
+       		#end
 	        "labels": {
 	            "format": "{value}"
 	        },

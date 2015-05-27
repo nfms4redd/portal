@@ -47,6 +47,15 @@ public class Axis {
 		return seriesList.values();
 	}
 
+	public boolean allPositiveValues() {
+		for(Series series : seriesList.values()) {
+			if(!series.allPositiveValues()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public Series addSerie(String serieName) {
 		Series series = seriesList.get(serieName);
 		if (series == null) {
