@@ -25,7 +25,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		"collapsible" : true,
 		"active" : false
 	});
-	layerListSelector.registerLayerPanel("all_layers_selector", i18n.layers, divLayers);
+	layerListSelector.registerLayerPanel("all_layers_selector", 10, i18n.layers, divLayers);
 
 	bus.listen("add-group", function(event, groupInfo) {
 		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;

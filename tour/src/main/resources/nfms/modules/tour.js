@@ -24,21 +24,21 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 		$("#" + step.id).tipsy("show");
 		$("#tour-next-" + stepIndex).click(function() {
 			$("#" + step.id).tipsy("hide");
-			for (event in step.next) {
+			for (nextEvent in step.next) {
 				var times = 1;
-				if (!isNaN(parseInt(event.charAt(0)))) {
-					times = parseInt(event.charAt(0));
-					event = event.substr(1);
+				if (!isNaN(parseInt(nextEvent.charAt(0)))) {
+					times = parseInt(nextEvent.charAt(0));
+					nextEvent = nextEvent.substr(1);
 				}
 				for (var i = 0; i < times; i++) {
-					var parameters = step.next[event];
+					var parameters = step.next[nextEvent];
 					for (paramIndex in parameters) {
 						var parameter = parameters[paramIndex];
 						if (typeof parameter == "string" && parameter.charAt(0) == "X") {
 							parameters[paramIndex] = eval(parameter.substr(1));
 						}
 					}
-					bus.send(event, parameters);
+					bus.send(nextEvent, parameters);
 				}
 			}
 			
