@@ -1,7 +1,7 @@
 define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "moment", "jquery-ui" ], function($, bus, layout, map, layerListSelector, moment) {
     var aTimestampsLayers={};
 	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders").addClass("layer_container_panel");
-	layerListSelector.registerLayerPanel("layer_slider_selector", "Temporal", divTimeSliders);
+	layerListSelector.registerLayerPanel("layer_slider_selector", 30, "Temporal", divTimeSliders);
 
 	var formatDate = function(date, dateFormat) {
 		var format;
