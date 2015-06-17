@@ -33,12 +33,19 @@ public class DBUtils {
 			throw new PersistenceException("Cannot obtain Datasource", e);
 		}
 		T ret = null;
+		Connection connection = null;
 		try {
-			Connection connection = dataSource.getConnection();
+			connection = dataSource.getConnection();
 			ret = processor.process(connection);
-			connection.close();
 		} catch (SQLException e) {
 			throw new PersistenceException("Database error", e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+				}
+			}
 		}
 		try {
 			context.close();
