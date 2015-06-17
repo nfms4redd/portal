@@ -8,7 +8,7 @@ To make the plugin work it is necessary to:
 		username="" password="" maxActive="20" maxIdle="10"
 		maxWait="-1" />
 
-- Configure in plugin-conf.json the URL of the "local" GeoExplorer:
+- Configure in plugin-conf.json the URL of the "local" GeoServer:
 
 	{
 		"default-conf" : {
