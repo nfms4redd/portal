@@ -75,8 +75,8 @@ public class IndexHTMLServlet extends HttpServlet {
 		bis.close();
 		repo.putStringResource(templateName, indexContent);
 
+		resp.setContentType("text/html");
 		Template t = engine.getTemplate("/index.html");
-
 		t.merge(context, resp.getWriter());
 	}
 
