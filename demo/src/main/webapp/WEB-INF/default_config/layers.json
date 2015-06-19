@@ -132,6 +132,7 @@
 			"id" : "forest_mask",
 			"label" : "${forest_mask}",
 			"layers" : [ "forest_mask" ],
+			"infoLink": "http://nfms4redd.org/",
 			"timeInstances" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z",
 			"feedback" : true
 		}, {
@@ -197,6 +198,7 @@
 		}, {
 			"id" : "admin",
 			"label" : "${admin_areas}",
+			"infoLink": "http://nfms4redd.org/",
 			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces", "incendios", "demo_layers" ]
 		}, {
 			"id" : "landcover",

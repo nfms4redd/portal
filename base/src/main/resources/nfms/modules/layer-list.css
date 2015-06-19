@@ -70,7 +70,7 @@ td.layer_visibility {
 }
 
 .layer_info_button {
-	background: url("images/ui-elements.png") no-repeat scroll 0 -130px
+	background: url("images/ui-elements.png") no-repeat scroll 0 -132px
 		rgba(0, 0, 0, 0);
 	display: block;
 	height: 16px;
@@ -79,13 +79,22 @@ td.layer_visibility {
 	width: 16px;
 }
 
+.group_info_button {
+	position: relative;
+	float: right;
+	width: 16px;
+	height: 16px;
+	padding: 0;
+}
+
 .inline-legend-button {
-    width: 16px;
-    height: 16px;
-    padding: 0;
-    background: url('images/ui-elements.png') no-repeat scroll 0px -114px transparent;
-    display: block;
-    cursor: default;
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	background: url('images/ui-elements.png') no-repeat scroll 0px -114px
+		transparent;
+	display: block;
+	cursor: default;
 }
 
 .inline-legend-button.visible {

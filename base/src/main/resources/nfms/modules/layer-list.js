@@ -1,6 +1,7 @@
 define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n, moment) {
 
 	var layerActions = new Array();
+	var groupActions = new Array();
 
 	var temporalLayers = new Array();
 
@@ -11,6 +12,9 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 
 	bus.listen("register-layer-action", function(event, action) {
 		layerActions.push(action);
+	});
+	bus.listen("register-group-action", function(event, action) {
+		groupActions.push(action);
 	});
 
 	divLayers = $("<div/>").attr("id", "all_layers");
@@ -32,24 +36,18 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 
 		divTitle = $("<div/>").html(groupInfo.name).disableSelection();
 
-		if (groupInfo.hasOwnProperty("infoLink")) {
-			infoButton = $('<a style="position:absolute;top:3px;right:4px;width:16px;height:16px;padding:0;" class="layer_info_button" href="' + groupInfo.infoLink + '"></a>');
-
-			// prevent accordion item from expanding
-			// when clicking on the info button
-			infoButton.click(function(event) {
-				event.stopPropagation()
-			});
-
-			infoButton.fancybox({
-				'autoScale' : false,
-				'openEffect' : 'elastic',
-				'closeEffect' : 'elastic',
-				'type' : 'ajax',
-				'overlayOpacity' : 0.5
-			});
-
-			divTitle.append(infoButton);
+		for (var i = 0; i < groupActions.length; i++) {
+			var groupAction = groupActions[i];
+			var element = groupAction(groupInfo);
+			if (element != null) {
+				// prevent accordion item from expanding
+				// when clicking on the info button
+				element.click(function(event) {
+					event.stopPropagation()
+				});
+				element.addClass("layer_info_button").addClass("group_info_button");
+				divTitle.append(element);
+			}
 		}
 
 		tblLayerGroup = $("<table/>");

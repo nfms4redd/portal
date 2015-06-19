@@ -28,6 +28,9 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			"name" : group.label
 		};
 
+		if (group.hasOwnProperty("infoLink")) {
+			groupInfo.infoLink = group.infoLink;
+		}
 		if (group.hasOwnProperty("infoFile")) {
 			groupInfo.infoLink = "static/loc/" + customization.languageCode + "/html/" + group.infoFile;
 		}
