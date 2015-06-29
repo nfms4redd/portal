@@ -20,10 +20,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeSet;
 
 import org.fao.unredd.portal.DBUtils;
 import org.fao.unredd.portal.PersistenceException;
@@ -40,15 +38,16 @@ public class Output extends OutputDescriptor {
 	private String data_table_id_field;
 	private String data_table_date_field;
 	private String data_table_date_field_format;
+	private String data_table_date_field_output_format = "DD-MM-YYYY";
 
 	private String dbSchemaName;
 	private int chartId;
 	private ArrayList<Axis> axes = null;
-	private TreeSet<Date> dates = null;
+	private ArrayList<String> dates = null;
 
-	public Output(String dbSchemaName, int chartId, String id, String fieldId,
-			String title) {
-		super(id, fieldId, title);
+	public Output(String dbSchemaName, int chartId, String id, String idField,
+			String nameField, String title) {
+		super(id, idField, nameField, title);
 		this.dbSchemaName = dbSchemaName;
 		this.chartId = chartId;
 	}
@@ -66,11 +65,7 @@ public class Output extends OutputDescriptor {
 			this.cargarDatos(objectid);
 		}
 
-		List<String> labels = new ArrayList<String>();
-		for (Date date : dates) {
-			labels.add(date.toString());
-		}
-		return labels;
+		return dates;
 	}
 
 	public String getSubtitle() {
@@ -90,6 +85,14 @@ public class Output extends OutputDescriptor {
 		this.data_table_date_field_format = data_table_date_field_format;
 	}
 
+	public void setData_table_date_field_output_format(
+			String data_table_date_field_output_format) {
+		if (data_table_date_field_output_format == null) {
+			throw new IllegalArgumentException("format cannot be null");
+		}
+		this.data_table_date_field_output_format = data_table_date_field_output_format;
+	}
+
 	public void setData_table_id_field(String data_table_id_field) {
 		this.data_table_id_field = data_table_id_field;
 	}
@@ -103,11 +106,12 @@ public class Output extends OutputDescriptor {
 
 			@Override
 			public void process(Connection connection) throws SQLException {
-				dates = new TreeSet<Date>();
+				dates = new ArrayList<String>();
 				axes = new ArrayList<Axis>();
 				PreparedStatement statement = connection
-						.prepareStatement("SELECT * FROM " + dbSchemaName
-								+ ".redd_stats_variables WHERE chart_id=?");
+						.prepareStatement("SELECT * FROM "
+								+ dbSchemaName
+								+ ".redd_stats_variables WHERE chart_id=? ORDER BY priority DESC");
 				statement.setInt(1, chartId);
 				ResultSet resultSet = statement.executeQuery();
 				HashMap<String, Series> fieldSeries = new HashMap<String, Series>();
@@ -134,25 +138,33 @@ public class Output extends OutputDescriptor {
 				}
 				resultSet.close();
 				statement.close();
-				String dateField = "\"" + data_table_date_field + "\"";
+
+				// Build a date expression to sort by
+				String dateExpression = "\"" + data_table_date_field + "\"";
 				if (data_table_date_field_format != null) {
-					dateField = "to_date(" + dateField + "::varchar, '"
-							+ data_table_date_field_format + "') as "
-							+ dateField;
+					dateExpression = "to_date(" + dateExpression
+							+ "::varchar, '" + data_table_date_field_format
+							+ "')";
 				}
+
+				// Build the output string we'll put in the template
+				String dateField = "to_char(" + dateExpression + ", '"
+						+ data_table_date_field_output_format + "') as "
+						+ data_table_date_field;
+
 				String sql = "SELECT " + dateField;
 				for (String variableName : fieldSeries.keySet()) {
 					sql += ", \"" + variableName + "\" ";
 				}
 				sql += "FROM " + table_name_data + " WHERE \""
-						+ data_table_id_field + "\"::varchar=? "
-						+ "ORDER BY \"" + data_table_date_field + "\"";
+						+ data_table_id_field + "\"::varchar=? " + "ORDER BY "
+						+ dateExpression;
 				statement = connection.prepareStatement(sql);
 				statement.setString(1, objectid);
 				resultSet = statement.executeQuery();
 
 				while (resultSet.next()) {
-					dates.add(resultSet.getDate(data_table_date_field));
+					dates.add(resultSet.getString(data_table_date_field));
 					for (String variableName : fieldSeries.keySet()) {
 						Series series = fieldSeries.get(variableName);
 						series.addValue(resultSet.getFloat(variableName));
@@ -179,5 +191,4 @@ public class Output extends OutputDescriptor {
 
 		});
 	}
-
 }

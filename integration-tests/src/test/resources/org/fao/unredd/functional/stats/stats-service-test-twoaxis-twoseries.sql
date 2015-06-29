@@ -5,9 +5,11 @@ INSERT INTO integration_tests.redd_stats_charts VALUES (
     'Evolución de la cobertura forestal por provincia',
     'bosques:provincias',
     'id_provinc',
+    'name_provinc',
     'integration_tests.cobertura_forestal_provincias',
     'pcia_id',
     'anio',
+    null,
     null
 );
 

@@ -74,15 +74,23 @@ public class DBLayer implements Layer {
 							int id = resultSet.getInt("id");
 							String division_field_id = resultSet
 									.getString("division_field_id");
+							String division_field_name = resultSet
+									.getString("division_field_name");
 							String title = resultSet.getString("title");
 							Output output = new Output(dbSchemaName, id, ""
-									+ id, division_field_id, title);
+									+ id, division_field_id,
+									division_field_name, title);
 							// Ver de agregar estos meta datos al Output.
 							output.setSubtitle(resultSet.getString("subtitle"));
 							output.setData_table_date_field(resultSet
 									.getString("data_table_date_field"));
 							output.setData_table_date_field_format(resultSet
 									.getString("data_table_date_field_format"));
+							String format = resultSet
+									.getString("data_table_date_field_output_format");
+							if (format != null) {
+								output.setData_table_date_field_output_format(format);
+							}
 							output.setData_table_id_field(resultSet
 									.getString("data_table_id_field"));
 							output.setTable_name_data(resultSet

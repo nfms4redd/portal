@@ -30,36 +30,40 @@ public class OutputDescriptor {
 	private String id;
 
 	/**
-	 * The fieldId that identifies the objects in the layer for whom this output
+	 * The field in the wms layer that identifies the object whom this output
 	 * contains information
 	 */
+	private String idField;
 
-	private String fieldId;
+	/**
+	 * The field in the wms layer that contains the name from the object whom
+	 * this output contains information
+	 */
+	private String nameField;
 
 	/**
 	 * The name of the output
 	 */
 	private String title;
 
-	public OutputDescriptor(String id, String fieldId, String title) {
+	public OutputDescriptor(String id, String idfield, String nameField,
+			String title) {
 		super();
 		this.id = id;
-		this.fieldId = fieldId;
+		this.idField = idfield;
+		this.nameField = nameField;
 		this.title = title;
 	}
 
 	public String toJSON() {
 		return "{" + "\"id\":\"" + id + "\"," + //
 				"\"title\":\"" + title + "\"," + //
-				"\"fieldId\":\"" + fieldId + "\"" + "}";
+				"\"idField\":\"" + idField + "\"," + //
+				"\"nameField\":\"" + nameField + "\"" + "}";
 	}
 
 	public String getId() {
 		return id;
-	}
-
-	public String getFieldId() {
-		return fieldId;
 	}
 
 	public String getTitle() {

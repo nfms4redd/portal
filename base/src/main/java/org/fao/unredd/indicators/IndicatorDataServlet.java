@@ -24,6 +24,7 @@ public class IndicatorDataServlet extends HttpServlet {
 		String layerId = req.getParameter("layerId");
 		String indicatorId = req.getParameter("indicatorId");
 		String objectId = req.getParameter("objectId");
+		String objectName = req.getParameter("objectName");
 		if (layerId == null || indicatorId == null) {
 			throw new StatusServletException(400,
 					"layerId and indicatorId parameters are mandatory");
@@ -37,7 +38,8 @@ public class IndicatorDataServlet extends HttpServlet {
 					ChartGenerator chartGenerator = new ChartGenerator(output);
 					resp.setContentType(chartGenerator.getContentType());
 					resp.setCharacterEncoding("utf-8");
-					String chartOutput = chartGenerator.generate(objectId);
+					String chartOutput = chartGenerator.generate(objectId,
+							objectName);
 					resp.getWriter().write(chartOutput);
 					resp.flushBuffer();
 				} else {

@@ -5,9 +5,11 @@ INSERT INTO integration_tests.redd_stats_charts VALUES (
     'Evolución de la cobertura forestal por provincia',
     'bosques:provincias',
     'id_provinc',
+    'name_provinc',
     'integration_tests.cobertura_forestal_provincias',
     'pcia_id',
     'anio',
+    null,
     null
 );
 
@@ -20,7 +22,8 @@ INSERT INTO integration_tests.redd_stats_variables VALUES (
 	2,
 	'Bosque nativo',
 	'sup_nativo',
-	'line'
+	'line',
+	1
 );
 INSERT INTO integration_tests.redd_stats_variables VALUES (
 	default,
@@ -30,7 +33,8 @@ INSERT INTO integration_tests.redd_stats_variables VALUES (
     2,
 	'Bosque cultivado',
     'sup_cultivado',
-    'line'
+    'line',
+    2
 );
 
 -- Data

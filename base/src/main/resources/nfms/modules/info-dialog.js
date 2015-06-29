@@ -3,7 +3,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 	var wmsNamePortalLayerName = {};
 
 	var infoFeatures;
-	
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		var portalLayerName = layerInfo["label"];
 		$.each(layerInfo.wmsLayers, function(i, wmsLayer) {
@@ -80,7 +80,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			}
 			$.each(layerFeatures, function(index, feature) {
 				feature["layerId"] = layerId;
-				
+
 				var tr = $("<tr/>").appendTo(tblData);
 
 				// Zoom to object button
@@ -173,7 +173,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			aIndicators.attr("alt", indicator.title);
 			aIndicators.attr("title", indicator.title);
 			aIndicators.click(function() {
-				bus.send("show-feature-indicator", [ infoFeatureIndex, indicatorIndex]);
+				bus.send("show-feature-indicator", [ infoFeatureIndex, indicatorIndex ]);
 			});
 			// TODO Agregar separador entre iconos.
 		});// END each
@@ -185,11 +185,14 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		var layerId = feature["layerId"];
 
 		bus.send("ajax", {
-			url : "indicator?objectId=" + feature.attributes[indicator.fieldId] + "&layerId=" + layerId + "&indicatorId=" + indicator.id,
+			url : "indicator?objectId=" + feature.attributes[indicator.idField] + //
+			"&objectName=" + feature.attributes[indicator.nameField] + //
+			"&layerId=" + layerId + //
+			"&indicatorId=" + indicator.id,
 			success : function(chartData, textStatus, jqXHR) {
 				var chart = $("<div/>");
 				chart.highcharts(chartData);
-				bus.send("show-info", [indicator.title, chart]);
+				bus.send("show-info", [ indicator.title, chart ]);
 			},
 			errorMsg : "Could not obtain the indicator"
 		});

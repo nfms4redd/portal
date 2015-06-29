@@ -4,7 +4,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -29,7 +28,7 @@ public class StatsTest extends AbstractIntegrationTest {
 
 		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
 				.getJSONObject(0).getString("id"), "layerId", layerName,
-				"objectId", "1");
+				"objectId", "1", "objectName", "Buenos Aires");
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
 				.toString(ret.getEntity().getContent()));
@@ -37,9 +36,51 @@ public class StatsTest extends AbstractIntegrationTest {
 
 	}
 
+	@Test
+	public void testStatsServiceAxisPriority() throws Exception {
+		String layerName = "bosques:provincias";
+		SQLExecute(getScript("stats-service-test-axis-priority.sql"));
+		JSONArray indicators = getIndicators(layerName);
+
+		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
+				.getJSONObject(0).getString("id"), "layerId", layerName,
+				"objectId", "1");
+		assertEquals(200, ret.getStatusLine().getStatusCode());
+		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
+				.toString(ret.getEntity().getContent()));
+		// Values
+		JSONArray series = root.getJSONArray("series");
+		assertEquals(2, series.size());
+		JSONObject cultivado = series.getJSONObject(0);
+		assertEquals("Bosque cultivado", cultivado.getString("name"));
+		assertEquals(1000, cultivado.getJSONArray("data").getInt(0));
+		JSONObject nativo = series.getJSONObject(1);
+		assertEquals("Bosque nativo", nativo.getString("name"));
+		assertEquals(100, nativo.getJSONArray("data").getInt(0));
+	}
+
+	@Test
+	public void testStatsServiceOutputDateFormat() throws Exception {
+		String layerName = "bosques:provincias";
+		SQLExecute(getScript("stats-service-test-output-date-format.sql"));
+		JSONArray indicators = getIndicators(layerName);
+
+		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
+				.getJSONObject(0).getString("id"), "layerId", layerName,
+				"objectId", "1");
+		assertEquals(200, ret.getStatusLine().getStatusCode());
+		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
+				.toString(ret.getEntity().getContent()));
+		String firstDate = root.getJSONArray("xAxis").getJSONObject(0)
+				.getJSONArray("categories").getString(0);
+		assertEquals("01->01->1990", firstDate);
+	}
+
 	private void checkStatsServiceTest(JSONObject root) {
-		assertEquals("Cobertura forestal", root.getJSONObject("title")
-				.getString("text"));
+		assertTrue(root.getJSONObject("title").getString("text")
+				.contains("Buenos Aires"));
+		assertTrue(root.getJSONObject("title").getString("text")
+				.contains("Cobertura forestal"));
 		assertEquals("Evolución de la cobertura forestal por provincia", root
 				.getJSONObject("subtitle").getString("text"));
 
@@ -47,29 +88,27 @@ public class StatsTest extends AbstractIntegrationTest {
 		assertEquals(1, root.getJSONArray("xAxis").size());
 		JSONArray xAxisCategories = root.getJSONArray("xAxis").getJSONObject(0)
 				.getJSONArray("categories");
-		assertTrue(xAxisCategories.contains("1990-01-01"));
-		assertTrue(xAxisCategories.contains("2000-01-01"));
-		assertTrue(xAxisCategories.contains("2005-01-01"));
+		assertTrue(xAxisCategories.contains("01-01-1990"));
+		assertTrue(xAxisCategories.contains("01-01-2000"));
+		assertTrue(xAxisCategories.contains("01-01-2005"));
 
 		// Check yAxis
 		assertEquals(1, root.getJSONArray("yAxis").size());
 		JSONObject yAxis = root.getJSONArray("yAxis").getJSONObject(0);
-		assertEquals("Cobertura", yAxis.getJSONObject("title")
-				.getString("text"));
+		assertTrue(yAxis.getJSONObject("title").getString("text")
+				.contains("Cobertura"));
+		assertTrue(yAxis.getJSONObject("title").getString("text")
+				.contains("Hectáreas"));
 
 		// Values
-		assertEquals(2, root.getJSONArray("series").size());
-
-		Iterator<?> itr = root.getJSONArray("series").iterator();
-		while(itr.hasNext()) {
-			JSONObject serie = (JSONObject) itr.next();
-			String name = serie.getString("name");
-			int num = serie.getJSONArray("data").getInt(0);
-			assertTrue(
-				(name.equals("Bosque nativo") && num == 100) ||
-				(name.equals("Bosque cultivado") && num == 1000)
-			);
-		}
+		JSONArray series = root.getJSONArray("series");
+		assertEquals(2, series.size());
+		JSONObject nativo = series.getJSONObject(0);
+		assertEquals("Bosque nativo", nativo.getString("name"));
+		assertEquals(100, nativo.getJSONArray("data").getInt(0));
+		JSONObject cultivado = series.getJSONObject(1);
+		assertEquals("Bosque cultivado", cultivado.getString("name"));
+		assertEquals(1000, cultivado.getJSONArray("data").getInt(0));
 	}
 
 	@Test
@@ -80,7 +119,7 @@ public class StatsTest extends AbstractIntegrationTest {
 
 		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
 				.getJSONObject(0).getString("id"), "layerId", layerName,
-				"objectId", "1");
+				"objectId", "1", "objectName", "Buenos Aires");
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
 				.toString(ret.getEntity().getContent()));
@@ -89,18 +128,18 @@ public class StatsTest extends AbstractIntegrationTest {
 		assertEquals(1, root.getJSONArray("xAxis").size());
 		JSONArray xAxisCategories = root.getJSONArray("xAxis").getJSONObject(0)
 				.getJSONArray("categories");
-		assertTrue(xAxisCategories.contains("1990-01-01"));
-		assertTrue(xAxisCategories.contains("2000-01-01"));
-		assertTrue(xAxisCategories.contains("2005-01-01"));
+		assertTrue(xAxisCategories.contains("01-01-1990"));
+		assertTrue(xAxisCategories.contains("01-01-2000"));
+		assertTrue(xAxisCategories.contains("01-01-2005"));
 
 		// Check yAxis
 		assertEquals(2, root.getJSONArray("yAxis").size());
 		JSONObject axis0 = root.getJSONArray("yAxis").getJSONObject(0);
-		assertEquals("Número de incendios", axis0.getJSONObject("title")
-				.getString("text"));
+		assertTrue(axis0.getJSONObject("title").getString("text")
+				.contains("Número de incendios"));
 		JSONObject axis1 = root.getJSONArray("yAxis").getJSONObject(1);
-		assertEquals("Superficie",
-				axis1.getJSONObject("title").getString("text"));
+		assertTrue(axis1.getJSONObject("title").getString("text")
+				.contains("Superficie"));
 
 		// Values
 		assertEquals(3, root.getJSONArray("series").size());
@@ -134,7 +173,7 @@ public class StatsTest extends AbstractIntegrationTest {
 
 		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
 				.getJSONObject(0).getString("id"), "layerId", layerName,
-				"objectId", "1");
+				"objectId", "1", "objectName", "Buenos Aires");
 		assertEquals(200, ret.getStatusLine().getStatusCode());
 		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
 				.toString(ret.getEntity().getContent()));

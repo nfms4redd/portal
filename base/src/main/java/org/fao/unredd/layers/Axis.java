@@ -1,7 +1,7 @@
 package org.fao.unredd.layers;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Axis {
 
@@ -9,7 +9,7 @@ public class Axis {
 	private String units;
 	private boolean opposite;
 	private String type;
-	private HashMap<String, Series> seriesList = new HashMap<String, Series>();
+	private LinkedHashMap<String, Series> seriesList = new LinkedHashMap<String, Series>();
 
 	public String getLabel() {
 		return label;
@@ -48,8 +48,8 @@ public class Axis {
 	}
 
 	public boolean allPositiveValues() {
-		for(Series series : seriesList.values()) {
-			if(!series.allPositiveValues()) {
+		for (Series series : seriesList.values()) {
+			if (!series.allPositiveValues()) {
 				return false;
 			}
 		}

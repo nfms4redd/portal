@@ -36,8 +36,8 @@ public class ChartGenerator {
 		inputData = output;
 	}
 
-	public String generate(String objectId) throws IOException,
-			PersistenceException {
+	public String generate(String objectId, String objectName)
+			throws IOException, PersistenceException {
 		VelocityEngine engine = new VelocityEngine();
 		engine.setProperty("resource.loader", "class");
 		engine.setProperty("class.resource.loader.class",
@@ -45,7 +45,8 @@ public class ChartGenerator {
 		engine.init();
 		VelocityContext context = new VelocityContext();
 
-		context.put("title", nullToEmptyString(inputData.getTitle()));
+		context.put("title", nullToEmptyString(inputData.getTitle()) + ": "
+				+ objectName);
 		context.put("subtitle", nullToEmptyString(inputData.getSubtitle()));
 
 		context.put("dates", inputData.getLabels(objectId));
