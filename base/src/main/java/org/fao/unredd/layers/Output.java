@@ -157,10 +157,12 @@ public class Output extends OutputDescriptor {
 					sql += ", \"" + variableName + "\" ";
 				}
 				sql += "FROM " + table_name_data + " WHERE \""
-						+ data_table_id_field + "\"::varchar=? " + "ORDER BY "
-						+ dateExpression;
+						+ data_table_id_field
+						+ "\"::varchar in (?, trim(leading '0' from ?)) "
+						+ "ORDER BY " + dateExpression;
 				statement = connection.prepareStatement(sql);
 				statement.setString(1, objectid);
+				statement.setString(2, objectid);
 				resultSet = statement.executeQuery();
 
 				while (resultSet.next()) {
@@ -190,5 +192,11 @@ public class Output extends OutputDescriptor {
 			}
 
 		});
+
+		if (dates.isEmpty()) {
+			throw new PersistenceException("No results for id " + objectid,
+					null);
+		}
+
 	}
 }
