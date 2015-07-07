@@ -196,7 +196,6 @@ public class AbstractIntegrationTest {
 			url += parameters[i] + "="
 					+ URLEncoder.encode(parameters[i + 1], "UTF-8") + "&";
 		}
-		System.out.println("GET " + url);
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpGet get = new HttpGet(url);
 		return httpClient.execute(get);
@@ -210,7 +209,6 @@ public class AbstractIntegrationTest {
 			parameterList.add(new BasicNameValuePair(parameters[i],
 					parameters[i + 1]));
 		}
-		System.out.println("PUT " + url + " + " + parameterList);
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpPost put = new HttpPost(url);
 		put.setEntity(new UrlEncodedFormEntity(parameterList));
