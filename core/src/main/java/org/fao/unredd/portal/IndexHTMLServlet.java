@@ -39,7 +39,8 @@ public class IndexHTMLServlet extends HttpServlet {
 		engine.init();
 		VelocityContext context = new VelocityContext();
 
-		boolean minifiedjs = Boolean.parseBoolean(System.getenv("MINIFIED_JS"));
+		boolean minifiedjs = Boolean.parseBoolean(System
+				.getProperty("MINIFIED_JS"));
 		ServletContext servletContext = getServletContext();
 		Config config = (Config) getServletContext().getAttribute("config");
 		ArrayList<String> styleSheets = new ArrayList<String>();
