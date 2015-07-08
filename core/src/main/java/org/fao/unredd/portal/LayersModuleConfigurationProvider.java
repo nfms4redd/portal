@@ -19,9 +19,13 @@ public class LayersModuleConfigurationProvider implements
 	public Map<String, JSONObject> getConfigurationMap(
 			PortalRequestConfiguration configurationContext,
 			HttpServletRequest request) throws IOException {
+		String id = request.getParameter("mapId");
+		if (id == null) {
+			id = "";
+		}
 		String layersTemplate = IOUtils.toString(
 				new File(configurationContext.getConfigurationDirectory(),
-						"layers.json").toURI(), "UTF-8");
+						"layers" + id + ".json").toURI(), "UTF-8");
 		JSONObject layersContent = (JSONObject) JSONSerializer
 				.toJSON(configurationContext.localize(layersTemplate));
 
