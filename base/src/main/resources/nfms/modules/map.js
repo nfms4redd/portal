@@ -1,4 +1,4 @@
-define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
+define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout, $) {
 
 	/*
 	 * keep the information about wms layers that will be necessary for
@@ -7,25 +7,27 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	var mapLayersByLayerId = {};
 
 	var map = null;
-	var currentControl = null;
+	var currentControlList = [];
 	var defaultExclusiveControl = null;
 
-	var activateExclusiveControl = function(event, control) {
-		if (currentControl != null) {
-			currentControl.deactivate();
-			map.removeControl(currentControl);
+	var activateExclusiveControl = function(controlList) {
+		for (var i = 0; i < currentControlList.length; i++) {
+			currentControl[i].deactivate();
+			map.removeControl(currentControl[i]);
 		}
 
-		map.addControl(control);
-		control.activate();
+		for (var i = 0; i < controlList.length; i++) {
+			map.addControl(controlList[i]);
+			controlList[i].activate();
+		}
 
-		currentControl = control;
+		currentControl = controlList;
 	};
 
 	OpenLayers.ProxyHost = "proxy?url=";
 
 	map = new OpenLayers.Map(layout.map.attr("id"), {
-		fallThrough: true,
+		fallThrough : true,
 		theme : null,
 		projection : new OpenLayers.Projection("EPSG:900913"),
 		displayProjection : new OpenLayers.Projection("EPSG:4326"),
@@ -112,14 +114,20 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 	});
 
 	bus.listen("activate-exclusive-control", function(event, control) {
-		activateExclusiveControl(event, control);
+		if (!$.isArray(control)) {
+			control = [ control ];
+		}
+		activateExclusiveControl(control);
 	});
 
 	bus.listen("activate-default-exclusive-control", function(event) {
-		activateExclusiveControl(event, defaultExclusiveControl);
+		activateExclusiveControl(defaultExclusiveControl);
 	});
 
 	bus.listen("set-default-exclusive-control", function(event, control) {
+		if (!$.isArray(control)) {
+			control = [ control ];
+		}
 		defaultExclusiveControl = control;
 	});
 
@@ -167,14 +175,16 @@ define([ "message-bus", "layout", "openlayers" ], function(bus, layout) {
 			});
 		}
 	});
-	
+
 	/*
 	 * To simulate clicks. Used at least in the tour
 	 */
-	bus.listen("map-click", function(event, lat, lon){
+	bus.listen("map-click", function(event, lat, lon) {
 		var mapPoint = new OpenLayers.LonLat(lon, lat);
 		mapPoint.transform(new OpenLayers.Projection("EPSG:4326"), map.projection);
-		map.events.triggerEvent("click", {xy: map.getPixelFromLonLat(mapPoint)});
+		map.events.triggerEvent("click", {
+			xy : map.getPixelFromLonLat(mapPoint)
+		});
 	});
 
 	return map;

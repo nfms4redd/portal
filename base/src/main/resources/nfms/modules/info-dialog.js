@@ -11,7 +11,11 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			wmsNamePortalLayerName[wmsName] = portalLayerName;
 		});
 	});
-
+	
+	bus.listen("clear-info-features", function(event, features, x, y) {
+		$("#info_popup").empty();
+	});
+	
 	bus.listen("info-features", function(event, features, x, y) {
 		var i, infoPopup, epsg4326, epsg900913;
 
