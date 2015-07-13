@@ -89,7 +89,8 @@
 			"wmsName" : "bosques_umsef_db:provincias_incendios",
 			"imageFormat" : "image/png8",
 			"legend" : "auto",
-			"visible" : true
+			"visible" : true,
+			"queryable" : true
 		}, {
 			"id" : "provincias_demo",
 			"baseUrl" : "http://demo.geomati.co:8080/geoserver/bosques/wms",
