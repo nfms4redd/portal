@@ -6,6 +6,12 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 	 */
 	var mapLayersByLayerId = {};
 
+	/*
+	 * Stores the indices during the layer load in order to set the right order
+	 * when all layers are in the map
+	 */
+	var zIndexes = {};
+
 	var map = null;
 	var currentControlList = [];
 	var defaultExclusiveControl = null;
@@ -75,6 +81,7 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 			if (map !== null) {
 				map.addLayer(layer);
 				map.setLayerIndex(layer, wmsLayer.zIndex);
+				zIndexes[wmsLayer.id] = wmsLayer.zIndex;
 			}
 			mapLayerArray.push(wmsLayer.id);
 		});
@@ -84,9 +91,24 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 	});
 
 	bus.listen("layers-loaded", function() {
+		/*
+		 * Sort all layers by zIndexes
+		 */
+		var sorted = Object.keys(zIndexes).sort(function(a, b) {
+			return zIndexes[a] - zIndexes[b]
+		});
+
+		for (var i = 0; i < sorted.length; i++) {
+			var id = sorted[i];
+			var z = zIndexes[id];
+			var layer = map.getLayer(id);
+			if (layer) {
+				map.setLayerIndex(layer, z);
+			}
+		}
+
 		// Add the vector layer for highlighted features on top of all the other
 		// layers
-
 		// StyleMap for the highlight layer
 		var styleMap = new OpenLayers.StyleMap({
 			'strokeWidth' : 5,
