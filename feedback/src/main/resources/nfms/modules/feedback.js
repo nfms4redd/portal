@@ -1,4 +1,4 @@
-define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls" ],//
+define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls", "wait-mask"],//
 function(bus, urlParameters, map, toolbar, i18n, $) {
 
 	var feedbackLayers = new Array();
@@ -91,6 +91,8 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 				data.date = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
 			}
 
+			bus.send("wait-mask", i18n["Feedback.wait"]);
+
 			bus.send("ajax", {
 				type : 'POST',
 				url : 'create-comment?',
@@ -99,7 +101,10 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 					bus.send("info", i18n["Feedback.verify_mail_sent"]);
 					dlg.dialog('close');
 				},
-				errorMsg : i18n["Feedback.submit_error"]
+				errorMsg : i18n["Feedback.submit_error"],
+				complete : function() {
+					bus.send("wait-mask", false);
+				}
 			});
 		}
 	}
@@ -120,6 +125,7 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 	var deactivateFeedback = function() {
 		feedbackLayer.removeAllFeatures();
 		bus.send("activate-default-exclusive-control");
+		editToolbar.deactivate();
 		map.removeLayer(feedbackLayer);
 		$("#button_feedback").removeClass('selected');
 	}
