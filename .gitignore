@@ -14,3 +14,4 @@ commons/src/main/jaxb/
 *.iml
 velocity.log
 sample-areas.tiff
+.externalToolBuilders/
