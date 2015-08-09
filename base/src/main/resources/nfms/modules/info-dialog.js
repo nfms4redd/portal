@@ -11,30 +11,15 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			wmsNamePortalLayerName[wmsName] = portalLayerName;
 		});
 	});
-	
+
 	bus.listen("clear-info-features", function(event, features, x, y) {
 		$("#info_popup").empty();
 	});
-	
-	bus.listen("info-features", function(event, features, x, y) {
+
+	bus.listen("info-features", function(event, wmsLayerId, features, x, y) {
 		var i, infoPopup, epsg4326, epsg900913;
 
 		infoFeatures = features;
-
-		// re-project to Google projection
-		epsg4326 = new OpenLayers.Projection("EPSG:4326");
-		epsg900913 = new OpenLayers.Projection("EPSG:900913");
-		for (i = 0; i < features.length; i++) {
-			/*
-			 * Raster layers in GeoServer return no Geometry
-			 */
-			if (features[i].geometry) {
-				if (customization["highlight-bounds"] == "true") {
-					features[i].geometry = features[i].geometry.getBounds().toGeometry();
-				}
-				features[i].geometry.transform(epsg4326, epsg900913);
-			}
-		}
 
 		infoPopup = $("#info_popup");
 		if (infoPopup.length === 0) {
@@ -58,75 +43,77 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		// TODO check if there is a custom pop up instead of showing the
 		// standard one
 
-		var layerNameFeatures = {};
-		$.each(features, function(index, feature) {
-			feature["index"] = index;
-			qualifiedLayerId = feature.gml.featureNSPrefix + ":" + feature.gml.featureType;
-
-			if (!layerNameFeatures.hasOwnProperty(qualifiedLayerId)) {
-				layerNameFeatures[qualifiedLayerId] = [ feature ];
-			} else {
-				layerNameFeatures[qualifiedLayerId].push(feature);
-			}
-		});
 		var divResults = $("<div/>").attr("id", "result_area").appendTo(infoPopup);
-		$.each(layerNameFeatures, function(layerId, layerFeatures) {
-			var layerName = wmsNamePortalLayerName[layerId];
-			$("<div/>").addClass("layer_title info_center").html(layerName).appendTo(divResults);
-			var divTable = $("<div/>").addClass("layer_results info_center").appendTo(divResults);
-			var tblData = $("<table/>").appendTo(divTable);
+		var layerNameFeatures = null;
+		var layerName = wmsNamePortalLayerName[wmsLayerId];
+		$("<div/>").addClass("layer_title info_center").html(layerName).appendTo(divResults);
+		var divTable = $("<div/>").addClass("layer_results info_center").appendTo(divResults);
+		var tblData = $("<table/>").appendTo(divTable);
+		var tr = $("<tr/>").appendTo(tblData);
+
+		$("<th/>").addClass("command").html("").appendTo(tr);
+		$("<th/>").addClass("command").html("").appendTo(tr);
+		var aliases = features[0]["aliases"];
+		for (var i = 0; i < aliases.length; i++) {
+			$("<th/>").addClass("data").html(aliases[i].alias + "(" + aliases[i].name + ")").appendTo(tr);
+		}
+		$.each(features, function(index, feature) {
+
 			var tr = $("<tr/>").appendTo(tblData);
 
-			$("<th/>").addClass("command").html("").appendTo(tr);
-			$("<th/>").addClass("command").html("").appendTo(tr);
-			for (attribute in layerFeatures[0].attributes) {
-				$("<th/>").addClass("data").html(attribute).appendTo(tr);
+			// Zoom to object button
+			var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + feature["index"]).attr("src", "modules/images/zoom-to-object.png");
+			imgZoomToArea.css("cursor", "pointer");
+			var tdMagnifier = $("<td/>").addClass("command").appendTo(tr);
+			var bounds = null;
+			var highlightGeom = null;
+
+			if (feature.geometry) {
+				bounds = feature["geometry"].getBounds();
+				highlightGeom = feature["geometry"];
+			} else if (feature.attributes["bbox"]) {
+				var bbox = feature.attributes["bbox"];
+				bounds = new OpenLayers.Bounds();
+				bounds.extend(new OpenLayers.LonLat(bbox[0], bbox[1]));
+				bounds.extend(new OpenLayers.LonLat(bbox[2], bbox[3]));
+				highlightGeom = bounds.toGeometry();
 			}
-			$.each(layerFeatures, function(index, feature) {
-				feature["layerId"] = layerId;
-
-				var tr = $("<tr/>").appendTo(tblData);
-
-				// Zoom to object button
-				var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + feature["index"]).attr("src", "modules/images/zoom-to-object.png");
-				imgZoomToArea.css("cursor", "pointer");
-				var tdMagnifier = $("<td/>").addClass("command").appendTo(tr);
-				if (feature.geometry) {
-					tdMagnifier.append(imgZoomToArea);
-					tdMagnifier.click(function() {
-						bus.send("zoom-to", feature.geometry.getBounds().scale(1.2));
-					});
-				}
-
-				// Indicators button
-				var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
-				var tdIndicators = $("<td/>").attr("id", "info-indicator-" + feature["index"]).addClass("command").append(imgWait).appendTo(tr);
-				bus.send("ajax", {
-					url : 'indicators?layerId=' + layerId,
-					success : function(indicators, textStatus, jqXHR) {
-						if (indicators.length > 0) {
-							bus.send("feature-indicators-received", [ feature["index"], indicators ]);
-						}
-					},
-					errorMsg : "Could not obtain the indicator",
-					complete : function() {
-						imgWait.remove();
-					}
+			if (bounds != null) {
+				tdMagnifier.append(imgZoomToArea);
+				tdMagnifier.click(function() {
+					bus.send("zoom-to", bounds.scale(1.2));
 				});
+			}
 
-				var attributes = feature.attributes;
-				for (attribute in attributes) {
-					$("<td/>").addClass("data").html(attributes[attribute]).appendTo(tr);
+			// Indicators button
+			var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
+			var tdIndicators = $("<td/>").attr("id", "info-indicator-" + feature["index"]).addClass("command").append(imgWait.clone()).appendTo(tr);
+			bus.send("ajax", {
+				url : 'indicators?layerId=' + wmsLayerId,
+				success : function(indicators, textStatus, jqXHR) {
+					if (indicators.length > 0) {
+						bus.send("feature-indicators-received", [ feature["index"], indicators ]);
+					}
+				},
+				errorMsg : "Could not obtain the indicator",
+				complete : function() {
+					imgWait.remove();
 				}
+			});
 
+			var aliases = feature["aliases"];
+			for (var i = 0; i < aliases.length; i++) {
+				$("<td/>").addClass("data").html(feature.attributes[aliases[i].name]).appendTo(tr);
+			}
+
+			if (highlightGeom != null) {
 				tr.mouseenter(function() {
-					bus.send("highlight-feature", feature);
+					bus.send("highlight-feature", highlightGeom);
 				});
 				tr.mouseleave(function() {
 					bus.send("clear-highlighted-features");
 				});
-
-			});
+			}
 
 		});
 
@@ -203,9 +190,11 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 	});
 
-	bus.listen("highlight-feature", function(event, feature) {
+	bus.listen("highlight-feature", function(event, geometry) {
 		var highlightLayer = map.getLayer("Highlighted Features");
 		highlightLayer.removeAllFeatures();
+		var feature = new OpenLayers.Feature.Vector();
+		feature.geometry = geometry;
 		highlightLayer.addFeatures(feature);
 		highlightLayer.redraw();
 	});
