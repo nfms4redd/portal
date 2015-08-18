@@ -28,9 +28,10 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "momen
 				return a - b;
 			});
 
-			$("<div/>").html(layerInfo.label).addClass("layer-time-slider-title").appendTo(divTimeSliders);
-			var divTimeSliderLabel = $("<span id='layer_time_slider_label_" + layerInfo.id + "'/>").appendTo(divTimeSliders);
-			var divTimeSlider = $("<div id='layer_time_slider_" + layerInfo.id + "' class='layers_time_slider' />").appendTo(divTimeSliders);
+			var divTimeSliderContainer = $("<div id='layer_time_slider_container_" + layerInfo.id + "'/>").addClass("layer-time-slider-container").appendTo(divTimeSliders);
+			var divTimeSliderTitle = $("<div/>").html(layerInfo.label).addClass("layer-time-slider-title").appendTo(divTimeSliderContainer);
+			var divTimeSliderLabel = $("<span id='layer_time_slider_label_" + layerInfo.id + "'/>").appendTo(divTimeSliderContainer);
+			var divTimeSlider = $("<div id='layer_time_slider_" + layerInfo.id + "' class='layers_time_slider' />").appendTo(divTimeSliderContainer);
 			divTimeSlider.addClass("layer-time-slider");
 
 			divTimeSlider.slider({
@@ -83,5 +84,14 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "momen
 				$('#layer_time_slider_label_' + layerId).text(strDate);
 			}
 		});
+	});
+
+	bus.listen("layer-visibility", function(e, layerId, visible) {
+		var container = $("#layer_time_slider_container_" + layerId);
+		if (visible) {
+			container.show();
+		} else {
+			container.hide();
+		}
 	});
 });

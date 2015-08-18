@@ -9,3 +9,7 @@
 	margin-top: 10px;
 	margin-bottom: 5px;
 }
+
+.layer-time-slider-container {
+	display: none;
+}
