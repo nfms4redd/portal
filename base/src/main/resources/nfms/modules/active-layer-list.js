@@ -21,7 +21,8 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 		// are associated)
 		if (!layerInfo.isPlaceholder) {
 			var activeLayerInfo = {
-				label : layerInfo.label
+				label : layerInfo.label,
+				opacity: 1
 			};
 			if (layerInfo.hasOwnProperty("inlineLegendUrl")) {
 				activeLayerInfo["inlineLegendUrl"] = layerInfo.inlineLegendUrl;
@@ -70,7 +71,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 				transparencyDiv.slider({
 					min : 0,
 					max : 100,
-					value : 100,
+					value : 100 * layerInfo.opacity,
 					slide : function(event, ui) {
 						bus.send("transparency-slider-changed", [ layerId, ui.value / 100 ]);
 					}
@@ -91,6 +92,11 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 	});
 
 	bus.listen("transparency-slider-changed", function(event, layerId, opacity) {
+		var layerInfo = layersInfo[layerId];
+		if (layerInfo) {
+			layerInfo["opacity"] = opacity;
+		}
+
 		var slider = $("#" + layerId + "_transparency_slider");
 		var opacityPercentage = 100 * opacity;
 		if (slider.slider("value") != opacityPercentage) {
