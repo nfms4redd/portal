@@ -1,9 +1,9 @@
 {
 	"default-conf": {
 		"footnote": {
-			"text": "footnote.text", /* Required. Text can be a literal string or an i18n key reference. */
-			"link": "http://snmb-desarrollo.readthedocs.org/", /* Optional. Link can be a literal string or an i18n key reference. */
-			"align": "center" /* Optional. "left", "center" or "right". Defaults to "center". */
+			"text": "footnote.text",
+			"link": "http://snmb-desarrollo.readthedocs.org/",
+			"align": "center"
 		}
 	}
 }
