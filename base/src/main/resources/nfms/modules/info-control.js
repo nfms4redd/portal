@@ -163,7 +163,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 										if (wmsLayer.hasOwnProperty("queryHighlightBounds") && wmsLayer["queryHighlightBounds"]) {
 											feature.geometry = feature.geometry.getBounds().toGeometry();
 										}
-										feature.geometry.transform(epsgSource, epsg900913);
+										feature.geometry.transform(epsg4326, epsg900913);
 									}
 								});
 

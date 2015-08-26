@@ -62,7 +62,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			var tr = $("<tr/>").appendTo(tblData);
 
 			// Zoom to object button
-			var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + feature["index"]).attr("src", "modules/images/zoom-to-object.png");
+			var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + index).attr("src", "modules/images/zoom-to-object.png");
 			imgZoomToArea.css("cursor", "pointer");
 			var tdMagnifier = $("<td/>").addClass("command").appendTo(tr);
 			var bounds = null;
@@ -87,12 +87,12 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 			// Indicators button
 			var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
-			var tdIndicators = $("<td/>").attr("id", "info-indicator-" + feature["index"]).addClass("command").append(imgWait.clone()).appendTo(tr);
+			var tdIndicators = $("<td/>").attr("id", "info-indicator-" + index).addClass("command").append(imgWait).appendTo(tr);
 			bus.send("ajax", {
 				url : 'indicators?layerId=' + wmsLayerId,
 				success : function(indicators, textStatus, jqXHR) {
 					if (indicators.length > 0) {
-						bus.send("feature-indicators-received", [ feature["index"], indicators ]);
+						bus.send("feature-indicators-received", [ index, indicators ]);
 					}
 				},
 				errorMsg : "Could not obtain the indicator",
