@@ -1,14 +1,16 @@
 define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "highcharts", "highcharts-theme-sand" ], function(module, $, bus, map, i18n, customization) {
 
-	var wmsNamePortalLayerName = {};
+	var wmsLayerInfo = {};
 
 	var infoFeatures;
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var portalLayerName = layerInfo["label"];
 		$.each(layerInfo.wmsLayers, function(i, wmsLayer) {
-			var wmsName = wmsLayer["wmsName"];
-			wmsNamePortalLayerName[wmsName] = portalLayerName;
+			wmsLayerInfo[wmsLayer["id"]] = {
+				"portalLayerName" : portalLayerName,
+				"wmsName" : wmsLayer["wmsName"]
+			}
 		});
 	});
 
@@ -45,7 +47,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 		var divResults = $("<div/>").attr("id", "result_area").appendTo(infoPopup);
 		var layerNameFeatures = null;
-		var layerName = wmsNamePortalLayerName[wmsLayerId];
+		var layerName = wmsLayerInfo[wmsLayerId]["portalLayerName"];
 		$("<div/>").addClass("layer_title info_center").html(layerName).appendTo(divResults);
 		var divTable = $("<div/>").addClass("layer_results info_center").appendTo(divResults);
 		var tblData = $("<table/>").appendTo(divTable);
@@ -55,7 +57,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		$("<th/>").addClass("command").html("").appendTo(tr);
 		var aliases = features[0]["aliases"];
 		for (var i = 0; i < aliases.length; i++) {
-			$("<th/>").addClass("data").html(aliases[i].alias + "(" + aliases[i].name + ")").appendTo(tr);
+			$("<th/>").addClass("data").html(aliases[i].alias).appendTo(tr);
 		}
 		$.each(features, function(index, feature) {
 
@@ -88,11 +90,12 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			// Indicators button
 			var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
 			var tdIndicators = $("<td/>").attr("id", "info-indicator-" + index).addClass("command").append(imgWait).appendTo(tr);
+			var wmsName = wmsLayerInfo[wmsLayerId]["wmsName"];
 			bus.send("ajax", {
-				url : 'indicators?layerId=' + wmsLayerId,
+				url : 'indicators?layerId=' + wmsName,
 				success : function(indicators, textStatus, jqXHR) {
 					if (indicators.length > 0) {
-						bus.send("feature-indicators-received", [ index, indicators ]);
+						bus.send("feature-indicators-received", [ wmsName, index, indicators ]);
 					}
 				},
 				errorMsg : "Could not obtain the indicator",
@@ -151,7 +154,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		}
 	});
 
-	bus.listen("feature-indicators-received", function(event, infoFeatureIndex, indicators) {
+	bus.listen("feature-indicators-received", function(event, wmsName, infoFeatureIndex, indicators) {
 		infoFeatures[infoFeatureIndex]["indicators"] = indicators;
 		// TODO if there is more than one indicator, offer the
 		// choice to the user.
@@ -164,21 +167,20 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			aIndicators.attr("alt", indicator.title);
 			aIndicators.attr("title", indicator.title);
 			aIndicators.click(function() {
-				bus.send("show-feature-indicator", [ infoFeatureIndex, indicatorIndex ]);
+				bus.send("show-feature-indicator", [ wmsName, infoFeatureIndex, indicatorIndex ]);
 			});
 			// TODO Agregar separador entre iconos.
 		});// END each
 	})
 
-	bus.listen("show-feature-indicator", function(event, featureIndex, indicatorIndex) {
+	bus.listen("show-feature-indicator", function(event, wmsName, featureIndex, indicatorIndex) {
 		var feature = infoFeatures[featureIndex];
 		var indicator = feature["indicators"][indicatorIndex];
-		var layerId = feature["layerId"];
 
 		bus.send("ajax", {
 			url : "indicator?objectId=" + feature.attributes[indicator.idField] + //
 			"&objectName=" + feature.attributes[indicator.nameField] + //
-			"&layerId=" + layerId + //
+			"&layerId=" + wmsName + //
 			"&indicatorId=" + indicator.id,
 			success : function(chartData, textStatus, jqXHR) {
 				var chart = $("<div/>");
