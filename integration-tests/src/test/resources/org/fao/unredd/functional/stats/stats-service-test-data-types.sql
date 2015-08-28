@@ -21,7 +21,8 @@ INSERT INTO integration_tests.redd_stats_variables VALUES (
 	2,
 	'Bosque nativo',
 	'sup_nativo',
-	'line'
+	'line',
+	1
 );
 INSERT INTO integration_tests.redd_stats_variables VALUES (
 	default,
@@ -31,7 +32,8 @@ INSERT INTO integration_tests.redd_stats_variables VALUES (
     2,
 	'Bosque cultivado',
     'sup_cultivado',
-    'line'
+    'line',
+    2
 );
 
 -- Data
