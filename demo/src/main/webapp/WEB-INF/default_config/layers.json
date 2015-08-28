@@ -100,7 +100,20 @@
 			"sourceLink" : "http://demo.geomati.co:8080/geoserver/web",
 			"sourceLabel" : "WRI",
 			"queryable" : true
-		}
+		}, {
+            "baseUrl": "http://geo2.ambiente.gob.ar/portal/gs/gwc/service/wms", 
+            "label": "L\u00edmites provinciales", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "limites_provinciales", 
+            "wmsName": "bosques_umsef_db:limites_provinciales", 
+            "legend": "lim_prov.png",
+            "queryType" : "wfs",
+            "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+   			"queryGeomFieldName" : "geom",
+ 			"queryFieldNames" : [ "nprov", "cod_indec" ],
+			"queryFieldAliases" : [ "Nombre", "Codigo" ]
+        }
 	],
 
 	"portalLayers" : [
@@ -164,12 +177,30 @@
 		}, {
 			"id" : "provinces_title_placeholder",
 			"label" : "Provincias"
-		},
-		{
-			"id" : "incendios",
-			"active" : true,
-			"label" : "Incendios por provincias",
-			"layers" : [ "incendios" ],
+		}, {
+            "active": true, 
+            "layers": [
+                "limites_provinciales"
+            ], 
+            "id": "limites_provinciales", 
+            "infoFile": "ign.html", 
+            "label": "L\u00edmites provinciales"
+        }, {
+			"id" : "incendios_wfsinfo",
+			"label" : "Incendios por provincias (wfs info)",
+			"layers" : [ "incendios_wfsinfo" ],
+			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
+			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
+		}, {
+			"id" : "incendios_wmsinfo",
+			"label" : "Incendios por provincias (wms info)",
+			"layers" : [ "incendios_wmsinfo" ],
+			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
+			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
+		}, {
+			"id" : "incendios_wmsinfo_default",
+			"label" : "Incendios por provincias (default info)",
+			"layers" : [ "incendios_wmsinfo_default" ],
 			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
 			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
 		}, {
@@ -200,7 +231,7 @@
 			"id" : "admin",
 			"label" : "${admin_areas}",
 			"infoLink": "http://nfms4redd.org/",
-			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces", "incendios", "demo_layers" ]
+			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces", "limites_provinciales", "incendios_wfsinfo", "incendios_wmsinfo", "incendios_wmsinfo_default", "demo_layers" ]
 		}, {
 			"id" : "landcover",
 			"label" : "${land_cover_maps}",
