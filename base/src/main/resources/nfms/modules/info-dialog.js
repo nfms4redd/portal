@@ -26,8 +26,6 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		infoPopup = $("#info_popup");
 		if (infoPopup.length === 0) {
 			infoPopup = $("<div/>").attr("id", "info_popup");
-		} else {
-			infoPopup.empty();
 		}
 		infoPopup.dialog({
 			title : i18n["info_dialog_title"],
@@ -45,7 +43,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		// TODO check if there is a custom pop up instead of showing the
 		// standard one
 
-		var divResults = $("<div/>").attr("id", "result_area").appendTo(infoPopup);
+		var divResults = $("<div/>").attr("id", "result_area_" + wmsLayerId).appendTo(infoPopup);
 		var layerNameFeatures = null;
 		var layerName = wmsLayerInfo[wmsLayerId]["portalLayerName"];
 		$("<div/>").addClass("layer_title info_center").html(layerName).appendTo(divResults);
