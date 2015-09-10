@@ -8,12 +8,17 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 	
 	var dialog = null;
 	var divContent = null;
+	var layers = [];
+	layers.sort(function(a, b) {
+		return a.zIndex - b.zIndex
+	});
+	var layersLoaded = false;
 
 	/**
 	 * Esta función está también en legend-panel.js. Si se repite en varios sitios puede convenir refactorizar y crear un módulo que
-	 * cree elementos de la UI. De momento no abrimos ese pastel.
+	 * cree elementos de la UI. De momento no abrimos ese pastel. Micho García <micho.garcia@geomati.co>
 	 */
-	var getDialog = function() {
+	var getDialog_ = function() {
 		if (dialog == null) {
 			dialog = $("<div/>");
 			dialog.attr("title", i18n["layer_order"]);
@@ -29,30 +34,50 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 				},
 				closeOnEscape : false,
 				autoOpen : false,
-				height : 300,
+				height : 500,
 				minHeight : 400,
-				maxHeight : 400,
 				width : 325,
 				zIndex : 2000,
-				resizable : true
+				resizable : true,
+				close: onCloseDialog_
 			});
 		}
 
 		return dialog;
 	};
+	
+	var onCloseDialog_ = function(evt) {
+		divContent.empty();
+	}
 
 	var btn = $("<a/>").attr("id", "order-button").addClass("blue_button").html(i18n["layer_order"]);
 	btn.appendTo(toolbar);
 	btn.click(function() {
-		var dialog = getDialog();
+		var dialog = getDialog_();
 		if (!dialog.dialog("isOpen")) {
-			getDialog().dialog("open");
+			getDialog_().dialog("open");
+			showLayersOnDialog_();
 		} else {
-			getDialog().dialog("close");
+			getDialog_().dialog("close");
 		}
 	});
-
-	var layers = [];
+	
+	var insertLayerOnControl_ = function(layer) {
+		var item = $('<div>').attr('id', layer.id).addClass('layer-order-item');
+		var label = $('<span>').addClass('layer-name-item').html(layer.wmsName);
+		item.append(label).appendTo(divContent);
+	}
+	
+	var showLayersOnDialog_ = function() {
+		if (layersLoaded) {
+			for (var n in layers) {
+				var layer = layers[n];
+				insertLayerOnControl_(layer);
+			}
+		} else {
+			// TODO poner aquí un gif loading
+		}
+	}
 
 	var addLayer_ = function(evt, layer) {
 		for (var n in layer.wmsLayers) {
@@ -60,18 +85,8 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 		}
 	}
 
-	var loadLayers_ = function(evt) {
-		var sorted = layers.sort(function(a, b) {
-			return a.zIndex - b.zIndex
-		});
-
-		for (var i = 0; i < sorted.length; i++) {
-			insertLayerOnControl(sorted[i]);
-		}
-	}
-
-	var insertLayerOnControl = function(layer) {
-
+	var loadLayers_ = function() {
+		layersLoaded = true;
 	}
 
 	bus.listen('add-layer', addLayer_);
