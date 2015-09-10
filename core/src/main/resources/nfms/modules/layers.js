@@ -19,6 +19,12 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		return url;
 	}
 
+	var checkMandatoryParameter = function(wmsLayer, propertyName) {
+		if (!wmsLayer.hasOwnProperty(propertyName)) {
+			bus.send("error", propertyName + " mandatory when queryType='wfs', in layer: " + wmsLayer["id"]);
+		}
+	}
+
 	var processGroup = function(defaultServer, layerRoot, parentId, group) {
 		var items, item, portalLayers, portalLayer, wmsLayerIds,
 			wmsLayers, wmsLayer, i, j, layerInfoArray;
@@ -95,6 +101,13 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 						} else {
 							wmsLayer["legendUrl"] = "static/loc/" + customization.languageCode + "/images/" + wmsLayer.legend;
 						}
+					}
+
+					// Check info parameters
+					if (wmsLayer.hasOwnProperty("queryType") && wmsLayer["queryType"] == "wfs") {
+						checkMandatoryParameter(wmsLayer, "queryGeomFieldName");
+						checkMandatoryParameter(wmsLayer, "queryFieldNames");
+						checkMandatoryParameter(wmsLayer, "queryFieldAliases");
 					}
 					
 					layerInfoArray.push(wmsLayer);
