@@ -91,7 +91,7 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 				data.date = timestamp.getDate() + "/" + (timestamp.getMonth() + 1) + "/" + timestamp.getFullYear();
 			}
 
-			bus.send("wait-mask", i18n["Feedback.wait"]);
+			bus.send("show-wait-mask", i18n["Feedback.wait"]);
 
 			bus.send("ajax", {
 				type : 'POST',
@@ -103,7 +103,7 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 				},
 				errorMsg : i18n["Feedback.submit_error"],
 				complete : function() {
-					bus.send("wait-mask", false);
+					bus.send("hide-wait-mask");
 				}
 			});
 		}

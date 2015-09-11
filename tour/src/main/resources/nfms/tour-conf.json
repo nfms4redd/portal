@@ -252,7 +252,7 @@
                 	"text": "Sólo tenemos que pinchar en él",
                 	"gravity" : "s",
                 	"next" : {
-                		"show-feature-indicator" : [ 0, 0 ]
+                		"show-feature-indicator" : [ "bosques_umsef_db:limites_provinciales", 0, 0 ]
                 	}
             	},
             	{

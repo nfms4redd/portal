@@ -45,8 +45,7 @@
 			"imageFormat" : "image/png8",
 			"visible" : true,
 			"sourceLink" : "http://osfac.net/facet.html",
-			"sourceLabel" : "FACET",
-			"queryable" : true
+			"sourceLabel" : "FACET"
 		}, {
 			"id" : "forestClassification2",
 			"label" : "grouped facet forest classification",
@@ -72,8 +71,7 @@
 			"imageFormat" : "image/png8",
 			"visible" : true,
 			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
-			"sourceLabel" : "WRI",
-			"queryable" : true
+			"sourceLabel" : "WRI"
 		}, {
 			"id" : "provinces",
 			"baseUrl" : "/diss_geoserver/wms",
@@ -81,16 +79,39 @@
 			"imageFormat" : "image/png8",
 			"visible" : true,
 			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
-			"sourceLabel" : "WRI",
-			"queryable" : true
+			"sourceLabel" : "WRI"
 		}, {
-			"id" : "incendios",
-			"baseUrl" : "http://geo2.ambiente.gob.ar/geoserver/bosques_umsef_db/wms",
+			"id" : "incendios_wfsinfo",
+			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
 			"wmsName" : "bosques_umsef_db:provincias_incendios",
 			"imageFormat" : "image/png8",
 			"legend" : "auto",
 			"visible" : true,
-			"queryable" : true
+			"queryType" : "wfs",
+			"queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+			"queryGeomFieldName" : "geom",
+			"queryFieldNames" : [ "nprov", "anio_f" ],
+			"queryFieldAliases" : [ "ID", "fecha" ],
+			"queryTimeFieldName" : "anio_f"
+		}, {
+			"id" : "incendios_wmsinfo",
+			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"wmsName" : "bosques_umsef_db:provincias_incendios",
+			"imageFormat" : "image/png8",
+			"legend" : "auto",
+			"visible" : true,
+			"queryType" : "wms",
+			"queryHighlightBounds" : true,
+			"queryFieldNames" : [ "nprov", "anio_f" ],
+			"queryFieldAliases" : [ "Nombre", "Fecha" ],
+		}, {
+			"id" : "incendios_wmsinfo_default",
+			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"wmsName" : "bosques_umsef_db:provincias_incendios",
+			"imageFormat" : "image/png8",
+			"legend" : "auto",
+			"visible" : true,
+			"queryType" : "wms"
 		}, {
 			"id" : "provincias_demo",
 			"baseUrl" : "http://demo.geomati.co:8080/geoserver/bosques/wms",
@@ -99,7 +120,7 @@
 			"visible" : true,
 			"sourceLink" : "http://demo.geomati.co:8080/geoserver/web",
 			"sourceLabel" : "WRI",
-			"queryable" : true
+			"queryType" : "wms"
 		}, {
             "baseUrl": "http://geo2.ambiente.gob.ar/portal/gs/gwc/service/wms", 
             "label": "L\u00edmites provinciales", 
@@ -125,7 +146,7 @@
 		},
 		{
 			"id" : "osm-layer",
-			"active" : true,
+			"active" : false,
 			"label" : "Open Cycle Map",
 			"layers" : [ "cycle-osm" ]
 		},
@@ -137,7 +158,7 @@
 		},
 		{
 			"id" : "forestClassification",
-			"active" : true,
+			"active" : false,
 			"infoFile" : "forest_classification_def.html",
 			"label" : "${facet_forest_classification}",
 			"layers" : [ "forestClassification" ],
@@ -151,13 +172,13 @@
 			"feedback" : true
 		}, {
 			"id" : "countryBoundaries",
-			"active" : true,
+			"active" : false,
 			"label" : "${country_boundaries}",
 			"layers" : [ "countryBoundaries" ],
 			"inlineLegendUrl" : "auto"
 		}, {
 			"id" : "provinces",
-			"active" : true,
+			"active" : false,
 			"infoFile" : "provinces_def.html",
 			"label" : "${provinces}",
 			"layers" : [ "provinces" ],
@@ -187,18 +208,21 @@
             "label": "L\u00edmites provinciales"
         }, {
 			"id" : "incendios_wfsinfo",
+			"active" : true,
 			"label" : "Incendios por provincias (wfs info)",
 			"layers" : [ "incendios_wfsinfo" ],
 			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
 			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
 		}, {
 			"id" : "incendios_wmsinfo",
+			"active" : true,
 			"label" : "Incendios por provincias (wms info)",
 			"layers" : [ "incendios_wmsinfo" ],
 			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
 			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
 		}, {
 			"id" : "incendios_wmsinfo_default",
+			"active" : true,
 			"label" : "Incendios por provincias (default info)",
 			"layers" : [ "incendios_wmsinfo_default" ],
 			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",

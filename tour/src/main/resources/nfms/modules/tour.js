@@ -66,7 +66,7 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 	/*
 	 * helpers to highlight and zoom info features
 	 */
-	bus.listen("info-features", function(event, features, x, y) {
+	bus.listen("info-features", function(event, wmsLayerId, features, x, y) {
 		infoFeatures = features;
 	});
 	bus.listen("highlight-info-feature", function(event, index) {
