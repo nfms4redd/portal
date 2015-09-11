@@ -15,8 +15,8 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 	var layersLoaded = false;
 
 	/**
-	 * Esta función está también en legend-panel.js. Si se repite en varios sitios puede convenir refactorizar y crear un módulo que
-	 * cree elementos de la UI. De momento no abrimos ese pastel. Micho García <micho.garcia@geomati.co>
+	 * This function is also in legend-panel.js. Maybe is a good idea refactor it and extract a class to
+	 * generate UI components. But today is not the moment to do this. Micho García <micho.garcia@geomati.co>
 	 */
 	var getDialog_ = function() {
 		if (dialog == null) {
@@ -41,10 +41,25 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 				resizable : true,
 				close: onCloseDialog_
 			});
+			divContent.sortable({
+				cursor: "move"
+			});
+			divContent.on('sortstop', onChangeLayerPosition_);
 		}
 
 		return dialog;
 	};
+	
+	var onChangeLayerPosition_ = function(evt, ui) {
+		var newLayersOrder = divContent.sortable('toArray');
+		for (var i = 0; i < newLayersOrder.length; i++) {
+			var id = newLayersOrder[i];
+			var layer = map.getLayer(id);
+			if (layer) {
+				map.setLayerIndex(layer, i);
+			}
+		}
+	}
 	
 	var onCloseDialog_ = function(evt) {
 		divContent.empty();
@@ -53,6 +68,7 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 	var btn = $("<a/>").attr("id", "order-button").addClass("blue_button").html(i18n["layer_order"]);
 	btn.appendTo(toolbar);
 	btn.click(function() {
+		layers = map.layers;
 		var dialog = getDialog_();
 		if (!dialog.dialog("isOpen")) {
 			getDialog_().dialog("open");
@@ -64,7 +80,7 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 	
 	var insertLayerOnControl_ = function(layer) {
 		var item = $('<div>').attr('id', layer.id).addClass('layer-order-item');
-		var label = $('<span>').addClass('layer-name-item').html(layer.wmsName);
+		var label = $('<span>').addClass('layer-name-item').html(layer.name);
 		item.append(label).appendTo(divContent);
 	}
 	
@@ -79,16 +95,9 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(m
 		}
 	}
 
-	var addLayer_ = function(evt, layer) {
-		for (var n in layer.wmsLayers) {
-			layers.push(layer.wmsLayers[n]);
-		}
-	}
-
 	var loadLayers_ = function() {
 		layersLoaded = true;
 	}
 
-	bus.listen('add-layer', addLayer_);
 	bus.listen('layers-loaded', loadLayers_);
 });
