@@ -46,7 +46,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 					event.stopPropagation()
 				});
 				element.addClass("layer_info_button").addClass("group_info_button");
-				divTitle.append(element);
+				divTitle.prepend(element);
 			}
 		}
 

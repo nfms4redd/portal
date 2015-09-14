@@ -1,3 +1,3 @@
 define([], function() {
-	alert("Hello editor");
+	console.log("Hello Editor");
 });
