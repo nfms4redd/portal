@@ -7,20 +7,10 @@
     <artifactId>portal-root</artifactId>
     <version>3.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.fao.unredd</groupId>
   <artifactId>layer-order</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <name>layer-order</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>
