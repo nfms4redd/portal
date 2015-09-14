@@ -4,7 +4,7 @@
 
 'use strict';
 
-define(["module", "toolbar", "i18n", "jquery", "message-bus", "map"], function(module, toolbar, i18n, $, bus, map) {
+define(["module", "toolbar", "i18n", "jquery", "message-bus", "map", "jquery-ui"], function(module, toolbar, i18n, $, bus, map) {
 	
 	var dialog = null;
 	var divContent = null;
