@@ -21,7 +21,8 @@
 		<module>argentina</module>
 		<module>tour</module>
 		<module>footnote</module>
-	</modules>
+    <module>layers-editor</module>
+  </modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>9.2</geotools.version>
