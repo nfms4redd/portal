@@ -1,0 +1,11 @@
+#order-button {
+	float: left;
+	margin-left: 20px;
+}
+
+.layer-order-item {
+	padding: 7px;
+    border: 1px dotted;
+    border-radius: 4px;
+    margin: 2px;
+}

@@ -169,7 +169,12 @@ public class Output extends OutputDescriptor {
 					dates.add(resultSet.getString(data_table_date_field));
 					for (String variableName : fieldSeries.keySet()) {
 						Series series = fieldSeries.get(variableName);
-						series.addValue(resultSet.getFloat(variableName));
+						float value = resultSet.getFloat(variableName);
+						if (resultSet.wasNull()) {
+							series.addValue(null);
+						} else {
+							series.addValue(value);
+						}
 					}
 				}
 				resultSet.close();

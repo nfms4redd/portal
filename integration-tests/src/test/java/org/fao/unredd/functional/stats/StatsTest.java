@@ -6,6 +6,7 @@ import static junit.framework.Assert.assertTrue;
 import java.io.IOException;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -37,6 +38,36 @@ public class StatsTest extends AbstractIntegrationTest {
 	}
 
 	@Test
+	public void testStatsServiceNulls() throws Exception {
+		String layerName = "bosques:provincias";
+		SQLExecute(getScript("stats-service-test.sql"));
+		JSONArray indicators = getIndicators(layerName);
+
+		CloseableHttpResponse ret = GET("indicator", "indicatorId", indicators
+				.getJSONObject(0).getString("id"), "layerId", layerName,
+				"objectId", "2", "objectName", "Buenos Aires");
+		assertEquals(200, ret.getStatusLine().getStatusCode());
+		JSONObject root = (JSONObject) JSONSerializer.toJSON(IOUtils
+				.toString(ret.getEntity().getContent()));
+		System.out.println(root.toString(4));
+		JSONArray series = root.getJSONArray("series");
+		assertEquals(2, series.size());
+		JSONObject cultivado = series.getJSONObject(0);
+		assertEquals("Bosque cultivado", cultivado.getString("name"));
+		JSONArray dataCultivado = cultivado.getJSONArray("data");
+		assertEquals(0, dataCultivado.getInt(0));
+		assertEquals(0, dataCultivado.getInt(1));
+		assertEquals(50, dataCultivado.getInt(2));
+		JSONObject nativo = series.getJSONObject(1);
+		assertEquals("Bosque nativo", nativo.getString("name"));
+		JSONArray dataNativo = nativo.getJSONArray("data");
+		assertEquals(590, dataNativo.getInt(0));
+		assertTrue(dataNativo.get(1) instanceof JSONNull);
+		assertEquals(208, dataNativo.getInt(2));
+
+	}
+
+	@Test
 	public void testStatsServiceAxisPriority() throws Exception {
 		String layerName = "bosques:provincias";
 		SQLExecute(getScript("stats-service-test-axis-priority.sql"));
@@ -51,12 +82,12 @@ public class StatsTest extends AbstractIntegrationTest {
 		// Values
 		JSONArray series = root.getJSONArray("series");
 		assertEquals(2, series.size());
-		JSONObject cultivado = series.getJSONObject(0);
-		assertEquals("Bosque cultivado", cultivado.getString("name"));
-		assertEquals(1000, cultivado.getJSONArray("data").getInt(0));
-		JSONObject nativo = series.getJSONObject(1);
+		JSONObject nativo = series.getJSONObject(0);
 		assertEquals("Bosque nativo", nativo.getString("name"));
 		assertEquals(100, nativo.getJSONArray("data").getInt(0));
+		JSONObject cultivado = series.getJSONObject(1);
+		assertEquals("Bosque cultivado", cultivado.getString("name"));
+		assertEquals(1000, cultivado.getJSONArray("data").getInt(0));
 	}
 
 	@Test
@@ -77,6 +108,7 @@ public class StatsTest extends AbstractIntegrationTest {
 	}
 
 	private void checkStatsServiceTest(JSONObject root) {
+		System.out.println(root.toString(4));
 		assertTrue(root.getJSONObject("title").getString("text")
 				.contains("Buenos Aires"));
 		assertTrue(root.getJSONObject("title").getString("text")
@@ -103,12 +135,12 @@ public class StatsTest extends AbstractIntegrationTest {
 		// Values
 		JSONArray series = root.getJSONArray("series");
 		assertEquals(2, series.size());
-		JSONObject nativo = series.getJSONObject(0);
-		assertEquals("Bosque nativo", nativo.getString("name"));
-		assertEquals(100, nativo.getJSONArray("data").getInt(0));
-		JSONObject cultivado = series.getJSONObject(1);
+		JSONObject cultivado = series.getJSONObject(0);
 		assertEquals("Bosque cultivado", cultivado.getString("name"));
 		assertEquals(1000, cultivado.getJSONArray("data").getInt(0));
+		JSONObject nativo = series.getJSONObject(1);
+		assertEquals("Bosque nativo", nativo.getString("name"));
+		assertEquals(100, nativo.getJSONArray("data").getInt(0));
 	}
 
 	@Test

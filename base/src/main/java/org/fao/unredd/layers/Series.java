@@ -1,19 +1,26 @@
 package org.fao.unredd.layers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Series {
 
 	private String name;
-	private ArrayList<Float> data = new ArrayList<Float>();
+	private ArrayList<String> data = new ArrayList<String>();
+	private boolean allPositiveValues = true;
 
 	public Series(String serieName) {
 		this.name = serieName;
 	}
 
-	public void addValue(float value) {
-		data.add(value);
+	public void addValue(Float value) {
+		if (value == null) {
+			data.add("null");
+		} else {
+			if (value < 0) {
+				allPositiveValues = false;
+			}
+			data.add(value.toString());
+		}
 	}
 
 	public String getName() {
@@ -21,10 +28,10 @@ public class Series {
 	}
 
 	public boolean allPositiveValues() {
-		return Collections.min(data) >= 0;
+		return allPositiveValues;
 	}
 
-	public ArrayList<Float> getData() {
+	public ArrayList<String> getData() {
 		return data;
 	}
 

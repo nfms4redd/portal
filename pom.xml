@@ -21,7 +21,8 @@
 		<module>argentina</module>
 		<module>tour</module>
 		<module>footnote</module>
-    <module>layers-editor</module>
+		<module>layer-order</module>
+		<module>layers-editor</module>
   </modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
