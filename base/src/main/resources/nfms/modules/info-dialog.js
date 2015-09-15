@@ -4,6 +4,8 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 	var infoFeatures = {};
 
+	var pointHighlightLayer = null;
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		var portalLayerName = layerInfo["label"];
 		$.each(layerInfo.wmsLayers, function(i, wmsLayer) {
@@ -17,14 +19,41 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 	bus.listen("clear-info-features", function(event, features, x, y) {
 		$("#info_popup").empty();
 		infoFeatures = {};
+		if (pointHighlightLayer != null) {
+			pointHighlightLayer.removeAllFeatures();
+			map.removeLayer(pointHighlightLayer);
+			pointHighlightLayer = null;
+		}
 	});
 
-	bus.listen("info-features", function(event, wmsLayerId, features, x, y) {
-		var i, infoPopup, epsg4326, epsg900913;
+	bus.listen("info-features", function(event, wmsLayerId, features, x, y) {		
+		var styles = new OpenLayers.StyleMap({
+	        "default": {
+	            graphicName: "cross",
+	            pointRadius: 10,
+	            strokeWidth: 1,
+	            strokeColor: "#ee4400",
+	            fillOpacity: 0.6,
+	            fillColor: "#ee4400"
+	        }
+	    });
+		
+		pointHighlightLayer = new OpenLayers.Layer.Vector("point highlight layer", {
+			styleMap: styles
+		});
+		pointHighlightLayer.id = "info-point-highlight-layer";
+		var mapPoint = map.getLonLatFromPixel({
+			"x" : x,
+			"y" : y
+		});
+		var pointFeature = new OpenLayers.Feature.Vector();
+		pointFeature.geometry = new OpenLayers.Geometry.Point(mapPoint.lon, mapPoint.lat);
+		pointHighlightLayer.addFeatures(pointFeature);
+		map.addLayer(pointHighlightLayer);
 
 		infoFeatures[wmsLayerId] = features;
 
-		infoPopup = $("#info_popup");
+		var infoPopup = $("#info_popup");
 		if (infoPopup.length === 0) {
 			infoPopup = $("<div/>").attr("id", "info_popup");
 		}
