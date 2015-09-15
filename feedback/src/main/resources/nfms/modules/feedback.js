@@ -1,4 +1,4 @@
-define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls"],//
+define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls" ],//
 function(bus, urlParameters, map, toolbar, i18n, $) {
 
 	var feedbackLayers = new Array();
@@ -110,15 +110,17 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 	}
 
 	var activateFeedback = function() {
-		if (cmbLayer.find("option").length == 0) {
-			bus.send("error", i18n["Feedback.no_layer_visible"]);
-		} else {
-			$("#button_feedback").addClass('selected');
-			txtEmail.val("");
-			txtComment.val("");
-			bus.send("activate-exclusive-control", editToolbar);
-			map.addLayer(feedbackLayer);
-			dlg.dialog("open");
+		if (!btn.hasClass("selected")) {
+			if (cmbLayer.find("option").length == 0) {
+				bus.send("error", i18n["Feedback.no_layer_visible"]);
+			} else {
+				$("#button_feedback").addClass('selected');
+				txtEmail.val("");
+				txtComment.val("");
+				bus.send("activate-exclusive-control", editToolbar);
+				map.addLayer(feedbackLayer);
+				dlg.dialog("open");
+			}
 		}
 	}
 
@@ -128,6 +130,7 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 		editToolbar.deactivate();
 		map.removeLayer(feedbackLayer);
 		$("#button_feedback").removeClass('selected');
+		dlg.dialog("close");
 	}
 
 	var refreshYear = function() {
@@ -147,10 +150,14 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 	// Install feedback button
 	btn.appendTo(toolbar);
 	btn.click(function() {
-		if (!btn.hasClass("selected")) {
-			activateFeedback();
-		}
+		activateFeedback();
 		return false;
+	});
+
+	bus.listen("activate-feedback", activateFeedback);
+	bus.listen("deactivate-feedback", function() {
+		// Enough, the close listener will clean up, as when manually closed
+		dlg.dialog("close");
 	});
 
 	// Listen events
