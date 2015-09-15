@@ -1,4 +1,4 @@
-define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls", "wait-mask"],//
+define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls"],//
 function(bus, urlParameters, map, toolbar, i18n, $) {
 
 	var feedbackLayers = new Array();
