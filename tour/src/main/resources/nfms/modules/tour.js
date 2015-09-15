@@ -22,7 +22,9 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 		$("#" + step.id).attr("tour-info", text).tipsy(tipsyConf);
 
 		$("#" + step.id).tipsy("show");
-		$("#tour-next-" + stepIndex).click(function() {
+		var btnNext = $("#tour-next-" + stepIndex);
+		btnNext.focus();
+		btnNext.click(function() {
 			$("#" + step.id).tipsy("hide");
 			for (nextEvent in step.next) {
 				var times = 1;
