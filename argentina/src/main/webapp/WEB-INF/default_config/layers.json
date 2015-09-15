@@ -64,7 +64,11 @@
             "id": "map-regfor", 
             "wmsName": "bosques_umsef_db:regfor2014_3857", 
             "legend": "regfor.png",
-            "queryType" : "wms"
+            "queryType" : "wfs",
+            "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+   			"queryGeomFieldName" : "geom",
+ 			"queryFieldNames" : [ "regiones" ],
+			"queryFieldAliases" : [ "Regiones" ]
         }, 
         {
             "baseUrl": "/bosques_umsef_db/wms", 
