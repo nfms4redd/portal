@@ -2,7 +2,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 	var wmsLayerInfo = {};
 
-	var infoFeatures;
+	var infoFeatures = {};
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var portalLayerName = layerInfo["label"];
@@ -16,12 +16,13 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 	bus.listen("clear-info-features", function(event, features, x, y) {
 		$("#info_popup").empty();
+		infoFeatures = {};
 	});
 
 	bus.listen("info-features", function(event, wmsLayerId, features, x, y) {
 		var i, infoPopup, epsg4326, epsg900913;
 
-		infoFeatures = features;
+		infoFeatures[wmsLayerId] = features;
 
 		infoPopup = $("#info_popup");
 		if (infoPopup.length === 0) {
@@ -62,23 +63,11 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			var tr = $("<tr/>").appendTo(tblData);
 
 			// Zoom to object button
-			var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + index).attr("src", "modules/images/zoom-to-object.png");
+			var imgZoomToArea = $("<img/>").attr("id", "info-magnifier-" + wmsLayerId + "-" + index).attr("src", "modules/images/zoom-to-object.png");
 			imgZoomToArea.css("cursor", "pointer");
 			var tdMagnifier = $("<td/>").addClass("command").appendTo(tr);
-			var bounds = null;
-			var highlightGeom = null;
 
-			if (feature.geometry) {
-				bounds = feature["geometry"].getBounds();
-				highlightGeom = feature["geometry"];
-			} else if (feature.attributes["bbox"]) {
-				var bbox = feature.attributes["bbox"];
-				bounds = new OpenLayers.Bounds();
-				bounds.extend(new OpenLayers.LonLat(bbox[0], bbox[1]));
-				bounds.extend(new OpenLayers.LonLat(bbox[2], bbox[3]));
-				highlightGeom = bounds.toGeometry();
-			}
-			if (bounds != null) {
+			if (feature["bounds"] != null) {
 				tdMagnifier.append(imgZoomToArea);
 				tdMagnifier.click(function() {
 					bus.send("zoom-to", bounds.scale(1.2));
@@ -87,13 +76,13 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 			// Indicators button
 			var imgWait = $("<img/>").attr("src", "styles/images/ajax-loader.gif").attr("alt", "wait");
-			var tdIndicators = $("<td/>").attr("id", "info-indicator-" + index).addClass("command").append(imgWait).appendTo(tr);
+			var tdIndicators = $("<td/>").attr("id", "info-indicator-" + wmsLayerId + "-" + index).addClass("command").append(imgWait).appendTo(tr);
 			var wmsName = wmsLayerInfo[wmsLayerId]["wmsName"];
 			bus.send("ajax", {
 				url : 'indicators?layerId=' + wmsName,
 				success : function(indicators, textStatus, jqXHR) {
 					if (indicators.length > 0) {
-						bus.send("feature-indicators-received", [ wmsName, index, indicators ]);
+						bus.send("feature-indicators-received", [ wmsName, wmsLayerId, index, indicators ]);
 					}
 				},
 				errorMsg : "Could not obtain the indicator",
@@ -107,9 +96,9 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 				$("<td/>").addClass("data").html(feature.attributes[aliases[i].name]).appendTo(tr);
 			}
 
-			if (highlightGeom != null) {
+			if (feature["highlightGeom"] != null) {
 				tr.mouseenter(function() {
-					bus.send("highlight-feature", highlightGeom);
+					bus.send("highlight-feature", feature["highlightGeom"]);
 				});
 				tr.mouseleave(function() {
 					bus.send("clear-highlighted-features");
@@ -152,27 +141,27 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		}
 	});
 
-	bus.listen("feature-indicators-received", function(event, wmsName, infoFeatureIndex, indicators) {
-		infoFeatures[infoFeatureIndex]["indicators"] = indicators;
+	bus.listen("feature-indicators-received", function(event, wmsName, wmsLayerId, infoFeatureIndex, indicators) {
+		infoFeatures[wmsLayerId][infoFeatureIndex]["indicators"] = indicators;
 		// TODO if there is more than one indicator, offer the
 		// choice to the user.
 		$(indicators).each(function(indicatorIndex, indicator) {
 			// Muestra un icono para cada grafico con el
 			// texto alternativo con el titulo del grafico.
-			var aIndicators = $("<a/>").attr("id", "info-indicator-" + infoFeatureIndex + "-" + indicatorIndex).addClass("fancybox.iframe").appendTo($("#info-indicator-" + infoFeatureIndex));
+			var aIndicators = $("<a/>").attr("id", "info-indicator-" + wmsLayerId + "-" + infoFeatureIndex + "-" + indicatorIndex).addClass("fancybox.iframe").appendTo($("#info-indicator-" + wmsLayerId + "-" + infoFeatureIndex));
 			aIndicators.css("padding", "1px");
 			$("<img/>").attr("src", "modules/images/object-indicators.png").appendTo(aIndicators);
 			aIndicators.attr("alt", indicator.title);
 			aIndicators.attr("title", indicator.title);
 			aIndicators.click(function() {
-				bus.send("show-feature-indicator", [ wmsName, infoFeatureIndex, indicatorIndex ]);
+				bus.send("show-feature-indicator", [ wmsName, wmsLayerId, infoFeatureIndex, indicatorIndex ]);
 			});
 			// TODO Agregar separador entre iconos.
 		});// END each
 	})
 
-	bus.listen("show-feature-indicator", function(event, wmsName, featureIndex, indicatorIndex) {
-		var feature = infoFeatures[featureIndex];
+	bus.listen("show-feature-indicator", function(event, wmsName, wmsLayerId, featureIndex, indicatorIndex) {
+		var feature = infoFeatures[wmsLayerId][featureIndex];
 		var indicator = feature["indicators"][indicatorIndex];
 
 		bus.send("ajax", {

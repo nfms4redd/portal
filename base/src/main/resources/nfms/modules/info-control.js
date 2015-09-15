@@ -9,6 +9,25 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 	// List of controls
 	var controls = [];
 
+	var addBoundsAndHighlightGeom = function(feature) {
+		var bounds = null;
+		var highlightGeom = null;
+		
+		if (feature.geometry) {
+			bounds = feature["geometry"].getBounds();
+			highlightGeom = feature["geometry"];
+		} else if (feature.attributes["bbox"]) {
+			var bbox = feature.attributes["bbox"];
+			bounds = new OpenLayers.Bounds();
+			bounds.extend(new OpenLayers.LonLat(bbox[0], bbox[1]));
+			bounds.extend(new OpenLayers.LonLat(bbox[2], bbox[3]));
+			highlightGeom = bounds.toGeometry();
+		}
+		
+		feature["bounds"] = bounds;
+		feature["highlightGeom"] = highlightGeom;
+	};
+	
 	bus.listen("add-layer", function(e, layerInfo) {
 		var wmsLayers = layerInfo.wmsLayers;
 		for (var i = 0; i < wmsLayers.length; i++) {
@@ -104,11 +123,14 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 							}),
 							success : function(data, textStatus, jqXHR) {
 								var features = new OpenLayers.Format.GeoJSON().read(data);
-								$.each(features, function(index, feature) {
-									feature["aliases"] = aliases;
-								});
-
-								bus.send("info-features", [ wmsLayer.id, features, e.xy.x, e.xy.y ]);
+								if (features.length > 0) {
+									$.each(features, function(index, feature) {
+										feature["aliases"] = aliases;
+										addBoundsAndHighlightGeom(feature);
+									});
+	
+									bus.send("info-features", [ wmsLayer.id, features, e.xy.x, e.xy.y ]);
+								}
 							},
 							errorMsg : "Cannot get info for layer " + layerInfo.label
 						});
@@ -133,7 +155,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 					},
 					eventListeners : {
 						getfeatureinfo : function(evt) {
-							if (evt.features) {
+							if (evt.features && evt.features.length > 0) {
 								var features = evt.features;
 								var featureAliases = null;
 								if (aliases != null) {
@@ -155,16 +177,13 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 								epsg900913 = new OpenLayers.Projection("EPSG:900913");
 								$.each(evt.features, function(index, feature) {
 									feature["aliases"] = featureAliases;
-									/*
-									 * Raster layers in GeoServer return no
-									 * Geometry
-									 */
 									if (feature.geometry) {
 										if (wmsLayer.hasOwnProperty("queryHighlightBounds") && wmsLayer["queryHighlightBounds"]) {
 											feature.geometry = feature.geometry.getBounds().toGeometry();
 										}
 										feature.geometry.transform(epsg4326, epsg900913);
 									}
+									addBoundsAndHighlightGeom(feature);
 								});
 
 								bus.send("info-features", [ wmsLayer.id, evt.features, evt.xy.x, evt.xy.y ]);

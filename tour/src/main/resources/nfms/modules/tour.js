@@ -70,10 +70,10 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 		infoFeatures = features;
 	});
 	bus.listen("highlight-info-feature", function(event, index) {
-		bus.send("highlight-feature", infoFeatures[index]);
+		bus.send("highlight-feature", infoFeatures[index]["highlightGeom"]);
 	});
 	bus.listen("zoom-info-feature", function(event, index) {
-		bus.send("zoom-to", infoFeatures[index].geometry.getBounds().scale(1.2));
+		bus.send("zoom-to", infoFeatures[index]["bounds"].scale(1.2));
 	});
 
 });
