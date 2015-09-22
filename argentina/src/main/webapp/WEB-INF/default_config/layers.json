@@ -67,8 +67,8 @@
             "queryType" : "wfs",
             "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
    			"queryGeomFieldName" : "geom",
- 			"queryFieldNames" : [ "regiones" ],
-			"queryFieldAliases" : [ "Regiones" ]
+ 			"queryFieldNames" : [ "stats_code", "regiones" ],
+			"queryFieldAliases" : [ "stats_code", "Regiones" ]
         }, 
         {
             "baseUrl": "/bosques_umsef_db/wms", 
