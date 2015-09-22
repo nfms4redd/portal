@@ -32,7 +32,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 	            graphicName: "cross",
 	            pointRadius: 10,
 	            strokeWidth: 1,
-	            strokeColor: "#ee4400",
+	            strokeColor: "#000000",
 	            fillOpacity: 0.6,
 	            fillColor: "#ee4400"
 	        }
