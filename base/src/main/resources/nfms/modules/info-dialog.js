@@ -26,30 +26,41 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 		}
 	});
 
-	bus.listen("info-features", function(event, wmsLayerId, features, x, y) {		
-		var styles = new OpenLayers.StyleMap({
-	        "default": {
-	            graphicName: "cross",
-	            pointRadius: 10,
-	            strokeWidth: 1,
-	            strokeColor: "#000000",
-	            fillOpacity: 0.6,
-	            fillColor: "#ee4400"
-	        }
-	    });
-		
-		pointHighlightLayer = new OpenLayers.Layer.Vector("point highlight layer", {
-			styleMap: styles
-		});
-		pointHighlightLayer.id = "info-point-highlight-layer";
+	bus.listen("info-features", function(event, wmsLayerId, features, x, y) {
+		if (pointHighlightLayer == null) {
+			var styles = new OpenLayers.StyleMap({
+				"default" : {
+					graphicName : "cross",
+					pointRadius : 10,
+					strokeWidth : 1,
+					strokeColor : "#000000",
+					fillOpacity : 0.6,
+					fillColor : "#ee4400"
+				}
+			});
+			
+			pointHighlightLayer = new OpenLayers.Layer.Vector("point highlight layer", {
+				styleMap : styles
+			});
+			pointHighlightLayer.id = "info-point-highlight-layer";
+			map.addLayer(pointHighlightLayer);
+		}
 		var mapPoint = map.getLonLatFromPixel({
 			"x" : x,
 			"y" : y
 		});
-		var pointFeature = new OpenLayers.Feature.Vector();
-		pointFeature.geometry = new OpenLayers.Geometry.Point(mapPoint.lon, mapPoint.lat);
-		pointHighlightLayer.addFeatures(pointFeature);
-		map.addLayer(pointHighlightLayer);
+		var layerFeatures = pointHighlightLayer.features;
+		var alreadyInLayer = false;
+		for (var i = 0; i < layerFeatures.length; i++) {
+			if (layerFeatures[i].geometry.x == mapPoint.lon && layerFeatures[i].geometry.y == mapPoint.lat) {
+				alreadyInLayer = true;
+			}
+		}
+		if (!alreadyInLayer) {
+			var pointFeature = new OpenLayers.Feature.Vector();
+			pointFeature.geometry = new OpenLayers.Geometry.Point(mapPoint.lon, mapPoint.lat);
+			pointHighlightLayer.addFeatures(pointFeature);
+		}
 
 		infoFeatures[wmsLayerId] = features;
 
