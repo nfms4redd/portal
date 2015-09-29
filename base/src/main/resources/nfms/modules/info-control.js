@@ -67,6 +67,8 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 				"version=1.0.0&outputFormat=application/json&srsName=EPSG:900913&" + //
 				"typeName=" + wmsLayer["wmsName"] + "&propertyName=" + wmsLayer["queryFieldNames"].join(",");
 
+				var wfsCallControl = null;
+
 				control = new OpenLayers.Control();
 				control.handler = new OpenLayers.Handler.Click(control, {
 					'click' : function(e) {
@@ -113,6 +115,10 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 						}
 						getFeatureMessage += "</ogc:Filter>";
 						var url = queryUrl + "&FILTER=" + encodeURIComponent(getFeatureMessage);
+
+						if (wfsCallControl != null) {
+							wfsCallControl.abort();
+						}
 						bus.send("clear-info-features");
 
 						bus.send("ajax", {
@@ -132,6 +138,9 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 									bus.send("info-features", [ wmsLayer.id, features, e.xy.x, e.xy.y ]);
 								}
 							},
+							controlCallBack : function (control) {
+								wfsCallControl = control;
+							},
 							errorMsg : "Cannot get info for layer " + layerInfo.label
 						});
 
@@ -139,6 +148,8 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 				});
 
 			} else {
+				var lastXY = null;
+				
 				var control = new OpenLayers.Control.WMSGetFeatureInfo({
 					url : queryUrl,
 					layerUrls : [ wmsLayer["baseUrl"] ],
@@ -155,7 +166,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 					},
 					eventListeners : {
 						getfeatureinfo : function(evt) {
-							if (evt.features && evt.features.length > 0) {
+							if (evt.features && evt.features.length > 0 && lastXY.x == evt.xy.x && lastXY.y == evt.xy.y) {
 								var features = evt.features;
 								var featureAliases = null;
 								if (aliases != null) {
@@ -189,7 +200,8 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 								bus.send("info-features", [ wmsLayer.id, evt.features, evt.xy.x, evt.xy.y ]);
 							}
 						},
-						beforegetfeatureinfo : function() {
+						beforegetfeatureinfo : function(event) {
+							lastXY = event.xy;
 							var id = wmsLayer["id"];
 							if (layerIdInfo.hasOwnProperty(layerInfo.id) && layerIdInfo[layerInfo.id].hasOwnProperty("timestamp")) {
 								control.vendorParams = {

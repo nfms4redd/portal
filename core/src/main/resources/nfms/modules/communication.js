@@ -20,8 +20,12 @@ define([ "jquery", "message-bus" ], function($, bus) {
 			}
 			bus.send("error", message);
 		};
-
-		$.ajax(ajaxParams);
+		
+		var xhr = $.ajax(ajaxParams);
+		
+		if (ajaxParams.hasOwnProperty("controlCallBack")) {
+			ajaxParams.controlCallBack(xhr);
+		}
 
 	});
 });
