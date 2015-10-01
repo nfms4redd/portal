@@ -111,7 +111,11 @@ public class DefaultConfig implements Config {
 
 	@Override
 	public String[] getPropertyAsArray(String property) {
-		return getProperty(property).split(",");
+		try {
+			return getProperty(property).split(",");
+		} catch (ConfigurationException e) {
+			return null;
+		}
 	}
 
 	@Override

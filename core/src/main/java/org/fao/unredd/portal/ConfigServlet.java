@@ -106,8 +106,11 @@ public class ConfigServlet extends HttpServlet {
 				config.getPropertyAsArray(Config.PROPERTY_MAP_CENTER));
 
 		ArrayList<String> modules = new ArrayList<String>();
-		Collections.addAll(modules,
-				config.getPropertyAsArray(Config.PROPERTY_CLIENT_MODULES));
+		String[] extraModules = config
+				.getPropertyAsArray(Config.PROPERTY_CLIENT_MODULES);
+		if (extraModules != null) {
+			Collections.addAll(modules, extraModules);
+		}
 		@SuppressWarnings("unchecked")
 		ArrayList<String> classPathModules = (ArrayList<String>) servletContext
 				.getAttribute("js-paths");

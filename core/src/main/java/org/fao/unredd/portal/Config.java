@@ -48,6 +48,12 @@ public interface Config {
 
 	ResourceBundle getMessages(Locale locale) throws ConfigurationException;
 
+	/**
+	 * Returns the property as an array or null if the property does not exist
+	 * 
+	 * @param property
+	 * @return
+	 */
 	String[] getPropertyAsArray(String property);
 
 	String getDefaultLang();
