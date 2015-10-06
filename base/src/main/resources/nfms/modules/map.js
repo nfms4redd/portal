@@ -18,8 +18,8 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 
 	var activateExclusiveControl = function(controlList) {
 		for (var i = 0; i < currentControlList.length; i++) {
-			currentControl[i].deactivate();
-			map.removeControl(currentControl[i]);
+			currentControlList[i].deactivate();
+			map.removeControl(currentControlList[i]);
 		}
 
 		for (var i = 0; i < controlList.length; i++) {
@@ -27,7 +27,7 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 			controlList[i].activate();
 		}
 
-		currentControl = controlList;
+		currentControlList = controlList;
 	};
 
 	OpenLayers.ProxyHost = "proxy?url=";
