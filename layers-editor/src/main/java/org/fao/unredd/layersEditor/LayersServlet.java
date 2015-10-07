@@ -70,6 +70,8 @@ public class LayersServlet extends HttpServlet {
             
             out.close();
             reader.close();
+            
+            resp.sendError(HttpServletResponse.SC_OK);
 		}
 		
 }
