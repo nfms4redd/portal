@@ -42,14 +42,25 @@ public interface Config {
 	 * keys/values: <code>code</code> (for language code) and <code>name</code>
 	 * (for language name).
 	 * 
-	 * @return
+	 * @return The array of languages or null if no language configuration is
+	 *         found
 	 */
 	Map<String, String>[] getLanguages();
 
 	ResourceBundle getMessages(Locale locale) throws ConfigurationException;
 
+	/**
+	 * Returns the property as an array or null if the property does not exist
+	 * 
+	 * @param property
+	 * @return
+	 */
 	String[] getPropertyAsArray(String property);
 
+	/**
+	 * @return The language defined as default in the configuration or null if
+	 *         no language is defined in the configuration
+	 */
 	String getDefaultLang();
 
 	/**

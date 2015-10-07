@@ -65,18 +65,21 @@ public class DefaultConfig implements Config {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Map<String, String>[] getLanguages() {
-		List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
 
-		JSONObject json = JSONObject.fromObject(getProperty("languages"));
-		for (Object langCode : json.keySet()) {
-			Map<String, String> langObject = new HashMap<String, String>();
-			langObject.put("code", langCode.toString());
-			langObject.put("name", json.getString(langCode.toString()));
+		try {
+			List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
+			JSONObject json = JSONObject.fromObject(getProperty("languages"));
+			for (Object langCode : json.keySet()) {
+				Map<String, String> langObject = new HashMap<String, String>();
+				langObject.put("code", langCode.toString());
+				langObject.put("name", json.getString(langCode.toString()));
 
-			ret.add(langObject);
+				ret.add(langObject);
+			}
+			return ret.toArray(new Map[ret.size()]);
+		} catch (ConfigurationException e) {
+			return null;
 		}
-
-		return ret.toArray(new Map[ret.size()]);
 	}
 
 	@Override
@@ -111,7 +114,11 @@ public class DefaultConfig implements Config {
 
 	@Override
 	public String[] getPropertyAsArray(String property) {
-		return getProperty(property).split(",");
+		try {
+			return getProperty(property).split(",");
+		} catch (ConfigurationException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -122,11 +129,10 @@ public class DefaultConfig implements Config {
 			Map<String, String>[] langs = getLanguages();
 			if (langs != null && langs.length > 0) {
 				return langs[0].get("code");
+			} else {
+				return null;
 			}
 		}
-
-		throw new ConfigurationException("No \"" + PROPERTY_DEFAULT_LANG
-				+ "\" property in configuration");
 	}
 
 	private String getProperty(String propertyName)
