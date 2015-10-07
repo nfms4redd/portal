@@ -1,0 +1,37 @@
+{
+    "wmsLayers": [
+        {
+            "wmsName": "unredd:blue_marble", 
+            "baseUrl": "http://rdc-snsf.org/diss_geoserver/wms", 
+            "id": "blue-marble", 
+            "visible": true
+        }
+    ], 
+    "portalLayers": [
+        {
+            "active": true, 
+            "layers": [
+                "blue-marble"
+            ], 
+            "id": "blue-marble", 
+            "infoFile": "blue_marble.html", 
+            "label": "Mosaico im\u00e1genes MODIS"
+        }
+    ], 
+    "groups": [
+        {
+            "items": [
+                {
+                    "items": [
+                        "blue-marble"
+                    ], 
+                    "id": "innerbase", 
+                    "label": "Mosaico MODIS"
+                }
+            ], 
+            "id": "base", 
+            "label": "Im\u00e1genes satelitales"
+        }
+    ], 
+    "default-server": "http://geo2.ambiente.gob.ar/portal/gs"
+}
