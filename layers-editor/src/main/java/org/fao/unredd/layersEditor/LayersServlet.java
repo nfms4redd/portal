@@ -1,5 +1,6 @@
 package org.fao.unredd.layersEditor;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,9 +55,6 @@ public class LayersServlet extends HttpServlet {
 		ServletContext ctx = getServletContext();
 		Config config = (Config) ctx.getAttribute(CONFIG);
 		File backupDir = new File(config.getDir(), BACKUP_FOLDER);
-		if (backupDir.exists()) {
-			FileUtils.cleanDirectory(backupDir);
-		}
 		File layersJSON = new File(config.getDir(), LAYERS_JSON);
 		if (layersJSON.exists()) {
 			Date date = new Date();
@@ -64,22 +62,22 @@ public class LayersServlet extends HttpServlet {
 			File layersJSONBack = new File(backupDir, now.toString().replaceAll("\\s","_").concat("-".concat(LAYERS_JSON)));
 			FileUtils.copyFile(layersJSON, layersJSONBack);
 			layersJSON.delete();
+			layersJSON.createNewFile();
+			BufferedReader reader = req.getReader();
+			OutputStream out = new FileOutputStream(layersJSON);
+			IOUtils.copy(reader, new BufferedOutputStream(out), UTF_8);
+
+			out.close();
+			reader.close();
+
+			logger.info("All OK, layers.json updated: 200");
+			resp.setStatus(HttpServletResponse.SC_OK);
 		} else {
 			// TODO Is this needed?
 			logger.error("Not found layers.json file in portal.properties folder!");
 			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not found layers.json file in portal.properties folder!");
-			return; 
 		}
-		layersJSON.createNewFile();
-		BufferedReader reader = req.getReader();
-		OutputStream out = new FileOutputStream(layersJSON);
-		IOUtils.copy(reader, out, UTF_8);
 
-		out.close();
-		reader.close();
-
-		logger.info("All OK, layers.json updated: 200");
-		resp.sendError(HttpServletResponse.SC_OK);
 	}
 
 }

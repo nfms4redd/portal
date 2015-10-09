@@ -75,19 +75,17 @@ public class LayersEditorTest {
 		HttpServletResponse resp = mock(HttpServletResponse.class);
 		
 		File tmpDir = testFolder.getRoot();
+		tmpDir = new File("/tmp");
 		
 		when(defaultconfig.getDir()).thenReturn(tmpDir);
 		
 		URL url = this.getClass().getResource("/layers.json");
 		File layersJSON = new File(url.getFile());
-		
-        Date date = new java.util.Date();
-   	 	Timestamp now = new Timestamp(date.getTime());
    	 	
    	 	FileUtils.copyFileToDirectory(layersJSON, tmpDir);
    	 	
    	 	File layersJSONCopy = new File(tmpDir, "layers.json");
-   	 	FileUtils.writeStringToFile(layersJSONCopy, now.toString(), APPEND);
+   	 	FileUtils.writeStringToFile(layersJSONCopy, "dirty", APPEND);
    	 
 		BufferedReader readerLayers = new BufferedReader(new FileReader(layersJSON));
 		when(req.getReader()).thenReturn(readerLayers);
@@ -108,6 +106,6 @@ public class LayersEditorTest {
 
 		InputStream againOriginalLayerJSONIs = new FileInputStream(new File(url.getFile()));
 		equals = IOUtils.contentEquals(afterPutBackupIs, againOriginalLayerJSONIs);
-		assertTrue(!equals);
+		assertFalse(equals);
 	}
 }
