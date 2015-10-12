@@ -1,0 +1,7 @@
+drop schema if exists portal_auth cascade;
+create schema portal_auth;
+create table portal_auth.users (user_name varchar primary key, user_password varchar);
+create table portal_auth.user_roles (user_name varchar, user_role varchar, primary key(user_name, user_role));
+insert into portal_auth.users values ('admin', md5('123'));
+insert into portal_auth.user_roles values ('admin', 'admin');
+insert into portal_auth.users values('noadmin', md5('123'));
