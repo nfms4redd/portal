@@ -98,7 +98,7 @@ public class AbstractIntegrationTest {
 		server.setHandler(handlers);
 
 		SocketConnector connector = new SocketConnector();
-		connector.setPort(8080);
+		connector.setPort(8880);
 		server.setConnectors(new Connector[] { connector });
 
 		dataSource = new PGSimpleDataSource();
@@ -191,7 +191,7 @@ public class AbstractIntegrationTest {
 
 	protected CloseableHttpResponse GET(String path, String... parameters)
 			throws ClientProtocolException, IOException {
-		String url = "http://localhost:8080/" + CONTEXT_PATH + "/" + path + "?";
+		String url = "http://localhost:8880/" + CONTEXT_PATH + "/" + path + "?";
 		for (int i = 0; i < parameters.length; i = i + 2) {
 			url += parameters[i] + "="
 					+ URLEncoder.encode(parameters[i + 1], "UTF-8") + "&";
@@ -203,7 +203,7 @@ public class AbstractIntegrationTest {
 
 	protected CloseableHttpResponse POST(String path, String... parameters)
 			throws ClientProtocolException, IOException {
-		String url = "http://localhost:8080/" + CONTEXT_PATH + "/" + path;
+		String url = "http://localhost:8880/" + CONTEXT_PATH + "/" + path;
 		ArrayList<NameValuePair> parameterList = new ArrayList<NameValuePair>();
 		for (int i = 0; i < parameters.length; i = i + 2) {
 			parameterList.add(new BasicNameValuePair(parameters[i],
