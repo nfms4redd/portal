@@ -1,4 +1,4 @@
-define(["message-bus", "layers-json"], function(bus, layers) {
+define(["message-bus", "layers-json", "layers-forms"], function(bus, layers, forms) {
 
 	bus.listen("before-adding-layers", function() {
 		bus.send("register-layer-action", function(layer) {
