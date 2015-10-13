@@ -111,7 +111,7 @@
 				</dependencies>
 				<configuration>
 					<systemPropertyVariables>
-						<PORTAL_CONFIG_DIR>/var/portal</PORTAL_CONFIG_DIR>
+						<PORTAL_CONFIG_DIR>/var/testportal</PORTAL_CONFIG_DIR>
 					</systemPropertyVariables>
 					<groups>org.fao.unredd.functional.IntegrationTest</groups>
 				</configuration>
