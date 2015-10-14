@@ -16,5 +16,5 @@ after_failure:
 
 notifications:
   email:
-    - nfms4redd-desarrollo@googlegroups.com
+    - onuredd@gmail.com
   on_success: always
