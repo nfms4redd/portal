@@ -12,3 +12,4 @@ script:
 
 after_failure:
   - cat integration-tests/target/failsafe-reports/*.xml
+  - cat /tmp/testportal/portal.properties
