@@ -15,7 +15,7 @@ public class FeedbackTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testCommentAndVerify() throws Exception {
-		String email = "fergonco@gmail.com";
+		String email = "onuredd@gmail.com";
 		String geometry = "POINT(0 1)";
 		String comment = "boh";
 		String layerName = "classification";
