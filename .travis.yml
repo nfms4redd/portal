@@ -1,2 +1,10 @@
 language: java
 
+addons:
+  postgresql: "9.3"
+
+before_script:
+  - psql -U postgres -c "create extension postgis"
+
+script:
+  - bundle exec mvn verify
