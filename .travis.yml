@@ -9,3 +9,7 @@ before_script:
 
 script:
   - mvn verify
+
+after_failure:
+  - cat target/surefire-reports/*.xml
+
