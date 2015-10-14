@@ -11,5 +11,4 @@ script:
   - mvn verify
 
 after_failure:
-  - cat target/surefire-reports/*.xml
-
+  - cat integration-tests/target/failsafe-reports/*.xml
