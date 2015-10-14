@@ -4,8 +4,8 @@
     "wmsLayer-base":{
       "type":"object",
       "properties":{
-        "title":"Identifier",
         "id":{
+          "title":"Identifier",
           "type":"string"
         },
         "type":{
@@ -17,8 +17,8 @@
             "gmaps"
           ]
         },
-        "title":"Is visible layer",
         "visible":{
+          "title":"Is visible layer",
           "type":"boolean"
         },
         "legend":{
@@ -83,7 +83,7 @@
               "type":"string"
             },
             "wmsName":{
-              "title":"Layer Name",
+              "title":"WMS Layername",
               "type":"string"
             },
             "imageFormat":{

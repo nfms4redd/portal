@@ -1,0 +1,36 @@
+.layers-editor-form div {
+	float: left;
+	clear: left;
+	width: 100%;
+	padding-bottom: 0.5em;
+}
+
+.layers-editor-form label {
+	float: left;
+	width: 150px;
+	margin-right: 10px;
+	text-align: right;
+}
+
+.layers-editor-form fieldset {
+	width: 420px;
+	margin-bottom: 5px;
+}
+
+.layers-editor-form input {
+	width: 250px;
+}
+
+.layers-editor-form select {
+	width: 125px;
+}
+
+.layers-editor-form input[type="checkbox"] {
+	width: auto;
+}
+
+.fieldtypeeditornotimplemented {
+	color: red;
+	font-weight: bold;
+	font-style: italic;
+}
