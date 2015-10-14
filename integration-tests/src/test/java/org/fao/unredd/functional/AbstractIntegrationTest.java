@@ -2,7 +2,10 @@ package org.fao.unredd.functional;
 
 import static junit.framework.Assert.assertTrue;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +20,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -69,6 +73,22 @@ public class AbstractIntegrationTest {
 
 	@Before
 	public void setup() throws Exception {
+		// Create configuration folder and replace password with environment
+		// variable. Destination folder is configured in pom.xml
+		FileUtils.copyDirectory(new File("test_config"), new File(
+				"/tmp/testportal"));
+		File portalPropertiesFile = new File(
+				"/tmp/testportal/portal.properties");
+		String portalProperties = IOUtils
+				.toString(portalPropertiesFile.toURI());
+		portalProperties = portalProperties.replaceAll(
+				Pattern.quote("$password"),
+				System.getenv("ONUREDDMAILPASSWORD"));
+		BufferedOutputStream output = new BufferedOutputStream(
+				new FileOutputStream(portalPropertiesFile));
+		IOUtils.write(portalProperties, output);
+		output.close();
+
 		// Clean the database
 		Class.forName("org.postgresql.Driver");
 		Connection connection = DriverManager.getConnection(dbUrl, dbUser,
