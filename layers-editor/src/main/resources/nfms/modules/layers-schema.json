@@ -299,7 +299,7 @@
               ]
             },
             "active":{
-              "title":"Layer visible on portal load",
+              "title":"Layer initially visible",
               "type":"boolean"
             },
             "layers":{
@@ -324,7 +324,7 @@
               "type":"string"
             },
             "feedback":{
-              "title":"Users can provide feedback",
+              "title":"Allow user feedback",
               "type":"boolean"
             }
           },
