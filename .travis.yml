@@ -8,7 +8,7 @@ before_script:
   - psql -U postgres -d spatialdata -c "create extension postgis"
 
 script:
-  - mvn verify
+  - mvn deploy 
 
 after_failure:
   - cat integration-tests/target/failsafe-reports/*.xml
