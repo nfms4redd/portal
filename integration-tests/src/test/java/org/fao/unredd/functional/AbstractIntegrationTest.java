@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -73,12 +72,8 @@ public class AbstractIntegrationTest {
 
 	@Before
 	public void setup() throws Exception {
-		// Create configuration folder and replace password with environment
-		// variable. Destination folder is configured in pom.xml
-		FileUtils.copyDirectory(new File("test_config"), new File(
-				"/tmp/testportal"));
-		File portalPropertiesFile = new File(
-				"/tmp/testportal/portal.properties");
+		// Replace password with environment variable
+		File portalPropertiesFile = new File("test_config/portal.properties");
 		String portalProperties = IOUtils
 				.toString(portalPropertiesFile.toURI());
 		portalProperties = portalProperties.replaceAll(
