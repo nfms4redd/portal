@@ -61,7 +61,7 @@ public class JEEContextAnalyzerTest {
 	@Test
 	public void checkTest1() {
 		JEEContextAnalyzer context = new JEEContextAnalyzer(new FileContext(
-				"src/test/resources/test1"));
+				"src/test/resources/test1", "nfms"));
 
 		checkList(context.getRequireJSModuleNames(), "module1", "module2",
 				"module3");
@@ -82,7 +82,7 @@ public class JEEContextAnalyzerTest {
 	@Test
 	public void checkExpandedClient() {
 		JEEContextAnalyzer context = new JEEContextAnalyzer(
-				new ExpandedClientContext("src/test/resources/test2"));
+				new ExpandedClientContext("src/test/resources/test2", "nfms"));
 
 		checkList(context.getRequireJSModuleNames(), "module3");
 		checkList(context.getCSSRelativePaths(), "modules/module3.css",
@@ -92,20 +92,13 @@ public class JEEContextAnalyzerTest {
 	}
 
 	@Test
-	public void checkCustomPluginConfDir() {
+	public void checkCustomClientDirectories() {
 		JEEContextAnalyzer context = new JEEContextAnalyzer(new FileContext(
-				"src/test/resources/test3"), "conf", "webapp");
+				"src/test/resources/test3", "conf", "webapp"));
 
 		checkMapKeys(context.getNonRequirePathMap(), "jquery-ui", "fancy-box",
 				"openlayers");
 		checkMapKeys(context.getNonRequireShimMap(), "fancy-box");
-	}
-
-	@Test
-	public void checkCustomWebResourcesDir() {
-		JEEContextAnalyzer context = new JEEContextAnalyzer(new FileContext(
-				"src/test/resources/test3"), "conf", "webapp");
-
 		checkList(context.getRequireJSModuleNames(), "module1", "module2");
 		checkList(context.getCSSRelativePaths(), "styles/general.css",
 				"modules/module2.css");

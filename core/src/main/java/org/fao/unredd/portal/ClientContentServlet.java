@@ -41,12 +41,17 @@ public class ClientContentServlet extends HttpServlet {
 			resp.setDateHeader("Last-Modified", lastModified);
 			stream = new BufferedInputStream(new FileInputStream(file));
 		} else {
-			String path = "/nfms" + pathInfo;
-			InputStream classPathResource = this.getClass()
-					.getResourceAsStream(path);
-			if (classPathResource != null) {
-				resp.setStatus(HttpServletResponse.SC_OK);
-				stream = new BufferedInputStream(classPathResource);
+			String[] clientDirs = (String[]) getServletContext().getAttribute(
+					"client-dirs");
+			for (String clientDir : clientDirs) {
+				String path = "/" + clientDir + pathInfo;
+				InputStream classPathResource = getClass().getResourceAsStream(
+						path);
+				if (classPathResource != null) {
+					resp.setStatus(HttpServletResponse.SC_OK);
+					stream = new BufferedInputStream(classPathResource);
+					break;
+				}
 			}
 		}
 

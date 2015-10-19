@@ -31,8 +31,8 @@ public class AppContextListener implements ServletContextListener {
 		config.addModuleConfigurationProvider(new LayersModuleConfigurationProvider());
 		servletContext.setAttribute("config", config);
 
-		JEEContextAnalyzer context = new JEEContextAnalyzer(new JEEContext(
-				servletContext));
+		JEEContext jeeContext = new JEEContext(servletContext);
+		JEEContextAnalyzer context = new JEEContextAnalyzer(jeeContext);
 		servletContext.setAttribute("js-paths",
 				context.getRequireJSModuleNames());
 		servletContext.setAttribute("css-paths", context.getCSSRelativePaths());
@@ -42,6 +42,8 @@ public class AppContextListener implements ServletContextListener {
 				context.getNonRequireShimMap());
 		servletContext.setAttribute("plugin-configuration",
 				context.getConfigurationElements());
+		servletContext.setAttribute("client-dirs",
+				jeeContext.getClientDirectories());
 	}
 
 	@Override
@@ -69,9 +71,12 @@ public class AppContextListener implements ServletContextListener {
 
 		@Override
 		public File getClientRoot() {
-			return new File(servletContext.getRealPath("/WEB-INF/classes/nfms"));
+			return new File(servletContext.getRealPath("/WEB-INF/classes"));
 		}
 
+		@Override
+		public String[] getClientDirectories() {
+			return DEFAULT_CLIENT_DIRECTORIES;
+		}
 	}
-
 }

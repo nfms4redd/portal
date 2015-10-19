@@ -17,8 +17,8 @@ public class RequireTemplate {
 
 	public RequireTemplate(String template, Map<String, String> paths,
 			Map<String, String> shims, List<String> moduleNames) {
-		this(RequireTemplate.class.getResourceAsStream(template), "nfms",
-				paths, shims, moduleNames);
+		this(RequireTemplate.class.getResourceAsStream(template), "", paths,
+				shims, moduleNames);
 	}
 
 	public RequireTemplate(InputStream template, String webResourcesDir,

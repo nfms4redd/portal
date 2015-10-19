@@ -1,6 +1,7 @@
 package org.fao.unredd.jwebclientAnalyzer;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -28,37 +30,20 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 @Mojo(name = "generate-buildconfig")
 public class GenerateRequireJSBuildConfig extends AbstractMojo {
-
 	/**
 	 * Root of the client resources
 	 */
-	@Parameter
+	@Parameter(defaultValue = "${project.build.directory}/requirejs")
 	protected String webClientFolder;
 
 	/**
 	 * Path where the buildconfig file will be generated
 	 */
-	@Parameter
+	@Parameter(defaultValue = "${project.build.directory}/buildconfig.js")
 	protected String buildconfigOutputPath;
 
-	/**
-	 * Path where the main.js file will be generated
-	 */
-	@Parameter
-	protected String mainOutputPath;
-
-	/**
-	 * Path to search for the plugin configuration files
-	 * (&lt;plugin&gt;-conf.json)
-	 */
-	@Parameter(defaultValue = "nfms")
-	protected String pluginConfDir;
-
-	/**
-	 * Path to search for the web resources (modules, styles, ...)
-	 */
-	@Parameter(defaultValue = "nfms")
-	protected String webResourcesDir;
+	@Parameter(defaultValue = "webapp")
+	protected String destClientDir;
 
 	/**
 	 * Path to the main.js template to use.
@@ -68,11 +53,33 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		File root = new File(this.webClientFolder);
+		File destClient = new File(root, this.destClientDir);
+		if (!destClient.exists()) {
+			destClient.mkdir();
+		}
+
+		for (String clientDir : Context.DEFAULT_CLIENT_DIRECTORIES) {
+			if (!clientDir.equals(this.destClientDir)) {
+				try {
+					File src = new File(root, clientDir);
+					if (src.exists()) {
+						FileUtils.copyDirectory(src, destClient);
+					}
+				} catch (IOException e) {
+					throw new MojoExecutionException(
+							"Cannot copy resources to common directory", e);
+				}
+			}
+		}
+
 		JEEContextAnalyzer analyzer = new JEEContextAnalyzer(
-				new ExpandedClientContext(webClientFolder), pluginConfDir,
-				webResourcesDir);
+				new ExpandedClientContext(this.webClientFolder,
+						this.destClientDir));
 
 		try {
+			String mainOutputPath = new File(destClient, "modules"
+					+ File.separator + "main.js").getAbsolutePath();
 			InputStream mainStream = new FileInputStream(mainTemplate);
 			processTemplate(analyzer, mainStream, mainOutputPath);
 		} catch (IOException e) {
@@ -91,7 +98,7 @@ public class GenerateRequireJSBuildConfig extends AbstractMojo {
 		Map<String, String> shims = analyzer.getNonRequireShimMap();
 		List<String> moduleNames = analyzer.getRequireJSModuleNames();
 		RequireTemplate template = new RequireTemplate(templateStream,
-				webResourcesDir, paths, shims, moduleNames);
+				this.destClientDir, paths, shims, moduleNames);
 		try {
 			String content = template.generate();
 			templateStream.close();

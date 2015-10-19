@@ -11,14 +11,17 @@ import java.util.Set;
 
 public class FileContext implements Context {
 
-	private File root;
+	private String root;
+	private String[] clientDirs;
 
-	public FileContext(String root) {
-		this.root = new File(root);
+	public FileContext(String root, String... clientDirs) {
+		this.root = root;
+		this.clientDirs = clientDirs;
 	}
 
 	@Override
 	public Set<String> getLibPaths() {
+		HashSet<String> ret = new HashSet<String>();
 		File[] jars = new File(root, "WEB-INF/lib").listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
@@ -27,7 +30,6 @@ public class FileContext implements Context {
 			}
 		});
 
-		HashSet<String> ret = new HashSet<String>();
 		if (jars != null) {
 			for (File file : jars) {
 				ret.add("WEB-INF/lib/" + file.getName());
@@ -48,7 +50,11 @@ public class FileContext implements Context {
 
 	@Override
 	public File getClientRoot() {
-		return new File(root, "WEB-INF/classes");
+		return new File(this.root, "WEB-INF/classes");
 	}
 
+	@Override
+	public String[] getClientDirectories() {
+		return this.clientDirs;
+	}
 }

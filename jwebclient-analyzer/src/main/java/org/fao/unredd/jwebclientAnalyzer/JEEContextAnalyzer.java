@@ -32,15 +32,10 @@ public class JEEContextAnalyzer {
 	private Map<String, JSONObject> configurationMap = new HashMap<String, JSONObject>();
 
 	public JEEContextAnalyzer(Context context) {
-		this(context, "nfms", "nfms");
-	}
-
-	public JEEContextAnalyzer(Context context, String pluginConfDir,
-			String webResourcesDir) {
 		PluginConfigEntryListener pluginConfListener = new PluginConfigEntryListener(
-				pluginConfDir);
+				context);
 		WebResourcesEntryListener webResourcesListener = new WebResourcesEntryListener(
-				webResourcesDir);
+				context);
 		scanClasses(context, pluginConfListener, webResourcesListener);
 		scanJars(context, pluginConfListener, webResourcesListener);
 	}
@@ -50,15 +45,15 @@ public class JEEContextAnalyzer {
 			WebResourcesEntryListener webResourcesListener) {
 		File rootFolder = context.getClientRoot();
 		if (rootFolder.exists()) {
-			scanDir(context, new File(rootFolder, pluginConfListener.dir),
-					pluginConfListener);
-			scanDir(context, new File(rootFolder, webResourcesListener.dir),
-					webResourcesListener);
+			for (String clientDir : context.getClientDirectories()) {
+				scanDir(context, new File(rootFolder, clientDir),
+						pluginConfListener, webResourcesListener);
+			}
 		}
 	}
 
 	private void scanDir(Context context, final File dir,
-			ContextEntryListener listener) {
+			ContextEntryListener... listeners) {
 		if (dir.isDirectory()) {
 			Iterator<File> allFiles = FileUtils.iterateFiles(dir,
 					relevantExtensions, TrueFileFilter.INSTANCE);
@@ -83,7 +78,9 @@ public class JEEContextAnalyzer {
 							return content;
 						}
 					};
-					listener.accept(relativePath, contentReader);
+					for (ContextEntryListener listener : listeners) {
+						listener.accept(relativePath, contentReader);
+					}
 				} catch (IOException e) {
 					logger.info("Cannot analyze file:" + relativePath);
 				}
@@ -175,16 +172,24 @@ public class JEEContextAnalyzer {
 	};
 
 	private class PluginConfigEntryListener implements ContextEntryListener {
-		private String dir;
+		private Context context;
 
-		public PluginConfigEntryListener(String dir) {
-			this.dir = dir;
+		public PluginConfigEntryListener(Context context) {
+			this.context = context;
 		}
 
 		@Override
 		public void accept(String path, ContextEntryReader contentReader)
 				throws IOException {
-			if (path.matches("\\Q" + dir + "/\\E\\w+\\Q-conf.json\\E")) {
+			for (String clientDir : context.getClientDirectories()) {
+				accept(clientDir, path, contentReader);
+			}
+		}
+
+		private void accept(String dir, String path,
+				ContextEntryReader contentReader) throws IOException {
+			if (path.startsWith(dir + "/") && path.endsWith("-conf.json")) {
+				// if (path.matches("\\Q" + dir + "/\\E\\w+\\Q-conf.json\\E")) {
 				PluginDescriptor pluginDescriptor = new PluginDescriptor(
 						contentReader.getContent());
 				requirejsPaths.putAll(pluginDescriptor.getRequireJSPathsMap());
@@ -195,15 +200,21 @@ public class JEEContextAnalyzer {
 	}
 
 	private class WebResourcesEntryListener implements ContextEntryListener {
-		private String dir;
+		private Context context;
 
-		public WebResourcesEntryListener(String dir) {
-			this.dir = dir;
+		public WebResourcesEntryListener(Context context) {
+			this.context = context;
 		}
 
 		@Override
 		public void accept(String path, ContextEntryReader contentReader)
 				throws IOException {
+			for (String clientDir : context.getClientDirectories()) {
+				accept(clientDir, path, contentReader);
+			}
+		}
+
+		private void accept(String dir, String path, ContextEntryReader reader) {
 			String stylesPrefix = dir + "/styles";
 			String modulesPrefix = dir + "/modules";
 			File pathFile = new File(path);
@@ -211,17 +222,14 @@ public class JEEContextAnalyzer {
 				if (path.endsWith(".css")) {
 					String output = path.substring(dir.length() + 1);
 					css.add(output);
-				}
-				if (path.endsWith(".js")) {
+				} else if (path.endsWith(".js")) {
 					String name = pathFile.getName();
 					name = name.substring(0, name.length() - 3);
 					js.add(name);
 				}
-			} else {
-				if (path.startsWith(stylesPrefix) && path.endsWith(".css")) {
-					String output = path.substring(dir.length() + 1);
-					css.add(output);
-				}
+			} else if (path.startsWith(stylesPrefix) && path.endsWith(".css")) {
+				String output = path.substring(dir.length() + 1);
+				css.add(output);
 			}
 		}
 	}

@@ -7,10 +7,13 @@ import java.util.Set;
 
 public class ExpandedClientContext implements Context {
 
-	private String jeeContextFolder;
+	private File jeeContextFolder;
+	private String[] clientDirs;
 
-	public ExpandedClientContext(String jeeContextFolder) {
-		this.jeeContextFolder = jeeContextFolder;
+	public ExpandedClientContext(String jeeContextFolderPath,
+			String... clientDirs) {
+		this.jeeContextFolder = new File(jeeContextFolderPath);
+		this.clientDirs = clientDirs;
 	}
 
 	@Override
@@ -25,7 +28,10 @@ public class ExpandedClientContext implements Context {
 
 	@Override
 	public File getClientRoot() {
-		return new File(jeeContextFolder);
+		return jeeContextFolder;
 	}
 
+	public String[] getClientDirectories() {
+		return clientDirs;
+	}
 }

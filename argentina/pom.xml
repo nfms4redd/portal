@@ -173,9 +173,6 @@
 								</goals>
 								<configuration>
 									<mainTemplate>${project.build.directory}/requirejs/main.js</mainTemplate>
-									<webClientFolder>${project.build.directory}/requirejs</webClientFolder>
-									<buildconfigOutputPath>${project.build.directory}/buildconfig.js</buildconfigOutputPath>
-									<mainOutputPath>${project.build.directory}/requirejs/nfms/modules/main.js</mainOutputPath>
 								</configuration>
 							</execution>
 						</executions>
