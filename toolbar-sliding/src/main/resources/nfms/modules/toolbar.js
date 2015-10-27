@@ -48,7 +48,7 @@ define([ "layout", "message-bus", "module", "jquery" ], function(layout, bus, mo
 		});
 		divToolbar.append(sortedChildren);
 		divToolbar.show();
-		container.css("right", "calc(0px - " + divToolbar.css("width") + ")");
+		container.css("right", "-" + divToolbar.css("width"));
 	});
 
 	return divToolbar;
