@@ -1,0 +1,20 @@
+language: java
+
+addons:
+  postgresql: "9.3"
+
+before_script:
+  - psql -U postgres -c "create database spatialdata"
+  - psql -U postgres -d spatialdata -c "create extension postgis"
+
+script:
+  - mvn deploy -s deploy-settings.xml  
+
+after_failure:
+  - cat integration-tests/target/failsafe-reports/*.xml
+  - cat /tmp/testportal/portal.properties
+
+notifications:
+  email:
+    - onuredd@gmail.com
+  on_success: always

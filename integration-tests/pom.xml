@@ -110,6 +110,9 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<systemPropertyVariables>
+						<PORTAL_CONFIG_DIR>./test_config</PORTAL_CONFIG_DIR>
+					</systemPropertyVariables>
 					<groups>org.fao.unredd.functional.IntegrationTest</groups>
 				</configuration>
 				<executions>
