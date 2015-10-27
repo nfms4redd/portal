@@ -18,7 +18,6 @@
 			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>core</artifactId>
@@ -52,6 +51,11 @@
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>time-slider</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>toolbar-default</artifactId>
 			<version>3.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

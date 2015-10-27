@@ -21,6 +21,7 @@
 		<module>argentina</module>
 		<module>tour</module>
 		<module>footnote</module>
+		<module>toolbar-default</module>
     <module>layer-order</module>
   </modules>
 	<properties>

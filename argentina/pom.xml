@@ -46,6 +46,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
+			<artifactId>toolbar-default</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
 			<artifactId>tour</artifactId>
 			<version>3.1-SNAPSHOT</version>
 		</dependency>
