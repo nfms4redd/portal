@@ -1,4 +1,4 @@
-define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n, moment) {
+define([ "jquery", "message-bus", "i18n", "moment", "layer-list-selector", "jquery-ui", "fancy-box" ], function($, bus, i18n, moment) {
 
 	var layerActions = new Array();
 	var groupActions = new Array();
@@ -29,7 +29,13 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		"collapsible" : true,
 		"active" : false
 	});
-	layerListSelector.registerLayerPanel("all_layers_selector", 10, i18n.layers, divLayers);
+	
+	bus.send("register-layer-panel", {
+		id : "all_layers_selector",
+		priority : 10,
+		text : i18n.layers,
+		div : divLayers
+	});
 
 	bus.listen("add-group", function(event, groupInfo) {
 		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;
@@ -43,7 +49,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				// prevent accordion item from expanding
 				// when clicking on the info button
 				element.click(function(event) {
-					event.stopPropagation()
+					event.stopPropagation();
 				});
 				element.addClass("layer_info_button").addClass("group_info_button");
 				divTitle.append(element);

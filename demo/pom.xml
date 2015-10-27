@@ -65,6 +65,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
+			<artifactId>layer-list</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
+			<artifactId>layer-transparency</artifactId>
+			<version>3.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fao.unredd</groupId>
 			<artifactId>tour</artifactId>
 			<version>3.1-SNAPSHOT</version>
 		</dependency>

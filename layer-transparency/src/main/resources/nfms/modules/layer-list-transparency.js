@@ -1,5 +1,5 @@
 // layer-list is imported to have it first in the list
-define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "layer-list" ], function($, bus, layerListSelector, i18n) {
+define([ "jquery", "message-bus", "i18n", "jquery-ui", "layer-list" ], function($, bus, i18n) {
 
 	/*
 	 * keep the information about the layers that will be necessary when they
@@ -8,12 +8,17 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 	var layersInfo = {};
 
 	// Create the div
-	var divActiveLayers = $("<div/>").attr("id", "active_layers").addClass("layer_container_panel");
+	var divTransparency = $("<div/>").attr("id", "layers_transparency").addClass("layer_container_panel");
 
 	var table = $('<table style="width:100%;margin:auto"></table>');
-	divActiveLayers.append(table);
+	divTransparency.append(table);
 
-	layerListSelector.registerLayerPanel("layers_transparency_selector", 20, i18n.selected_layers, divActiveLayers);
+	bus.send("register-layer-panel", {
+		id : "layers_transparency_selector",
+		priority : 20,
+		text : i18n.selected_layers,
+		div : divTransparency
+	});
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		// set the visibility flag to true if the layer is active and if it is
@@ -22,7 +27,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 		if (!layerInfo.isPlaceholder) {
 			var activeLayerInfo = {
 				label : layerInfo.label,
-				opacity: 1
+				opacity : 1
 			};
 			if (layerInfo.hasOwnProperty("inlineLegendUrl")) {
 				activeLayerInfo["inlineLegendUrl"] = layerInfo.inlineLegendUrl;
@@ -104,5 +109,5 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 		}
 	});
 
-	return divActiveLayers;
+	return divTransparency;
 });

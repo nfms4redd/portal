@@ -1,7 +1,12 @@
-define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "moment", "jquery-ui" ], function($, bus, layout, map, layerListSelector, moment) {
-    var aTimestampsLayers={};
+define([ "jquery", "message-bus", "layout", "map", "moment", "layer-list-selector", "jquery-ui" ], function($, bus, layout, map, moment) {
+	var aTimestampsLayers = {};
 	var divTimeSliders = $("<div/>").attr("id", "layerTimeSliders").addClass("layer_container_panel");
-	layerListSelector.registerLayerPanel("layer_slider_selector", 30, "Temporal", divTimeSliders);
+	bus.send("register-layer-panel", {
+		id : "layer_slider_selector",
+		priority : 30,
+		text : "Temporal",
+		div : divTimeSliders
+	});
 
 	var formatDate = function(date, dateFormat) {
 		var format;
@@ -12,7 +17,7 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "momen
 		}
 		return moment(date).format(format);
 	}
-	
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		var timestamps = [];
 		if (layerInfo.hasOwnProperty("timestamps")) {
@@ -43,12 +48,13 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "momen
 							layer.mergeNewParams({
 								'time' : date.toISO8601String()
 							});
-							bus.send("layer-time-slider.selection", [layerInfo.id,date]);
+							bus.send("layer-time-slider.selection", [ layerInfo.id, date ]);
 						});
-					}else{ //Programatic change
-						//alert('programatic');
-					};
-					
+					} else { // Programatic change
+						// alert('programatic');
+					}
+					;
+
 				},
 				slide : function(event, ui) {
 					var date = timestamps[ui.value];
@@ -59,8 +65,8 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "momen
 			});
 
 			divTimeSliderLabel.text(formatDate(timestamps[timestamps.length - 1], layerInfo["date-format"]));
-		
-   		    var timestampInfo = {
+
+			var timestampInfo = {
 				"timestamps" : timestamps
 			};
 			if (layerInfo["date-format"]) {

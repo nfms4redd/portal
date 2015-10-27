@@ -1,12 +1,16 @@
 define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui" ], function($, bus, layout, customization, i18n, ui) {
-
 	var divsById = [];
-	
 	var buttonPriorities = [];
-	
-	var divContainer = $("<div/>").attr("id", "layers_container").appendTo("body");
 
-	var divLayerListSelector = $("<div/>").attr("id", "layer_list_selector_pane").appendTo("body").hide();
+	var container = $("<div/>").attr("id", "layer_list_selector_container");
+	container.appendTo("body");
+
+	var selector = $("<div/>").attr("id", "layer_list_selector");
+	selector.appendTo(container);
+	selector.hide();
+
+	var content = $("<div/>").attr("id", "layer_list_content");
+	content.appendTo(container);
 
 	bus.listen("show-layer-panel", function(event, id) {
 		for (divId in divsById) {
@@ -18,18 +22,28 @@ define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui"
 		}
 	});
 
-	var registerLayerPanel = function(id, priority, text, div) {
-		var btn = $("<input type='radio'/>").attr("id", id).attr("name", "layerListSelector").appendTo(divLayerListSelector);
-		var lbl = $("<label/>").addClass("noselect").attr("for", id).html(text).appendTo(divLayerListSelector);
-				
+	bus.listen("register-layer-panel", function(e, msg) {
+		var id = msg.id;
+		var div = msg.div;
+
+		var btn = $("<input type='radio'/>").attr("id", id);
+		btn.attr("name", "layerListSelector");
+		btn.appendTo(selector);
+
+		var lbl = $("<label/>").attr("for", id);
+		lbl.addClass("noselect");
+		lbl.html(msg.text);
+		lbl.appendTo(selector);
+
 		buttonPriorities.push({
 			"btn" : btn,
 			"lbl" : lbl,
-			"priority" : priority,
+			"priority" : msg.priority,
 			"div" : div
 		});
 
-		div.appendTo(divContainer);
+		div.addClass("layer_list_selector_div");
+		div.appendTo(content);
 
 		bus.listen("show-layer-panel", function(event, paneId) {
 			if (paneId == id) {
@@ -50,28 +64,30 @@ define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui"
 		});
 
 		divsById[id] = div;
-	};
+	});
 
 	bus.listen("modules-loaded", function() {
-		var byPriority = function(a, b) {
-			return a.priority - b.priority;
+		if (buttonPriorities.length < 2) {
+			// If there is only one panel (or zero), don't sort and don't show
+			// the selector
+			return;
 		}
-		buttonPriorities.sort(byPriority);
+
+		buttonPriorities.sort(function(a, b) {
+			return a.priority - b.priority;
+		});
+
 		for (var i = 0; i < buttonPriorities.length; i++) {
 			if (i == 0) {
 				buttonPriorities[i].btn.attr("checked", "true");
 			} else {
 				buttonPriorities[i].div.hide();
 			}
-			divLayerListSelector.append(buttonPriorities[i].btn);
-			divLayerListSelector.append(buttonPriorities[i].lbl);
+			selector.append(buttonPriorities[i].btn);
+			selector.append(buttonPriorities[i].lbl);
 		}
 
-		divLayerListSelector.buttonset();
-		divLayerListSelector.show();
+		selector.buttonset();
+		selector.show();
 	});
-
-	return {
-		"registerLayerPanel" : registerLayerPanel
-	};
 });

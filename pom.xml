@@ -25,6 +25,8 @@
 		<module>toolbar-sliding</module>
 		<module>layer-order</module>
 		<module>legend</module>
+		<module>layer-list</module>
+		<module>layer-transparency</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -1,0 +1,30 @@
+#layer_list_selector_container {
+	position: fixed;
+	top: 186px;
+	left: 10px;
+	z-index: 1100;
+}
+
+#layer_list_content {
+	min-width: 250px;
+}
+
+.layer_list_content_div {
+	width: 100%;
+}
+
+#layer_list_selector_container * {
+	font-size: 11px
+}
+
+#layer_list_content {
+	margin-top: 5px;
+}
+
+.layer_container_panel {
+	padding: 10px 15px;
+	background-color: black;
+	border-radius: 6px;
+	color: white;
+	border: 1px solid #666666;
+}
