@@ -24,6 +24,7 @@
 		<module>toolbar-default</module>
 		<module>toolbar-sliding</module>
 		<module>layer-order</module>
+		<module>legend</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
