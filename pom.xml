@@ -22,8 +22,9 @@
 		<module>tour</module>
 		<module>footnote</module>
 		<module>toolbar-default</module>
-    <module>layer-order</module>
-  </modules>
+		<module>toolbar-sliding</module>
+		<module>layer-order</module>
+	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<geotools.version>9.2</geotools.version>
