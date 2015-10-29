@@ -22,8 +22,8 @@
 }
 
 .layers-editor-form textarea {
-    width: 150px;
-    resize: vertical;
+	width: 150px;
+	resize: vertical;
 }
 
 .layers-editor-form select {
