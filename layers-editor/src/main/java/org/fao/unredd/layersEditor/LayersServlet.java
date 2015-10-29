@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.ServletContext;
@@ -55,13 +55,12 @@ public class LayersServlet extends HttpServlet {
 		Config config = (Config) ctx.getAttribute(CONFIG);
 		File backupDir = new File(config.getDir(), BACKUP_FOLDER);
 		if (backupDir.exists()) {
-			FileUtils.cleanDirectory(backupDir);
+			//FileUtils.cleanDirectory(backupDir); // oscar: don't!
 		}
 		File layersJSON = new File(config.getDir(), LAYERS_JSON);
 		if (layersJSON.exists()) {
-			Date date = new Date();
-			Timestamp now = new Timestamp(date.getTime());
-			File layersJSONBack = new File(backupDir, now.toString().replaceAll("\\s","_").concat("-".concat(LAYERS_JSON)));
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss_");
+			File layersJSONBack = new File(backupDir, format.format(new Date()).concat(LAYERS_JSON));
 			FileUtils.copyFile(layersJSON, layersJSONBack);
 			layersJSON.delete();
 		} else {
