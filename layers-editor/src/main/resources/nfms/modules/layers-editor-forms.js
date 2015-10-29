@@ -1,27 +1,23 @@
 define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers, schema, $) {
 
 	function editLayer(id) {
-		var form = createForm("Edit Layer");
+		var form = createForm("Edit Layer", "layer");
 
 		var portalValues = layers.getPortalLayer(id);
 		addPortalLayerFields(form, portalValues);
 
 		var wmsValues = layers.getWmsLayer(portalValues.layers[0]);
 		addWmsLayerFields(form, wmsValues);
-
-		getFormValues(form);
 	}
 
 	function editGroup(id) {
-		var form = createForm("Edit Group");
+		var form = createForm("Edit Group", "group");
 
 		var values = layers.getGroup(id);
 		addTocFields(form, values);
-
-		getFormValues(form);
 	}
 
-	function createForm(title) {
+	function createForm(title, type) {
 		var dialog = $("<div/>");
 		dialog.dialog({
 			title: title,
@@ -35,7 +31,22 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 		});
 
 		var form = $("<form/>").addClass("layers-editor-form").appendTo(dialog);
+		if (type) {
+			form.addClass(type);
+		}
+		addButtons(form, dialog);
 		return form;
+	}
+
+	function addButtons(form, dialog) {
+		function closeDialog() {
+			dialog.dialog('close');
+		}
+		;
+		var cancelButton = $("<div/>").html("Cancelar").appendTo(dialog); // TODO i18n
+		cancelButton.button().click(closeDialog);
+		var applyButton = $("<div/>").html("Aplicar Cambios").appendTo(dialog); // TODO i18n
+		applyButton.button().click(saveForm.bind(null, form, closeDialog));
 	}
 
 	function addTocFields(form, values) {
@@ -73,7 +84,7 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 		var fieldset = $("<fieldset/>").addClass(id).appendTo(form);
 		$("<legend/>").text(title).appendTo(fieldset);
 
-		for (var i in properties) {
+		for ( var i in properties) {
 			if (!properties[i].id) {
 				properties[i].id = i;
 			}
@@ -87,7 +98,7 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 
 		if (schema.enum && schema.enum.length) {
 			var input = $("<select/>").attr("name", schema.id).appendTo(div);
-			for (var i in schema.enum) {
+			for ( var i in schema.enum) {
 				var item = schema.enum[i];
 				var option = $("<option>").attr("value", item).text(item).appendTo(input);
 				if (item == value) {
@@ -95,31 +106,37 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 				}
 			}
 		} else if (schema.type == "string") {
-			var input = $("<input/>").attr("name", schema.id).attr(
-					"type", "text").attr("value", value).appendTo(div);
+			var input = $("<input/>").attr("name", schema.id).attr("type", "text").attr(
+					"value", value).appendTo(div);
 		} else if (schema.type == "array") {
-			var values = value ? value.join("\r\n"): "";
+			var values = value ? value.join("\r\n") : "";
 			var rows = value ? value.length + 1 : 3;
-			var input = $("<textarea/>").attr("name", schema.id).attr("rows", rows).val(values).appendTo(div);
+			var input = $("<textarea/>").attr("name", schema.id).attr("rows", rows).val(
+					values).appendTo(div);
 		} else if (schema.type == "boolean") {
-			var input = $("<input/>").attr("name", schema.id).attr("type", "checkbox").attr("value", value).appendTo(div);
+			var input = $("<input/>").attr("name", schema.id).attr("type", "checkbox")
+					.attr("value", value).appendTo(div);
 			if (value == true) {
 				input.prop('checked', true);
 			}
 		} else if (schema.hasOwnProperty("anyOf")) {
-			// WARNING: Shitty code ahead. It works for "legend" and "inlineLengendUrl",
-			// but will probably misbehave in other "anyOf" schema definitions.
+			// WARNING: Shitty code ahead. It works for "legend" and
+			// "inlineLengendUrl",
+			// but will probably misbehave in other "anyOf" schema
+			// definitions.
 			var chooser = $("<ul/>").attr("class", schema.id).appendTo(div);
 			var alreadyChecked = false;
-			for(var i in schema.anyOf) {
+			for ( var i in schema.anyOf) {
 				var el = $("<li/>").appendTo(chooser);
 				var choiceSchema = schema.anyOf[i];
-				var choice = $("<input/>").attr("name", schema.id).attr("type", "radio").attr("value", i).appendTo(el);
-				if((choiceSchema.hasOwnProperty("enum") && choiceSchema.enum.indexOf(value) != -1)) {
+				var choice = $("<input/>").attr("name", schema.id).attr("type", "radio")
+						.attr("value", i).appendTo(el);
+				if ((choiceSchema.hasOwnProperty("enum") && choiceSchema.enum
+						.indexOf(value) != -1)) {
 					choice.prop('checked', true);
 					alreadyChecked = true;
 					addField(el, choiceSchema, value);
-				} else if(alreadyChecked) {
+				} else if (alreadyChecked) {
 					addField(el, choiceSchema, "");
 				} else {
 					choice.prop('checked', true);
@@ -127,26 +144,36 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 				}
 			}
 		} else {
-			$("<span/>").addClass("layers-editor-type-not-implemented").text("Field type editor not implemented").appendTo(div);
+			$("<span/>").addClass("layers-editor-type-not-implemented").text(
+					"Field type editor not implemented").appendTo(div);
+		}
+	}
+
+	function saveForm(form, callback) {
+		var formData = getFormValues(form);
+
+		if (form.hasClass("group")) {
+			updateGroup(formData, callback);
 		}
 	}
 
 	function getFormValues(form) {
 		var data = {};
-		form.find("fieldset").each(function(){
+		form.find("fieldset").each(function() {
 			var group = this.className;
 			var values = {};
 			var arr = $(this).serializeArray();
-			for(var i in arr) {
+			for ( var i in arr) {
 				var field = arr[i];
-				if(field.value) {
-					values[field.name] = field.value;
-				}
+				values[field.name] = field.value;
 			}
 			data[group] = values;
 		});
-		console.log(data);
 		return data;
+	}
+
+	function updateGroup(data, callback) {
+		layers.updateGroup(data.toc, callback);
 	}
 
 	return {
