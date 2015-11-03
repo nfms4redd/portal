@@ -42,7 +42,6 @@ import static org.mockito.Mockito.when;
 public class LayersEditorTest {
 	
 	private static final boolean APPEND = true;
-	private static final String UTF_8 = "UTF-8";
 	private LayersServlet servlet;
 	private Config defaultconfig;
 	

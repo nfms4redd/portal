@@ -54,9 +54,6 @@ public class LayersServlet extends HttpServlet {
 		ServletContext ctx = getServletContext();
 		Config config = (Config) ctx.getAttribute(CONFIG);
 		File backupDir = new File(config.getDir(), BACKUP_FOLDER);
-		if (backupDir.exists()) {
-			//FileUtils.cleanDirectory(backupDir); // oscar: don't!
-		}
 		File layersJSON = new File(config.getDir(), LAYERS_JSON);
 		if (layersJSON.exists()) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss_");
@@ -64,10 +61,9 @@ public class LayersServlet extends HttpServlet {
 			FileUtils.copyFile(layersJSON, layersJSONBack);
 			layersJSON.delete();
 		} else {
-			// TODO Is this needed?
-			logger.error("Not found layers.json file in portal.properties folder!");
-			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not found layers.json file in portal.properties folder!");
-			return; 
+			logger.error("No layers.json file found in PORTAL_CONFIG_DIR");
+			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "No layers.json file found in PORTAL_CONFIG_DIR");
+			return;
 		}
 		layersJSON.createNewFile();
 		BufferedReader reader = req.getReader();
