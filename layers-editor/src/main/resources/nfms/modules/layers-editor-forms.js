@@ -114,9 +114,8 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 			var input = $("<textarea/>").attr("name", schema.id).attr("rows", rows).val(
 					values).appendTo(div);
 		} else if (schema.type == "boolean") {
-			var input = $("<input/>").attr("name", schema.id).attr("type", "checkbox")
-					.attr("value", value).appendTo(div);
-			if (value == true) {
+			var input = $("<input/>").attr("name", schema.id).attr("type", "checkbox").appendTo(div);
+			if (value) {
 				input.prop('checked', true);
 			}
 		} else if (schema.hasOwnProperty("anyOf")) {
@@ -131,8 +130,7 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 				var choiceSchema = schema.anyOf[i];
 				var choice = $("<input/>").attr("name", schema.id).attr("type", "radio")
 						.attr("value", i).appendTo(el);
-				if ((choiceSchema.hasOwnProperty("enum") && choiceSchema.enum
-						.indexOf(value) != -1)) {
+				if ((choiceSchema.hasOwnProperty("enum") && choiceSchema.enum.indexOf(value) != -1)) {
 					choice.prop('checked', true);
 					alreadyChecked = true;
 					addField(el, choiceSchema, value);
@@ -155,25 +153,87 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 		if (form.hasClass("group")) {
 			updateGroup(formData, callback);
 		}
+
+		if (form.hasClass("layer")) {
+			updateLayer(formData, callback);
+		}
+
 	}
 
 	function getFormValues(form) {
 		var data = {};
-		form.find("fieldset").each(function() {
-			var group = this.className;
+		var fieldsets = form.find("fieldset");
+		fieldsets.each(function(f, fieldset) {
+			var setName = fieldset.className;
+			var properties = schema.definitions[setName].hasOwnProperty("properties")
+					? schema.definitions[setName].properties
+					: schema.definitions[setName].allOf[1].properties;
 			var values = {};
-			var arr = $(this).serializeArray();
-			for ( var i in arr) {
+
+			// Serialize all values except checkboxes (booleans)
+			var arr = $(fieldset).find(":not(input[type=checkbox])").serializeArray();
+
+			// Checkboxes have to be interpreted manually as booleans
+			$(fieldset).find('input[type=checkbox]').each(function() {
+				arr.push({
+					name: this.name,
+					value: this.checked
+				});
+		    });
+
+			for (var i in arr) {
 				var field = arr[i];
-				values[field.name] = field.value;
+				var name = field.name;
+				var value = field.value;
+				var property = properties[name];
+
+				if (property.hasOwnProperty('enum')) {
+					values[name] = value;
+				} else if (property.type == "string") {
+					// No text => no key entry
+					if (value.length > 0) {
+						values[name] = value;
+					}
+				} else if (property.type == "array") {
+					// Split string by line
+					values[name] = value.match(/[^\r\n]+/g);
+					if (!value) {
+						values[name] = [];
+					}
+				} else if(property.hasOwnProperty("anyOf")) {
+					value = $(fieldset).find('input[name='+name+'][value='+value+']').next().find(':input').val();
+					if (value.length > 0) {
+						values[name] = value;
+					}
+				} else {
+					// Default behaviour, assign raw value
+					values[name] = value;
+				}
 			}
-			data[group] = values;
+			data[setName] = values;
 		});
 		return data;
 	}
 
 	function updateGroup(data, callback) {
 		layers.updateGroup(data.toc, callback);
+	}
+
+	function updateLayer(data, callback) {
+		var wmsLayer = data["wmsLayer-base"];
+		if (wmsLayer.type && wmsLayer.type == "osm") {
+			$.extend(wmsLayer, data["wmsLayer-osmType"]);
+		} else if (wmsLayer.type && wmsLayer.type == "gmaps") {
+			$.extend(wmsLayer, data["wmsLayer-gmapsType"]);
+		} else {
+			$.extend(wmsLayer, data["wmsLayer-wmsType"]);
+		}
+
+		var portalLayer = $.extend({
+			layers: [wmsLayer.id]
+		}, data.toc, data.portalLayer);
+
+		layers.updateLayer(wmsLayer, portalLayer, callback);
 	}
 
 	return {

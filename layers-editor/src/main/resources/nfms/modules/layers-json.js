@@ -14,16 +14,37 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		return find(config.groups, "id", id, "items");
 	}
 
-	function updateGroup(data, callback) {
-		var group = getGroup(data.id);
-		for ( var key in data) {
-			if (!data[key].length) {
-				delete group[key];
-			} else {
-				group[key] = data[key];
+	function updateGroup(input, callback) {
+		var group = getGroup(input.id);
+		copy(group, input);
+
+		upload(callback);
+	}
+
+	function updateLayer(wmsLayerInput, portalLayerInput, callback) {
+		var wmsLayer = getWmsLayer(wmsLayerInput.id);
+		copy(wmsLayer, wmsLayerInput);
+
+		var portalLayer = getPortalLayer(portalLayerInput.id);
+		copy(portalLayer,  portalLayerInput);
+
+		upload(callback);
+	}
+
+	function copy(target, source) {
+		// Copy over new values
+		for (key in source) {
+			target[key] = source[key];
+		}
+
+		// Delete all properties not in source
+		for (var key in target) {
+			if(!source.hasOwnProperty(key)) {
+				delete target[key];
 			}
 		}
-		upload(callback);
+
+		return target;
 	}
 
 	function find(arr, key, value, recurse) {
@@ -44,7 +65,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		bus.send("ajax", {
 			type: 'PUT',
 			url: 'layers.json',
-		    contentType: "application/json; charset=utf-8",
+			contentType: "application/json; charset=utf-8",
 			data: JSON.stringify(config, null, 4),
 			success: function(data, textStatus, jqXHR) {
 				if (onSuccess) {
@@ -59,6 +80,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		getPortalLayer: getPortalLayer,
 		getWmsLayer: getWmsLayer,
 		getGroup: getGroup,
-		updateGroup: updateGroup
+		updateGroup: updateGroup,
+		updateLayer: updateLayer
 	};
 });
