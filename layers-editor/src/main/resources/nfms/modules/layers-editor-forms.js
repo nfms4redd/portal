@@ -8,7 +8,8 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 		"wmsLayer-wmsType": schema.definitions["wmsLayer-wmsType"].allOf[1].properties,
 		"wmsLayer-osmType": schema.definitions["wmsLayer-osmType"].allOf[1].properties,
 		"wmsLayer-gmapsType": schema.definitions["wmsLayer-gmapsType"].allOf[1].properties
-	}
+	};
+
 	delete definitions.portalLayer.layers; // We assume 1:1 between portalLayer and wmsLayer, so this is tricked
 	delete definitions["wmsLayer-wmsType"].type; // Layer type is already shown as an wmsLayer-base property
 	delete definitions["wmsLayer-osmType"].type; // Layer type is already shown as an wmsLayer-base property
@@ -100,26 +101,27 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	function addField(form, definition, value) {
 		var div = $("<div/>").appendTo(form);
 		var label = $("<label/>").text(definition.title).appendTo(div);
+		var input;
 
 		if (definition.enum && definition.enum.length) {
-			var input = $("<select/>").attr("name", definition.id).appendTo(div);
-			for ( var i in definition.enum) {
-				var item = definition.enum[i];
+			input = $("<select/>").attr("name", definition.id).appendTo(div);
+			for (var e in definition.enum) {
+				var item = definition.enum[e];
 				var option = $("<option>").attr("value", item).text(item).appendTo(input);
 				if (item == value) {
 					option.prop('selected', true);
 				}
 			}
 		} else if (definition.type == "string") {
-			var input = $("<input/>").attr("name", definition.id).attr("type", "text").attr(
+			input = $("<input/>").attr("name", definition.id).attr("type", "text").attr(
 					"value", value).appendTo(div);
 		} else if (definition.type == "array") {
 			var values = value ? value.join("\r\n") : "";
 			var rows = value ? value.length + 1 : 3;
-			var input = $("<textarea/>").attr("name", definition.id).attr("rows", rows).val(
+			input = $("<textarea/>").attr("name", definition.id).attr("rows", rows).val(
 					values).appendTo(div);
 		} else if (definition.type == "boolean") {
-			var input = $("<input/>").attr("name", definition.id).attr("type", "checkbox").appendTo(div);
+			input = $("<input/>").attr("name", definition.id).attr("type", "checkbox").appendTo(div);
 			if (value) {
 				input.prop('checked', true);
 			}

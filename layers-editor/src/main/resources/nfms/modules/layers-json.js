@@ -33,8 +33,8 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 
 	function copy(target, source) {
 		// Copy over new values
-		for (key in source) {
-			target[key] = source[key];
+		for (var name in source) {
+			target[name] = source[name];
 		}
 
 		// Delete all properties not in source
