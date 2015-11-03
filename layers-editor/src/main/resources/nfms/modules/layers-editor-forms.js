@@ -2,6 +2,7 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 
 	// Grab panel definitions
 	var definitions = {
+		"server": {"default-server": schema.properties["default-server"]},
 		"toc": schema.definitions.toc.properties,
 		"portalLayer": schema.definitions.portalLayer.allOf[1].properties,
 		"wmsLayer-base": schema.definitions["wmsLayer-base"].properties,
@@ -14,6 +15,11 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	delete definitions["wmsLayer-wmsType"].type; // Layer type is already shown as an wmsLayer-base property
 	delete definitions["wmsLayer-osmType"].type; // Layer type is already shown as an wmsLayer-base property
 	delete definitions["wmsLayer-gmapsType"].type; // Layer type is already shown as an wmsLayer-base property
+
+	function editServer() {
+		var form = createDialog("Edit Portal Properties", "portal"); // TODO i18n
+		addFields("Server", "server", form, {"default-server": layers.getServer()}); // TODO i18n
+	}
 
 	function editLayer(id) {
 		var form = createDialog("Edit Layer", "layer"); // TODO i18n
@@ -180,6 +186,10 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	function saveForm(form, callback) {
 		var formData = getFormValues(form);
 
+		if (form.hasClass("server")) {
+			saveServer(formData, callback);
+		}
+
 		if (form.hasClass("group")) {
 			saveGroup(formData, callback);
 		}
@@ -245,6 +255,10 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 		return data;
 	}
 
+	function saveServer(data, callback) {
+		layers.updateServer(data["server"]["default-server"], callback);
+	}
+
 	function saveGroup(data, callback) {
 		var group = $.extend({
 			items: layers.getGroup(data.toc.id).items
@@ -270,6 +284,7 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	}
 
 	return {
+		editServer: editServer,
 		editLayer: editLayer,
 		editGroup: editGroup
 	};

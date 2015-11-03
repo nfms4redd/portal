@@ -2,6 +2,10 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 
 	var config = JSON.parse(layersjson);
 
+	function getServer() {
+		return config["default-server"];
+	}
+
 	function getPortalLayer(id) {
 		return find(config.portalLayers, "id", id);
 	}
@@ -12,6 +16,12 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 
 	function getGroup(id) {
 		return find(config.groups, "id", id, "items");
+	}
+
+	function updateServer(url, callback) {
+		config["default-server"] = url;
+
+		upload(callback);
 	}
 
 	function updateGroup(input, callback) {
@@ -77,9 +87,11 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 	}
 
 	return {
+		getServer: getServer,
 		getPortalLayer: getPortalLayer,
 		getWmsLayer: getWmsLayer,
 		getGroup: getGroup,
+		updateServer: updateServer,
 		updateGroup: updateGroup,
 		updateLayer: updateLayer
 	};
