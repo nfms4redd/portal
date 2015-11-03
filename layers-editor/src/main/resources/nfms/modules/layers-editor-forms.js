@@ -75,15 +75,38 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	}
 
 	function addWmsLayerFields(form, values) {
-		addFields("Layer Data", "wmsLayer-base", form, values); // TODO i18n
+		var fieldset = addFields("Layer Data", "wmsLayer-base", form, values); // TODO i18n
 
-		if (values.type && values.type == "osm") {
-			addFields("OSM", "wmsLayer-osmType", form, values); // TODO i18n
-		} else if (values.type && values.type == "gmaps") {
-			addFields("Google Maps", "wmsLayer-gmapsType", form, values); // TODO i18n
-		} else {
-			addFields("WMS", "wmsLayer-wmsType", form, values); // TODO i18n
+		fieldset.find("select[name=type]").change({form: form, values: values}, function(e) {
+			setLayerType(this.value, e.data.form, e.data.values);
+		});
+
+		setLayerType(values.type || "wms", form, values);
+	}
+
+	function setLayerType(type, form, values) {
+		var types = {
+			wms: {
+				label: "WMS", // TODO i18n
+				definition: "wmsLayer-wmsType"
+			},
+			osm: {
+				label: "OSM", // TODO i18n
+				definition: "wmsLayer-osmType"
+			},
+			gmaps: {
+				label: "Google Maps", // TODO i18n
+				definition: "wmsLayer-gmapsType"
+			}
 		}
+		for(var t in types) {
+			removePanel(types[t].definition, form);
+		}
+		addFields(types[type].label, types[type].definition, form, values);
+	}
+
+	function removePanel(name, form) {
+		form.find("fieldset[class="+name+"]").remove();
 	}
 
 	function addFields(title, panel, form, values) {
@@ -96,6 +119,8 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 			}
 			addField(fieldset, definitions[panel][name], values[name]);
 		}
+
+		return fieldset;
 	}
 
 	function addField(form, definition, value) {
