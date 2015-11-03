@@ -1,7 +1,21 @@
 define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers, schema, $) {
 
+	// Grab panel definitions
+	var definitions = {
+		"toc": schema.definitions.toc.properties,
+		"portalLayer": schema.definitions.portalLayer.allOf[1].properties,
+		"wmsLayer-base": schema.definitions["wmsLayer-base"].properties,
+		"wmsLayer-wmsType": schema.definitions["wmsLayer-wmsType"].allOf[1].properties,
+		"wmsLayer-osmType": schema.definitions["wmsLayer-osmType"].allOf[1].properties,
+		"wmsLayer-gmapsType": schema.definitions["wmsLayer-gmapsType"].allOf[1].properties
+	}
+	delete definitions.portalLayer.layers; // We assume 1:1 between portalLayer and wmsLayer, so this is tricked
+	delete definitions["wmsLayer-wmsType"].type; // Layer type is already shown as an wmsLayer-base property
+	delete definitions["wmsLayer-osmType"].type; // Layer type is already shown as an wmsLayer-base property
+	delete definitions["wmsLayer-gmapsType"].type; // Layer type is already shown as an wmsLayer-base property
+
 	function editLayer(id) {
-		var form = createForm("Edit Layer", "layer");
+		var form = createDialog("Edit Layer", "layer"); // TODO i18n
 
 		var portalValues = layers.getPortalLayer(id);
 		addPortalLayerFields(form, portalValues);
@@ -11,13 +25,13 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	}
 
 	function editGroup(id) {
-		var form = createForm("Edit Group", "group");
+		var form = createDialog("Edit Group", "group"); // TODO i18n
 
 		var values = layers.getGroup(id);
 		addTocFields(form, values);
 	}
 
-	function createForm(title, type) {
+	function createDialog(title, cls) {
 		var dialog = $("<div/>");
 		dialog.dialog({
 			title: title,
@@ -31,119 +45,108 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 		});
 
 		var form = $("<form/>").addClass("layers-editor-form").appendTo(dialog);
-		if (type) {
-			form.addClass(type);
+		if (cls) {
+			form.addClass(cls);
 		}
-		addButtons(form, dialog);
+		createButtons(form, dialog);
 		return form;
 	}
 
-	function addButtons(form, dialog) {
+	function createButtons(form, dialog) {
 		function closeDialog() {
 			dialog.dialog('close');
 		}
-		;
-		var cancelButton = $("<div/>").html("Cancelar").appendTo(dialog); // TODO i18n
+
+		var cancelButton = $("<div/>").html("Cancel").appendTo(dialog); // TODO i18n
 		cancelButton.button().click(closeDialog);
-		var applyButton = $("<div/>").html("Aplicar Cambios").appendTo(dialog); // TODO i18n
+
+		var applyButton = $("<div/>").html("Apply changes").appendTo(dialog); // TODO i18n
 		applyButton.button().click(saveForm.bind(null, form, closeDialog));
 	}
 
 	function addTocFields(form, values) {
-		var properties = schema.definitions.toc.properties;
-		addFields("Layer Tree Item", "toc", form, properties, values);
+		addFields("Layer Switcher", "toc", form, values); // TODO i18n
 	}
 
 	function addPortalLayerFields(form, values) {
 		addTocFields(form, values);
-		var properties = schema.definitions.portalLayer.allOf[1].properties;
-		delete properties.layers;
-		addFields("Portal Layer", "portalLayer", form, properties, values);
+		addFields("Portal Layer", "portalLayer", form, values); // TODO i18n
 	}
 
 	function addWmsLayerFields(form, values) {
-		var properties = schema.definitions["wmsLayer-base"].properties;
-		addFields("Pseudo-WMS Layer", "wmsLayer-base", form, properties, values);
+		addFields("Layer Data", "wmsLayer-base", form, values); // TODO i18n
 
-		if (properties.type && properties.type == "osm") {
-			properties = schema.definitions["wmsLayer-osmType"].allOf[1].properties;
-			delete properties.type;
-			addFields("OSM Layer", "wmsLayer-osmType", form, properties, values);
-		} else if (properties.type && properties.type == "gmaps") {
-			properties = schema.definitions["wmsLayer-gmapsType"].allOf[1].properties;
-			delete properties.type;
-			addFields("Google Maps Layer", "wmsLayer-gmapsType", form, properties, values);
+		if (values.type && values.type == "osm") {
+			addFields("OSM", "wmsLayer-osmType", form, values); // TODO i18n
+		} else if (values.type && values.type == "gmaps") {
+			addFields("Google Maps", "wmsLayer-gmapsType", form, values); // TODO i18n
 		} else {
-			properties = schema.definitions["wmsLayer-wmsType"].allOf[1].properties;
-			delete properties.type;
-			addFields("True-WMS Layer", "wmsLayer-wmsType", form, properties, values);
+			addFields("WMS", "wmsLayer-wmsType", form, values); // TODO i18n
 		}
 	}
 
-	function addFields(title, id, form, properties, values) {
-		var fieldset = $("<fieldset/>").addClass(id).appendTo(form);
+	function addFields(title, panel, form, values) {
+		var fieldset = $("<fieldset/>").addClass(panel).appendTo(form);
 		$("<legend/>").text(title).appendTo(fieldset);
 
-		for ( var i in properties) {
-			if (!properties[i].id) {
-				properties[i].id = i;
+		for (var name in definitions[panel]) {
+			if (!definitions[panel][name].id) {
+				definitions[panel][name].id = name;
 			}
-			addField(fieldset, properties[i], values[i]);
+			addField(fieldset, definitions[panel][name], values[name]);
 		}
 	}
 
-	function addField(form, schema, value) {
+	function addField(form, definition, value) {
 		var div = $("<div/>").appendTo(form);
-		var label = $("<label/>").text(schema.title).appendTo(div);
+		var label = $("<label/>").text(definition.title).appendTo(div);
 
-		if (schema.enum && schema.enum.length) {
-			var input = $("<select/>").attr("name", schema.id).appendTo(div);
-			for ( var i in schema.enum) {
-				var item = schema.enum[i];
+		if (definition.enum && definition.enum.length) {
+			var input = $("<select/>").attr("name", definition.id).appendTo(div);
+			for ( var i in definition.enum) {
+				var item = definition.enum[i];
 				var option = $("<option>").attr("value", item).text(item).appendTo(input);
 				if (item == value) {
 					option.prop('selected', true);
 				}
 			}
-		} else if (schema.type == "string") {
-			var input = $("<input/>").attr("name", schema.id).attr("type", "text").attr(
+		} else if (definition.type == "string") {
+			var input = $("<input/>").attr("name", definition.id).attr("type", "text").attr(
 					"value", value).appendTo(div);
-		} else if (schema.type == "array") {
+		} else if (definition.type == "array") {
 			var values = value ? value.join("\r\n") : "";
 			var rows = value ? value.length + 1 : 3;
-			var input = $("<textarea/>").attr("name", schema.id).attr("rows", rows).val(
+			var input = $("<textarea/>").attr("name", definition.id).attr("rows", rows).val(
 					values).appendTo(div);
-		} else if (schema.type == "boolean") {
-			var input = $("<input/>").attr("name", schema.id).attr("type", "checkbox").appendTo(div);
+		} else if (definition.type == "boolean") {
+			var input = $("<input/>").attr("name", definition.id).attr("type", "checkbox").appendTo(div);
 			if (value) {
 				input.prop('checked', true);
 			}
-		} else if (schema.hasOwnProperty("anyOf")) {
-			// WARNING: Shitty code ahead. It works for "legend" and
-			// "inlineLengendUrl",
-			// but will probably misbehave in other "anyOf" schema
-			// definitions.
-			var chooser = $("<ul/>").attr("class", schema.id).appendTo(div);
+		} else if (definition.hasOwnProperty("anyOf")) {
+			// WARNING: Shitty code ahead. It works for "legend" and "inlineLengendUrl",
+			// but will probably misbehave in other "anyOf" definition.
+			var chooser = $("<ul/>").attr("class", definition.id).appendTo(div);
 			var alreadyChecked = false;
-			for ( var i in schema.anyOf) {
+			for (var i in definition.anyOf) {
 				var el = $("<li/>").appendTo(chooser);
-				var choiceSchema = schema.anyOf[i];
-				var choice = $("<input/>").attr("name", schema.id).attr("type", "radio")
+				var choiceDef = definition.anyOf[i];
+				var choice = $("<input/>").attr("name", definition.id).attr("type", "radio")
 						.attr("value", i).appendTo(el);
-				if ((choiceSchema.hasOwnProperty("enum") && choiceSchema.enum.indexOf(value) != -1)) {
+				if ((choiceDef.hasOwnProperty("enum") && choiceDef.enum.indexOf(value) != -1)) {
 					choice.prop('checked', true);
 					alreadyChecked = true;
-					addField(el, choiceSchema, value);
+					addField(el, choiceDef, value);
 				} else if (alreadyChecked) {
-					addField(el, choiceSchema, "");
+					addField(el, choiceDef, "");
 				} else {
 					choice.prop('checked', true);
-					addField(el, choiceSchema, value);
+					addField(el, choiceDef, value);
 				}
 			}
 		} else {
 			$("<span/>").addClass("layers-editor-type-not-implemented").text(
-					"Field type editor not implemented").appendTo(div);
+					"Editor not implemented for this field type").appendTo(div); // TODO i18n
 		}
 	}
 
@@ -151,11 +154,11 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 		var formData = getFormValues(form);
 
 		if (form.hasClass("group")) {
-			updateGroup(formData, callback);
+			saveGroup(formData, callback);
 		}
 
 		if (form.hasClass("layer")) {
-			updateLayer(formData, callback);
+			saveLayer(formData, callback);
 		}
 
 	}
@@ -163,11 +166,10 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	function getFormValues(form) {
 		var data = {};
 		var fieldsets = form.find("fieldset");
+
+		// Process each of the fieldsets
 		fieldsets.each(function(f, fieldset) {
-			var setName = fieldset.className;
-			var properties = schema.definitions[setName].hasOwnProperty("properties")
-					? schema.definitions[setName].properties
-					: schema.definitions[setName].allOf[1].properties;
+			var panel = fieldset.className;
 			var values = {};
 
 			// Serialize all values except checkboxes (booleans)
@@ -181,45 +183,49 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 				});
 		    });
 
+			// Get the values for each of the fields
 			for (var i in arr) {
 				var field = arr[i];
 				var name = field.name;
 				var value = field.value;
-				var property = properties[name];
+				var definition = definitions[panel][name];
 
-				if (property.hasOwnProperty('enum')) {
+				if (definition.hasOwnProperty('enum')) {
 					values[name] = value;
-				} else if (property.type == "string") {
+				} else if (definition.type == "string") {
 					// No text => no key entry
 					if (value.length > 0) {
 						values[name] = value;
 					}
-				} else if (property.type == "array") {
+				} else if (definition.type == "array") {
 					// Split string by line
 					values[name] = value.match(/[^\r\n]+/g);
 					if (!value) {
 						values[name] = [];
 					}
-				} else if(property.hasOwnProperty("anyOf")) {
+				} else if(definition.hasOwnProperty("anyOf")) {
 					value = $(fieldset).find('input[name='+name+'][value='+value+']').next().find(':input').val();
 					if (value.length > 0) {
 						values[name] = value;
 					}
 				} else {
-					// Default behaviour, assign raw value
+					// Default behaviour, assign the raw form value
 					values[name] = value;
 				}
 			}
-			data[setName] = values;
+			data[panel] = values;
 		});
 		return data;
 	}
 
-	function updateGroup(data, callback) {
-		layers.updateGroup(data.toc, callback);
+	function saveGroup(data, callback) {
+		var group = $.extend({
+			items: layers.getGroup(data.toc.id).items
+		}, data.toc);
+		layers.updateGroup(group, callback);
 	}
 
-	function updateLayer(data, callback) {
+	function saveLayer(data, callback) {
 		var wmsLayer = data["wmsLayer-base"];
 		if (wmsLayer.type && wmsLayer.type == "osm") {
 			$.extend(wmsLayer, data["wmsLayer-osmType"]);
