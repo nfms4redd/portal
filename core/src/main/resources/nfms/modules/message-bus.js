@@ -32,8 +32,21 @@ define([ "jquery" ], function($) {
 		messageBus.bind(name, callBack);
 	}
 
+	/**
+	 * Removes a listener of the specified message. 
+	 * 
+	 * @param {string}
+	 *            name - The name of the message.
+	 * @param {function}
+	 *            callBack - The function registered in a previous "listen" call
+	 */
+	function stopListen(name, callBack) {
+		messageBus.unbind(name, callBack);
+	}
+
 	return {
 		send : send,
-		listen : listen
+		listen : listen,
+		stopListen : stopListen
 	};
 });
