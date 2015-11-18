@@ -12,7 +12,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 	var addBoundsAndHighlightGeom = function(feature) {
 		var bounds = null;
 		var highlightGeom = null;
-		
+
 		if (feature.geometry) {
 			bounds = feature["geometry"].getBounds();
 			highlightGeom = feature["geometry"];
@@ -23,11 +23,11 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 			bounds.extend(new OpenLayers.LonLat(bbox[2], bbox[3]));
 			highlightGeom = bounds.toGeometry();
 		}
-		
+
 		feature["bounds"] = bounds;
 		feature["highlightGeom"] = highlightGeom;
 	};
-	
+
 	bus.listen("add-layer", function(e, layerInfo) {
 		var wmsLayers = layerInfo.wmsLayers;
 		for (var i = 0; i < wmsLayers.length; i++) {
@@ -77,13 +77,27 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 						}
 
 						// bbox parameter
-						var point = map.getLonLatFromPixel(e.xy);
+						var tolerance = 5;
+						var point1 = map.getLonLatFromPixel(e.xy.offset({
+							x : -tolerance,
+							y : -tolerance
+						}));
+						var point2 = map.getLonLatFromPixel(e.xy.offset({
+							x : tolerance,
+							y : tolerance
+						}));
 						var bboxFilter = //
 						"  <ogc:Intersects>" + //
 						"    <ogc:PropertyName>" + wmsLayer["queryGeomFieldName"] + "</ogc:PropertyName>" + //
-						"    <gml:Point xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:900913\">" + //
-						"      <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">" + point.lon + "," + point.lat + "</gml:coordinates>" + //
-						"    </gml:Point>" + //
+						// " <gml:Point xmlns:gml=\"http://www.opengis.net/gml\"
+						// srsName=\"EPSG:900913\">" + //
+						// " <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
+						// + point.lon + "," +
+						// point.lat + "</gml:coordinates>" + //
+						// " </gml:Point>" + //
+						"    <gml:Box xmlns:gml=\"http://www.opengis.net/gml\" srsName=\"EPSG:900913\">" + //
+						"      <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">" + (point1.lon) + "," + (point1.lat) + " " + (point2.lon) + "," + (point2.lat) + "</gml:coordinates>" + //
+						"    </gml:Box>" + //
 						"  </ogc:Intersects>" //
 						// " <ogc:BBOX>" + //
 						// " <gml:Box xmlns:gml=\"http://www.opengis.net/gml\"
@@ -134,11 +148,11 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 										feature["aliases"] = aliases;
 										addBoundsAndHighlightGeom(feature);
 									});
-	
+
 									bus.send("info-features", [ wmsLayer.id, features, e.xy.x, e.xy.y ]);
 								}
 							},
-							controlCallBack : function (control) {
+							controlCallBack : function(control) {
 								wfsCallControl = control;
 							},
 							errorMsg : "Cannot get info for layer " + layerInfo.label
@@ -149,7 +163,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 
 			} else {
 				var lastXY = null;
-				
+
 				var control = new OpenLayers.Control.WMSGetFeatureInfo({
 					url : queryUrl,
 					layerUrls : [ wmsLayer["baseUrl"] ],
