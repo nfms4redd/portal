@@ -197,48 +197,55 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		$("<span/>").html(" (" + dateStr + ")").appendTo(tdLayerName);
 	};
 
+	var findClosestPrevious = function(layer, date) {
+		var layerTimestamps = layer.timestamps;
+		var layerTimestampStyles = null;
+		if (layer.hasOwnProperty("timeStyles")) {
+			layerTimestampStyles = layer.timeStyles.split(",");
+		}
+		var timestampInfos = [];
+		for (var j = 0; j < layerTimestamps.length; j++) {
+			var timestamp = new Date();
+			timestamp.setISO8601(layerTimestamps[j]);
+			var style = null;
+			if (layerTimestampStyles != null) {
+				style = layerTimestampStyles[j];
+			}
+			var timestampInfo = {
+				"timestamp" : timestamp,
+				"style" : style
+			};
+			timestampInfos.push(timestampInfo);
+		}
+
+		timestampInfos.sort(function(infoA, infoB) {
+			return infoA.timestamp.getTime() - infoB.timestamp.getTime();
+		});
+
+		var closestPrevious = null;
+
+		for (var j = 0; j < timestampInfos.length; j++) {
+			var timestampInfo = timestampInfos[j];
+			if (timestampInfo.timestamp.getTime() <= date.getTime()) {
+				closestPrevious = timestampInfo;
+			} else {
+				break;
+			}
+		}
+
+		if (closestPrevious == null) {
+			closestPrevious = timestampInfos[0];
+		}
+
+		return closestPrevious;
+	}
+	
+	
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
 			var layer = temporalLayers[i];
-			var layerTimestamps = layer.timestamps;
-			var layerTimestampStyles = null;
-			if (layer.hasOwnProperty("timeStyles")) {
-				layerTimestampStyles = layer.timeStyles.split(",");
-			}
-			var timestampInfos = [];
-			for (var j = 0; j < layerTimestamps.length; j++) {
-				var timestamp = new Date();
-				timestamp.setISO8601(layerTimestamps[j]);
-				var style = null;
-				if (layerTimestampStyles != null) {
-					style = layerTimestampStyles[j];
-				}
-				var timestampInfo = {
-					"timestamp" : timestamp,
-					"style" : style
-				};
-				timestampInfos.push(timestampInfo);
-			}
 
-			timestampInfos.sort(function(infoA, infoB) {
-				return infoA.timestamp.getTime() - infoB.timestamp.getTime();
-			});
-
-			var closestPrevious = null;
-
-			for (var j = 0; j < timestampInfos.length; j++) {
-				var timestampInfo = timestampInfos[j];
-				if (timestampInfo.timestamp.getTime() <= date.getTime()) {
-					closestPrevious = timestampInfo;
-				} else {
-					break;
-				}
-			}
-
-			if (closestPrevious == null) {
-				closestPrevious = timestampInfos[0];
-			}
-
+			var closestPrevious = findClosestPrevious(layer, date);
 			updateLabel(layer.id, layer["date-format"], closestPrevious.timestamp);
 
 			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious.timestamp, closestPrevious.style ]);
@@ -247,8 +254,9 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 	bus.listen("layer-time-slider.selection", function(event, layerid, date) {
 		$.each(temporalLayers, function(index, temporalLayer) {
 			if (temporalLayer.id == layerid) {
-				updateLabel(layerid, temporalLayer["date-format"], date);
-				bus.send("layer-timestamp-selected", [ layerid, date ]);
+				var closestPrevious = findClosestPrevious(temporalLayer, date);
+				updateLabel(layerid, temporalLayer["date-format"], closestPrevious.timestamp);
+				bus.send("layer-timestamp-selected", [ layerid, closestPrevious.timestamp, closestPrevious.style ]);
 			}
 		});
 	});
