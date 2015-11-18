@@ -75,6 +75,7 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 			height : 200,
 			resizable : true,
 			close : function(event, ui) {
+				bus.send("clear-info-features");
 				bus.send("clear-highlighted-features");
 				map.getLayer("Highlighted Features").destroyFeatures();
 			},

@@ -108,7 +108,6 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 						// "</gml:coordinates>" + //
 						// " </gml:Box>" + //
 						// " </ogc:BBOX>" //
-						;
 
 						// time parameter
 						var getFeatureMessage = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">";
