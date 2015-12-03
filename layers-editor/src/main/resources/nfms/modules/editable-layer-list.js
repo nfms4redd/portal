@@ -15,6 +15,14 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 		});
 	}
 
+	function save() {
+		var groups = getGroups($("#all_layers")).items;
+		layers_json.updateGroups(groups, function() {
+			console.log("New group order saved");
+			layers.redraw(layers_json.root);
+		});
+	}
+
 	bus.listen("layers-loaded", function() {
 		//var add = $("<div/>").addClass("root_group_placeholder").append("Add Group ").append($("<div/>").addClass("fa fa-plus")); // TODO i18n
 		//$("#layers_container").append(add);
@@ -31,16 +39,12 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 				ui.item.children(".ui-accordion-header").triggerHandler("focusout");
 				// Refresh accordion to handle new order
 				$("#all_layers > div").each(function() {
-					$(this).accordion("refresh");
+					if ($(this).hasClass("ui-accordion")) {
+						$(this).accordion("refresh");
+					}
 				});
 
-				// Read new group hierarchy from DOM and save it to the server
-				var groups = getGroups($("#all_layers")).items;
-				layers_json.updateGroups(groups, function() {
-					console.log("New group order saved");
-					layers.clear();
-					layers.draw(layers_json.root);
-				});
+				save();
 			}
 		});
 
@@ -60,22 +64,12 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 			placeholder: "root_group_placeholder",
 			forcePlaceholderSize: true,
 			stop: function(event, ui) {
-				// IE doesn't register the blur when sorting
-				// so trigger focusout handlers to remove .ui-state-focus
-				ui.item.children(".ui-accordion-header").triggerHandler("focusout");
-				// Refresh accordion to handle new order
-				$("#all_layers > div").each(function() {
-					$(this).accordion("refresh");
-				});
-				// Read new group hierarchy from DOM and save it to the server
-				var groups = getGroups($("#all_layers")).items;
-				layers_json.updateGroups(groups, function() {
-					console.log("New group order saved");
-				});
+				save();
 			}
 		});
 	});
 
+	/*
 	bus.listen("remove-layer", function(event, layer) {
 		console.log("Remove layer");
 		console.log(layer);
@@ -89,6 +83,7 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 	bus.listen("layers-removed", function() {
 		console.log("All layers removed");
 	});
+	*/
 
 	function getGroups(el) {
 		var attrs = el.attr("data-group") ? JSON.parse(el.attr("data-group")) : {};

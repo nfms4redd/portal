@@ -143,7 +143,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			bus.send("remove-group", addedGroups.pop());
 		}
 		bus.send("layers-removed");
-	}
+	};
 
 	var draw = function(layerRoot) {
 		var i;
@@ -166,6 +166,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		bus.send("layers-loaded");
 	};
 
+	var redraw = function(layerRoot) {
+		clear();
+		draw(layerRoot);
+	};
+
 	bus.listen("modules-loaded", function() {
 		draw(module.config());
 	});
@@ -180,7 +185,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 	return {
 		clear: clear,
-		draw: draw
+		draw: draw,
+		redraw: redraw
 	};
 
 });

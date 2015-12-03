@@ -1,4 +1,4 @@
-define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers, schema, $) {
+define(["layers-json", "layers-schema", "layers", "jquery", "jquery-ui"], function(layers_json, schema, layers, $) {
 
 	// Grab panel definitions
 	var definitions = {
@@ -18,23 +18,23 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 
 	function editServer() {
 		var form = createDialog("Edit Portal Properties", "portal"); // TODO i18n
-		addFields("Server", "server", form, {"default-server": layers.getServer()}); // TODO i18n
+		addFields("Server", "server", form, {"default-server": layers_json.getServer()}); // TODO i18n
 	}
 
 	function editLayer(id) {
 		var form = createDialog("Edit Layer", "layer"); // TODO i18n
 
-		var portalValues = layers.getPortalLayer(id);
+		var portalValues = layers_json.getPortalLayer(id);
 		addPortalLayerFields(form, portalValues);
 
-		var wmsValues = layers.getWmsLayer(portalValues.layers[0]);
+		var wmsValues = layers_json.getWmsLayer(portalValues.layers[0]);
 		addWmsLayerFields(form, wmsValues);
 	}
 
 	function editGroup(id) {
 		var form = createDialog("Edit Group", "group"); // TODO i18n
 
-		var values = layers.getGroup(id);
+		var values = layers_json.getGroup(id);
 		addTocFields(form, values);
 	}
 
@@ -64,11 +64,16 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 			dialog.dialog('close');
 		}
 
+		function refresh() {
+			closeDialog();
+			layers.redraw(layers_json.root);
+		}
+
 		var cancelButton = $("<div/>").html("Cancel").appendTo(dialog); // TODO i18n
 		cancelButton.button().click(closeDialog);
 
 		var applyButton = $("<div/>").html("Apply changes").appendTo(dialog); // TODO i18n
-		applyButton.button().click(saveForm.bind(null, form, closeDialog));
+		applyButton.button().click(saveForm.bind(null, form, refresh));
 	}
 
 	function addTocFields(form, values) {
@@ -256,14 +261,14 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	}
 
 	function saveServer(data, callback) {
-		layers.updateServer(data["server"]["default-server"], callback);
+		layers_json.updateServer(data["server"]["default-server"], callback);
 	}
 
 	function saveGroup(data, callback) {
 		var group = $.extend({
-			items: layers.getGroup(data.toc.id).items
+			items: layers_json.getGroup(data.toc.id).items
 		}, data.toc);
-		layers.updateGroup(group, callback);
+		layers_json.updateGroup(group, callback);
 	}
 
 	function saveLayer(data, callback) {
@@ -280,7 +285,7 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 			layers: [wmsLayer.id]
 		}, data.toc, data.portalLayer);
 
-		layers.updateLayer(wmsLayer, portalLayer, callback);
+		layers_json.updateLayer(wmsLayer, portalLayer, callback);
 	}
 
 	return {
