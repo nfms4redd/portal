@@ -74,7 +74,8 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 					transparent : true,
 					format : wmsLayer.imageFormat || 'image/png'
 				}, {
-					noMagic : true
+					noMagic : true,
+					visibility: false // Don't show until a "layer-visibility" event indicates so
 				});
 			}
 			layer.id = wmsLayer.id;
@@ -90,7 +91,28 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 		}
 	});
 
-	bus.listen("layers-loaded", function() {
+	bus.listen("remove-layer", function(event, layerInfo) {
+		var mapLayerArray = mapLayersByLayerId[layerInfo.id];
+		for (var index in layerInfo.wmsLayers) {
+			var wmsLayer = layerInfo.wmsLayers[index];
+			var layer = map.getLayer(wmsLayer.id);
+
+			if (map !== null) {
+				map.removeLayer(layer);
+				delete zIndexes[wmsLayer.id];
+			}
+			// remove wmsLayer.id from mapLayerArray;
+			var i = mapLayerArray.indexOf(wmsLayer.id);
+			if (i > -1) {
+				mapLayerArray.splice(i, 1);
+			}
+		}
+		if (mapLayerArray.length == 0) {
+			delete mapLayersByLayerId[layerInfo.id];
+		}
+	});
+
+	var sortLayers = function() {
 		/*
 		 * Sort all layers by zIndexes
 		 */
@@ -106,23 +128,34 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 				map.setLayerIndex(layer, z);
 			}
 		}
+	}
 
-		// Add the vector layer for highlighted features on top of all the other
-		// layers
-		// StyleMap for the highlight layer
-		var styleMap = new OpenLayers.StyleMap({
-			'strokeWidth' : 5,
-			fillOpacity : 0,
-			strokeColor : '#ee4400',
-			strokeOpacity : 0.5,
-			strokeLinecap : 'round'
-		});
+	var addVectorLayer = function() {
+		var id = "Highlighted Features";
 
-		var highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {
-			styleMap : styleMap
+		// Remove if exists
+		var vector = map.getLayer(id);
+		if (map !== null && vector) {
+			map.removeLayer(vector);
+		}
+
+		// Create new vector layer
+		vector = new OpenLayers.Layer.Vector(id, {
+			styleMap: new OpenLayers.StyleMap({
+				'strokeWidth' : 5,
+				fillOpacity : 0,
+				strokeColor : '#ee4400',
+				strokeOpacity : 0.5,
+				strokeLinecap : 'round'
+			})
 		});
-		highlightLayer.id = "Highlighted Features";
-		map.addLayer(highlightLayer);
+		vector.id = id;
+		map.addLayer(vector);
+	}
+
+	bus.listen("layers-loaded", function() {
+		sortLayers();
+		addVectorLayer();
 	});
 
 	bus.listen("layer-visibility", function(event, layerId, visibility) {
