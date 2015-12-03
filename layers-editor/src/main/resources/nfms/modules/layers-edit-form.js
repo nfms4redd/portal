@@ -72,16 +72,16 @@ define(["layers-json", "layers-schema", "jquery", "jquery-ui"], function(layers,
 	}
 
 	function addTocFields(form, values) {
-		addFields("Layer Switcher", "toc", form, values); // TODO i18n
+		addFields("Layer Description", "toc", form, values); // TODO i18n
 	}
 
 	function addPortalLayerFields(form, values) {
 		addTocFields(form, values);
-		addFields("Portal Layer", "portalLayer", form, values); // TODO i18n
+		addFields("Layer Properties", "portalLayer", form, values); // TODO i18n
 	}
 
 	function addWmsLayerFields(form, values) {
-		var fieldset = addFields("Layer Data", "wmsLayer-base", form, values); // TODO i18n
+		var fieldset = addFields("Layer Datasource", "wmsLayer-base", form, values); // TODO i18n
 
 		fieldset.find("select[name=type]").change({form: form, values: values}, function(e) {
 			setLayerType(this.value, e.data.form, e.data.values);

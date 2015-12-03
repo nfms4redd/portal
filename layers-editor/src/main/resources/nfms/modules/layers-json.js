@@ -31,6 +31,16 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		upload(callback);
 	}
 
+	function getGroups() {
+		return config.groups;
+	}
+
+	function updateGroups(groups, callback) {
+		config.groups = groups;
+
+		upload(callback);
+	}
+
 	function updateLayer(wmsLayerInput, portalLayerInput, callback) {
 		var wmsLayer = getWmsLayer(wmsLayerInput.id);
 		copy(wmsLayer, wmsLayerInput);
@@ -93,6 +103,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		getGroup: getGroup,
 		updateServer: updateServer,
 		updateGroup: updateGroup,
-		updateLayer: updateLayer
+		updateGroups: updateGroups,
+		getGroups: getGroups
 	};
 });

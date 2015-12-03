@@ -18,14 +18,15 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 	});
 
 	divLayers = $("<div/>").attr("id", "all_layers");
+	divLayers.addClass("group-container");
 	divLayers.addClass("ui-accordion-icons");
+
 	divLayers.accordion({
 		"animate" : false,
+		"header": "> div > div.group-title",
 		"heightStyle" : "content",
-		/*
-		 * Collapse all content since otherwise the accordion sets the 'display'
-		 * to 'block' instead than to 'table'
-		 */
+		// Collapse all content since otherwise the accordion sets the 'display'
+		// to 'block' instead than to 'table'
 		"collapsible" : true,
 		"active" : false
 	});
@@ -35,6 +36,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;
 
 		divTitle = $("<div/>").html(groupInfo.name).disableSelection();
+		divTitle.addClass("group-title");
 
 		for (var i = 0; i < groupActions.length; i++) {
 			var groupAction = groupActions[i];
@@ -52,19 +54,27 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 
 		tblLayerGroup = $("<table/>");
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
+		$("<tbody/>").addClass("layer-container").appendTo(tblLayerGroup);
+
+		var divGroup = $("<div/>").addClass("group").attr("data-group", JSON.stringify(groupInfo));
 
 		if (groupInfo.hasOwnProperty("parentId")) {
 			parentId = groupInfo.parentId;
 			tblParentLayerGroup = $("#group-content-table-" + parentId);
+			tblParentLayerGroup.addClass("group-container");
 			if (tblParentLayerGroup.length == 0) {
 				bus.send("error", "Group " + groupInfo.name + " references nonexistent group: " + parentId);
 			}
-			tblParentLayerGroup.append(divTitle).append(tblLayerGroup);
+			tblParentLayerGroup.append(divGroup);
+			divGroup.append(divTitle).append(tblLayerGroup);
 		} else {
-			divLayers.append(divTitle);
+			divLayers.append(divGroup);
+			divTitle.addClass("header");
+			divGroup.append(divTitle);
 			divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
 			divContent.append(tblLayerGroup);
-			divLayers.append(divContent).accordion("refresh");
+			divGroup.append(divContent);
+			divLayers.accordion("refresh");
 			groupIdAccordionIndex[groupInfo.id] = numTopLevelGroups;
 			numTopLevelGroups++;
 		}
