@@ -184,7 +184,7 @@ public class JEEContextAnalyzer {
 		@Override
 		public void accept(String path, ContextEntryReader contentReader)
 				throws IOException {
-			if (path.matches("\\Q" + dir + "/\\E\\w+\\Q-conf.json\\E")) {
+			if (path.matches("\\Q" + dir + "/\\E[\\w-]+\\Q-conf.json\\E")) {
 				PluginDescriptor pluginDescriptor = new PluginDescriptor(
 						contentReader.getContent());
 				requirejsPaths.putAll(pluginDescriptor.getRequireJSPathsMap());
