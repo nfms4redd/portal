@@ -1,36 +1,52 @@
 define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n, moment) {
 
-	var layerActions = new Array();
-	var groupActions = new Array();
+	var layerActions,
+		groupActions,
+		temporalLayers,
+		groupIdAccordionIndex,
+		numTopLevelGroups,
+		divLayers;
 
-	var temporalLayers = new Array();
+	var redraw = function() {
+		layerActions = [];
+		groupActions = [];
+		temporalLayers = [];
+		groupIdAccordionIndex = {};
+		numTopLevelGroups = 0;
 
-	var divLayers = null;
+		if(divLayers) {
+			divLayers.remove();
+			layerListSelector.removeLayerPanel("all_layers_selector");
+		}
+		divLayers = $("<div/>").attr("id", "all_layers");
+		divLayers.addClass("group-container");
+		divLayers.addClass("ui-accordion-icons");
 
-	var groupIdAccordionIndex = {};
-	var numTopLevelGroups = 0;
+		divLayers.accordion({
+			"animate" : false,
+			"header": "> div > div.group-title",
+			"heightStyle" : "content",
+			// Collapse all content since otherwise the accordion sets the 'display'
+			// to 'block' instead than to 'table'
+			"collapsible" : true,
+			"active" : false
+		});
+		layerListSelector.registerLayerPanel("all_layers_selector", 10, i18n.layers, divLayers);
+	};
+
+	redraw();
+
+	bus.listen("layers-removed", function() {
+		redraw();
+	});
 
 	bus.listen("register-layer-action", function(event, action) {
 		layerActions.push(action);
 	});
+
 	bus.listen("register-group-action", function(event, action) {
 		groupActions.push(action);
 	});
-
-	divLayers = $("<div/>").attr("id", "all_layers");
-	divLayers.addClass("group-container");
-	divLayers.addClass("ui-accordion-icons");
-
-	divLayers.accordion({
-		"animate" : false,
-		"header": "> div > div.group-title",
-		"heightStyle" : "content",
-		// Collapse all content since otherwise the accordion sets the 'display'
-		// to 'block' instead than to 'table'
-		"collapsible" : true,
-		"active" : false
-	});
-	layerListSelector.registerLayerPanel("all_layers_selector", 10, i18n.layers, divLayers);
 
 	bus.listen("add-group", function(event, groupInfo) {
 		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;

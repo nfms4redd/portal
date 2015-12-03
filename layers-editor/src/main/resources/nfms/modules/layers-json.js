@@ -104,6 +104,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		updateServer: updateServer,
 		updateGroup: updateGroup,
 		updateGroups: updateGroups,
-		getGroups: getGroups
+		getGroups: getGroups,
+		root: config
 	};
 });

@@ -1,4 +1,4 @@
-define(["message-bus", "layers-edit-form", "layers-json", "jquery", "jquery-ui"], function(bus, forms, layers, $) {
+define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "jquery-ui"], function(bus, forms, layers, layers_json, $) {
 
 	bus.listen("before-adding-layers", function() {
 		bus.send("register-layer-action", function(layer) {
@@ -16,8 +16,8 @@ define(["message-bus", "layers-edit-form", "layers-json", "jquery", "jquery-ui"]
 	}
 
 	bus.listen("layers-loaded", function() {
-		var add = $("<div/>").addClass("root_group_placeholder").append("Add Group ").append($("<div/>").addClass("fa fa-plus")); // TODO i18n
-		$("#layers_container").append(add);
+		//var add = $("<div/>").addClass("root_group_placeholder").append("Add Group ").append($("<div/>").addClass("fa fa-plus")); // TODO i18n
+		//$("#layers_container").append(add);
 		$(".group-container").sortable({
 			handle: ".group-title",
 			connectWith: ".group-container",
@@ -36,8 +36,10 @@ define(["message-bus", "layers-edit-form", "layers-json", "jquery", "jquery-ui"]
 
 				// Read new group hierarchy from DOM and save it to the server
 				var groups = getGroups($("#all_layers")).items;
-				layers.updateGroups(groups, function() {
+				layers_json.updateGroups(groups, function() {
 					console.log("New group order saved");
+					layers.clear();
+					layers.draw(layers_json.root);
 				});
 			}
 		});
@@ -67,11 +69,25 @@ define(["message-bus", "layers-edit-form", "layers-json", "jquery", "jquery-ui"]
 				});
 				// Read new group hierarchy from DOM and save it to the server
 				var groups = getGroups($("#all_layers")).items;
-				layers.updateGroups(groups, function() {
+				layers_json.updateGroups(groups, function() {
 					console.log("New group order saved");
 				});
 			}
 		});
+	});
+
+	bus.listen("remove-layer", function(event, layer) {
+		console.log("Remove layer");
+		console.log(layer);
+	});
+
+	bus.listen("remove-group", function(event, group) {
+		console.log("Remove group");
+		console.log(group);
+	});
+
+	bus.listen("layers-removed", function() {
+		console.log("All layers removed");
 	});
 
 	function getGroups(el) {
