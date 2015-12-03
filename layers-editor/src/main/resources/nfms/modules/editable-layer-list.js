@@ -30,7 +30,9 @@ define(["message-bus", "layers-edit-form", "layers-json", "jquery", "jquery-ui"]
 				// so trigger focusout handlers to remove .ui-state-focus
 				ui.item.children(".ui-accordion-header").triggerHandler("focusout");
 				// Refresh accordion to handle new order
-				$("#all_layers").accordion("refresh");
+				$("#all_layers > div").each(function() {
+					$(this).accordion("refresh");
+				});
 
 				// Read new group hierarchy from DOM and save it to the server
 				var groups = getGroups($("#all_layers")).items;
