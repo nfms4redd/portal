@@ -1,0 +1,506 @@
+{
+    "wmsLayers": [
+        {
+            "wmsName": "unredd:blue_marble", 
+            "baseUrl": "http://rdc-snsf.org/diss_geoserver/wms", 
+            "id": "blue-marble", 
+            "visible": true
+        }, 
+        {
+            "sourceLabel": "", 
+            "sourceLink": "", 
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "label": "Provincias", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "provincias_incendios", 
+            "wmsName": "bosques_umsef_db:provincias_incendios", 
+            "legend": "auto",
+            "queryType" : "wms"
+        }, 
+        {
+            "baseUrl": "/gwc/service/wms", 
+            "label": "L\u00edmites nacionales", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "limites_nacionales", 
+            "wmsName": "bosques_umsef_db:limites_nacionales_3857", 
+            "legend": "lim_nac.png"
+        }, 
+        {
+            "baseUrl": "http://ide.siia.gov.ar/geosever/wms", 
+            "label": "DEM SRTM 500X500 V1", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "dem", 
+            "wmsName": "siia:MOSAICO_ARGENTINA_500x500_V1", 
+            "legend": "dem.png",
+            "queryType" : "wms"
+        }, 
+        {
+            "baseUrl": "http://www.mapaeducativo.edu.ar/geoserver/men/wms", 
+            "label": "distribucion de la poblacion indigena", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "p_originarios", 
+            "wmsName": "men:poligonos_pueblos_indigenas", 
+            "legend": "",
+            "queryType" : "wms"
+        }, 
+        {
+            "baseUrl": "http://www.mapaeducativo.edu.ar/geoserver/men/wms", 
+            "label": "comunidades indigenas actuales", 
+            "visible": true, 
+            "legend": "", 
+            "wmsName": "men:pueblos_indigenas_inai", 
+            "id": "p_indigenas_inai",
+            "queryType" : "wms"
+        }, 
+        {
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "label": "Regiones Forestales", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "map-regfor", 
+            "wmsName": "bosques_umsef_db:regfor2014_3857", 
+            "legend": "regfor.png",
+            "queryType" : "wfs",
+            "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+   			"queryGeomFieldName" : "geom",
+ 			"queryFieldNames" : [ "stats_code", "regiones" ],
+			"queryFieldAliases" : [ "stats_code", "Regiones" ]
+        }, 
+        {
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "label": "Bosque Andino Patag\u00f3nico", 
+            "visible": true, 
+            "legend": "leyenda_niv1.png", 
+            "imageFormat": "image/png8", 
+            "wmsName": "bosques_umsef_db:bap_pinb_umsef_3857", 
+            "id": "map-bap"
+        }, 
+        {
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "label": "Selva Misionera - Selva Paranaense", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "selvamis_t", 
+            "wmsName": "bosques_umsef_db:smi_98-02_umsef_3857", 
+            "legend": "leyenda_niv1.png"
+        }, 
+        {
+            "baseUrl": "http://ide.siia.gov.ar/geoserver/wms", 
+            "label": "Bosques cultivados de la Rep. Argentina", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "bosquescultivados", 
+            "wmsName": "siia:plantaciones_forestales", 
+            "legend": "pl_forestales.png",
+            "queryType" : "wms"
+        }, 
+        {
+            "sourceLabel": "Direccion de Produccion Forestal - MAGyP", 
+            "sourceLink": "http://ide.siia.gov.ar/geonetwork/srv/spa/metadata.show?id=261&currTab=simple", 
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "label": "Bosques cultivados de Misiones", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "bc_mis", 
+            "wmsName": "bosques_umsef_db:Plantaciones_forestales_Misiones", 
+            "legend": "pl_mis.png",
+            "queryType" : "wms"
+        }, 
+        {
+            "sourceLabel": "INDEC", 
+            "sourceLink": "http://www.indec.mecon.ar/", 
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "label": "INDEC", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "limite_dep", 
+            "wmsName": "bosques_umsef_db:dep_indec_ggwgs84", 
+            "legend": "leyenda_indec.png",
+            "queryType" : "wms"
+        }, 
+        {
+           
+            "baseUrl": "http://wms.ign.gob.ar/geoserver/wms", 
+            "label": "ARGENMAP", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "capabaseargenmap", 
+            "wmsName": "capabaseargenmap", 
+            "legend": "leyenda_jadu.png",
+            "queryType" : "wms"
+        }, 
+        {
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "legend": "leyenda_niv1.png", 
+            "visible": true, 
+            "wmsName": "bosques_umsef_db:stbbn06", 
+            "label": "Selva Tucumano Boliviana - Yungas", 
+            "id": "map-stb_t"
+        }, 
+        {
+            "baseUrl": "/bosques_umsef_db/wms", 
+            "label": "L\u00edmites departamentales", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "map-limites_depart_ign", 
+            "wmsName": "bosques_umsef_db:limites_deptos_ign_3857", 
+            "legend": "lim_dep.png",
+            "queryType" : "wms"
+        }, 
+        {
+            "baseUrl": "/gwc/service/wms", 
+            "id": "map-pchbn06_3857", 
+            "visible": true, 
+            "wmsName": "bosques_umsef_db:pchbn06_3857", 
+            "label": "Parque Chaque\u00f1o", 
+            "legend": "leyenda_niv1.png"
+        }, 
+        {
+            "baseUrl": "http://geo2.ambiente.gob.ar/portal/gs/bosques_umsef_db/wms", 
+            "id": "map-stbptf9806_3857", 
+            "visible": true, 
+            "wmsName": "bosques_umsef_db:stbptf9806_3857_t", 
+            "label": "P\u00e9rdida TF - Selva Tucumano Boliviana - Yungas", 
+            "legend": "auto"
+        }, 
+        {
+            "baseUrl": "/gwc/service/wms", 
+            "label": "L\u00edmites provinciales", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "limites_provinciales", 
+            "wmsName": "bosques_umsef_db:limites_provinciales", 
+            "legend": "lim_prov.png",
+            "queryType" : "wfs",
+            "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+   			"queryGeomFieldName" : "geom",
+ 			"queryFieldNames" : [ "nprov", "cod_indec" ],
+			"queryFieldAliases" : [ "Nombre", "Codigo" ]
+        }
+    ], 
+    "portalLayers": [
+        {
+            "active": true, 
+            "layers": [
+                "blue-marble"
+            ], 
+            "id": "blue-marble", 
+            "infoFile": "blue_marble.html", 
+            "label": "Mosaico im\u00e1genes MODIS"
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "bosquescultivados"
+            ], 
+            "id": "bosquescultivados", 
+            "infoFile": "metadato.html", 
+            "label": "Plantaciones forestales"
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "p_originarios"
+            ], 
+            "id": "p_originarios", 
+            "infoFile": "p_indigenas.html", 
+            "label": "Distribuci\u00f3n de la poblaci\u00f3n ind\u00edgena "
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "p_indigenas_inai"
+            ], 
+            "id": "p_indigenas_inai", 
+            "infoFile": "p_indigenas.html", 
+            "label": "Comunidades ind\u00edgenas actuales"
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "bc_mis"
+            ], 
+            "id": "bc_mis", 
+            "infoFile": "metadato.html", 
+            "label": "Plantaciones Forestales Misiones"
+        }, 
+        {
+            "layers": [
+                "selvamis_t"
+            ], 
+            "feedback": true, 
+            "timeInstances": "1998,2002", 
+            "label": "Selva Misionera - Selva Paranaense", 
+            "infoFile": "metadata_smi9802_bn.html", 
+            "active": false, 
+            "id": "selvamis_t"
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "dem"
+            ], 
+            "id": "dem_siia", 
+            "infoFile": "siia.html", 
+            "label": "DEM 500M"
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "limite_dep"
+            ], 
+            "id": "limitedepartamental", 
+            "infoFile": "ign.html", 
+            "label": "L\u00edmites departamentales"
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "limites_nacionales"
+            ], 
+            "id": "limites_nacionales", 
+            "infoFile": "ign.html", 
+            "label": "L\u00edmites nacionales"
+        }, 
+        {
+            "active": false, 
+            "layers": [
+                "capabaseargenmap"
+            ], 
+            "id": "capabaseargenmap", 
+            "infoFile": "capabase.html", 
+            "label": " Vectorial Argenmap"
+        }, 
+        {
+            "active": true, 
+            "layers": [
+                "limites_provinciales"
+            ], 
+            "id": "limites_provinciales", 
+            "infoFile": "ign.html", 
+            "label": "L\u00edmites provinciales"
+        }, 
+        {
+            "layers": [
+                "provincias_incendios"
+            ], 
+            "timeInstances": "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z", 
+            "label": "Incendios por provincia", 
+            "timeStyles": "cantidad_incendios_2012,cantidad_incendios_2013", 
+            "infoFile": "metadata_estadisticas_incendios_forestales.html", 
+            "active": false, 
+            "id": "provincias_incendios"
+        }, 
+        {
+            "layers": [
+                "map-regfor"
+            ], 
+            "id": "regfor", 
+            "infoFile": "metadata_regfor_umsef.html", 
+            "label": "Regiones Forestales"
+        }, 
+        {
+            "layers": [
+                "map-bap"
+            ], 
+            "id": "bap", 
+            "infoFile": "metadata_bap00_bn.html", 
+            "label": "Bosque Andino Patag\u00f3nico"
+        }, 
+        {
+            "layers": [
+                "map-limites_depart_ign"
+            ], 
+            "id": "limites_depart_ign", 
+            "infoFile": "ign.html", 
+            "label": "L\u00edmites departamentales"
+        }, 
+        {
+            "layers": [
+                "map-stb_t"
+            ], 
+            "feedback": true, 
+            "timeInstances": "1998-01-01T00:00:00.000Z,2002-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z", 
+            "label": "Selva Tucumano Boliviana - Yungas", 
+            "infoFile": "metadata_stb980206_bn.html", 
+            "id": "stb_t"
+        }, 
+        {
+            "layers": [
+                "map-pchbn06_3857"
+            ], 
+            "feedback": true, 
+            "timeInstances": "1998-01-01T00:00:00.000Z,2002-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z", 
+            "label": "Parque Chaque\u00f1o", 
+            "infoFile": "metadata_pch980206_bn.html", 
+            "id": "pchbn06_3857"
+        }, 
+        {
+            "layers": [
+                "map-stbptf9806_3857"
+            ], 
+            "timeInstances": "2002-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z", 
+            "id": "stbptf9806_3857", 
+            "infoFile": "metadata_stb980206_ptf.html", 
+            "label": "Selva Tucumano Boliviana - Yungas"
+        }
+    ], 
+    "groups": [
+        {
+            "items": [
+                {
+                    "items": [
+                        "blue-marble"
+                    ], 
+                    "id": "innerbase", 
+                    "label": "Mosaico MODIS"
+                }
+            ], 
+            "id": "base", 
+            "label": "Im\u00e1genes satelitales"
+        }, 
+        {
+            "items": [
+                "limites_depart_ign", 
+                "limites_provinciales", 
+                "limites_nacionales"
+            ], 
+            "id": "admin", 
+            "label": "\u00c1reas administrativas"
+        }, 
+        {
+            "items": [
+                "regfor"
+            ], 
+            "id": "Regiones_forestales", 
+            "infoFile": "regfor.html", 
+            "label": "Regiones Forestales"
+        }, 
+        {
+            "items": [
+                {
+                    "items": [
+                        "selvamis_t", 
+                        "bap", 
+                        "stb_t", 
+                        "pchbn06_3857"
+                    ], 
+                    "id": "innerbosquenativo", 
+                    "label": "Bosque Nativo"
+                }, 
+                {
+                    "items": [
+                        "bosquescultivados"
+                    ], 
+                    "id": "innerbosquescultivados", 
+                    "label": "Bosques Cultivados"
+                }, 
+                {
+                    "items": [
+                        {
+                            "items": [
+                                "stbptf9806_3857"
+                            ], 
+                            "id": "innerdeforestacion", 
+                            "label": "P\u00e9rdida de TF"
+                        }, 
+                        {
+                            "items": [], 
+                            "id": "innerot", 
+                            "label": "P\u00e9rdida de OTF"
+                        }
+                    ], 
+                    "id": "innerprocesosdecambiobosque", 
+                    "label": "Procesos de Cambio en el Bosque"
+                }
+            ], 
+            "id": "area_bosques", 
+            "infoFile": "bn_pc.docx.html", 
+            "label": "\u00c1reas de Bosque y Procesos de Cambio"
+        }, 
+        {
+            "items": [
+                {
+                    "items": [
+                        "provincias_incendios"
+                    ], 
+                    "id": "provincias_incendios", 
+                    "label": "Incendios Forestales"
+                }
+            ], 
+            "id": "estadisticas", 
+            "label": "Estad\u00edsticas Forestales"
+        }, 
+        {
+            "items": [
+                {
+                    "items": [], 
+                    "id": "innerregistroredd", 
+                    "label": "Proyectos REDD+"
+                }
+            ], 
+            "id": "registroredd", 
+            "infoFile": "registro_redd.html", 
+            "label": "Registro REDD+"
+        }, 
+        {
+            "items": [
+                "p_originarios", 
+                "p_indigenas_inai"
+            ], 
+            "id": "salvaguardas", 
+            "infoFile": "salvaguardas.html", 
+            "label": "Salvaguardas"
+        }, 
+        {
+            "items": [
+                {
+                    "items": [], 
+                    "id": "innerordenamientoterritorial", 
+                    "label": "Ordenamiento Territorial de Bosques Nativos"
+                }, 
+                {
+                    "items": [], 
+                    "id": "innerareasprotegidas", 
+                    "label": "\u00c1reas Protegidas"
+                }, 
+                {
+                    "items": [], 
+                    "id": "innerparcelasinventario", 
+                    "label": "Parcelas inventarios"
+                }, 
+                {
+                    "items": [
+                        "capabaseargenmap"
+                    ], 
+                    "id": "Base_Argenmap", 
+                    "label": "Vectorial Argenmap"
+                }, 
+                {
+                    "items": [], 
+                    "id": "innercitespalosanto", 
+                    "label": "Distribuci\u00f3n de Especies Forstales CITES"
+                }, 
+                {
+                    "items": [], 
+                    "id": "innerbosquemodelo", 
+                    "label": "Bosque Modelo"
+                }, 
+                {
+                    "items": [
+                        "dem_siia"
+                    ], 
+                    "id": "innerdem", 
+                    "label": "Modelo de elevacion digital"
+                }
+            ], 
+            "id": "infoaxiliar", 
+            "label": "Informaci\u00f3n Auxiliar"
+        }
+    ], 
+    "default-server": "http://geo2.ambiente.gob.ar/portal/gs"
+}

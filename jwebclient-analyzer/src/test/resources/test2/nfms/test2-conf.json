@@ -1,0 +1,15 @@
+{
+	"default-conf" : {
+		"layer-list" : {
+			"top" : 14
+		}
+	},
+	"requirejs" : {
+		"paths" : {
+			"mustache": "../jslib/jquery.mustache"
+		},
+		"shim" : {
+			"mustache": [ "jquery" ]
+		},
+	}
+}

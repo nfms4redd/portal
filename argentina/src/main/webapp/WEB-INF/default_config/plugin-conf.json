@@ -1,0 +1,164 @@
+{
+   "default-conf": {
+      "banner": {
+         "hide": false,
+         "show-flag": false,
+         "show-logos": false
+      },
+      "info-dialog": {
+         "open-in-center": false
+      },
+      "error-management": {
+         "div-id": null
+      },
+      "tour": {
+         "steps": [
+            {
+               "id": "layer-row-limites_provinciales",
+               "text": "Activamos las provincias.",
+               "gravity": "w",
+               "next": {
+                  "layer-visibility" : [ "limites_provinciales", true ]
+               },
+            },
+            {
+               "id": "map",
+               "text": "Ahora pinchamos en algún punto del mapa.",
+               "gravity": "s",
+               "next": {
+                  "map-click": [
+                     -37,
+                     -66
+                  ]
+               },
+               "wait": "info-features"
+            },
+            {
+               "id": "result_area_limites_provinciales",
+               "text": "y nos aparecerán en el diálogo de información los datos de los objetos en los que hemos pinchado.",
+               "gravity": "s",
+               "next": {
+                  "highlight-info-feature": [
+                     0
+                  ]
+               }
+            },
+            {
+               "id": "result_area_limites_provinciales",
+               "text": "Pasando el ratón por las tablas podemos ver el objeto resaltado en el mapa.",
+               "gravity": "s",
+               "next": {
+                  "zoom-info-feature": [
+                     0
+                  ]
+               }
+            },
+            {
+               "id": "info-magnifier-limites_provinciales-0",
+               "text": "Y pinchando en la lupa podemos hacer zoom al objeto.",
+               "gravity": "s",
+               "next": {
+                  "clear-highlighted-features": []
+               }
+            },
+            {
+               "id": "info-indicator-limites_provinciales-0",
+               "text": "Algunos objetos tienen información asociada. En tales casos, aparece este icono en los resultados. Pinchando en él podemos observar algunas gráficas.",
+               "gravity": "s",
+               "next": {
+                  "show-feature-indicator" : [ "bosques_umsef_db:limites_provinciales", "limites_provinciales", 0, 0 ]
+               }
+            },
+            {
+               "id": "map",
+               "text": "El panel se puede cerrar pulsando escape o el aspa que hay en la ventana emergente.",
+               "gravity" : "s",
+               "next": {
+                  "hide-info" : ""
+               }
+            },
+            {
+               "id": "feedback-button",
+               "text": "Esta aplicación permite también hacer comentarios a los técnicos encargados de preparar los datos.",
+               "gravity": "n"
+            },
+            {
+               "id": "feedback-button",
+               "text": "Para ello podemos pulsar el botón de feedback.",
+               "gravity": "n",
+               "next": {
+                  "activate-feedback" : [ ]
+	            }
+            },
+            {
+               "id": "feedback-button",
+               "text": "Al pinchar sin capas forestales activas, el sistema nos avisa de que no hay ninguna capa habilitada para feedback activa. Tendremos que activar alguna.",
+               "gravity": "n",
+               "next": {
+                  "show-layer-group": [ "area_bosques" ]
+	            }
+            },
+            {
+               "id": "group-content-table-area_bosques",
+               "text": "Vamos a activar alguna capa de este grupo.",
+               "gravity": "w",
+               "next": {
+                     "layer-visibility" : [ "selvamis_t", true ]
+               },
+            },
+            {
+               "id": "group-content-table-area_bosques",
+               "text": "Otra más.",
+               "gravity": "w",
+               "next": {
+                     "layer-visibility" : [ "stb_t", true ]
+               },
+            },
+            {
+               "id": "group-content-table-area_bosques",
+               "text": "Y otra.",
+               "gravity": "w",
+               "next": {
+                     "layer-visibility" : [ "pchbn06_3857", true ]
+               },
+            },
+            {
+               "id": "feedback-button",
+               "text": "Ahora al pulsar el botón de feedback nos aparecerá el diálogo.",
+               "gravity": "n",
+               "next": {
+                  "activate-feedback" : [ ]
+	            }
+            },
+            {
+               "id": "feedback-layer-combo",
+               "text": "Aquí podemos seleccionar la capa sobre la que queremos comentar.",
+               "gravity": "w"
+            },
+            {
+               "id": "fb_toolbar",
+               "text": "Con estas herramientas podemos dibujar en el mapa (pruébalo). Un clic para poner un punto y doble-clic para terminar.",
+               "gravity": "w"
+            },
+            {
+               "id": "feedback_popup",
+               "text": "Antes de pulsar el botón de enviar, hay que rellenar la dirección de e-mail y el comentario sobre el polígono dibujado, que le llegará directamente a los técnicos.",
+               "gravity": "n",
+               "next": {
+                  "deactivate-feedback" : [ ]
+	            }
+            },
+            {
+               "id": "feedback-button",
+               "text": "Y una vez enviado, obtendremos una notificación por correo electrónico del estado de nuestro comentario.",
+               "gravity": "n"
+            },
+            {
+               "id": "map",
+               "text": "Esto es todo.",
+               "gravity": "s"
+            }
+         ]
+      }
+   }
+}

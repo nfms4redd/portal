@@ -1,0 +1,25 @@
+.footnote {
+	z-index: 1001;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	color: #fff;
+	padding: 0.6em;
+	background-color: #000;
+	filter: alpha(opacity=65);
+	opacity: 0.65;
+	border-top: 1px solid #333;
+	text-align: center;
+	font-size: smaller;
+}
+
+.footnote a {
+	color: #fff;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.footnote a:hover {
+	text-decoration: underline;
+}

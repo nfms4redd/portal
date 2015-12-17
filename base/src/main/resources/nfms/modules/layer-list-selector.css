@@ -1,0 +1,23 @@
+#layers_container {
+	left: 10px;
+	position: absolute;
+	top: 215px;
+	width: 250px;
+	z-index: 1100;
+}
+
+.layer_container_panel {
+	padding: 10px 15px;
+	background-color: black;
+	border-radius: 6px;
+	color: white;
+	font-size: 11px;
+	border: 1px solid #666666;
+}
+
+#layer_list_selector_pane {
+    top: 186px;
+    left: 10px;
+    position: absolute;
+    z-index: 1100;
+}

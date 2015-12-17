@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
+
+	<ordering>
+		<after>
+			<name>core</name>
+		</after>
+	</ordering>
+
+	<listener>
+		<listener-class>org.fao.unredd.IndicatorsContextListener</listener-class>
+	</listener>
+
+	<!-- indicators -->
+	<servlet>
+		<servlet-name>indicator-list-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.indicators.IndicatorListServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>indicator-list-servlet</servlet-name>
+		<url-pattern>/indicators</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>indicator-data-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.indicators.IndicatorDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>indicator-data-servlet</servlet-name>
+		<url-pattern>/indicator</url-pattern>
+	</servlet-mapping>
+</web-fragment>

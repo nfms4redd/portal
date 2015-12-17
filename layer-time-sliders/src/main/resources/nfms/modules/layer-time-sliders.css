@@ -1,0 +1,15 @@
+.layer-time-slider {
+	display: inline-block;
+	width: 50%;
+	margin-left: 10px;
+	float: right;
+}
+
+.layer-time-slider-title {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.layer-time-slider-container {
+	display: none;
+}

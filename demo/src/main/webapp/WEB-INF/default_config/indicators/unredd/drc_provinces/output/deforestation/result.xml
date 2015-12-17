@@ -1,0 +1,63 @@
+<statistics-chart-input
+	xmlns="http://www.nfms.unredd.fao.org/statistics-chart">
+	<title>Deforestación</title>
+	<subtitle>Análisis de la deforestación</subtitle>
+	<y-label>Área</y-label>
+	<units>m&lt;2&gt;</units>
+	<tooltipDecimals>1</tooltipDecimals>
+	<hover></hover>
+	<footer>Powered by UNREDD team at FAO</footer>
+	<graphicType>line</graphicType>
+	<labels>
+		<label>1990</label>
+		<label>1999</label>
+		<label>2008</label>
+	</labels>
+	<data zone-id="1">
+		<value>85</value>
+		<value>86</value>
+		<value>87</value>
+	</data>
+	<data zone-id="2">
+		<value>1000</value>
+		<value>500</value>
+		<value>86</value>
+	</data>
+	<data zone-id="3">
+		<value>1200</value>
+		<value>1100</value>
+		<value>900</value>
+	</data>
+	<data zone-id="4">
+		<value>343</value>
+		<value>110</value>
+	</data>
+	<data zone-id="5">
+		<value>120</value>
+		<value>100</value>
+	</data>
+	<data zone-id="6">
+		<value>200</value>
+		<value>0</value>
+	</data>
+	<data zone-id="7">
+		<value>200</value>
+		<value>100</value>
+	</data>
+	<data zone-id="8">
+		<value>1200</value>
+		<value>1200</value>
+	</data>
+	<data zone-id="9">
+		<value>1100</value>
+		<value>1150</value>
+	</data>
+	<data zone-id="10">
+		<value>200</value>
+		<value>1100</value>
+	</data>
+	<data zone-id="11">
+		<value>1200</value>
+		<value>100</value>
+	</data>
+</statistics-chart-input>

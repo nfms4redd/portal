@@ -1,0 +1,39 @@
+#logos {
+	position: absolute;
+	top: 0px;
+	right: 20px;
+	height: 96px;
+	width: 128px;
+	z-index: 1100;
+	background: url(../static/img/logos.png) no-repeat 0 0;
+}
+
+#banner {
+	height: 92px;
+	width: 100%;
+	background: url(../static/img/right.jpg) no-repeat right center;
+	background-color: #6da6f0;
+}
+#banner-izq {
+	height: 92px;
+	width: 209px;
+	float: left;
+	background: url(../static/img/left.jpg) no-repeat 0 0;
+}
+#flag {
+	position: relative;
+	top: 12px;
+	left: 12px;
+	width: 104px;
+	height: 69px;
+	z-index: 1100;
+	background: url(../static/img/flag.png) no-repeat 0 0;
+}
+
+#title {
+	position: absolute;
+	left: 150px;
+	top: 28px;
+	font-size: 28px;
+	color: #fff;
+}

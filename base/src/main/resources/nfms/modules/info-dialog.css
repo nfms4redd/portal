@@ -1,0 +1,33 @@
+#info_popup {
+	padding: 6px 0;
+}
+
+#info_popup #result_area {
+	overflow: auto;
+	height: 100%;
+}
+
+#info_popup .layer_title {
+	margin-bottom: 0.5em;
+	text-align: center;
+}
+
+#info_popup .layer_results {
+	margin-bottom: 1em;
+	color: #fff;
+}
+
+#info_popup .layer_results table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#info_popup .layer_results table .data {
+	border: 1px solid white;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
+#info_popup .layer_results table .command {
+	border: 0px;
+}

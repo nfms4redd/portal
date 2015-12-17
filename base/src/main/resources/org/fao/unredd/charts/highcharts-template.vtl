@@ -1,0 +1,58 @@
+{
+    "chart": {
+        "zoomType": "xy"
+    },
+    "title": {
+        "text": "$title"
+    },
+    "subtitle": {
+        "text": "$subtitle"
+    },
+    "xAxis": [{
+        "categories": [ #foreach( $date in $dates )"$date"#if( $foreach.hasNext ), #end#end ],
+        "crosshair": true
+    }],
+    "yAxis": [
+    	#foreach( $axis in $axes )
+    	{
+       		#if( $axis.allPositiveValues() )
+       		"min": 0,
+       		#end
+	        "labels": {
+	            "format": "{value}"
+	        },
+	        "title": {
+	            "text": "$axis.label ($axis.units)"
+	        },
+	        "opposite": $axis.opposite
+    	}#if( $foreach.hasNext ), #end
+    	#end
+    ],
+    "tooltip": {
+        "shared": true
+    },
+    "legend": {
+        "layout": "vertical",
+        "backgroundColor": "#FFFFFF"
+    },
+    "series": [
+    	#set( $coma = false )
+    	#set( $axisIndex = 0 )
+    	#foreach( $axis in $axes )
+    	#foreach( $serie in $axis.series )
+    	#if( $coma ), #end
+		{
+            "name": "$serie.name",
+            "type": "$axis.type",
+            "yAxis": $axisIndex,
+            "data": [#foreach( $datum in $serie.data )$datum #if( $foreach.hasNext ), #end#end],
+            "tooltip": {
+         	   "valueSuffix": " $axis.units"
+        	}
+        }
+    	#set( $coma = true )
+       	#end
+    	#set( $axisIndex = $axisIndex + 1 )
+    	#end
+	]
+}

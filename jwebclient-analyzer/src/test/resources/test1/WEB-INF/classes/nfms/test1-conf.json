@@ -1,0 +1,20 @@
+{
+	"default-conf": {
+		"layout" : {
+			"banner-size" : "29px"
+		},
+		"legend" : {
+			"show-title" : true
+		}
+	},
+	"requirejs": {
+		"paths" : {
+			"jquery-ui" : "../jslib/jquery-ui-1.10.4.custom",
+			"fancy-box": "../jslib/jquery.fancybox.pack",
+			"openlayers": "../jslib/OpenLayers/OpenLayers.unredd"
+		},
+		"shim" : {
+			"fancy-box": [ "jquery" ]
+		},
+	}
+}

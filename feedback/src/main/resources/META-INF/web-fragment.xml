@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
+
+	<ordering>
+		<after>
+			<name>core</name>
+		</after>
+	</ordering>
+
+	<listener>
+		<listener-class>org.fao.unredd.feedback.servlet.FeedbackContextListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>create-comment-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.feedback.servlet.CreateCommentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>create-comment-servlet</servlet-name>
+		<url-pattern>/create-comment</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>verify-comment-servlet</servlet-name>
+		<servlet-class>org.fao.unredd.feedback.servlet.VerifyCommentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>verify-comment-servlet</servlet-name>
+		<url-pattern>/verify-comment</url-pattern>
+	</servlet-mapping>
+
+</web-fragment>

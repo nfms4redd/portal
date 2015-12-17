@@ -1,0 +1,34 @@
+{
+	"default-conf" : {
+		"banner" : {
+			"hide" : false,
+			"show-flag" : true,
+			"show-logos" : true
+		},
+		"info-dialog" : {
+			"open-in-center" : false
+		},
+		"toolbar" : {
+			"time_slider_pane" : 1000,
+			"feedback-button" : 10,
+			"tour-button" : 5
+		}
+	},
+	"requirejs" : {
+		"paths" : {
+			"jquery-ui" : "../jslib/jquery-ui-1.11.4",
+			"fancy-box" : "../jslib/jquery.fancybox.pack",
+			"highcharts" : "../jslib/highcharts-4.1.5",
+			"highcharts-theme-sand" : "../jslib/sand-signika",
+			"openlayers" : "../jslib/OpenLayers/OpenLayers.debug",
+			"mustache" : "../jslib/jquery.mustache",
+			"moment" : "../jslib/moment"
+		},
+		"shim" : {
+			"fancy-box" : [ "jquery" ],
+			"mustache" : [ "jquery" ],
+			"highcharts" : [ "jquery" ],
+			"highcharts-theme-sand" : [ "highcharts" ]
+		},
+	}
+}

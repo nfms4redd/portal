@@ -1,0 +1,17 @@
+tmp/
+target/
+.project
+.classpath
+.settings
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+mosaicStats/src/main/jaxb/
+commons/src/main/jaxb/
+.idea
+*.iml
+velocity.log
+sample-areas.tiff
+.externalToolBuilders/

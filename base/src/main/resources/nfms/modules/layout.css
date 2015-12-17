@@ -1,0 +1,42 @@
+html,body {
+	margin: 0px;
+	height: 100%;
+	cursor: default;
+	font: 100% "Trebuchet MS", sans-serif;
+}
+
+body {
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+}
+
+#center {
+	height: 100%;
+}
+
+#header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 142px;
+	z-index: 1001;
+}
+
+#map {
+	height: auto;
+	width: 100%;
+	position: absolute;
+	top: 142px;
+	bottom: 0px;
+}
+
+.ui-front {
+	/* 
+	Apparently it is possible to put the dialogs on top
+	without messing with the z-index css property in jquery 1.10 but I
+	haven't been able to do it:
+	http://jqueryui.com/upgrade-guide/1.10/#removed-zindex-option
+	*/
+	z-index: 3000 !important;
+}

@@ -1,0 +1,9 @@
+.olControlScale {
+	bottom: 0;
+	right: 0;
+	color: #fff;
+	padding: 0.6em;
+	background-color: #000;
+	filter: alpha(opacity=65);
+	opacity: 0.65;
+}
