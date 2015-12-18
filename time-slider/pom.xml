@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.fao.unredd</groupId>
 		<artifactId>portal-root</artifactId>
-		<version>4.0.0</version>
+		<version>4.0.1</version>
 	</parent>
 	<artifactId>time-slider</artifactId>
 	<name>time-slider</name>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>base</artifactId>
-			<version>4.0.0</version>
+			<version>4.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

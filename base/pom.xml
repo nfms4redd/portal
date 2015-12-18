@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.fao.unredd</groupId>
 		<artifactId>portal-root</artifactId>
-		<version>4.0.0</version>
+		<version>4.0.1</version>
 	</parent>
 	<artifactId>base</artifactId>
 	<name>UNREDD NFMS base plugins</name>
@@ -36,7 +36,7 @@
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>core</artifactId>
-			<version>4.0.0</version>
+			<version>4.0.1</version>
 		</dependency>
 		<!-- J2EE -->
 		<dependency>
