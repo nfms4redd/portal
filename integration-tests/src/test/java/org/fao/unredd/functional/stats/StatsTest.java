@@ -15,6 +15,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.fao.unredd.functional.AbstractIntegrationTest;
 import org.fao.unredd.functional.IntegrationTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -213,6 +214,7 @@ public class StatsTest extends AbstractIntegrationTest {
 		checkStatsServiceTest(root);
 	}
 
+	@Ignore
 	@Test
 	public void testCalculateStats() throws Exception {
 		String layerName = "unredd:provinces";

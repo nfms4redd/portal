@@ -1,0 +1,265 @@
+{
+	"default-server" : "http://demo1.geo-solutions.it",
+	"wmsLayers" : [
+		{
+			"id" : "cycle-osm",
+			"type" : "osm",
+			"osmUrls" : [
+				"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+				"http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+				"http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+			]
+		}, {
+			"id" : "blue-marble",
+			"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
+			"wmsName" : "unredd:blue_marble",
+			"imageFormat" : "image/jpeg",
+			"visible" : true
+		}, {
+			"id" : "google-maps",
+			"type" : "gmaps",
+			"gmaps-type" : "SATELLITE",
+			"visible" : true
+		}, {
+			"id" : "nexrad",
+			"baseUrl" : "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi?",
+			"wmsName" : "nexrad-n0r-wmst",
+			"imageFormat" : "image/png",
+			"visible" : true
+		}, {
+			"id" : "forestClassification",
+			"label" : "${facet_forest_classification}",
+			"baseUrl" : "/diss_geoserver/gwc/service/wms",
+			"wmsName" : "unredd:drc_forest_classification",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"legend" : "forest_classification.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET"
+		}, {
+			"id" : "forest_mask",
+			"label" : "${forest_mask}",
+			"legend" : "auto",
+			"baseUrl" : "/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_forest_mask_mosaic",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET"
+		}, {
+			"id" : "forestClassification2",
+			"label" : "grouped facet forest classification",
+			"baseUrl" : "/diss_geoserver/unredd/wms",
+			"wmsName" : "drc_forest_classification",
+			"visible" : true,
+			"legend" : "forest_classification.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET2"
+		}, {
+			"id" : "forest_mask2",
+			"label" : "Grouped forest mask",
+			"baseUrl" : "/diss_geoserver/unredd/wms",
+			"wmsName" : "drc_forest_mask_mosaic",
+			"visible" : true,
+			"legend" : "forest_mask.png",
+			"sourceLink" : "http://osfac.net/facet.html",
+			"sourceLabel" : "FACET2"
+		}, {
+			"id" : "countryBoundaries",
+			"baseUrl" : "/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_boundary",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
+			"sourceLabel" : "WRI"
+		}, {
+			"id" : "provinces",
+			"baseUrl" : "/diss_geoserver/wms",
+			"wmsName" : "unredd:drc_provinces",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://www.wri.org/publication/interactive-forest-atlas-democratic-republic-of-congo",
+			"sourceLabel" : "WRI"
+		}, {
+			"id" : "incendios_wfsinfo",
+			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"wmsName" : "bosques_umsef_db:provincias_incendios",
+			"imageFormat" : "image/png8",
+			"legend" : "auto",
+			"visible" : true,
+			"queryType" : "wfs",
+			"queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+			"queryGeomFieldName" : "geom",
+			"queryFieldNames" : [ "nprov", "anio_f" ],
+			"queryFieldAliases" : [ "ID", "fecha" ],
+			"queryTimeFieldName" : "anio_f"
+		}, {
+			"id" : "incendios_wmsinfo",
+			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"wmsName" : "bosques_umsef_db:provincias_incendios",
+			"imageFormat" : "image/png8",
+			"legend" : "auto",
+			"visible" : true,
+			"queryType" : "wms",
+			"queryHighlightBounds" : true,
+			"queryFieldNames" : [ "nprov", "anio_f" ],
+			"queryFieldAliases" : [ "Nombre", "Fecha" ],
+		}, {
+			"id" : "incendios_wmsinfo_default",
+			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"wmsName" : "bosques_umsef_db:provincias_incendios",
+			"imageFormat" : "image/png8",
+			"legend" : "auto",
+			"visible" : true,
+			"queryType" : "wms"
+		}, {
+			"id" : "provincias_demo",
+			"baseUrl" : "http://demo.geomati.co:8080/geoserver/bosques/wms",
+			"wmsName" : "bosques:provincias",
+			"imageFormat" : "image/png8",
+			"visible" : true,
+			"sourceLink" : "http://demo.geomati.co:8080/geoserver/web",
+			"sourceLabel" : "WRI",
+			"queryType" : "wms"
+		}, {
+            "baseUrl": "http://geo2.ambiente.gob.ar/portal/gs/gwc/service/wms", 
+            "label": "L\u00edmites provinciales", 
+            "visible": true, 
+            "imageFormat": "image/png8", 
+            "id": "limites_provinciales", 
+            "wmsName": "bosques_umsef_db:limites_provinciales", 
+            "legend": "lim_prov.png",
+            "queryType" : "wfs",
+            "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+   			"queryGeomFieldName" : "geom",
+ 			"queryFieldNames" : [ "nprov", "cod_indec" ],
+			"queryFieldAliases" : [ "Nombre", "Codigo" ]
+        }
+	],
+
+	"portalLayers" : [
+		{
+			"id" : "blue-marble",
+			"active" : true,
+			"label" : "Blue marble",
+			"layers" : [ "blue-marble" ]
+		},
+		{
+			"id" : "osm-layer",
+			"active" : false,
+			"label" : "Open Cycle Map",
+			"layers" : [ "cycle-osm" ]
+		},
+		{
+			"id" : "google-maps-context",
+			"active" : false,
+			"label" : "Google maps",
+			"layers" : [ "google-maps" ]
+		},
+		{
+			"id" : "forestClassification",
+			"active" : false,
+			"infoFile" : "forest_classification_def.html",
+			"label" : "${facet_forest_classification}",
+			"layers" : [ "forestClassification" ],
+			"feedback" : true
+		}, {
+			"id" : "forest_mask",
+			"label" : "${forest_mask}",
+			"layers" : [ "forest_mask" ],
+			"infoLink": "http://nfms4redd.org/",
+			"timeInstances" : "2000-01-01T00:00:00.000Z,2005-01-01T00:00:00.000Z,2010-01-01T00:00:00.000Z",
+			"feedback" : true
+		}, {
+			"id" : "countryBoundaries",
+			"active" : false,
+			"label" : "${country_boundaries}",
+			"layers" : [ "countryBoundaries" ],
+			"inlineLegendUrl" : "auto"
+		}, {
+			"id" : "provinces",
+			"active" : false,
+			"infoFile" : "provinces_def.html",
+			"label" : "${provinces}",
+			"layers" : [ "provinces" ],
+			"inlineLegendUrl" : "auto"
+		}, {
+			"id" : "forest",
+			"active" : false,
+			"label" : "All forestry layers",
+			"layers" : [ "forest_mask2", "forestClassification2" ]
+		}, {
+			"id" : "nexrad_layer",
+			"active" : false,
+			"label" : "Nexrad",
+			"timeInstances" : "2010-03-01T00:00,2010-03-02T00:00,2010-03-03T00:00",
+			"date-format" : "DD-MM-YYYY",
+			"layers" : [ "nexrad" ]
+		}, {
+			"id" : "provinces_title_placeholder",
+			"label" : "Provincias"
+		}, {
+            "active": true, 
+            "layers": [
+                "limites_provinciales"
+            ], 
+            "id": "limites_provinciales", 
+            "infoFile": "ign.html", 
+            "label": "L\u00edmites provinciales"
+        }, {
+			"id" : "incendios_wfsinfo",
+			"active" : true,
+			"label" : "Incendios por provincias (wfs info)",
+			"layers" : [ "incendios_wfsinfo" ],
+			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
+			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
+		}, {
+			"id" : "incendios_wmsinfo",
+			"active" : true,
+			"label" : "Incendios por provincias (wms info)",
+			"layers" : [ "incendios_wmsinfo" ],
+			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
+			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
+		}, {
+			"id" : "incendios_wmsinfo_default",
+			"active" : true,
+			"label" : "Incendios por provincias (default info)",
+			"layers" : [ "incendios_wmsinfo_default" ],
+			"timeInstances" : "2012-01-01T00:00:00.000Z,2013-01-01T00:00:00.000Z",
+			"timeStyles" : "cantidad_incendios_2012,cantidad_incendios_2013"
+		}, {
+			"id" : "demo_layers",
+			"active" : false,
+			"label" : "Provincias Estadísticas",
+			"layers" : [ "provincias_demo" ]
+		}
+	],
+
+	"groups" : [
+		{
+			"id" : "base",
+			"label" : "${base_layers}",
+			"infoFile": "base_layers.html",
+			"items" : [
+				{
+					"id" : "innerbase",
+					"label" : "General purpose",
+					"items": ["blue-marble", "osm-layer", "google-maps-context"]
+				}, {
+					"id" : "innerforest",
+					"label" : "Forest classifications",
+					"items": [ "forestClassification" ]
+				}
+			]
+		}, {
+			"id" : "admin",
+			"label" : "${admin_areas}",
+			"infoLink": "http://nfms4redd.org/",
+			"items" : [ "countryBoundaries", "provinces_title_placeholder", "provinces", "limites_provinciales", "incendios_wfsinfo", "incendios_wmsinfo", "incendios_wmsinfo_default", "demo_layers" ]
+		}, {
+			"id" : "landcover",
+			"label" : "${land_cover_maps}",
+			"items" : [ "forest_mask", "forest", "nexrad_layer" ]
+		}
+	]
+}
