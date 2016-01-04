@@ -14,272 +14,6 @@
       "tour": {
          "steps": [
             {
-               "id": "map",
-               "text": "Este es el mapa donde se muestran los datos",
-               "gravity": "s",
-               "next": {
-                  "initial-zoom": []
-               }
-            },
-            {
-               "id": "map",
-               "text": "Como todos los mapas dinámicos, tiene herramientas para navegar"
-            },
-            {
-               "id": "map",
-               "text": "Con el ratón podemos arrastrar para desplazar el mapa, y acercarnos y alejarnos con la rueda",
-               "next": {
-                  "zoom-out": []
-               }
-            },
-            {
-               "id": "zoom_out",
-               "text": "Con este botón podemos alejarnos",
-               "gravity": "w",
-               "next": {
-                  "zoom-in": []
-               }
-            },
-            {
-               "id": "zoom_in",
-               "text": "Con éste acercarnos",
-               "gravity": "w",
-               "next": {
-                  "9zoom-in": []
-               }
-            },
-            {
-               "id": "map",
-               "text": "Y si no sabemos donde nos encontramos...",
-               "next": {
-                  "initial-zoom": []
-               }
-            },
-            {
-               "id": "zoom_to_max_extent",
-               "text": "... podemos pinchar en este botón y volver al encuadre inicial",
-               "gravity": "w"
-            },
-            {
-               "id": "all_layers",
-               "text": "Esta es la lista con las capas. Pincha en un grupo y se desplegarán las capas contenidas en él",
-               "gravity": "s",
-               "next": {
-                  "layer-visibility": [
-                     "limites_provinciales",
-                     false
-                  ],
-                  "show-layer-group": [
-                     "Regiones_forestales"
-                  ]
-               }
-            },
-            {
-               "id": "layer-row-regfor",
-               "text": "Aquí están cada una de las capas que se visualizan en el mapa. Veamos qué opciones hay.",
-               "gravity": "w"
-            },
-            {
-               "id": "regfor_visibility_checkbox",
-               "text": "Es posible hacer las capas visibles o invisibles pinchando en este checkbox. Vamos a mostrar esta capa.",
-               "gravity": "w",
-               "next": {
-                  "layer-visibility": [
-                     "regfor",
-                     true
-                  ]
-               }
-            },
-            {
-               "id": "regfor_visibility_checkbox",
-               "text": "¿Ves qué fácil?"
-            },
-            {
-               "id": "inline-legend-button-regfor",
-               "text": "Tambien podemos mostrar la leyenda de algunas capas pinchando en este icono.",
-               "gravity": "w",
-               "next": {
-                  "open-legend": [
-                     "map-regfor"
-                  ]
-               }
-            },
-            {
-               "id": "legend_pane",
-               "text": "La leyenda aparecerá en este panel."
-            },
-            {
-               "id": "toggle_legend",
-               "text": "Y pinchando en este botón podemos mostrar y esconder el diálogo.",
-               "next": {
-                  "toggle-legend": ""
-               }
-            },
-            {
-               "id": "toggle_legend",
-               "text": "Listo."
-            },
-            {
-               "id": "layer_info_button_regfor",
-               "text": "Otra de las cosas que se puede hacer con las capas es ver la información asociada, pinchando en este botón.",
-               "next": {
-                  "show-layer-info": "regfor"
-               }
-            },
-            {
-               "id": "layer_info_button_regfor",
-               "text": "El panel se puede cerrar pulsando escape o el aspa que hay en la ventana emergente.",
-               "next": {
-                  "hide-info": ""
-               }
-            },
-            {
-               "id": "all_layers",
-               "text": "Detrás de este panel de capas hay otros paneles que nos permiten determinadas operaciones con algunas capas. Por ejemplo cambiar la transparencia.",
-               "gravity": "n",
-               "next": {
-                  "show-layer-panel": [
-                     "layers_transparency_selector"
-                  ]
-               }
-            },
-            {
-               "id": "active_layers",
-               "text": "En este panel es posible cambiar la transparencia de las capas deslizando las distintas barras.",
-               "gravity": "n"
-            },
-            {
-               "id": "regfor_transparency_slider",
-               "text": "Al mover la barra, la transparencia se cambia en el mapa.",
-               "gravity": "w",
-               "next": {
-                  "transparency-slider-changed": [
-                     "regfor",
-                     0.25
-                  ]
-               }
-            },
-            {
-               "id": "regfor_transparency_slider",
-               "text": "En el mapa ahora las regiones forestales son transparentes.",
-               "gravity": "w",
-               "next": {
-                  "show-layer-panel": [
-                     "all_layers_selector"
-                  ],
-                  "show-layer-group": [
-                     "estadisticas"
-                  ]
-               }
-            },
-            {
-               "id": "all_layers",
-               "text": "Algunas capas tienen varias instancias temporales",
-               "gravity": "w",
-               "next": {
-                  "layer-visibility": [
-                     "regfor",
-                     false
-                  ]
-               }
-            },
-            {
-               "id": "layer-row-provincias_incendios",
-               "text": "Por ejemplo la capa de incendios por provincia. Vamos a visualizarla desde más cerca",
-               "gravity": "w",
-               "next": {
-                  "layer-visibility": [
-                     "provincias_incendios",
-                     true
-                  ]
-               }
-            },
-            {
-               "id": "layer-row-provincias_incendios",
-               "text": "Podemos observar que tiene un año que se visualiza entre paréntesis.",
-               "gravity": "w"
-            },
-            {
-               "id": "time_slider_pane",
-               "text": "La fecha del mapa se puede cambiar desde esta barra",
-               "next": {
-                  "time-slider.selection": [
-                     "Xnew Date(1325372400000)"
-                  ]
-               }
-            },
-            {
-               "id": "layer-row-provincias_incendios",
-               "text": "Y eso debe cambiar la imagen del mapa y el año que hay entre paréntesis en la capa"
-            },
-            {
-               "id": "layer_slider_selector",
-               "text": "Pero además podemos cambiar la instancia temporal de las capas de forma individual mediante el panel \"Temporal\"",
-               "gravity": "s",
-               "next": {
-                  "show-layer-panel": [
-                     "layer_slider_selector"
-                  ]
-               }
-            },
-            {
-               "id": "layerTimeSliders",
-               "text": "En este panel apareceran barras temporales para cada capa que tenga varias instancias temporales y esté visible...",
-               "gravity": "w"
-            },
-            {
-               "id": "layerTimeSliders",
-               "text": "...lo que nos permite modificar el instante temporal individualmente para una capa.",
-               "gravity": "w",
-               "next": {
-                  "layer-time-slider.selection": [
-                     "provincias_incendios",
-                     "Xnew Date(1356994800000)"
-                  ]
-               }
-            },
-            {
-               "id": "layerTimeSliders",
-               "text": "Tras lo cual, nos queda el mapa en una fecha y sólo esta capa en otra",
-               "gravity": "w"
-            },
-            {
-               "id": "map",
-               "text": "Pero en el portal no sólo es posible visualizar los datos...",
-               "gravity": "s"
-            },
-            {
-               "id": "map",
-               "text": "... sino también obtener información pinchando en ellos",
-               "gravity": "s"
-            },
-            {
-               "id": "map",
-               "text": "Vamos a consultar la información por provincia, para lo cual activaremos la capa de provincias",
-               "gravity": "s",
-               "next": {
-                  "show-layer-panel": [
-                     "all_layers_selector"
-                  ]
-               }
-            },
-            {
-               "id": "layer-row-provincias_incendios",
-               "text": "Desactivamos primero la capa de incendios",
-               "gravity": "w",
-               "next": {
-                 "layer-visibility" : [ "provincias_incendios", false ]
-               }
-            },
-            {
-               "id": "all_layers",
-               "text": "Y en el grupo de divisiones administrativas",
-               "gravity": "w",
-               "next": {
-                  "show-layer-group": [ "admin" ],
-               }
-            },
-            {
                "id": "layer-row-limites_provinciales",
                "text": "Activamos las provincias.",
                "gravity": "w",
@@ -289,7 +23,7 @@
             },
             {
                "id": "map",
-               "text": "Ahora pinchamos en algún punto del mapa",
+               "text": "Ahora pinchamos en algún punto del mapa.",
                "gravity": "s",
                "next": {
                   "map-click": [
@@ -321,7 +55,7 @@
             },
             {
                "id": "info-magnifier-limites_provinciales-0",
-               "text": "Y pinchando en la lupa podemos hacer zoom al objeto",
+               "text": "Y pinchando en la lupa podemos hacer zoom al objeto.",
                "gravity": "s",
                "next": {
                   "clear-highlighted-features": []
@@ -329,7 +63,7 @@
             },
             {
                "id": "info-indicator-limites_provinciales-0",
-               "text": "Algunos objetos tienen información asociada. En tales casos, aparece este icono en los resultados. Pinchando en él podemos observar algunas gráficas",
+               "text": "Algunos objetos tienen información asociada. En tales casos, aparece este icono en los resultados. Pinchando en él podemos observar algunas gráficas.",
                "gravity": "s",
                "next": {
                   "show-feature-indicator" : [ "bosques_umsef_db:limites_provinciales", "limites_provinciales", 0, 0 ]
@@ -350,7 +84,7 @@
             },
             {
                "id": "feedback-button",
-               "text": "Para ello podemos pulsar el botón de feedback",
+               "text": "Para ello podemos pulsar el botón de feedback.",
                "gravity": "n",
                "next": {
                   "activate-feedback" : [ ]
@@ -390,7 +124,7 @@
             },
             {
                "id": "feedback-button",
-               "text": "Ahora al pulsar el botón de feedback nos aparecerá el diálogo",
+               "text": "Ahora al pulsar el botón de feedback nos aparecerá el diálogo.",
                "gravity": "n",
                "next": {
                   "activate-feedback" : [ ]
@@ -398,7 +132,7 @@
             },
             {
                "id": "feedback-layer-combo",
-               "text": "Aquí podemos seleccionar la capa sobre la que queremos comentar",
+               "text": "Aquí podemos seleccionar la capa sobre la que queremos comentar.",
                "gravity": "w"
             },
             {

@@ -45,9 +45,11 @@ define([ "module", "toolbar", "message-bus", "jquery", "tipsy" ], function(modul
 			}
 			
 			if (step.wait) {
-				bus.listen(step.wait, function() {
+				var fnc = function() {
 					showStep(stepIndex + 1);
-				});
+					bus.stopListen(step.wait, fnc);
+				};
+				bus.listen(step.wait, fnc);
 			} else {
 				showStep(stepIndex + 1);
 			}
