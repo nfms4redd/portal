@@ -26,6 +26,18 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 	bus.listen("layers-loaded", function() {
 		//var add = $("<div/>").addClass("root_group_placeholder").append("Add Group ").append($("<div/>").addClass("fa fa-plus")); // TODO i18n
 		//$("#layers_container").append(add);
+
+		// Añadir placeholder para soltar subgrupos
+		$(".group").each(function(i, el) {
+			var groupInfo = getGroups($(el));
+			if (groupInfo.items.length == 0) { // Sólo en grupos vacíos
+				$("<div/>").addClass("group_placeholder").addClass("group-container").appendTo($("#group-content-table-"+groupInfo.id));
+			}
+		});
+
+		// Añadir placeholder para soltar capas
+		$("<tr/>").addClass("layer_placeholder").appendTo(".layer-container");
+
 		$(".group-container").sortable({
 			handle: ".group-title",
 			connectWith: ".group-container",
