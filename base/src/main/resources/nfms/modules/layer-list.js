@@ -63,7 +63,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				element.click(function(event) {
 					event.stopPropagation()
 				});
-				element.addClass("layer_info_button").addClass("group_info_button");
+				element.addClass("group_info_button");
 				divTitle.prepend(element);
 			}
 		}
