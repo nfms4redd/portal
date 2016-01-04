@@ -81,22 +81,6 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 		});
 	});
 
-	/*
-	bus.listen("remove-layer", function(event, layer) {
-		console.log("Remove layer");
-		console.log(layer);
-	});
-
-	bus.listen("remove-group", function(event, group) {
-		console.log("Remove group");
-		console.log(group);
-	});
-
-	bus.listen("layers-removed", function() {
-		console.log("All layers removed");
-	});
-	*/
-
 	function getGroups(el) {
 		var attrs = el.attr("data-group") ? JSON.parse(el.attr("data-group")) : {};
 		if(attrs.hasOwnProperty("name")) {

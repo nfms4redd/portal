@@ -91,24 +91,13 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 		}
 	});
 
-	bus.listen("remove-layer", function(event, layerInfo) {
-		var mapLayerArray = mapLayersByLayerId[layerInfo.id];
-		for (var index in layerInfo.wmsLayers) {
-			var wmsLayer = layerInfo.wmsLayers[index];
-			var layer = map.getLayer(wmsLayer.id);
-
-			if (map !== null) {
-				map.removeLayer(layer);
-				delete zIndexes[wmsLayer.id];
+	bus.listen("reset-layers", function() {
+		zIndexes = {};
+		mapLayersByLayerId = {};
+		if (map !== null) {
+			for (var i in map.layers) {
+				map.removeLayer(map.layers[i]);
 			}
-			// remove wmsLayer.id from mapLayerArray;
-			var i = mapLayerArray.indexOf(wmsLayer.id);
-			if (i > -1) {
-				mapLayerArray.splice(i, 1);
-			}
-		}
-		if (mapLayerArray.length == 0) {
-			delete mapLayersByLayerId[layerInfo.id];
 		}
 	});
 

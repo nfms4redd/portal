@@ -36,9 +36,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 
 	redraw();
 
-	bus.listen("layers-removed", function() {
-		redraw();
-	});
+	bus.listen("reset-layers", redraw);
 
 	bus.listen("register-layer-action", function(event, action) {
 		layerActions.push(action);

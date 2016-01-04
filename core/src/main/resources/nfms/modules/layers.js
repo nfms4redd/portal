@@ -1,7 +1,4 @@
 define([ "jquery", "message-bus", "customization", "module" ], function($, bus, customization, module) {
-	var addedGroups = [];
-	var addedLayers = [];
-
 	var findById = function(array, id) {
 		return $.grep(array, function(l) {
 			return l.id === id;
@@ -135,16 +132,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	};
 
-	var clear = function() {
-		while(addedLayers.length) {
-			bus.send("remove-layer", addedLayers.pop());
-		}
-		while(addedGroups.length) {
-			bus.send("remove-group", addedGroups.pop());
-		}
-		bus.send("layers-removed");
-	};
-
 	var draw = function(layerRoot) {
 		var i;
 		var defaultServer = null;
@@ -167,7 +154,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	};
 
 	var redraw = function(layerRoot) {
-		clear();
+		bus.send("reset-layers");
 		draw(layerRoot);
 	};
 
@@ -175,16 +162,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		draw(module.config());
 	});
 
-	bus.listen("add-group", function(event, group) {
-		addedGroups.push(group);
-	});
-
-	bus.listen("add-layer", function(event, layer) {
-		addedLayers.push(layer);
-	});
-
 	return {
-		clear: clear,
 		draw: draw,
 		redraw: redraw
 	};
