@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>layers-editor</artifactId>
-			<version>3.1-SNAPSHOT</version>
+			<version>4.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
