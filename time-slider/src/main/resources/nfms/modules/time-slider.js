@@ -7,18 +7,7 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 	divTimeSlideContainer.hide();
 	toolbar.append(divTimeSlideContainer);
 	
-
-	bus.listen("add-layer", function(event, layerInfo) {
-		if (layerInfo.hasOwnProperty("timestamps")) {
-			var layerTimestamps = layerInfo.timestamps;
-
-			for (var i = 0; i < layerTimestamps.length; i++) {
-				timestampSet[layerTimestamps[i]] = true;
-			}
-		}
-	});
-
-	bus.listen("layers-loaded", function() {
+	var draw = function() {
 		var timestamps, div, lastTimestampIndex;
 
 		timestamps = $.map(timestampSet, function(value, key) {
@@ -72,5 +61,26 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 				}
 			});
 		}
+	};
+
+	bus.listen("add-layer", function(event, layerInfo) {
+		if (layerInfo.hasOwnProperty("timestamps")) {
+			var layerTimestamps = layerInfo.timestamps;
+
+			for (var i = 0; i < layerTimestamps.length; i++) {
+				timestampSet[layerTimestamps[i]] = true;
+			}
+		}
 	});
+
+	bus.listen("layers-loaded", draw);
+
+	bus.listen("reset-layers", function() {
+		timestampSet = {};
+		divTimeSlideContainer.hide();
+		$("#time_slider_label").remove();
+		$("#time_slider").remove();
+		draw();
+	});
+
 });
