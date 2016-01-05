@@ -46,6 +46,7 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 			divTimeSlider.slider("value", lastTimestampIndex);
 
 			bus.listen("time-slider.selection", function(event, date){
+				var divTimeSlider = $("#time_slider");
 				var position = divTimeSlider.slider("value");
 				var d = new Date();
 				d.setISO8601(timestamps[position]);
