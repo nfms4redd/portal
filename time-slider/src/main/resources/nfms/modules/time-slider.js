@@ -81,7 +81,6 @@ define([ "jquery", "message-bus", "toolbar", "jquery-ui" ], function($, bus, too
 		divTimeSlideContainer.hide();
 		$("#time_slider_label").remove();
 		$("#time_slider").remove();
-		draw();
 	});
 
 });

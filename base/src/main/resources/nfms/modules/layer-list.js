@@ -7,7 +7,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		numTopLevelGroups,
 		divLayers;
 
-	var redraw = function() {
+	var draw = function() {
 		layerActions = [];
 		groupActions = [];
 		temporalLayers = [];
@@ -34,9 +34,9 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		layerListSelector.registerLayerPanel("all_layers_selector", 10, i18n.layers, divLayers);
 	};
 
-	redraw();
+	draw();
 
-	bus.listen("reset-layers", redraw);
+	bus.listen("reset-layers", draw);
 
 	bus.listen("register-layer-action", function(event, action) {
 		layerActions.push(action);
