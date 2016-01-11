@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.fao.unredd</groupId>
 		<artifactId>portal-root</artifactId>
-		<version>3.1-SNAPSHOT</version>
+		<version>4.0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>integration-tests</artifactId>
 	<name>integration-tests</name>
@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>demo</artifactId>
-			<version>3.1-SNAPSHOT</version>
+			<version>4.0.2-SNAPSHOT</version>
 			<type>war</type>
 			<scope>test</scope>
 		</dependency>
@@ -110,6 +110,9 @@
 					</dependency>
 				</dependencies>
 				<configuration>
+					<systemPropertyVariables>
+						<PORTAL_CONFIG_DIR>./test_config</PORTAL_CONFIG_DIR>
+					</systemPropertyVariables>
 					<groups>org.fao.unredd.functional.IntegrationTest</groups>
 				</configuration>
 				<executions>

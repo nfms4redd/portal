@@ -2,7 +2,10 @@ package org.fao.unredd.functional;
 
 import static junit.framework.Assert.assertTrue;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,6 +72,18 @@ public class AbstractIntegrationTest {
 
 	@Before
 	public void setup() throws Exception {
+		// Replace password with environment variable
+		File portalPropertiesFile = new File("test_config/portal.properties");
+		String portalProperties = IOUtils
+				.toString(portalPropertiesFile.toURI());
+		portalProperties = portalProperties.replaceAll(
+				Pattern.quote("$password"),
+				System.getenv("ONUREDDMAILPASSWORD"));
+		BufferedOutputStream output = new BufferedOutputStream(
+				new FileOutputStream(portalPropertiesFile));
+		IOUtils.write(portalProperties, output);
+		output.close();
+
 		// Clean the database
 		Class.forName("org.postgresql.Driver");
 		Connection connection = DriverManager.getConnection(dbUrl, dbUser,
@@ -98,7 +113,7 @@ public class AbstractIntegrationTest {
 		server.setHandler(handlers);
 
 		SocketConnector connector = new SocketConnector();
-		connector.setPort(8080);
+		connector.setPort(8880);
 		server.setConnectors(new Connector[] { connector });
 
 		dataSource = new PGSimpleDataSource();
@@ -191,7 +206,7 @@ public class AbstractIntegrationTest {
 
 	protected CloseableHttpResponse GET(String path, String... parameters)
 			throws ClientProtocolException, IOException {
-		String url = "http://localhost:8080/" + CONTEXT_PATH + "/" + path + "?";
+		String url = "http://localhost:8880/" + CONTEXT_PATH + "/" + path + "?";
 		for (int i = 0; i < parameters.length; i = i + 2) {
 			url += parameters[i] + "="
 					+ URLEncoder.encode(parameters[i + 1], "UTF-8") + "&";
@@ -203,7 +218,7 @@ public class AbstractIntegrationTest {
 
 	protected CloseableHttpResponse POST(String path, String... parameters)
 			throws ClientProtocolException, IOException {
-		String url = "http://localhost:8080/" + CONTEXT_PATH + "/" + path;
+		String url = "http://localhost:8880/" + CONTEXT_PATH + "/" + path;
 		ArrayList<NameValuePair> parameterList = new ArrayList<NameValuePair>();
 		for (int i = 0; i < parameters.length; i = i + 2) {
 			parameterList.add(new BasicNameValuePair(parameters[i],

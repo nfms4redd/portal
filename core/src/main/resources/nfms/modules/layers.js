@@ -1,5 +1,4 @@
 define([ "jquery", "message-bus", "customization", "module" ], function($, bus, customization, module) {
-
 	var findById = function(array, id) {
 		return $.grep(array, function(l) {
 			return l.id === id;
@@ -133,9 +132,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	};
 
-	bus.listen("modules-loaded", function() {
+	var draw = function(layerRoot) {
 		var i;
-		var layerRoot = module.config();
 		var defaultServer = null;
 		if (layerRoot["default-server"]) {
 			defaultServer = layerRoot["default-server"];
@@ -153,6 +151,20 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 
 		bus.send("layers-loaded");
+	};
+
+	var redraw = function(layerRoot) {
+		bus.send("reset-layers");
+		draw(layerRoot);
+	};
+
+	bus.listen("modules-loaded", function() {
+		draw(module.config());
 	});
+
+	return {
+		draw: draw,
+		redraw: redraw
+	};
 
 });

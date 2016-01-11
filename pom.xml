@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.fao.unredd</groupId>
 	<artifactId>portal-root</artifactId>
-	<version>3.1-SNAPSHOT</version>
+	<version>4.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>UNREDD NFMS portal</name>
 	<modules>
@@ -37,7 +37,7 @@
 	<distributionManagement>
 		<repository>
 			<id>nfms4redd</id>
-			<url>ftp://maven.nfms4redd.org/repo</url>
+			<url>ftp://maven.slms4redd.org/repo</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 	</distributionManagement>
@@ -45,7 +45,7 @@
 		<pluginRepository>
 			<id>nfms4redd</id>
 			<name>nfms4redd maven repository</name>
-			<url>http://maven.nfms4redd.org/</url>
+			<url>http://maven.slms4redd.org/</url>
 		</pluginRepository>
 	</pluginRepositories>
 	<repositories>
@@ -57,7 +57,7 @@
 		<repository>
 			<id>nfms4redd</id>
 			<name>nfms4redd maven repository</name>
-			<url>http://maven.nfms4redd.org/</url>
+			<url>http://maven.slms4redd.org/</url>
 		</repository>
 		<repository>
 			<id>EclipseLink</id>

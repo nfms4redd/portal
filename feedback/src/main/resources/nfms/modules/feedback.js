@@ -1,5 +1,5 @@
-define([ "message-bus", "url-parameters", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls" ],//
-function(bus, urlParameters, map, toolbar, i18n, $) {
+define([ "message-bus", "customization", "map", "toolbar", "i18n", "jquery", "jquery-ui", "openlayers", "edit-controls" ],//
+function(bus, customization, map, toolbar, i18n, $) {
 
 	var feedbackLayers = new Array();
 
@@ -79,7 +79,7 @@ function(bus, urlParameters, map, toolbar, i18n, $) {
 			// Do submit
 
 			var data = {
-				"lang" : urlParameters.get("lang"),
+				"lang" : customization.languageCode,
 				"comment" : txtComment.val(),
 				"geometry" : editToolbar.getFeaturesAsWKT(),
 				"layerName" : cmbLayer.val(),

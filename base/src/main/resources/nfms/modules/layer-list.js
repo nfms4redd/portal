@@ -1,40 +1,56 @@
 define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n, moment) {
 
-	var layerActions = new Array();
-	var groupActions = new Array();
+	var layerActions,
+		groupActions,
+		temporalLayers,
+		groupIdAccordionIndex,
+		numTopLevelGroups,
+		divLayers;
 
-	var temporalLayers = new Array();
+	var draw = function() {
+		layerActions = [];
+		groupActions = [];
+		temporalLayers = [];
+		groupIdAccordionIndex = {};
+		numTopLevelGroups = 0;
 
-	var divLayers = null;
+		if(divLayers) {
+			divLayers.remove();
+			layerListSelector.removeLayerPanel("all_layers_selector");
+		}
+		divLayers = $("<div/>").attr("id", "all_layers");
+		divLayers.addClass("group-container");
+		divLayers.addClass("ui-accordion-icons");
 
-	var groupIdAccordionIndex = {};
-	var numTopLevelGroups = 0;
+		divLayers.accordion({
+			"animate" : false,
+			"header": "> div > div.group-title",
+			"heightStyle" : "content",
+			// Collapse all content since otherwise the accordion sets the 'display'
+			// to 'block' instead than to 'table'
+			"collapsible" : true,
+			"active" : false
+		});
+		layerListSelector.registerLayerPanel("all_layers_selector", 10, i18n.layers, divLayers);
+	};
+
+	draw();
+
+	bus.listen("reset-layers", draw);
 
 	bus.listen("register-layer-action", function(event, action) {
 		layerActions.push(action);
 	});
+
 	bus.listen("register-group-action", function(event, action) {
 		groupActions.push(action);
 	});
-
-	divLayers = $("<div/>").attr("id", "all_layers");
-	divLayers.addClass("ui-accordion-icons");
-	divLayers.accordion({
-		"animate" : false,
-		"heightStyle" : "content",
-		/*
-		 * Collapse all content since otherwise the accordion sets the 'display'
-		 * to 'block' instead than to 'table'
-		 */
-		"collapsible" : true,
-		"active" : false
-	});
-	layerListSelector.registerLayerPanel("all_layers_selector", 10, i18n.layers, divLayers);
 
 	bus.listen("add-group", function(event, groupInfo) {
 		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;
 
 		divTitle = $("<div/>").html(groupInfo.name).disableSelection();
+		divTitle.addClass("group-title");
 
 		for (var i = 0; i < groupActions.length; i++) {
 			var groupAction = groupActions[i];
@@ -45,26 +61,34 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				element.click(function(event) {
 					event.stopPropagation()
 				});
-				element.addClass("layer_info_button").addClass("group_info_button");
+				element.addClass("group_info_button");
 				divTitle.prepend(element);
 			}
 		}
 
 		tblLayerGroup = $("<table/>");
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
+		$("<tbody/>").addClass("layer-container").appendTo(tblLayerGroup);
+
+		var divGroup = $("<div/>").addClass("group").attr("data-group", JSON.stringify(groupInfo));
 
 		if (groupInfo.hasOwnProperty("parentId")) {
 			parentId = groupInfo.parentId;
 			tblParentLayerGroup = $("#group-content-table-" + parentId);
+			tblParentLayerGroup.addClass("group-container");
 			if (tblParentLayerGroup.length == 0) {
 				bus.send("error", "Group " + groupInfo.name + " references nonexistent group: " + parentId);
 			}
-			tblParentLayerGroup.append(divTitle).append(tblLayerGroup);
+			tblParentLayerGroup.append(divGroup);
+			divGroup.append(divTitle).append(tblLayerGroup);
 		} else {
-			divLayers.append(divTitle);
+			divLayers.append(divGroup);
+			divTitle.addClass("header");
+			divGroup.append(divTitle);
 			divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
 			divContent.append(tblLayerGroup);
-			divLayers.append(divContent).accordion("refresh");
+			divGroup.append(divContent);
+			divLayers.accordion("refresh");
 			groupIdAccordionIndex[groupInfo.id] = numTopLevelGroups;
 			numTopLevelGroups++;
 		}
@@ -197,48 +221,55 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		$("<span/>").html(" (" + dateStr + ")").appendTo(tdLayerName);
 	};
 
+	var findClosestPrevious = function(layer, date) {
+		var layerTimestamps = layer.timestamps;
+		var layerTimestampStyles = null;
+		if (layer.hasOwnProperty("timeStyles")) {
+			layerTimestampStyles = layer.timeStyles.split(",");
+		}
+		var timestampInfos = [];
+		for (var j = 0; j < layerTimestamps.length; j++) {
+			var timestamp = new Date();
+			timestamp.setISO8601(layerTimestamps[j]);
+			var style = null;
+			if (layerTimestampStyles != null) {
+				style = layerTimestampStyles[j];
+			}
+			var timestampInfo = {
+				"timestamp" : timestamp,
+				"style" : style
+			};
+			timestampInfos.push(timestampInfo);
+		}
+
+		timestampInfos.sort(function(infoA, infoB) {
+			return infoA.timestamp.getTime() - infoB.timestamp.getTime();
+		});
+
+		var closestPrevious = null;
+
+		for (var j = 0; j < timestampInfos.length; j++) {
+			var timestampInfo = timestampInfos[j];
+			if (timestampInfo.timestamp.getTime() <= date.getTime()) {
+				closestPrevious = timestampInfo;
+			} else {
+				break;
+			}
+		}
+
+		if (closestPrevious == null) {
+			closestPrevious = timestampInfos[0];
+		}
+
+		return closestPrevious;
+	}
+	
+	
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
 			var layer = temporalLayers[i];
-			var layerTimestamps = layer.timestamps;
-			var layerTimestampStyles = null;
-			if (layer.hasOwnProperty("timeStyles")) {
-				layerTimestampStyles = layer.timeStyles.split(",");
-			}
-			var timestampInfos = [];
-			for (var j = 0; j < layerTimestamps.length; j++) {
-				var timestamp = new Date();
-				timestamp.setISO8601(layerTimestamps[j]);
-				var style = null;
-				if (layerTimestampStyles != null) {
-					style = layerTimestampStyles[j];
-				}
-				var timestampInfo = {
-					"timestamp" : timestamp,
-					"style" : style
-				};
-				timestampInfos.push(timestampInfo);
-			}
 
-			timestampInfos.sort(function(infoA, infoB) {
-				return infoA.timestamp.getTime() - infoB.timestamp.getTime();
-			});
-
-			var closestPrevious = null;
-
-			for (var j = 0; j < timestampInfos.length; j++) {
-				var timestampInfo = timestampInfos[j];
-				if (timestampInfo.timestamp.getTime() <= date.getTime()) {
-					closestPrevious = timestampInfo;
-				} else {
-					break;
-				}
-			}
-
-			if (closestPrevious == null) {
-				closestPrevious = timestampInfos[0];
-			}
-
+			var closestPrevious = findClosestPrevious(layer, date);
 			updateLabel(layer.id, layer["date-format"], closestPrevious.timestamp);
 
 			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious.timestamp, closestPrevious.style ]);
@@ -247,8 +278,9 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 	bus.listen("layer-time-slider.selection", function(event, layerid, date) {
 		$.each(temporalLayers, function(index, temporalLayer) {
 			if (temporalLayer.id == layerid) {
-				updateLabel(layerid, temporalLayer["date-format"], date);
-				bus.send("layer-timestamp-selected", [ layerid, date ]);
+				var closestPrevious = findClosestPrevious(temporalLayer, date);
+				updateLabel(layerid, temporalLayer["date-format"], closestPrevious.timestamp);
+				bus.send("layer-timestamp-selected", [ layerid, closestPrevious.timestamp, closestPrevious.style ]);
 			}
 		});
 	});

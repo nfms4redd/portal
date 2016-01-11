@@ -1,0 +1,60 @@
+.layers-editor-form div {
+	float: left;
+	clear: left;
+	width: 100%;
+	padding-bottom: 0.5em;
+}
+
+.layers-editor-form label {
+	float: left;
+	width: 150px;
+	margin-right: 10px;
+	text-align: right;
+}
+
+.layers-editor-form fieldset {
+	width: 420px;
+	margin-bottom: 5px;
+}
+
+.layers-editor-form input[type="text"] {
+	width: 250px;
+}
+
+.layers-editor-form textarea {
+	width: 150px;
+	resize: vertical;
+}
+
+.layers-editor-form select {
+	width: 125px;
+}
+
+.layers-editor-form input {
+	width: auto;
+}
+
+.layers-editor-form ul {
+	margin: 0;
+	margin-left: 120px;
+	list-style-type: none;
+}
+
+.layers-editor-form ul div {
+	display: inline;
+	float: none;
+}
+
+.layers-editor-form ul input[type="text"] {
+	width: 160px;
+}
+
+.layers-editor-form ul select {
+	width: 75px;
+}
+
+.layers-editor-type-not-implemented {
+	color: red;
+	font-weight: bold;
+	font-style: italic;
+}

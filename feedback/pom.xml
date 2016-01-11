@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.fao.unredd</groupId>
 		<artifactId>portal-root</artifactId>
-		<version>3.1-SNAPSHOT</version>
+		<version>4.0.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>feedback</artifactId>
 	<name>feedback</name>
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>base</artifactId>
-			<version>3.1-SNAPSHOT</version>
+			<version>4.0.2-SNAPSHOT</version>
 		</dependency>
 
 		<!-- API and implementation, as reported here: https://java.net/projects/javamail/pages/Home -->
