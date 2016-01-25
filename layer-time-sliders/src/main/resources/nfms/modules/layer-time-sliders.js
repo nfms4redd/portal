@@ -12,7 +12,13 @@ define([ "jquery", "message-bus", "layout", "map", "layer-list-selector", "momen
 		}
 		return moment(date).format(format);
 	}
-	
+
+	bus.listen("reset-layers", function() {
+		$(".layer-time-slider").slider("destroy");
+		$(".layer-time-slider-container").remove();
+		aTimestampsLayers = {};
+	});
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		var timestamps = [];
 		if (layerInfo.hasOwnProperty("timestamps")) {
