@@ -6,6 +6,10 @@ define([ "module", "jquery", "message-bus", "map", "i18n", "customization", "hig
 
 	var pointHighlightLayer = null;
 
+	bus.listen("reset-layers", function() {
+		wmsLayerInfo = {};
+	});
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		var portalLayerName = layerInfo["label"];
 		$.each(layerInfo.wmsLayers, function(i, wmsLayer) {
