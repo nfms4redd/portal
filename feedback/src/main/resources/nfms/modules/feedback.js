@@ -181,6 +181,10 @@ function(bus, customization, map, toolbar, i18n, $) {
 		}
 	});
 
+	bus.listen("reset-layers", function() {
+		feedbackLayers = new Array();
+	});
+
 	bus.listen("add-layer", function(event, portalLayer) {
 		if (portalLayer["feedback"]) {
 			feedbackLayers[portalLayer.id] = {
