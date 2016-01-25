@@ -97,6 +97,10 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 		}
 	});
 
+	bus.listen("reset-layers", function() {
+		legendArrayInfo = {};
+	});
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		var legendArray = [];
 		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
