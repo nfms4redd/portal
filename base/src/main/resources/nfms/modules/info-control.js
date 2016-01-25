@@ -28,6 +28,18 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 		feature["highlightGeom"] = highlightGeom;
 	};
 
+	bus.listen("reset-layers", function() {
+		layerIdControl = {};
+		layerIdInfo = {};
+		bus.send("set-default-exclusive-control", []);
+		bus.send("activate-default-exclusive-control");
+		for(var c in controls) {
+			var control = controls[c];
+			control.destroy();
+		}
+		controls = [];
+	});
+
 	bus.listen("add-layer", function(e, layerInfo) {
 		var wmsLayers = layerInfo.wmsLayers;
 		for (var i = 0; i < wmsLayers.length; i++) {

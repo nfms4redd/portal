@@ -158,7 +158,9 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 	});
 
 	bus.listen("activate-exclusive-control", function(event, control) {
-		if (!$.isArray(control)) {
+		if (!control) {
+			control = [];
+		} else if (!$.isArray(control)) {
 			control = [ control ];
 		}
 		activateExclusiveControl(control);
@@ -169,7 +171,9 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 	});
 
 	bus.listen("set-default-exclusive-control", function(event, control) {
-		if (!$.isArray(control)) {
+		if (!control) {
+			control = [];
+		} else if (!$.isArray(control)) {
 			control = [ control ];
 		}
 		defaultExclusiveControl = control;
