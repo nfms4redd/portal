@@ -11,7 +11,11 @@ define([ "message-bus" ], function(bus) {
 		});
 		return aLink;
 	}
-	
+
+	bus.listen("reset-layers", function() {
+		idLinkInfo = {};
+	});
+
 	bus.listen("before-adding-layers", function() {
 		
 		var showInfoLayerAction = function(portalLayer) {
