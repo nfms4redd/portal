@@ -15,6 +15,18 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 
 	layerListSelector.registerLayerPanel("layers_transparency_selector", 20, i18n.selected_layers, divActiveLayers);
 
+	function delLayer(layerId) {
+		$('#' + layerId + '_tr1').remove();
+		$('#' + layerId + '_tr2').remove();
+	}
+
+	bus.listen("reset-layers", function() {
+		for(var layerId in layersInfo) {
+			delLayer(layerId);
+		}
+		layersInfo = {};
+	});
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		// set the visibility flag to true if the layer is active and if it is
 		// not a placeholder (placeholder means that no geospatial data to show
@@ -76,11 +88,6 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 						bus.send("transparency-slider-changed", [ layerId, ui.value / 100 ]);
 					}
 				});
-			}
-
-			function delLayer(layerId) {
-				$('#' + layerId + '_tr1').remove();
-				$('#' + layerId + '_tr2').remove();
 			}
 
 			if (visibility) {
