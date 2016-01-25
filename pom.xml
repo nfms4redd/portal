@@ -80,6 +80,18 @@
 				</configuration>
 			</plugin>
 			<plugin>
+			        <artifactId>maven-source-plugin</artifactId>
+			        <executions>
+			                <execution>
+			                        <id>attach-sources</id>
+                                                <phase>verify</phase>
+                                                <goals>
+			                                <goal>jar</goal>
+                                                </goals>
+			                </execution>
+			        </executions>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<configuration>

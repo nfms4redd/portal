@@ -184,7 +184,8 @@ public class JEEContextAnalyzer {
 		@Override
 		public void accept(String path, ContextEntryReader contentReader)
 				throws IOException {
-			if (path.matches("\\Q" + dir + "/\\E[\\w-]+\\Q-conf.json\\E")) {
+			if (path.matches("\\Q" + dir + File.separator
+					+ "\\E[\\w-]+\\Q-conf.json\\E")) {
 				PluginDescriptor pluginDescriptor = new PluginDescriptor(
 						contentReader.getContent());
 				requirejsPaths.putAll(pluginDescriptor.getRequireJSPathsMap());
@@ -204,8 +205,8 @@ public class JEEContextAnalyzer {
 		@Override
 		public void accept(String path, ContextEntryReader contentReader)
 				throws IOException {
-			String stylesPrefix = dir + "/styles";
-			String modulesPrefix = dir + "/modules";
+			String stylesPrefix = dir + File.separator + "styles";
+			String modulesPrefix = dir + File.separator + "modules";
 			File pathFile = new File(path);
 			if (path.startsWith(modulesPrefix)) {
 				if (path.endsWith(".css")) {

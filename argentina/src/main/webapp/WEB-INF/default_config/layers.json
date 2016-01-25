@@ -65,7 +65,7 @@
             "wmsName": "bosques_umsef_db:regfor2014_3857", 
             "legend": "regfor.png",
             "queryType" : "wfs",
-            "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+            "queryUrl" : "http://geo2.ambiente.gob.ar/geo-server/wfs",
    			"queryGeomFieldName" : "geom",
  			"queryFieldNames" : [ "stats_code", "regiones" ],
 			"queryFieldAliases" : [ "stats_code", "Regiones" ]
@@ -160,7 +160,7 @@
             "legend": "leyenda_niv1.png"
         }, 
         {
-            "baseUrl": "http://geo2.ambiente.gob.ar/portal/gs/bosques_umsef_db/wms", 
+            "baseUrl": "http://geo2.ambiente.gob.ar/geo-server/bosques_umsef_db/wms", 
             "id": "map-stbptf9806_3857", 
             "visible": true, 
             "wmsName": "bosques_umsef_db:stbptf9806_3857_t", 
@@ -176,7 +176,7 @@
             "wmsName": "bosques_umsef_db:limites_provinciales", 
             "legend": "lim_prov.png",
             "queryType" : "wfs",
-            "queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+            "queryUrl" : "http://geo2.ambiente.gob.ar/geo-server/wfs",
    			"queryGeomFieldName" : "geom",
  			"queryFieldNames" : [ "nprov", "cod_indec" ],
 			"queryFieldAliases" : [ "Nombre", "Codigo" ]
@@ -502,5 +502,5 @@
             "label": "Informaci\u00f3n Auxiliar"
         }
     ], 
-    "default-server": "http://geo2.ambiente.gob.ar/portal/gs"
+    "default-server": "http://geo2.ambiente.gob.ar/geo-server"
 }
