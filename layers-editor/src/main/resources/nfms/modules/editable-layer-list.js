@@ -2,10 +2,10 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 
 	bus.listen("before-adding-layers", function() {
 		bus.send("register-layer-action", function(layer) {
-			return link(layer.id, forms.editLayer);
+			return link(layer.getId(), forms.editLayer);
 		});
 		bus.send("register-group-action", function(group) {
-			return link(group.id, forms.editGroup);
+			return link(group.getId(), forms.editGroup);
 		});
 	});
 

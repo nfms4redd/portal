@@ -1,4 +1,8 @@
 define([ "jquery", "message-bus", "customization", "module" ], function($, bus, customization, module) {
+
+	var defaultServer;
+	var layerRoot;
+
 	var findById = function(array, id) {
 		return $.grep(array, function(l) {
 			return l.id === id;
@@ -14,7 +18,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 		url += "REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&TRANSPARENT=true&LAYER=";
 		url += wmsLayer.wmsName;
-		
+
 		return url;
 	}
 
@@ -24,138 +28,245 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	}
 
-	var processGroup = function(defaultServer, layerRoot, parentId, group) {
-		var items, item, portalLayers, portalLayer, wmsLayerIds,
-			wmsLayers, wmsLayer, i, j, layerInfoArray;
-
-		var groupInfo = {
-			"id" : group.id,
-			"name" : group.label
-		};
-
-		if (group.hasOwnProperty("infoLink")) {
-			groupInfo.infoLink = group.infoLink;
+	function decorateCommons(groupOrPortalLayer) {
+		groupOrPortalLayer["getName"] = function() {
+			return groupOrPortalLayer.label;
 		}
-		if (group.hasOwnProperty("infoFile")) {
-			groupInfo.infoLink = "static/loc/" + customization.languageCode + "/html/" + group.infoFile;
+		groupOrPortalLayer["getId"] = function() {
+			return groupOrPortalLayer.id;
 		}
-		if (parentId !== null) {
-			groupInfo.parentId = parentId;
+		groupOrPortalLayer["getInfoLink"] = function() {
+			var ret = null;
+			if (groupOrPortalLayer.hasOwnProperty("infoLink")) {
+				ret = groupOrPortalLayer.infoLink;
+			} else if (groupOrPortalLayer.hasOwnProperty("infoFile")) {
+				ret = "static/loc/" + customization.languageCode + "/html/" + groupOrPortalLayer.infoFile;
+			}
+
+			return ret;
 		}
 
-		bus.send("add-group", groupInfo);
+	}
+	function decorateGroup(parentId, group) {
+		group["getParentId"] = function() {
+			return parentId;
+		}
+		decorateCommons(group);
+	}
 
-		items = group.items;
+	function decoratePortalLayer(portalLayer, groupId) {
+		portalLayer["isPlaceholder"] = function() {
+			return (portalLayer.layers === undefined) || (portalLayer.layers.length === 0);
+		}
+		portalLayer["getTimestamps"] = function() {
+			var ret = null;
+			if (portalLayer.hasOwnProperty("timeInstances")) {
+				ret = portalLayer.timeInstances.split(",");
+			}
 
-		for (i = 0; i < items.length; i++) {
-			item = items[i];
-			if (typeof item === 'object') {
-				processGroup(defaultServer, layerRoot, group.id, item);
+			return ret;
+		}
+
+		decorateCommons(portalLayer);
+
+		var layerInfoArray = [];
+		if (!portalLayer.isPlaceholder()) {
+			var mapLayerIds = (portalLayer.isPlaceholder()) ? null : portalLayer.layers;
+
+			// Iterate over wms layers
+			for (var j = 0; mapLayerIds != null && j < mapLayerIds.length; j++) {
+				var mapLayers = findById(layerRoot.wmsLayers, mapLayerIds[j]);
+				if (mapLayers.length === 0) {
+					bus.send("error", "At least one layer with id '" + mapLayerIds[j] + "' expected");
+					continue;
+				}
+				var mapLayer = mapLayers[0];
+				decorateMapLayer(mapLayer, layerRoot.wmsLayers);
+
+				layerInfoArray.push(mapLayer);
+			}
+		}
+		portalLayer["getMapLayers"] = function() {
+			return layerInfoArray;
+		}
+		portalLayer["isActive"] = function() {
+			return portalLayer["active"];
+		}
+		portalLayer["isFeedbackEnabled"] = function() {
+			return portalLayer["feedback"];
+		}
+		portalLayer["getGroupId"] = function() {
+			return groupId;
+		}
+		portalLayer["hasTimeDependentStyle"] = function() {
+			return portalLayer.hasOwnProperty("timeStyles");
+		}
+		portalLayer["getTimeStyles"] = function() {
+			return portalLayer["timeStyles"];
+		}
+		portalLayer["getDateFormat"] = function() {
+			return portalLayer["date-format"];
+		}
+		portalLayer["getInlineLegendURL"] = function() {
+			var ret = null;
+			if (portalLayer["inlineLegendUrl"]) {
+				if (portalLayer["inlineLegendUrl"] == "auto") {
+					var firstMapLayer = portalLayer.getMapLayers()[0];
+					ret = getGetLegendGraphicUrl(firstMapLayer);
+				} else if (portalLayer["inlineLegendUrl"].charAt(0) == "/") {
+					ret = defaultServer + portalLayer["inlineLegendUrl"];
+				}
+			}
+		}
+	}
+
+	function decorateMapLayer(mapLayer, mapLayers) {
+		mapLayer["getId"] = function() {
+			return mapLayer["id"];
+		}
+		mapLayer["getName"] = function() {
+			return mapLayer["label"];
+		}
+		mapLayer["getZIndex"] = function() {
+			return mapLayers.indexOf(mapLayer);
+		}
+		mapLayer["getBaseURL"] = function() {
+			var ret = mapLayer["baseUrl"];
+			if (mapLayer["baseUrl"]) {
+				if (mapLayer["baseUrl"].charAt(0) == "/") {
+					ret = defaultServer + ret;
+				}
+			}
+
+			return ret;
+		}
+		mapLayer["getServerLayerName"] = function() {
+			return mapLayer["wmsName"];
+		}
+		mapLayer["getImageFormat"] = function() {
+			return mapLayer["imageFormat"];
+		}
+		mapLayer["getType"] = function() {
+			return mapLayer["type"];
+		}
+		mapLayer["getOSMURLs"] = function() {
+			return mapLayer["osmUrls"];
+		}
+		mapLayer["getGMapsType"] = function() {
+			return mapLayer["gmaps-type"];
+		}
+		mapLayer["getLegendURL"] = function() {
+			var ret = null;
+			if (mapLayer.hasOwnProperty("legend")) {
+				if (mapLayer.legend == "auto") {
+					ret = getGetLegendGraphicUrl(mapLayer);
+				} else {
+					ret = "static/loc/" + customization.languageCode + "/images/" + mapLayer.legend;
+				}
+			}
+			return ret;
+		}
+
+		mapLayer["getSourceLink"] = function() {
+			return mapLayer["sourceLink"];
+		}
+
+		mapLayer["getSourceLabel"] = function() {
+			return mapLayer["sourceLabel"];
+		}
+		mapLayer["isQueryable"] = function() {
+			return mapLayer.hasOwnProperty("queryType");
+		}
+		mapLayer["queriesWFS"] = function() {
+			return mapLayer["queryType"] == "wfs";
+		}
+		mapLayer["getQueryGeomFieldName"] = function() {
+			return mapLayer["queryGeomFieldName"];
+		}
+		mapLayer["getQueryTimeFieldName"] = function() {
+			return mapLayer["queryTimeFieldName"];
+		}
+		mapLayer["highlightBounds"] = function() {
+			return mapLayer.hasOwnProperty("queryHighlightBounds") && mapLayer["queryHighlightBounds"];
+		}
+		mapLayer["getQueryURL"] = function() {
+			var queryURL = null;
+			if (mapLayer.hasOwnProperty("queryUrl")) {
+				queryURL = mapLayer["queryUrl"];
 			} else {
-				portalLayers = findById(layerRoot.portalLayers, item);
+				queryURL = mapLayer["baseUrl"];
+			}
+
+			return queryURL;
+		}
+		mapLayer["getQueryFieldNames"] = function() {
+			return mapLayer["queryFieldNames"];
+		}
+		mapLayer["getQueryFieldAliases"] = function() {
+			return mapLayer["queryFieldAliases"];
+		}
+
+		// Check info parameters
+		if (mapLayer.hasOwnProperty("queryType") && mapLayer["queryType"] == "wfs") {
+			checkMandatoryParameter(mapLayer, "queryGeomFieldName");
+			checkMandatoryParameter(mapLayer, "queryFieldNames");
+			checkMandatoryParameter(mapLayer, "queryFieldAliases");
+		}
+
+	}
+
+	function processGroup(parentId, group) {
+		decorateGroup(parentId, group);
+		bus.send("add-group", group);
+
+		var items = group.items;
+
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (typeof item === 'object') {
+				processGroup(group.getId(), item);
+			} else {
+				var portalLayers = findById(layerRoot.portalLayers, item);
 				if (portalLayers.length !== 1) {
 					bus.send("error", "One (and only one) portal layer with id '" + item + "' expected");
 					continue;
 				}
 
-				portalLayer = portalLayers[0];
-				
-				// CHECK IF the CURRENT portalLayer is a PLACEHOLDER
-				// if no layers(wmsLayers) are defined in portalLayers means that the portalLayer
-				// is just a placeholder in the layer menu, used to store generic info 
-				portalLayer.isPlaceholder = (portalLayer.layers === undefined) || (portalLayer.layers.length === 0); 
-
-				if (portalLayer.hasOwnProperty("infoFile")) {
-					portalLayer.infoLink = "static/loc/" + customization.languageCode + "/html/" + portalLayer.infoFile;
-				}
-				if (portalLayer.hasOwnProperty("timeInstances")) {
-					portalLayer.timestamps = portalLayer.timeInstances.split(",")
-				}
-
-				wmsLayerIds = (portalLayer.isPlaceholder)?null:portalLayer.layers;
-
-				layerInfoArray = [];
-
-				// Iterate over wms layers 
-				for (j = 0; !portalLayer.isPlaceholder && j < wmsLayerIds.length; j++) {
-					wmsLayers = findById(layerRoot.wmsLayers, wmsLayerIds[j]);
-					if (wmsLayers.length === 0) {
-						bus.send("error", "At least one layer with id '" + wmsLayerIds[j] + "' expected");
-						continue;
-					}
-					wmsLayer = wmsLayers[0];
-                    wmsLayer.zIndex = layerRoot.wmsLayers.indexOf(wmsLayer);
-
-                    //Complete the URL with defaultServer
-					if (wmsLayer["baseUrl"]) {
-						if (wmsLayer["baseUrl"].charAt(0) == "/") {
-							wmsLayer["baseUrl"] = defaultServer + wmsLayer["baseUrl"];
-						}
-					}
-					
-					// Generate auto legends
-					if (wmsLayer.hasOwnProperty("legend")) {
-						if (wmsLayer.legend == "auto") {
-							wmsLayer["legendUrl"] = getGetLegendGraphicUrl(wmsLayer);
-						} else {
-							wmsLayer["legendUrl"] = "static/loc/" + customization.languageCode + "/images/" + wmsLayer.legend;
-						}
-					}
-
-					// Check info parameters
-					if (wmsLayer.hasOwnProperty("queryType") && wmsLayer["queryType"] == "wfs") {
-						checkMandatoryParameter(wmsLayer, "queryGeomFieldName");
-						checkMandatoryParameter(wmsLayer, "queryFieldNames");
-						checkMandatoryParameter(wmsLayer, "queryFieldAliases");
-					}
-					
-					layerInfoArray.push(wmsLayer);
-				}
-
-				portalLayer.groupId = group.id
-				portalLayer.wmsLayers = layerInfoArray;
-				
-                //Complete the URL with defaultServer or generate if auto
-				if (portalLayer["inlineLegendUrl"]) {
-					if (portalLayer["inlineLegendUrl"] == "auto") {
-						var firstWMSLayer = portalLayer.wmsLayers[0];
-						var url = getGetLegendGraphicUrl(firstWMSLayer);
-						portalLayer["inlineLegendUrl"] = url;
-					} else if (portalLayer["inlineLegendUrl"].charAt(0) == "/") {
-						portalLayer["inlineLegendUrl"] = defaultServer + portalLayer["inlineLegendUrl"];
-					}
-				}
+				var portalLayer = portalLayers[0];
+				decoratePortalLayer(portalLayer, group.getId());
 
 				bus.send("add-layer", portalLayer);
 				bus.send("layer-visibility", [ portalLayer.id, portalLayer.active || false ]);
 			}
 		}
-	};
+	}
+	;
 
-	var draw = function(layerRoot) {
+	var draw = function(newLayerRoot) {
 		var i;
-		var defaultServer = null;
-		if (layerRoot["default-server"]) {
-			defaultServer = layerRoot["default-server"];
+		layerRoot = newLayerRoot;
+		defaultServer = null;
+		if (newLayerRoot["default-server"]) {
+			defaultServer = newLayerRoot["default-server"];
 			defaultServer = $.trim(defaultServer);
 			if (defaultServer.substring(0, 7) != "http://") {
 				defaultServer = "http://" + defaultServer;
 			}
 		}
-		var groups = layerRoot.groups;
+		var groups = newLayerRoot.groups;
 
 		bus.send("before-adding-layers");
-		
+
 		for (i = 0; i < groups.length; i++) {
-			processGroup(defaultServer, layerRoot, null, groups[i]);
+			processGroup(null, groups[i]);
 		}
 
 		bus.send("layers-loaded");
 	};
 
-	var redraw = function(layerRoot) {
+	var redraw = function(newLayerRoot) {
 		bus.send("reset-layers");
-		draw(layerRoot);
+		draw(newLayerRoot);
 	};
 
 	bus.listen("modules-loaded", function() {
@@ -163,8 +274,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	});
 
 	return {
-		draw: draw,
-		redraw: redraw
+		draw : draw,
+		redraw : redraw
 	};
 
 });

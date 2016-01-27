@@ -1,11 +1,6 @@
 define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jquery-ui", "fancy-box" ], function($, bus, layerListSelector, i18n, moment) {
 
-	var layerActions,
-		groupActions,
-		temporalLayers,
-		groupIdAccordionIndex,
-		numTopLevelGroups,
-		divLayers;
+	var layerActions, groupActions, temporalLayers, groupIdAccordionIndex, numTopLevelGroups, divLayers;
 
 	var draw = function() {
 		layerActions = [];
@@ -14,7 +9,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		groupIdAccordionIndex = {};
 		numTopLevelGroups = 0;
 
-		if(divLayers) {
+		if (divLayers) {
 			divLayers.remove();
 			layerListSelector.removeLayerPanel("all_layers_selector");
 		}
@@ -24,9 +19,10 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 
 		divLayers.accordion({
 			"animate" : false,
-			"header": "> div > div.group-title",
+			"header" : "> div > div.group-title",
 			"heightStyle" : "content",
-			// Collapse all content since otherwise the accordion sets the 'display'
+			// Collapse all content since otherwise the accordion sets the
+			// 'display'
 			// to 'block' instead than to 'table'
 			"collapsible" : true,
 			"active" : false
@@ -47,9 +43,8 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 	});
 
 	bus.listen("add-group", function(event, groupInfo) {
-		var divTitle, tblLayerGroup, parentId, tblParentLayerGroup, divContent;
 
-		divTitle = $("<div/>").html(groupInfo.name).disableSelection();
+		var divTitle = $("<div/>").html(groupInfo.getName()).disableSelection();
 		divTitle.addClass("group-title");
 
 		for (var i = 0; i < groupActions.length; i++) {
@@ -66,18 +61,18 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 			}
 		}
 
-		tblLayerGroup = $("<table/>");
-		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.id);
+		var tblLayerGroup = $("<table/>");
+		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.getId());
 		$("<tbody/>").addClass("layer-container").appendTo(tblLayerGroup);
 
 		var divGroup = $("<div/>").addClass("group").attr("data-group", JSON.stringify(groupInfo));
 
-		if (groupInfo.hasOwnProperty("parentId")) {
-			parentId = groupInfo.parentId;
-			tblParentLayerGroup = $("#group-content-table-" + parentId);
+		if (groupInfo.getParentId() != null) {
+			var parentId = groupInfo.getParentId();
+			var tblParentLayerGroup = $("#group-content-table-" + parentId);
 			tblParentLayerGroup.addClass("group-container");
 			if (tblParentLayerGroup.length == 0) {
-				bus.send("error", "Group " + groupInfo.name + " references nonexistent group: " + parentId);
+				bus.send("error", "Group " + groupInfo.getName() + " references nonexistent group: " + parentId);
 			}
 			tblParentLayerGroup.append(divGroup);
 			divGroup.append(divTitle).append(tblLayerGroup);
@@ -85,11 +80,11 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 			divLayers.append(divGroup);
 			divTitle.addClass("header");
 			divGroup.append(divTitle);
-			divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
+			var divContent = $("<div/>").css("padding", "10px 2px 10px 2px");
 			divContent.append(tblLayerGroup);
 			divGroup.append(divContent);
 			divLayers.accordion("refresh");
-			groupIdAccordionIndex[groupInfo.id] = numTopLevelGroups;
+			groupIdAccordionIndex[groupInfo.getId()] = numTopLevelGroups;
 			numTopLevelGroups++;
 		}
 	});
@@ -97,26 +92,19 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 	bus.listen("add-layer", function(event, portalLayer) {
 		var tblLayerGroup, trLayer, tdLegend, tdVisibility, divCheckbox, tdName, tdInfo, aLink, inlineLegend;
 
-		tblLayerGroup = $("#group-content-table-" + portalLayer.groupId);
+		tblLayerGroup = $("#group-content-table-" + portalLayer.getGroupId());
 		if (tblLayerGroup.length == 0) {
-			bus.send("error", "Layer " + portalLayer.label + " references nonexistent group: " + portalLayer.groupId);
+			bus.send("error", "Layer " + portalLayer.getName() + " references nonexistent group: " + portalLayer.getGroupId());
 		} else {
-			trLayer = $("<tr/>").attr("id", "layer-row-" + portalLayer.id).addClass("layer_row");
+			trLayer = $("<tr/>").attr("id", "layer-row-" + portalLayer.getId()).addClass("layer_row");
 
 			tdLegend = $("<td/>").addClass("layer_legend");
 
-			if (portalLayer.hasOwnProperty("inlineLegendUrl")) {
-				// context has an inline legend
-				// tdLegend = $('<td
-				// style="width:20px">');
-				// inlineLegend = $('<img
-				// class="inline-legend" src="' +
-				// UNREDD.wmsServers[0] +
-				// contextConf.inlineLegendUrl + '">');
-				inlineLegend = $('<img class="inline-legend" src="' + portalLayer.inlineLegendUrl + '">');
+			if (portalLayer.getInlineLegendURL() != null) {
+				inlineLegend = $('<img class="inline-legend" src="' + portalLayer.getInlineLegendURL() + '">');
 				tdLegend.append(inlineLegend);
 			} else {
-				var wmsLayersWithLegend = portalLayer.wmsLayers.filter(function(layer) {
+				var wmsLayersWithLegend = portalLayer.getMapLayers().filter(function(layer) {
 					return layer.hasOwnProperty("legend");
 				});
 				var wmsLayerWithLegend = wmsLayersWithLegend[0];
@@ -124,14 +112,14 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				if (wmsLayerWithLegend) {
 					inlineLegend = $("<td/>");
 					inlineLegend.addClass("inline-legend-button");
-					inlineLegend.attr("id", "inline-legend-button-" + portalLayer.id);
+					inlineLegend.attr("id", "inline-legend-button-" + portalLayer.getId());
 
-					if (portalLayer.active) {
+					if (portalLayer.isActive()) {
 						inlineLegend.addClass("visible");
 					}
 
 					bus.listen("layer-visibility", function(event, layerId, visibility) {
-						if (layerId != portalLayer.id) {
+						if (layerId != portalLayer.getId()) {
 							return;
 						}
 
@@ -143,7 +131,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 					});
 
 					inlineLegend.click(function() {
-						if ($("#" + portalLayer.id + "_visibility_checkbox").hasClass("checked")) {
+						if ($("#" + portalLayer.getId() + "_visibility_checkbox").hasClass("checked")) {
 							bus.send("open-legend", wmsLayerWithLegend.id);
 						}
 					});
@@ -154,8 +142,8 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 			trLayer.append(tdLegend);
 
 			tdVisibility = $("<td/>").css("width", "16px");
-			divCheckbox = $("<div/>").attr("id", portalLayer.id + "_visibility_checkbox").addClass("layer_visibility");
-			if (portalLayer.active) {
+			divCheckbox = $("<div/>").attr("id", portalLayer.getId() + "_visibility_checkbox").addClass("layer_visibility");
+			if (portalLayer.isActive()) {
 				divCheckbox.addClass("checked");
 			}
 			divCheckbox.mousedown(function() {
@@ -168,17 +156,17 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				divCheckbox.removeClass("in");
 			}).click(function() {
 				divCheckbox.toggleClass("checked");
-				bus.send("layer-visibility", [ portalLayer.id, divCheckbox.hasClass("checked") ]);
+				bus.send("layer-visibility", [ portalLayer.getId(), divCheckbox.hasClass("checked") ]);
 			});
 
-			if (!portalLayer.isPlaceholder) {
+			if (!portalLayer.isPlaceholder()) {
 				tdVisibility.append(divCheckbox);
 			}
 
 			trLayer.append(tdVisibility);
 
 			tdName = $("<td/>").addClass("layer_name");
-			tdName.html(portalLayer.label);
+			tdName.html(portalLayer.getName());
 			trLayer.append(tdName);
 
 			for (var i = 0; i < layerActions.length; i++) {
@@ -190,7 +178,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 				}
 			}
 
-			if (portalLayer.hasOwnProperty("timestamps")) {
+			if (portalLayer.getTimestamps() != null) {
 				temporalLayers.push(portalLayer);
 			}
 
@@ -221,11 +209,11 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		$("<span/>").html(" (" + dateStr + ")").appendTo(tdLayerName);
 	};
 
-	var findClosestPrevious = function(layer, date) {
-		var layerTimestamps = layer.timestamps;
+	function findClosestPrevious(layer, date) {
+		var layerTimestamps = layer.getTimestamps();
 		var layerTimestampStyles = null;
-		if (layer.hasOwnProperty("timeStyles")) {
-			layerTimestampStyles = layer.timeStyles.split(",");
+		if (layer.hasTimeDependentStyle()) {
+			layerTimestampStyles = layer.getTimeStyles().split(",");
 		}
 		var timestampInfos = [];
 		for (var j = 0; j < layerTimestamps.length; j++) {
@@ -263,23 +251,22 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 
 		return closestPrevious;
 	}
-	
-	
+
 	bus.listen("time-slider.selection", function(event, date) {
 		for (var i = 0; i < temporalLayers.length; i++) {
 			var layer = temporalLayers[i];
 
 			var closestPrevious = findClosestPrevious(layer, date);
-			updateLabel(layer.id, layer["date-format"], closestPrevious.timestamp);
+			updateLabel(layer.getId(), layer.getDateFormat(), closestPrevious.timestamp);
 
 			bus.send("layer-timestamp-selected", [ layer.id, closestPrevious.timestamp, closestPrevious.style ]);
 		}
 	});
 	bus.listen("layer-time-slider.selection", function(event, layerid, date) {
 		$.each(temporalLayers, function(index, temporalLayer) {
-			if (temporalLayer.id == layerid) {
+			if (temporalLayer.getId() == layerid) {
 				var closestPrevious = findClosestPrevious(temporalLayer, date);
-				updateLabel(layerid, temporalLayer["date-format"], closestPrevious.timestamp);
+				updateLabel(layerid, temporalLayer.getDateFormat(), closestPrevious.timestamp);
 				bus.send("layer-timestamp-selected", [ layerid, closestPrevious.timestamp, closestPrevious.style ]);
 			}
 		});

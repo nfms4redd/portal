@@ -186,9 +186,9 @@ function(bus, customization, map, toolbar, i18n, $) {
 	});
 
 	bus.listen("add-layer", function(event, portalLayer) {
-		if (portalLayer["feedback"]) {
-			feedbackLayers[portalLayer.id] = {
-				name : portalLayer.label,
+		if (portalLayer.isFeedbackEnabled()) {
+			feedbackLayers[portalLayer.getId()] = {
+				name : portalLayer.getName(),
 				visibility : false
 			};
 		}

@@ -21,7 +21,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 	}
 
 	bus.listen("reset-layers", function() {
-		for(var layerId in layersInfo) {
+		for ( var layerId in layersInfo) {
 			delLayer(layerId);
 		}
 		layersInfo = {};
@@ -31,15 +31,15 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "jquery-ui", "l
 		// set the visibility flag to true if the layer is active and if it is
 		// not a placeholder (placeholder means that no geospatial data to show
 		// are associated)
-		if (!layerInfo.isPlaceholder) {
+		if (!layerInfo.isPlaceholder()) {
 			var activeLayerInfo = {
-				label : layerInfo.label,
-				opacity: 1
+				label : layerInfo.getName(),
+				opacity : 1
 			};
-			if (layerInfo.hasOwnProperty("inlineLegendUrl")) {
-				activeLayerInfo["inlineLegendUrl"] = layerInfo.inlineLegendUrl;
+			if (layerInfo.getInlineLegendURL() != null) {
+				activeLayerInfo["inlineLegendUrl"] = layerInfo.getInlineLegendURL();
 			}
-			layersInfo[layerInfo.id] = activeLayerInfo;
+			layersInfo[layerInfo.getId()] = activeLayerInfo;
 		}
 	});
 
