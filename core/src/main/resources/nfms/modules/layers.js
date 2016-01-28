@@ -3,11 +3,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	var defaultServer;
 	var layerRoot;
 
-	var findById = function(array, id) {
+	function findById(array, id) {
 		return $.grep(array, function(l) {
 			return l.id === id;
 		});
-	};
+	}
 
 	var getGetLegendGraphicUrl = function(wmsLayer) {
 		var url = wmsLayer.baseUrl;
@@ -117,6 +117,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 					ret = defaultServer + portalLayer["inlineLegendUrl"];
 				}
 			}
+
+			return ret;
 		}
 	}
 
@@ -271,6 +273,26 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 	bus.listen("modules-loaded", function() {
 		draw(module.config());
+	});
+
+	bus.listen("decorate-and-add-layer", function(e, layerInfo, mapLayers, groupId) {
+		if (!layerInfo.hasOwnProperty("layers")) {
+			layerInfo["layers"] = [];
+		}
+
+		for (var i = 0; i < mapLayers.length; i++) {
+			layerRoot.wmsLayers.push(mapLayers[i]);
+			layerInfo["layers"].push(mapLayers[i].id);
+		}
+		layerRoot.portalLayers.push(layerInfo);
+		var group = findById(layerRoot.groups, groupId);
+		if (group.length == 0) {
+			bus.send("error", "One (and only one) group with id '" + groupId + "' expected");
+		} else {
+			group[0].items.push(layerInfo.id);
+		}
+
+		redraw(layerRoot);
 	});
 
 	return {
