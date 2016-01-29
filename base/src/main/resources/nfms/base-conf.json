@@ -22,7 +22,8 @@
 			"highcharts-theme-sand" : "../jslib/sand-signika",
 			"openlayers" : "../jslib/OpenLayers/OpenLayers.debug",
 			"mustache" : "../jslib/jquery.mustache",
-			"moment" : "../jslib/moment"
+			"moment" : "../jslib/moment",
+			"text" : "../jslib/text"
 		},
 		"shim" : {
 			"fancy-box" : [ "jquery" ],

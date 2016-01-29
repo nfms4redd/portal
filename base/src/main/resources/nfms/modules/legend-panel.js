@@ -97,23 +97,27 @@ define([ "jquery", "i18n", "customization", "message-bus" ], function($, i18n, c
 		}
 	});
 
+	bus.listen("reset-layers", function() {
+		legendArrayInfo = {};
+	});
+
 	bus.listen("add-layer", function(event, layerInfo) {
 		var legendArray = [];
-		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
-			if (wmsLayer.hasOwnProperty("legend")) {
+		$.each(layerInfo.getMapLayers(), function(index, mapLayer) {
+			if (mapLayer.hasOwnProperty("legend")) {
 				legendArray.push({
-					id : wmsLayer.id,
-					label : wmsLayer.label,
-					legendUrl : wmsLayer.legendUrl,
-					sourceLink : wmsLayer.sourceLink,
-					sourceLabel : wmsLayer.sourceLabel,
-					visibility : layerInfo.active,
-					timeDependent : layerInfo.hasOwnProperty("timeStyles")
+					id : mapLayer.getId(),
+					label : mapLayer.getName(),
+					legendUrl : mapLayer.getLegendURL(),
+					sourceLink : mapLayer.getSourceLink(),
+					sourceLabel : mapLayer.getSourceLabel(),
+					visibility : layerInfo.isActive(),
+					timeDependent : layerInfo.hasTimeDependentStyle()
 				});
 			}
 		});
 		if (legendArray.length > 0) {
-			legendArrayInfo[layerInfo.id] = legendArray;
+			legendArrayInfo[layerInfo.getId()] = legendArray;
 		}
 	});
 

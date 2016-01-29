@@ -9,9 +9,6 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map", "jquery-ui"
 	var dialog = null;
 	var divContent = null;
 	var layers = [];
-	layers.sort(function(a, b) {
-		return a.zIndex - b.zIndex
-	});
 	var layersLoaded = false;
 
 	/**
@@ -57,6 +54,7 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map", "jquery-ui"
 			var layer = map.getLayer(id);
 			if (layer) {
 				map.setLayerIndex(layer, i);
+				// TODO: propagate change to other modules (and persist it in layers.json).
 			}
 		}
 	}
@@ -98,6 +96,11 @@ define(["module", "toolbar", "i18n", "jquery", "message-bus", "map", "jquery-ui"
 	var loadLayers_ = function() {
 		layersLoaded = true;
 	}
+
+	bus.listen("reset-layers", function() {
+		layers = [];
+		layersLoaded = false;
+	});
 
 	bus.listen('layers-loaded', loadLayers_);
 });

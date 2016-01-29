@@ -82,20 +82,20 @@
 			"sourceLabel" : "WRI"
 		}, {
 			"id" : "incendios_wfsinfo",
-			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"baseUrl" : "http://snmb.ambiente.gob.ar/geo-server/wms",
 			"wmsName" : "bosques_umsef_db:provincias_incendios",
 			"imageFormat" : "image/png8",
 			"legend" : "auto",
 			"visible" : true,
 			"queryType" : "wfs",
-			"queryUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wfs",
+			"queryUrl" : "http://snmb.ambiente.gob.ar/geo-server/wfs",
 			"queryGeomFieldName" : "geom",
 			"queryFieldNames" : [ "nprov", "anio_f" ],
 			"queryFieldAliases" : [ "ID", "fecha" ],
 			"queryTimeFieldName" : "anio_f"
 		}, {
 			"id" : "incendios_wmsinfo",
-			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"baseUrl" : "http://snmb.ambiente.gob.ar/geo-server/wms",
 			"wmsName" : "bosques_umsef_db:provincias_incendios",
 			"imageFormat" : "image/png8",
 			"legend" : "auto",
@@ -103,10 +103,10 @@
 			"queryType" : "wms",
 			"queryHighlightBounds" : true,
 			"queryFieldNames" : [ "nprov", "anio_f" ],
-			"queryFieldAliases" : [ "Nombre", "Fecha" ],
+			"queryFieldAliases" : [ "Nombre", "Fecha" ]
 		}, {
 			"id" : "incendios_wmsinfo_default",
-			"baseUrl" : "http://geo2.ambiente.gob.ar/portal/gs/wms",
+			"baseUrl" : "http://snmb.ambiente.gob.ar/geo-server/wms",
 			"wmsName" : "bosques_umsef_db:provincias_incendios",
 			"imageFormat" : "image/png8",
 			"legend" : "auto",
@@ -122,7 +122,7 @@
 			"sourceLabel" : "WRI",
 			"queryType" : "wms"
 		}, {
-            "baseUrl": "http://geo2.ambiente.gob.ar/portal/gs/gwc/service/wms", 
+            "baseUrl": "http://snmb.ambiente.gob.ar/geo-server/gwc/service/wms", 
             "label": "L\u00edmites provinciales", 
             "visible": true, 
             "imageFormat": "image/png8", 
