@@ -7,10 +7,15 @@ define(["message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "j
 		bus.send("register-group-action", function(group) {
 			return link(group.getId(), forms.editGroup);
 		});
+		bus.send("register-group-action", function(group) {
+			return $("<a/>").addClass("editable-layer-list-button").addClass("layer_newLayer_button").click(function() {
+				forms.newLayer(group.getId());
+			});
+		});
 	});
 
 	function link(id, callback) {
-		return $("<a/>").addClass("layer_edit_button").click(function() {
+		return $("<a/>").addClass("editable-layer-list-button").addClass("layer_edit_button").click(function() {
 			callback.call(null, id);
 		});
 	}
