@@ -19,6 +19,13 @@ define([ "message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "
 				});
 			});
 		});
+		bus.send("register-group-action", function(group) {
+			return $("<a/>").addClass("editable-layer-list-button").addClass("layer_deleteGroup_button").click(function() {
+				layers_json.deleteGroup(group.getId(), function() {
+					layers.redraw(layers_json.root);
+				});
+			});
+		});
 	});
 
 	function link(id, callback) {

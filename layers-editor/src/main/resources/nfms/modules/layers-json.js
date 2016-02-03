@@ -60,17 +60,19 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 		upload(callback);
 	}
 
-	function deleteLayer(layerId, callback) {
+	function doDeleteLayer(layerId) {
 		for (var i = 0; i < config.portalLayers.length; i++) {
 			var portalLayer = config.portalLayers[i];
 			if (portalLayer.id == layerId) {
 				config.portalLayers.splice(i, 1);
-				for (var j = 0; j < portalLayer.layers.length; j++) {
-					var wmsLayerId = portalLayer.layers[j];
-					for (var k = 0; k < config.wmsLayers.length; k++) {
-						if (config.wmsLayers[k].id == wmsLayerId) {
-							config.wmsLayers.splice(k, 1);
-							break;
+				if (portalLayer["layers"]) {
+					for (var j = 0; j < portalLayer.layers.length; j++) {
+						var wmsLayerId = portalLayer.layers[j];
+						for (var k = 0; k < config.wmsLayers.length; k++) {
+							if (config.wmsLayers[k].id == wmsLayerId) {
+								config.wmsLayers.splice(k, 1);
+								break;
+							}
 						}
 					}
 				}
@@ -82,8 +84,50 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 			return el["items"] && el["items"].indexOf(layerId) != -1;
 		}, "items");
 		group["items"].splice(group["items"].indexOf(layerId), 1);
+	}
 
+	function deleteLayer(layerId, callback) {
+		doDeleteLayer(layerId);
 		upload(callback);
+	}
+
+	function deleteAllGroupLayers(group) {
+		for (var i = 0; i < group["items"].length; i++) {
+			var groupItem = group["items"][i];
+			if (typeof groupItem === 'string' || groupItem instanceof String) {
+				doDeleteLayer(groupItem);
+			} else if (groupItem["items"]) {
+				deleteAllGroupLayers(groupItem);
+			}
+		}
+	}
+
+	function findAndDeleteGroup(array, groupId) {
+		// Directly in the array
+		for (var i = 0; i < array.length; i++) {
+			if (array[i]["id"] == groupId) {
+				deleteAllGroupLayers(array[i]);
+				array.splice(i, 1);
+				return true;
+			}
+		}
+
+		// Delegate on each group
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].hasOwnProperty("items")) {
+				if (findAndDeleteGroup(array[i]["items"], groupId)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	function deleteGroup(groupId, callback) {
+		if (findAndDeleteGroup(config.groups, groupId)) {
+			upload(callback);
+		}
 	}
 
 	function copy(target, source) {
@@ -146,6 +190,7 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 		updateGroup : updateGroup,
 		updateLayer : updateLayer,
 		deleteLayer : deleteLayer,
+		deleteGroup : deleteGroup,
 		addNewLayer : addNewLayer,
 		updateGroups : updateGroups,
 		getGroups : getGroups,
