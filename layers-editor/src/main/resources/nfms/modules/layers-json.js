@@ -7,15 +7,15 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 	}
 
 	function getPortalLayer(id) {
-		return find(config.portalLayers, "id", id);
+		return findById(config.portalLayers, "id", id);
 	}
 
 	function getWmsLayer(id) {
-		return find(config.wmsLayers, "id", id);
+		return findById(config.wmsLayers, "id", id);
 	}
 
 	function getGroup(id) {
-		return find(config.groups, "id", id, "items");
+		return findById(config.groups, "id", id, "items");
 	}
 
 	function updateServer(url, callback) {
@@ -59,6 +59,32 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 
 		upload(callback);
 	}
+	
+	function deleteLayer(layerId, callback) {
+		for (var i = 0; i < config.portalLayers.length; i++) {
+			var portalLayer = config.portalLayers[i];
+			if (portalLayer.id == layerId) {
+				config.portalLayers.splice(i ,1);
+				for (var j = 0; j < portalLayer.layers.length; j++) {
+					var wmsLayerId = portalLayer.layers[j];
+					for (var k = 0; k < config.wmsLayers.length; k++) {
+						if (config.wmsLayers[k].id == wmsLayerId) {
+							config.wmsLayers.splice(k, 1);
+							break;
+						}
+					}
+				}
+				break;
+			}
+		}
+
+		var group = find(config.groups, function(el) {
+			return el["items"] && el["items"].indexOf(layerId) != -1;
+		}, "items");
+		group["items"].splice(group["items"].indexOf(layerId), 1);
+
+		upload(callback);
+	}
 
 	function copy(target, source) {
 		// Copy over new values
@@ -76,13 +102,19 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		return target;
 	}
 
-	function find(arr, key, value, recurse) {
+	function findById(arr, key, value, recurse) {
+		return process(arr, function(el) {
+			return el.hasOwnProperty(key) && el[key] == value;
+		}, recurse);
+	}
+	
+	function find(arr, test, recurse) {
 		for (var i = 0; i < arr.length; i++) {
 			var el = arr[i];
-			if (el.hasOwnProperty(key) && el[key] == value) {
+			if (test(el)) {
 				return el;
 			} else if (recurse && el.hasOwnProperty(recurse)) {
-				el = find(el[recurse], key, value, recurse);
+				el = find(el[recurse], test, recurse);
 				if (el) {
 					return el;
 				}
@@ -113,6 +145,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		updateServer: updateServer,
 		updateGroup: updateGroup,
 		updateLayer: updateLayer,
+		deleteLayer: deleteLayer,
 		addNewLayer: addNewLayer,
 		updateGroups: updateGroups,
 		getGroups: getGroups,

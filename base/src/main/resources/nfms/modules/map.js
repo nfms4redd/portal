@@ -96,8 +96,8 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 		zIndexes = {};
 		mapLayersByLayerId = {};
 		if (map !== null) {
-			for ( var i in map.layers) {
-				map.removeLayer(map.layers[i]);
+			while (map.layers.length > 0) {
+				map.removeLayer(map.layers[0]);
 			}
 		}
 	});
