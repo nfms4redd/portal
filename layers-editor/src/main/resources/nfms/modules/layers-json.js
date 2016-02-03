@@ -1,4 +1,4 @@
-define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
+define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 
 	var config = JSON.parse(layersjson);
 
@@ -46,7 +46,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		copy(wmsLayer, wmsLayerInput);
 
 		var portalLayer = getPortalLayer(portalLayerInput.id);
-		copy(portalLayer,  portalLayerInput);
+		copy(portalLayer, portalLayerInput);
 
 		upload(callback);
 	}
@@ -59,12 +59,12 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 
 		upload(callback);
 	}
-	
+
 	function deleteLayer(layerId, callback) {
 		for (var i = 0; i < config.portalLayers.length; i++) {
 			var portalLayer = config.portalLayers[i];
 			if (portalLayer.id == layerId) {
-				config.portalLayers.splice(i ,1);
+				config.portalLayers.splice(i, 1);
 				for (var j = 0; j < portalLayer.layers.length; j++) {
 					var wmsLayerId = portalLayer.layers[j];
 					for (var k = 0; k < config.wmsLayers.length; k++) {
@@ -88,13 +88,13 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 
 	function copy(target, source) {
 		// Copy over new values
-		for (var name in source) {
+		for ( var name in source) {
 			target[name] = source[name];
 		}
 
 		// Delete all properties not in source
-		for (var key in target) {
-			if(!source.hasOwnProperty(key)) {
+		for ( var key in target) {
+			if (!source.hasOwnProperty(key)) {
 				delete target[key];
 			}
 		}
@@ -107,7 +107,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 			return el.hasOwnProperty(key) && el[key] == value;
 		}, recurse);
 	}
-	
+
 	function find(arr, test, recurse) {
 		for (var i = 0; i < arr.length; i++) {
 			var el = arr[i];
@@ -124,31 +124,31 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 
 	function upload(onSuccess) {
 		bus.send("ajax", {
-			type: 'PUT',
-			url: 'layers.json',
-			contentType: "application/json; charset=utf-8",
-			data: JSON.stringify(config, null, 4),
-			success: function(data, textStatus, jqXHR) {
+			type : 'PUT',
+			url : 'layers.json',
+			contentType : "application/json; charset=utf-8",
+			data : JSON.stringify(config, null, 4),
+			success : function(data, textStatus, jqXHR) {
 				if (onSuccess) {
 					onSuccess.call(null, config);
 				}
 			},
-			errorMsg: "Error uploading layers.json to the server" // TODO i18n
+			errorMsg : "Error uploading layers.json to the server" // TODO i18n
 		});
 	}
 
 	return {
-		getServer: getServer,
-		getPortalLayer: getPortalLayer,
-		getWmsLayer: getWmsLayer,
-		getGroup: getGroup,
-		updateServer: updateServer,
-		updateGroup: updateGroup,
-		updateLayer: updateLayer,
-		deleteLayer: deleteLayer,
-		addNewLayer: addNewLayer,
-		updateGroups: updateGroups,
-		getGroups: getGroups,
-		root: config
+		getServer : getServer,
+		getPortalLayer : getPortalLayer,
+		getWmsLayer : getWmsLayer,
+		getGroup : getGroup,
+		updateServer : updateServer,
+		updateGroup : updateGroup,
+		updateLayer : updateLayer,
+		deleteLayer : deleteLayer,
+		addNewLayer : addNewLayer,
+		updateGroups : updateGroups,
+		getGroups : getGroups,
+		root : config
 	};
 });
