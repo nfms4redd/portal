@@ -51,6 +51,15 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		upload(callback);
 	}
 
+	function addNewLayer(groupId, wmsLayerInput, portalLayerInput, callback) {
+		var group = getGroup(groupId);
+		group.items.push(portalLayerInput.id);
+		config.wmsLayers.push(wmsLayerInput);
+		config.portalLayers.push(portalLayerInput);
+
+		upload(callback);
+	}
+
 	function copy(target, source) {
 		// Copy over new values
 		for (var name in source) {
@@ -104,6 +113,7 @@ define(["text!../layers.json", "message-bus"], function(layersjson, bus) {
 		updateServer: updateServer,
 		updateGroup: updateGroup,
 		updateLayer: updateLayer,
+		addNewLayer: addNewLayer,
 		updateGroups: updateGroups,
 		getGroups: getGroups,
 		root: config
