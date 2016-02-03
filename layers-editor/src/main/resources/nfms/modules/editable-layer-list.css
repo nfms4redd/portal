@@ -20,6 +20,10 @@
 	background: url("images/delete-layer.png") no-repeat;
 }
 
+.layer_deleteGroup_button {
+	background: url("images/delete-layer.png") no-repeat;
+}
+
 .root_group_placeholder {
 	border: 2px dashed white;
 	border-radius: 6px;
