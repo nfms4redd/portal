@@ -80,14 +80,16 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 			}
 		}
 
-		var group = find(config.groups, function(el) {
-			return el["items"] && el["items"].indexOf(layerId) != -1;
-		}, "items");
-		group["items"].splice(group["items"].indexOf(layerId), 1);
 	}
 
 	function deleteLayer(layerId, callback) {
 		doDeleteLayer(layerId);
+
+		var group = find(config.groups, function(el) {
+			return el["items"] && el["items"].indexOf(layerId) != -1;
+		}, "items");
+		group["items"].splice(group["items"].indexOf(layerId), 1);
+
 		upload(callback);
 	}
 
