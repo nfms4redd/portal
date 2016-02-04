@@ -73,6 +73,18 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 		addWmsLayerFields(form, wmsValues);
 	}
 
+	function newGroup() {
+		form = createDialog("New Group", function() { // TODO i18n
+			addNewGroup();
+		});
+
+		var groupValues = {
+			"id" : "unique-id-" + (new Date()).getTime(),
+			"label" : "Nuevo grupo" // TODO i18n
+		};
+		addTocFields(form, groupValues);
+	}
+
 	function closeDialog() {
 		dialog.dialog('close');
 	}
@@ -288,6 +300,14 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 		layers_json.updateGroup(group, saved);
 	}
 
+	function addNewGroup() {
+		var data = getFormValues();
+		var group = $.extend({
+			items : []
+		}, data.toc);
+		layers_json.addNewGroup(group, saved);
+	}
+
 	function buildWMSLayer() {
 		var data = getFormValues();
 		var wmsLayer = data["wmsLayer-base"];
@@ -326,7 +346,8 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 		editServer : editServer,
 		editLayer : editLayer,
 		editGroup : editGroup,
-		newLayer : newLayer
+		newLayer : newLayer,
+		newGroup : newGroup
 	};
 
 });

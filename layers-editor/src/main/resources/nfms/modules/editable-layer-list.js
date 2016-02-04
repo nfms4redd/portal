@@ -43,6 +43,18 @@ define([ "message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "
 	}
 
 	bus.listen("layers-loaded", function() {
+
+		$("#newGroupButton").remove();
+		$("<div/>")//
+		.attr("id", "newGroupButton")//
+		.css("margin-top", "2px")//
+		.html("Nuevo grupo...")//
+		.button()//
+		.click(function() {
+			forms.newGroup();
+		})//
+		.appendTo($("#layers_container"));//
+
 		// var add = $("<div/>").addClass("root_group_placeholder").append("Add
 		// Group ").append($("<div/>").addClass("fa fa-plus")); // TODO i18n
 		// $("#layers_container").append(add);

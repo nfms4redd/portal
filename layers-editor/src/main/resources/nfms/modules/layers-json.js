@@ -31,6 +31,11 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 		upload(callback);
 	}
 
+	function addNewGroup(groupInput, callback) {
+		config.groups.push(groupInput);
+
+		upload(callback);
+	}
 	function getGroups() {
 		return config.groups;
 	}
@@ -149,7 +154,7 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 	}
 
 	function findById(arr, key, value, recurse) {
-		return process(arr, function(el) {
+		return find(arr, function(el) {
 			return el.hasOwnProperty(key) && el[key] == value;
 		}, recurse);
 	}
@@ -194,6 +199,7 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 		deleteLayer : deleteLayer,
 		deleteGroup : deleteGroup,
 		addNewLayer : addNewLayer,
+		addNewGroup : addNewGroup,
 		updateGroups : updateGroups,
 		getGroups : getGroups,
 		root : config
