@@ -36,9 +36,6 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 
 		upload(callback);
 	}
-	function getGroups() {
-		return config.groups;
-	}
 
 	function updateGroups(groups, callback) {
 		config.groups = groups;
@@ -200,8 +197,5 @@ define([ "text!../layers.json", "message-bus" ], function(layersjson, bus) {
 		deleteGroup : deleteGroup,
 		addNewLayer : addNewLayer,
 		addNewGroup : addNewGroup,
-		updateGroups : updateGroups,
-		getGroups : getGroups,
-		root : config
 	};
 });

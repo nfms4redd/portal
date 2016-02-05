@@ -28,7 +28,14 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	}
 
-	function decorateCommons(groupOrPortalLayer) {
+	function decorateCommons(o) {
+		groupOrPortalLayer["merge"] = function(data) {
+			$.extend(o, data);
+		}
+	}
+
+	function decorateCommonsPortalLayerOrGroup(groupOrPortalLayer) {
+		decorateCommons(groupOrPortalLayer);
 		groupOrPortalLayer["getName"] = function() {
 			return groupOrPortalLayer.label;
 		}
@@ -45,15 +52,74 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 			return ret;
 		}
-
 	}
+
+	function deleteAllGroupLayers(group) {
+		for (var i = 0; i < group["items"].length; i++) {
+			var groupItem = group["items"][i];
+			if (typeof groupItem === 'string' || groupItem instanceof String) {
+				doDeleteLayer(groupItem);
+			} else if (groupItem["items"]) {
+				deleteAllGroupLayers(groupItem);
+			}
+		}
+	}
+
+
+	function findAndDeleteGroup(array, groupId) {
+		// Directly in the array
+		for (var i = 0; i < array.length; i++) {
+			if (array[i]["id"] == groupId) {
+				deleteAllGroupLayers(array[i]);
+				array.splice(i, 1);
+				return true;
+			}
+		}
+
+		// Delegate on each group
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].hasOwnProperty("items")) {
+				if (findAndDeleteGroup(array[i]["items"], groupId)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	function decorateGroup(parentId, group) {
 		group["getParentId"] = function() {
 			return parentId;
 		}
-		decorateCommons(group);
+		decorateCommonsPortalLayerOrGroup(group);
+		
+		group["remove"] = function(){
+			findAndDeleteGroup(layerRoot.groups, group.getId());
+		}
 	}
 
+	function doDeleteLayer(layerId) {
+		var portalLayerRemovalFunction = function(testPortalLayer, i) {
+			if (testPortalLayer.getId() == layerId) {
+				layerRoot.portalLayers.splice(i, 1);
+
+				if (testPortalLayer["layers"]) {
+					var wmsLayerRemovalFunction = function(testWMSLayer, k) {
+						if (testWMSLayer.getId() == wmsLayerId) {
+							layerRoot.wmsLayers.splice(k, 1);
+						}
+					};
+					for (var j = 0; j < testPortalLayer.layers.length; j++) {
+						var wmsLayerId = testPortalLayer.layers[j];
+						process(layerRoot.wmsLayers, wmsLayerRemovalFunction);
+					}
+				}
+			}
+		};
+		process(layerRoot.portalLayers, portalLayerRemovalFunction);
+	}
+	
 	function decoratePortalLayer(portalLayer, groupId) {
 		portalLayer["isPlaceholder"] = function() {
 			return (portalLayer.layers === undefined) || (portalLayer.layers.length === 0);
@@ -67,7 +133,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			return ret;
 		}
 
-		decorateCommons(portalLayer);
+		decorateCommonsPortalLayerOrGroup(portalLayer);
 
 		var layerInfoArray = [];
 		if (!portalLayer.isPlaceholder()) {
@@ -120,9 +186,22 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 			return ret;
 		}
+		portalLayer["remove"] = function() {
+			doDeleteLayer(portalLayer.getId());
+			
+			process(layerRoot.groups, function(group, i) {
+				if (group.hasOwnProperty("items")) {
+					var index = group["items"].indexOf(layerId);
+					if (index != -1) {
+						group["items"].splice(index, 1);
+					}
+				}
+			});
+		}
 	}
 
 	function decorateMapLayer(mapLayer, mapLayers) {
+		decorateCommons(mapLayer);
 		mapLayer["getId"] = function() {
 			return mapLayer["id"];
 		}
@@ -217,6 +296,55 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 	}
 
+	function process(array, processFunction) {
+		for (var i = 0; i < array.length; i++) {
+			processFunction(array[i], i);
+			if (array[i].hasOwnProperty("items")) {
+				process(array[i]["items"], processFunction);
+			}
+		}
+	}
+
+	function findById(array, id) {
+		var ret = null;
+		process(array, function(o) {
+			if (o.getId() == id) {
+				ret = o;
+			}
+		});
+
+		return ret;
+	}
+
+	function decorateLayerRoot(layerRoot) {
+		layerRoot["getPortalLayer"] = function(layerId) {
+			return findById(layerRoot.portalLayers, layerId);
+		}
+		layerRoot["getWMSLayer"] = function(layerId) {
+			return findById(layerRoot.wmsLayers, layerId);
+		}
+		layerRoot["getGroup"] = function(groupId) {
+			return findById(layerRoot.groups, groupId);
+		}
+		layerRoot["getDefaultServer"] = function() {
+			return layerRoot["default-server"];
+		}
+		layerRoot["addLayer"] = function(groupId, portalLayer, wmsLayer) {
+			var group = findById(layerRoot.groups, groupId);
+			group.items.push(portalLayer.id);
+			
+			layerRoot.wmsLayers.push(wmsLayer);
+			decorateMapLayer(wmsLayer);
+			
+			layerRoot.portalLayers.push(portalLayer);
+			decoratePortalLayer(portalLayer);
+		}
+		layerRoot["addGroup"] = function(group) {
+			layerRoot.groups.push(group);
+			decorateGroup(group);
+		}
+	}
+
 	function processGroup(parentId, group) {
 		decorateGroup(parentId, group);
 		bus.send("add-group", group);
@@ -242,11 +370,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			}
 		}
 	}
-	;
 
 	var draw = function(newLayerRoot) {
 		var i;
 		layerRoot = newLayerRoot;
+		decorateLayerRoot(layerRoot);
 		defaultServer = null;
 		if (newLayerRoot["default-server"]) {
 			defaultServer = newLayerRoot["default-server"];
@@ -270,6 +398,10 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		bus.send("reset-layers");
 		draw(newLayerRoot);
 	};
+
+	function getLayerRoot() {
+		return layerRoot;
+	}
 
 	bus.listen("modules-loaded", function() {
 		draw(module.config());
@@ -297,7 +429,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 	return {
 		draw : draw,
-		redraw : redraw
+		redraw : redraw,
+		getLayerRoot : getLayerRoot
 	};
 
 });

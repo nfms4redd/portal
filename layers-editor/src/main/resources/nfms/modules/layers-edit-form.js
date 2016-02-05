@@ -32,7 +32,7 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 		var form = createDialog("Edit Portal Properties", "portal"); // TODO
 		// i18n
 		addFields("Server", "server", form, {
-			"default-server" : layers_json.getServer()
+			"default-server" : layers.getLayerRoot().getDefaultServer()
 		}); // TODO i18n
 	}
 
@@ -41,10 +41,10 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 			saveLayer();
 		});
 
-		var portalValues = layers_json.getPortalLayer(id);
+		var portalValues = layers.getLayerRoot().getPortalLayer(id);
 		addPortalLayerFields(form, portalValues);
 
-		var wmsValues = layers_json.getWmsLayer(portalValues.layers[0]);
+		var wmsValues = layers.getLayerRoot().getWMSLayer(portalValues.layers[0]);
 		addWmsLayerFields(form, wmsValues);
 	}
 
@@ -53,7 +53,7 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 			saveGroup();
 		});
 
-		var values = layers_json.getGroup(id);
+		var values = layers.getLayerRoot().getGroup(id);
 		addTocFields(form, values);
 	}
 
@@ -109,7 +109,10 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 
 		var applyButton = $("<div/>").html("Apply changes").appendTo(dialog); // TODO
 		// i18n
-		applyButton.button().click(applyCallback);
+		applyButton.button().click(function() {
+			applyCallback();
+			closeDialog();
+		});
 		return form;
 	}
 
@@ -289,15 +292,12 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 
 	function saveServer() {
 		var data = getFormValues();
-		layers_json.updateServer(data["server"]["default-server"], saved);
+		layers.getLayerRoot().setDefaultServer(data["server"]["default-server"]);
 	}
 
 	function saveGroup() {
 		var data = getFormValues();
-		var group = $.extend({
-			items : layers_json.getGroup(data.toc.id).items
-		}, data.toc);
-		layers_json.updateGroup(group, saved);
+		layers.getLayerRoot().getGroup(data.toc.id).merge(data.toc);
 	}
 
 	function addNewGroup() {
@@ -305,7 +305,7 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 		var group = $.extend({
 			items : []
 		}, data.toc);
-		layers_json.addNewGroup(group, saved);
+		layers.getLayerRoot().addGroup(group);
 	}
 
 	function buildWMSLayer() {
@@ -332,14 +332,15 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 	function saveLayer() {
 		var wmsLayer = buildWMSLayer();
 		var portalLayer = buildPortalLayer(wmsLayer.id);
-		layers_json.updateLayer(wmsLayer, portalLayer, saved);
+		layers.getLayerRoot().getWMSLayer(wmsLayer.id).merge(wmsLayer);
+		layers.getLayerRoot().getPortalLayer(portalLayer.id).merge(portalLayer);
 	}
 
 	function addNewLayer(groupId) {
 		var wmsLayer = buildWMSLayer();
 		var portalLayer = buildPortalLayer(wmsLayer.id);
 
-		layers_json.addNewLayer(groupId, wmsLayer, portalLayer, saved);
+		layers.getLayerRoot().addLayer(groupId, portalLayer, wmsLayer);
 	}
 
 	return {
