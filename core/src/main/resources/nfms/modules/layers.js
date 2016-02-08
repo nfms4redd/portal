@@ -3,12 +3,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	var defaultServer;
 	var layerRoot;
 
-	function findById(array, id) {
-		return $.grep(array, function(l) {
-			return l.id === id;
-		});
-	}
-
 	var getGetLegendGraphicUrl = function(wmsLayer) {
 		var url = wmsLayer.baseUrl;
 		if (url.indexOf("?") === -1) {
@@ -29,8 +23,10 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	}
 
 	function decorateCommons(o) {
-		groupOrPortalLayer["merge"] = function(data) {
+		o["merge"] = function(data) {
 			$.extend(o, data);
+
+			draw();
 		}
 	}
 
@@ -65,7 +61,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	}
 
-
 	function findAndDeleteGroup(array, groupId) {
 		// Directly in the array
 		for (var i = 0; i < array.length; i++) {
@@ -93,9 +88,10 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			return parentId;
 		}
 		decorateCommonsPortalLayerOrGroup(group);
-		
-		group["remove"] = function(){
+
+		group["remove"] = function() {
 			findAndDeleteGroup(layerRoot.groups, group.getId());
+			draw();
 		}
 	}
 
@@ -119,7 +115,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		};
 		process(layerRoot.portalLayers, portalLayerRemovalFunction);
 	}
-	
+
 	function decoratePortalLayer(portalLayer, groupId) {
 		portalLayer["isPlaceholder"] = function() {
 			return (portalLayer.layers === undefined) || (portalLayer.layers.length === 0);
@@ -141,12 +137,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 			// Iterate over wms layers
 			for (var j = 0; mapLayerIds != null && j < mapLayerIds.length; j++) {
-				var mapLayers = findById(layerRoot.wmsLayers, mapLayerIds[j]);
-				if (mapLayers.length === 0) {
-					bus.send("error", "At least one layer with id '" + mapLayerIds[j] + "' expected");
+				var mapLayer = findById(layerRoot.wmsLayers, mapLayerIds[j]);
+				if (mapLayer == null) {
+					bus.send("error", "Map layer '" + mapLayerIds[j] + "' not found");
 					continue;
 				}
-				var mapLayer = mapLayers[0];
 				decorateMapLayer(mapLayer, layerRoot.wmsLayers);
 
 				layerInfoArray.push(mapLayer);
@@ -188,15 +183,17 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 		portalLayer["remove"] = function() {
 			doDeleteLayer(portalLayer.getId());
-			
+
 			process(layerRoot.groups, function(group, i) {
 				if (group.hasOwnProperty("items")) {
-					var index = group["items"].indexOf(layerId);
+					var index = group["items"].indexOf(portalLayer.getId());
 					if (index != -1) {
 						group["items"].splice(index, 1);
 					}
 				}
 			});
+
+			draw();
 		}
 	}
 
@@ -308,7 +305,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	function findById(array, id) {
 		var ret = null;
 		process(array, function(o) {
-			if (o.getId() == id) {
+			if (o["id"] == id) {
 				ret = o;
 			}
 		});
@@ -332,16 +329,20 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		layerRoot["addLayer"] = function(groupId, portalLayer, wmsLayer) {
 			var group = findById(layerRoot.groups, groupId);
 			group.items.push(portalLayer.id);
-			
+
 			layerRoot.wmsLayers.push(wmsLayer);
 			decorateMapLayer(wmsLayer);
-			
+
 			layerRoot.portalLayers.push(portalLayer);
 			decoratePortalLayer(portalLayer);
+
+			draw();
 		}
 		layerRoot["addGroup"] = function(group) {
 			layerRoot.groups.push(group);
-			decorateGroup(group);
+			decorateGroup(null, group);
+
+			draw();
 		}
 	}
 
@@ -356,13 +357,12 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			if (typeof item === 'object') {
 				processGroup(group.getId(), item);
 			} else {
-				var portalLayers = findById(layerRoot.portalLayers, item);
-				if (portalLayers.length !== 1) {
-					bus.send("error", "One (and only one) portal layer with id '" + item + "' expected");
+				var portalLayer = findById(layerRoot.portalLayers, item);
+				if (portalLayer == null) {
+					bus.send("error", "Portal layer with id '" + item + "' not found");
 					continue;
 				}
 
-				var portalLayer = portalLayers[0];
 				decoratePortalLayer(portalLayer, group.getId());
 
 				bus.send("add-layer", portalLayer);
@@ -371,32 +371,32 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	}
 
-	var draw = function(newLayerRoot) {
+	var draw = function() {
+		bus.send("reset-layers");
 		var i;
-		layerRoot = newLayerRoot;
-		decorateLayerRoot(layerRoot);
 		defaultServer = null;
-		if (newLayerRoot["default-server"]) {
-			defaultServer = newLayerRoot["default-server"];
+		if (layerRoot["default-server"]) {
+			defaultServer = layerRoot["default-server"];
 			defaultServer = $.trim(defaultServer);
 			if (defaultServer.substring(0, 7) != "http://") {
 				defaultServer = "http://" + defaultServer;
 			}
 		}
-		var groups = newLayerRoot.groups;
+		var groups = layerRoot.groups;
 
 		bus.send("before-adding-layers");
 
 		for (i = 0; i < groups.length; i++) {
 			processGroup(null, groups[i]);
 		}
+		decorateLayerRoot(layerRoot);
 
 		bus.send("layers-loaded");
 	};
 
 	var redraw = function(newLayerRoot) {
-		bus.send("reset-layers");
-		draw(newLayerRoot);
+		layerRoot = newLayerRoot;
+		draw();
 	};
 
 	function getLayerRoot() {
@@ -404,7 +404,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	}
 
 	bus.listen("modules-loaded", function() {
-		draw(module.config());
+		layerRoot = module.config();
+		draw();
 	});
 
 	bus.listen("decorate-and-add-layer", function(e, layerInfo, mapLayers, groupId) {
@@ -418,13 +419,12 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 		layerRoot.portalLayers.push(layerInfo);
 		var group = findById(layerRoot.groups, groupId);
-		if (group.length == 0) {
-			bus.send("error", "One (and only one) group with id '" + groupId + "' expected");
-		} else {
-			group[0].items.push(layerInfo.id);
+		if (group == null) {
+			bus.send("error", "Group with id '" + groupId + "' not found");
 		}
+		group.items.push(layerInfo.id);
 
-		redraw(layerRoot);
+		draw();
 	});
 
 	return {

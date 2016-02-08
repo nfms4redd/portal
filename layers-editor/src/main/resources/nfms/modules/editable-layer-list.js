@@ -1,4 +1,4 @@
-define([ "message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "jquery-ui" ], function(bus, forms, layers, layers_json, $) {
+define([ "message-bus", "layers-edit-form", "layers", "jquery", "jquery-ui" ], function(bus, forms, layers, $) {
 
 	bus.listen("before-adding-layers", function() {
 		bus.send("register-layer-action", function(layer) {
