@@ -1,4 +1,4 @@
-define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], function(layers_json, schema, layers, $) {
+define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, layers, $) {
 
 	var dialog;
 	var form;
@@ -283,11 +283,6 @@ define([ "layers-json", "layers-schema", "layers", "jquery", "jquery-ui" ], func
 			data[panel] = values;
 		});
 		return data;
-	}
-
-	function saved() {
-		closeDialog();
-		layers.redraw(layers_json.root);
 	}
 
 	function saveServer() {

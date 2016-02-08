@@ -427,6 +427,19 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		draw();
 	});
 
+	bus.listen("save-layers", function() {
+		bus.send("ajax", {
+			type : 'PUT',
+			url : 'layers.json',
+			contentType : "application/json; charset=utf-8",
+			data : JSON.stringify(config, null, 4),
+			success : function(data, textStatus, jqXHR) {
+				bus.send("layers-saved");
+			},
+			errorMsg : "Error uploading layers.json to the server" // TODO i18n
+		});
+	});
+
 	return {
 		draw : draw,
 		redraw : redraw,
