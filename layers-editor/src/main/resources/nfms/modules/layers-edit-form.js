@@ -1,4 +1,6 @@
-define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, layers, $) {
+define([ "layers-schema", "message-bus", "jquery", "jquery-ui" ], function(schema, bus, $) {
+
+	var layerRoot = null;
 
 	var dialog;
 	var form;
@@ -32,7 +34,7 @@ define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, la
 		var form = createDialog("Edit Portal Properties", "portal"); // TODO
 		// i18n
 		addFields("Server", "server", form, {
-			"default-server" : layers.getLayerRoot().getDefaultServer()
+			"default-server" : layerRoot.getDefaultServer()
 		}); // TODO i18n
 	}
 
@@ -41,10 +43,10 @@ define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, la
 			saveLayer();
 		});
 
-		var portalValues = layers.getLayerRoot().getPortalLayer(id);
+		var portalValues = layerRoot.getPortalLayer(id);
 		addPortalLayerFields(form, portalValues);
 
-		var wmsValues = layers.getLayerRoot().getWMSLayer(portalValues.layers[0]);
+		var wmsValues = layerRoot.getWMSLayer(portalValues.layers[0]);
 		addWmsLayerFields(form, wmsValues);
 	}
 
@@ -53,7 +55,7 @@ define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, la
 			saveGroup();
 		});
 
-		var values = layers.getLayerRoot().getGroup(id);
+		var values = layerRoot.getGroup(id);
 		addTocFields(form, values);
 	}
 
@@ -285,14 +287,18 @@ define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, la
 		return data;
 	}
 
+	bus.listen("layers-loaded", function(e, newLayersRoot) {
+		layerRoot = newLayersRoot;
+	});
+
 	function saveServer() {
 		var data = getFormValues();
-		layers.getLayerRoot().setDefaultServer(data["server"]["default-server"]);
+		layerRoot.setDefaultServer(data["server"]["default-server"]);
 	}
 
 	function saveGroup() {
 		var data = getFormValues();
-		layers.getLayerRoot().getGroup(data.toc.id).merge(data.toc);
+		layerRoot.getGroup(data.toc.id).merge(data.toc);
 	}
 
 	function addNewGroup() {
@@ -300,7 +306,7 @@ define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, la
 		var group = $.extend({
 			items : []
 		}, data.toc);
-		layers.getLayerRoot().addGroup(group);
+		layerRoot.addGroup(group);
 	}
 
 	function buildWMSLayer() {
@@ -327,15 +333,15 @@ define([ "layers-schema", "layers", "jquery", "jquery-ui" ], function(schema, la
 	function saveLayer() {
 		var wmsLayer = buildWMSLayer();
 		var portalLayer = buildPortalLayer(wmsLayer.id);
-		layers.getLayerRoot().getWMSLayer(wmsLayer.id).merge(wmsLayer);
-		layers.getLayerRoot().getPortalLayer(portalLayer.id).merge(portalLayer);
+		layerRoot.getWMSLayer(wmsLayer.id).merge(wmsLayer);
+		layerRoot.getPortalLayer(portalLayer.id).merge(portalLayer);
 	}
 
 	function addNewLayer(groupId) {
 		var wmsLayer = buildWMSLayer();
 		var portalLayer = buildPortalLayer(wmsLayer.id);
 
-		layers.getLayerRoot().addLayer(groupId, portalLayer, wmsLayer);
+		layerRoot.addLayer(groupId, portalLayer, wmsLayer);
 	}
 
 	return {

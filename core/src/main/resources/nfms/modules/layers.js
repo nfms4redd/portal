@@ -391,7 +391,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 		decorateLayerRoot(layerRoot);
 
-		bus.send("layers-loaded");
+		bus.send("layers-loaded", [ layerRoot ]);
 	};
 
 	var redraw = function(newLayerRoot) {
@@ -439,11 +439,5 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			errorMsg : "Error uploading layers.json to the server" // TODO i18n
 		});
 	});
-
-	return {
-		draw : draw,
-		redraw : redraw,
-		getLayerRoot : getLayerRoot
-	};
 
 });
