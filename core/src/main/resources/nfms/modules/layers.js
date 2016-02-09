@@ -432,9 +432,12 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			type : 'PUT',
 			url : 'layers.json',
 			contentType : "application/json; charset=utf-8",
-			data : JSON.stringify(config, null, 4),
+			data : JSON.stringify(layerRoot, null, 4),
 			success : function(data, textStatus, jqXHR) {
-				bus.send("layers-saved");
+				require([ "text!../layers.json?a=" + new Date().getTime() ], function(newLayerRott) {
+					layerRoot = JSON.parse(newLayerRott);
+					draw();
+				});
 			},
 			errorMsg : "Error uploading layers.json to the server" // TODO i18n
 		});
