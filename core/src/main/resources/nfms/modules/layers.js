@@ -425,23 +425,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		draw();
 	});
 
-	bus.listen("decorate-and-add-layer", function(e, layerInfo, mapLayers, groupId) {
+	bus.listen("decorate-and-add-layer", function(e, layerInfo, mapLayer, groupId) {
 		if (!layerInfo.hasOwnProperty("layers")) {
-			layerInfo["layers"] = [];
+			layerInfo["layers"] = [mapLayer.id];
 		}
-
-		for (var i = 0; i < mapLayers.length; i++) {
-			layerRoot.wmsLayers.push(mapLayers[i]);
-			layerInfo["layers"].push(mapLayers[i].id);
-		}
-		layerRoot.portalLayers.push(layerInfo);
-		var group = findById(layerRoot.groups, groupId);
-		if (group == null) {
-			bus.send("error", "Group with id '" + groupId + "' not found");
-		}
-		group.items.push(layerInfo.id);
-
-		draw();
+		layerRoot.addLayer(groupId, layerInfo, mapLayer);
 	});
 
 	bus.listen("save-layers", function() {

@@ -44,10 +44,10 @@ define([ "message-bus", "jquery", "toolbar" ], function(bus, $, toolbar) {
 						"id" : "unique-id-" + (new Date()).getTime(),
 						"label" : txtLayerName.val(),
 						"active" : "true"
-					}, [ {
+					}, {
 						"baseUrl" : txtURL.val(),
 						"wmsName" : txtWMSName.val()
-					} ], cmbGroups.val() ]);
+					}, cmbGroups.val() ]);
 					$(this).dialog("close");
 				},
 				Cancel : function() {
