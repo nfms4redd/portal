@@ -104,14 +104,21 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 					var wmsLayerRemovalFunction = function(testWMSLayer, k) {
 						if (testWMSLayer.getId() == wmsLayerId) {
 							layerRoot.wmsLayers.splice(k, 1);
+							return true;
 						}
+
+						return false;
 					};
 					for (var j = 0; j < testPortalLayer.layers.length; j++) {
 						var wmsLayerId = testPortalLayer.layers[j];
 						process(layerRoot.wmsLayers, wmsLayerRemovalFunction);
 					}
 				}
+
+				return true;
 			}
+
+			return false;
 		};
 		process(layerRoot.portalLayers, portalLayerRemovalFunction);
 	}
@@ -190,7 +197,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 					if (index != -1) {
 						group["items"].splice(index, 1);
 					}
+
+					return true;
 				}
+
+				return false;
 			});
 
 			draw();
@@ -295,7 +306,9 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 	function process(array, processFunction) {
 		for (var i = 0; i < array.length; i++) {
-			processFunction(array[i], i);
+			if (processFunction(array[i], i)) {
+				break;
+			}
 			if (array[i].hasOwnProperty("items")) {
 				process(array[i]["items"], processFunction);
 			}
@@ -307,7 +320,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		process(array, function(o) {
 			if (o["id"] == id) {
 				ret = o;
+
+				return true;
 			}
+
+			return false;
 		});
 
 		return ret;
