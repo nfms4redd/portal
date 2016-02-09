@@ -1,4 +1,4 @@
-define([ "message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "jquery-ui" ], function(bus, forms, layers, layers_json, $) {
+define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bus, forms, $) {
 
 	bus.listen("before-adding-layers", function() {
 		bus.send("register-layer-action", function(layer) {
@@ -14,16 +14,12 @@ define([ "message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "
 		});
 		bus.send("register-layer-action", function(layer) {
 			return $("<a/>").addClass("editable-layer-list-button").addClass("layer_deleteLayer_button").click(function() {
-				layers_json.deleteLayer(layer.getId(), function() {
-					layers.redraw(layers_json.root);
-				});
+				layer.remove();
 			});
 		});
 		bus.send("register-group-action", function(group) {
 			return $("<a/>").addClass("editable-layer-list-button").addClass("layer_deleteGroup_button").click(function() {
-				layers_json.deleteGroup(group.getId(), function() {
-					layers.redraw(layers_json.root);
-				});
+				group.remove();
 			});
 		});
 	});
@@ -36,10 +32,7 @@ define([ "message-bus", "layers-edit-form", "layers", "layers-json", "jquery", "
 
 	function save() {
 		var groups = getGroups($("#all_layers")).items;
-		layers_json.updateGroups(groups, function() {
-			console.log("New group order saved");
-			layers.redraw(layers_json.root);
-		});
+		// TODO Change groups 
 	}
 
 	bus.listen("layers-loaded", function() {

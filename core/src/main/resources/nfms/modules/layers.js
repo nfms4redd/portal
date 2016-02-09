@@ -3,12 +3,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 	var defaultServer;
 	var layerRoot;
 
-	function findById(array, id) {
-		return $.grep(array, function(l) {
-			return l.id === id;
-		});
-	}
-
 	var getGetLegendGraphicUrl = function(wmsLayer) {
 		var url = wmsLayer.baseUrl;
 		if (url.indexOf("?") === -1) {
@@ -28,7 +22,16 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 	}
 
-	function decorateCommons(groupOrPortalLayer) {
+	function decorateCommons(o) {
+		o["merge"] = function(data) {
+			$.extend(o, data);
+
+			draw();
+		}
+	}
+
+	function decorateCommonsPortalLayerOrGroup(groupOrPortalLayer) {
+		decorateCommons(groupOrPortalLayer);
 		groupOrPortalLayer["getName"] = function() {
 			return groupOrPortalLayer.label;
 		}
@@ -45,13 +48,79 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 			return ret;
 		}
-
 	}
+
+	function deleteAllGroupLayers(group) {
+		for (var i = 0; i < group["items"].length; i++) {
+			var groupItem = group["items"][i];
+			if (typeof groupItem === 'string' || groupItem instanceof String) {
+				doDeleteLayer(groupItem);
+			} else if (groupItem["items"]) {
+				deleteAllGroupLayers(groupItem);
+			}
+		}
+	}
+
+	function findAndDeleteGroup(array, groupId) {
+		// Directly in the array
+		for (var i = 0; i < array.length; i++) {
+			if (array[i]["id"] == groupId) {
+				deleteAllGroupLayers(array[i]);
+				array.splice(i, 1);
+				return true;
+			}
+		}
+
+		// Delegate on each group
+		for (var i = 0; i < array.length; i++) {
+			if (array[i].hasOwnProperty("items")) {
+				if (findAndDeleteGroup(array[i]["items"], groupId)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	function decorateGroup(parentId, group) {
 		group["getParentId"] = function() {
 			return parentId;
 		}
-		decorateCommons(group);
+		decorateCommonsPortalLayerOrGroup(group);
+
+		group["remove"] = function() {
+			findAndDeleteGroup(layerRoot.groups, group.getId());
+			draw();
+		}
+	}
+
+	function doDeleteLayer(layerId) {
+		var portalLayerRemovalFunction = function(testPortalLayer, i) {
+			if (testPortalLayer.getId() == layerId) {
+				layerRoot.portalLayers.splice(i, 1);
+
+				if (testPortalLayer["layers"]) {
+					var wmsLayerRemovalFunction = function(testWMSLayer, k) {
+						if (testWMSLayer.getId() == wmsLayerId) {
+							layerRoot.wmsLayers.splice(k, 1);
+							return true;
+						}
+
+						return false;
+					};
+					for (var j = 0; j < testPortalLayer.layers.length; j++) {
+						var wmsLayerId = testPortalLayer.layers[j];
+						process(layerRoot.wmsLayers, wmsLayerRemovalFunction);
+					}
+				}
+
+				return true;
+			}
+
+			return false;
+		};
+		process(layerRoot.portalLayers, portalLayerRemovalFunction);
 	}
 
 	function decoratePortalLayer(portalLayer, groupId) {
@@ -67,7 +136,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			return ret;
 		}
 
-		decorateCommons(portalLayer);
+		decorateCommonsPortalLayerOrGroup(portalLayer);
 
 		var layerInfoArray = [];
 		if (!portalLayer.isPlaceholder()) {
@@ -75,12 +144,11 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 			// Iterate over wms layers
 			for (var j = 0; mapLayerIds != null && j < mapLayerIds.length; j++) {
-				var mapLayers = findById(layerRoot.wmsLayers, mapLayerIds[j]);
-				if (mapLayers.length === 0) {
-					bus.send("error", "At least one layer with id '" + mapLayerIds[j] + "' expected");
+				var mapLayer = findById(layerRoot.wmsLayers, mapLayerIds[j]);
+				if (mapLayer == null) {
+					bus.send("error", "Map layer '" + mapLayerIds[j] + "' not found");
 					continue;
 				}
-				var mapLayer = mapLayers[0];
 				decorateMapLayer(mapLayer, layerRoot.wmsLayers);
 
 				layerInfoArray.push(mapLayer);
@@ -120,9 +188,28 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 			return ret;
 		}
+		portalLayer["remove"] = function() {
+			doDeleteLayer(portalLayer.getId());
+
+			process(layerRoot.groups, function(group, i) {
+				if (group.hasOwnProperty("items")) {
+					var index = group["items"].indexOf(portalLayer.getId());
+					if (index != -1) {
+						group["items"].splice(index, 1);
+					}
+
+					return true;
+				}
+
+				return false;
+			});
+
+			draw();
+		}
 	}
 
 	function decorateMapLayer(mapLayer, mapLayers) {
+		decorateCommons(mapLayer);
 		mapLayer["getId"] = function() {
 			return mapLayer["id"];
 		}
@@ -217,6 +304,65 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 	}
 
+	function process(array, processFunction) {
+		for (var i = 0; i < array.length; i++) {
+			if (processFunction(array[i], i)) {
+				break;
+			}
+			if (array[i].hasOwnProperty("items")) {
+				process(array[i]["items"], processFunction);
+			}
+		}
+	}
+
+	function findById(array, id) {
+		var ret = null;
+		process(array, function(o) {
+			if (o["id"] == id) {
+				ret = o;
+
+				return true;
+			}
+
+			return false;
+		});
+
+		return ret;
+	}
+
+	function decorateLayerRoot(layerRoot) {
+		layerRoot["getPortalLayer"] = function(layerId) {
+			return findById(layerRoot.portalLayers, layerId);
+		}
+		layerRoot["getWMSLayer"] = function(layerId) {
+			return findById(layerRoot.wmsLayers, layerId);
+		}
+		layerRoot["getGroup"] = function(groupId) {
+			return findById(layerRoot.groups, groupId);
+		}
+		layerRoot["getDefaultServer"] = function() {
+			return layerRoot["default-server"];
+		}
+		layerRoot["addLayer"] = function(groupId, portalLayer, wmsLayer) {
+			var group = findById(layerRoot.groups, groupId);
+			group.items.push(portalLayer.id);
+
+			layerRoot.wmsLayers.push(wmsLayer);
+			decorateMapLayer(wmsLayer);
+
+			layerRoot.portalLayers.push(portalLayer);
+			decoratePortalLayer(portalLayer);
+
+			draw();
+		}
+		layerRoot["addGroup"] = function(group) {
+			layerRoot.groups.push(group);
+			decorateGroup(null, group);
+
+			draw();
+		}
+	}
+
 	function processGroup(parentId, group) {
 		decorateGroup(parentId, group);
 		bus.send("add-group", group);
@@ -228,13 +374,12 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			if (typeof item === 'object') {
 				processGroup(group.getId(), item);
 			} else {
-				var portalLayers = findById(layerRoot.portalLayers, item);
-				if (portalLayers.length !== 1) {
-					bus.send("error", "One (and only one) portal layer with id '" + item + "' expected");
+				var portalLayer = findById(layerRoot.portalLayers, item);
+				if (portalLayer == null) {
+					bus.send("error", "Portal layer with id '" + item + "' not found");
 					continue;
 				}
 
-				var portalLayer = portalLayers[0];
 				decoratePortalLayer(portalLayer, group.getId());
 
 				bus.send("add-layer", portalLayer);
@@ -242,37 +387,42 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			}
 		}
 	}
-	;
 
-	var draw = function(newLayerRoot) {
+	var draw = function() {
+		bus.send("reset-layers");
 		var i;
-		layerRoot = newLayerRoot;
 		defaultServer = null;
-		if (newLayerRoot["default-server"]) {
-			defaultServer = newLayerRoot["default-server"];
+		if (layerRoot["default-server"]) {
+			defaultServer = layerRoot["default-server"];
 			defaultServer = $.trim(defaultServer);
 			if (defaultServer.substring(0, 7) != "http://") {
 				defaultServer = "http://" + defaultServer;
 			}
 		}
-		var groups = newLayerRoot.groups;
+		var groups = layerRoot.groups;
 
 		bus.send("before-adding-layers");
 
 		for (i = 0; i < groups.length; i++) {
 			processGroup(null, groups[i]);
 		}
+		decorateLayerRoot(layerRoot);
 
-		bus.send("layers-loaded");
+		bus.send("layers-loaded", [ layerRoot ]);
 	};
 
 	var redraw = function(newLayerRoot) {
-		bus.send("reset-layers");
-		draw(newLayerRoot);
+		layerRoot = newLayerRoot;
+		draw();
 	};
 
+	function getLayerRoot() {
+		return layerRoot;
+	}
+
 	bus.listen("modules-loaded", function() {
-		draw(module.config());
+		layerRoot = module.config();
+		draw();
 	});
 
 	bus.listen("decorate-and-add-layer", function(e, layerInfo, mapLayers, groupId) {
@@ -286,18 +436,28 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 		layerRoot.portalLayers.push(layerInfo);
 		var group = findById(layerRoot.groups, groupId);
-		if (group.length == 0) {
-			bus.send("error", "One (and only one) group with id '" + groupId + "' expected");
-		} else {
-			group[0].items.push(layerInfo.id);
+		if (group == null) {
+			bus.send("error", "Group with id '" + groupId + "' not found");
 		}
+		group.items.push(layerInfo.id);
 
-		redraw(layerRoot);
+		draw();
 	});
 
-	return {
-		draw : draw,
-		redraw : redraw
-	};
+	bus.listen("save-layers", function() {
+		bus.send("ajax", {
+			type : 'PUT',
+			url : 'layers.json',
+			contentType : "application/json; charset=utf-8",
+			data : JSON.stringify(layerRoot, null, 4),
+			success : function(data, textStatus, jqXHR) {
+				require([ "text!../layers.json?a=" + new Date().getTime() ], function(newLayerRott) {
+					layerRoot = JSON.parse(newLayerRott);
+					draw();
+				});
+			},
+			errorMsg : "Error uploading layers.json to the server" // TODO i18n
+		});
+	});
 
 });
