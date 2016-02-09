@@ -87,6 +87,13 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		group["getParentId"] = function() {
 			return parentId;
 		}
+		group["getParent"] = function() {
+			if (parentId == null) {
+				return null;
+			} else {
+				return layerRoot.getGroup(parentId);
+			}
+		}
 		decorateCommonsPortalLayerOrGroup(group);
 
 		group["remove"] = function() {
@@ -361,6 +368,33 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 			draw();
 		}
+		layerRoot["moveGroup"] = function(groupId, parentId, newPosition) {
+			console.log(groupId, parentId, newPosition);
+			
+			var group = layerRoot.getGroup(groupId);
+			
+			// delete
+			var itemsArray = layerRoot.groups;
+			var parentGroup = group.getParent();
+			if (parentGroup != null) {
+				itemsArray = parentGroup["items"];
+			}
+			for (var i = 0; i < itemsArray.length; i++) {
+				if (itemsArray[i].getId()==groupId) {
+					itemsArray.splice(i, 1);
+					break;
+				}
+			}
+
+			// insert
+			var itemsArray = layerRoot.groups;
+			if (parentId != null) {
+				itemsArray = getGroup(groupId)["items"];
+			}
+			itemsArray.splice(newPosition, 0, group);
+
+			draw();
+		}
 	}
 
 	function processGroup(parentId, group) {
@@ -427,7 +461,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 
 	bus.listen("decorate-and-add-layer", function(e, layerInfo, mapLayer, groupId) {
 		if (!layerInfo.hasOwnProperty("layers")) {
-			layerInfo["layers"] = [mapLayer.id];
+			layerInfo["layers"] = [ mapLayer.id ];
 		}
 		layerRoot.addLayer(groupId, layerInfo, mapLayer);
 	});

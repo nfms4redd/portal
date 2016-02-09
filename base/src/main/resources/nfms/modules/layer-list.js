@@ -65,7 +65,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 		tblLayerGroup.attr("id", "group-content-table-" + groupInfo.getId());
 		$("<tbody/>").addClass("layer-container").appendTo(tblLayerGroup);
 
-		var divGroup = $("<div/>").addClass("group").attr("data-group", JSON.stringify(groupInfo));
+		var divGroup = $("<div/>").addClass("group").attr("data-group", groupInfo.getId());
 
 		if (groupInfo.getParentId() != null) {
 			var parentId = groupInfo.getParentId();
