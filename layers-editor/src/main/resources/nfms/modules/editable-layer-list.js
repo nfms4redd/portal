@@ -1,11 +1,11 @@
 define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bus, forms, $) {
 
 	var layerRoot = null
-	
-	bus.listen("layers-loaded", function(e, newLayerRoot){
+
+	bus.listen("layers-loaded", function(e, newLayerRoot) {
 		layerRoot = newLayerRoot;
 	});
-	
+
 	bus.listen("before-adding-layers", function() {
 		bus.send("register-layer-action", function(layer) {
 			return link(layer.getId(), forms.editLayer);
@@ -38,7 +38,7 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 
 	function save() {
 		var groups = getGroups($("#all_layers")).items;
-		// TODO Change groups 
+		// TODO Change groups
 	}
 
 	bus.listen("layers-loaded", function() {
@@ -77,7 +77,7 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 			placeholder : "root_group_placeholder",
 			forcePlaceholderSize : true,
 			stop : function(event, ui) {
-    			// IE doesn't register the blur when sorting
+				// IE doesn't register the blur when sorting
 				// so trigger focusout handlers to remove .ui-state-focus
 				ui.item.children(".ui-accordion-header").triggerHandler("focusout");
 				// Refresh accordion to handle new order
@@ -87,10 +87,15 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 					}
 				});
 
-				console.log(ui);
 				var groupId = ui.item.attr("data-group");
 				var newPosition = ui.item.index();
-				layerRoot.moveGroup(groupId, null, newPosition);
+				var currentAncestor = ui.item.parent();
+				while (currentAncestor.attr("id") != "all_layers" && currentAncestor.attr('data-group') == undefined) {
+					currentAncestor = currentAncestor.parent();
+				}
+				var parentDiv = currentAncestor.attr("id") == "all_layers" ? null : currentAncestor.attr("data-group");
+
+				layerRoot.moveGroup(groupId, parentDiv, newPosition);
 			}
 		});
 
@@ -110,7 +115,7 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 			placeholder : "root_group_placeholder",
 			forcePlaceholderSize : true,
 			stop : function(event, ui) {
-//				save();
+				// save();
 			}
 		});
 	});

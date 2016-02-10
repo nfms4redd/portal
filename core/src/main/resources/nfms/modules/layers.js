@@ -369,8 +369,6 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			draw();
 		}
 		layerRoot["moveGroup"] = function(groupId, parentId, newPosition) {
-			console.log(groupId, parentId, newPosition);
-			
 			var group = layerRoot.getGroup(groupId);
 			
 			// delete
@@ -389,7 +387,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			// insert
 			var itemsArray = layerRoot.groups;
 			if (parentId != null) {
-				itemsArray = getGroup(groupId)["items"];
+				itemsArray = layerRoot.getGroup(parentId)["items"];
 			}
 			itemsArray.splice(newPosition, 0, group);
 
