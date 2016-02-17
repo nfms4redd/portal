@@ -115,7 +115,14 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 			placeholder : "root_group_placeholder",
 			forcePlaceholderSize : true,
 			stop : function(event, ui) {
-				// save();
+				var layerId = ui.item.attr("data-layer");
+				var newPosition = ui.item.index();
+				var currentAncestor = ui.item.parent();
+				while (currentAncestor.attr("id") != "all_layers" && currentAncestor.attr('data-group') == undefined) {
+					currentAncestor = currentAncestor.parent();
+				}
+				var parentId = currentAncestor.attr("id") == "all_layers" ? null : currentAncestor.attr("data-group");
+				layerRoot.moveLayer(layerId, parentId, newPosition);
 			}
 		});
 	});

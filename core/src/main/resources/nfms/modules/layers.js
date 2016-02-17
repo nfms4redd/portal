@@ -370,7 +370,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 		}
 		layerRoot["moveGroup"] = function(groupId, parentId, newPosition) {
 			var group = layerRoot.getGroup(groupId);
-			
+
 			// delete
 			var itemsArray = layerRoot.groups;
 			var parentGroup = group.getParent();
@@ -378,7 +378,7 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				itemsArray = parentGroup["items"];
 			}
 			for (var i = 0; i < itemsArray.length; i++) {
-				if (itemsArray[i].getId()==groupId) {
+				if (itemsArray[i].getId() == groupId) {
 					itemsArray.splice(i, 1);
 					break;
 				}
@@ -390,6 +390,26 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 				itemsArray = layerRoot.getGroup(parentId)["items"];
 			}
 			itemsArray.splice(newPosition, 0, group);
+
+			draw();
+		}
+		layerRoot["moveLayer"] = function(layerId, parentId, newPosition) {
+			var groupId = layerRoot.getPortalLayer(layerId).getGroupId();
+			var group = layerRoot.getGroup(groupId);
+
+			// delete
+			var itemsArray = group["items"];
+			for (var i = 0; i < itemsArray.length; i++) {
+				if (itemsArray[i]==layerId) {
+					itemsArray.splice(i, 1);
+					break;
+				}
+			}
+
+			// insert
+			var targetGroup = layerRoot.getGroup(parentId);
+			var itemsArray = targetGroup["items"];
+			itemsArray.splice(newPosition, 0, layerId);
 
 			draw();
 		}

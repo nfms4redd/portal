@@ -97,6 +97,7 @@ define([ "jquery", "message-bus", "layer-list-selector", "i18n", "moment", "jque
 			bus.send("error", "Layer " + portalLayer.getName() + " references nonexistent group: " + portalLayer.getGroupId());
 		} else {
 			trLayer = $("<tr/>").attr("id", "layer-row-" + portalLayer.getId()).addClass("layer_row");
+			trLayer.attr("data-layer", portalLayer.getId());
 
 			tdLegend = $("<td/>").addClass("layer_legend");
 
