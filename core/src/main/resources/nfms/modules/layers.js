@@ -372,46 +372,55 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 			var group = layerRoot.getGroup(groupId);
 
 			// delete
-			var itemsArray = layerRoot.groups;
+			var sourceItemsArray = layerRoot.groups;
 			var parentGroup = group.getParent();
 			if (parentGroup != null) {
-				itemsArray = parentGroup["items"];
+				sourceItemsArray = parentGroup["items"];
 			}
-			for (var i = 0; i < itemsArray.length; i++) {
-				if (itemsArray[i].getId() == groupId) {
-					itemsArray.splice(i, 1);
+			var sourceIndex = -1;
+			for (var i = 0; i < sourceItemsArray.length; i++) {
+				if (sourceItemsArray[i].getId() == groupId) {
+					sourceIndex = i;
 					break;
 				}
 			}
+			var sameGroup = (group.getParentId() == null && parentId == null) || group.getParentId() == parentId;
+			if (!sameGroup || sourceIndex != newPosition) {
+				sourceItemsArray.splice(sourceIndex, 1);
 
-			// insert
-			var itemsArray = layerRoot.groups;
-			if (parentId != null) {
-				itemsArray = layerRoot.getGroup(parentId)["items"];
+				// insert
+				var itemsArray = layerRoot.groups;
+				if (parentId != null) {
+					itemsArray = layerRoot.getGroup(parentId)["items"];
+				}
+				itemsArray.splice(newPosition, 0, group);
+
+				draw();
 			}
-			itemsArray.splice(newPosition, 0, group);
-
-			draw();
 		}
 		layerRoot["moveLayer"] = function(layerId, parentId, newPosition) {
 			var groupId = layerRoot.getPortalLayer(layerId).getGroupId();
 			var group = layerRoot.getGroup(groupId);
 
 			// delete
-			var itemsArray = group["items"];
-			for (var i = 0; i < itemsArray.length; i++) {
-				if (itemsArray[i]==layerId) {
-					itemsArray.splice(i, 1);
+			var sourceItemsArray = group["items"];
+			var sourceIndex = -1;
+			for (var i = 0; i < sourceItemsArray.length; i++) {
+				if (sourceItemsArray[i] == layerId) {
+					sourceIndex = i;
 					break;
 				}
 			}
+			if (parentId != groupId || newPosition != sourceIndex) {
+				sourceItemsArray.splice(sourceIndex, 1);
 
-			// insert
-			var targetGroup = layerRoot.getGroup(parentId);
-			var itemsArray = targetGroup["items"];
-			itemsArray.splice(newPosition, 0, layerId);
+				// insert
+				var targetGroup = layerRoot.getGroup(parentId);
+				var itemsArray = targetGroup["items"];
+				itemsArray.splice(newPosition, 0, layerId);
 
-			draw();
+				draw();
+			}
 		}
 	}
 
