@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Jasmine Spec Runner v2.0.0</title>
+
+$cssDependencies$
+$javascriptDependencies$
+
+<!-- Obtain the reference to message bus -->
+<script type="text/javascript">
+	// I didn't managed to store functions in an object so I had to put them
+	// in an array and create a object to manage module_name -> array_index
+	var _indexes = {};
+	var _initFunctions = [];
+
+	define = function(deps, initFunction) {
+		_initFunctions.push(initFunction);
+	};
+
+	var sources = $sourcesList$;
+	for (var i = 0; i < sources.length; i++) {
+		var name = sources[i].substring(sources[i].lastIndexOf("/") + 1, sources[i].lastIndexOf(".js"));
+		_indexes[name] = i;
+	}
+
+	function _initModule(name, args) {
+		return _initFunctions[_indexes[name]].apply(null, args);
+	}
+	window.onload = jasmine.boot;
+</script>
+
+$preloadScriptTags$
+
+<!-- Catch the call to define and keep the init functions -->
+<script type="text/javascript">
+</script>
+
+$sourceScriptTags$
+$specScriptTags$
+
+</head>
+
+<body>
+</body>
+</html>
+
