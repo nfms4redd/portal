@@ -1,11 +1,10 @@
 describe("board tests", function() {
 
-	var events;
 	var bus;
 	var customization;
 	var module;
 
-	beforeEach(function() {
+	beforeEach(function(done) {
 		customization = {
 			"languageCode" : "es"
 		};
@@ -21,19 +20,23 @@ describe("board tests", function() {
 			}
 		};
 
-		events = [];
-		bus = {
-			"send" : function(eventName, args) {
-				events[eventName] = args;
-			},
-			"listen" : function() {
+		require.config({
+			"baseUrl" : "src/",
+			"paths" : {
+				"jquery" : "/jslib/jquery-2.1.0"
 			}
-		};
+		});
+		require([ "message-bus" ], function(loadedModule) {
+			bus = loadedModule;
+			done();
+		});
 	});
 
-	it("layers init", function() {
+	it("layers init", function(done) {
 		spyOn(bus, "listen");
-		_initModule("layers", [ $, bus, customization, module ]);
-		expect(bus.listen).toHaveBeenCalled();
+		require(["layers"], function(){
+			expect(bus.listen).toHaveBeenCalled();
+			done();
+		});
 	});
 });
