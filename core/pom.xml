@@ -126,6 +126,10 @@
 							<contextRoot>/jslib</contextRoot>
 							<directory>${project.basedir}/src/main/resources/nfms/jslib</directory>
 						</context>
+						<context>
+							<contextRoot>/test-jslib</contextRoot>
+							<directory>${project.basedir}/src/test/resources/nfms/jslib</directory>
+						</context>
 					</additionalContexts>
 					<preloadSources>
 						<source>/jslib/jquery-2.1.0.js</source>
