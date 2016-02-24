@@ -14,9 +14,26 @@ describe("board tests", function() {
 			"config" : {
 				"layers" : {
 					"default-server" : "http://demo1.geo-solutions.it",
-					"wmsLayers" : [],
-					"portalLayers" : [],
-					"groups" : []
+					"wmsLayers" : [ {
+						"id" : "blue-marble",
+						"baseUrl" : "http://rdc-snsf.org/diss_geoserver/wms",
+						"wmsName" : "unredd:blue_marble",
+						"imageFormat" : "image/jpeg"
+					} ],
+					"portalLayers" : [ {
+						"id" : "blue-marble",
+						"label" : "Blue marble",
+						"layers" : [ "blue-marble" ]
+					} ],
+					"groups" : [ {
+						"id" : "base",
+						"label" : "Base",
+						"items" : [ {
+							"id" : "innerbase",
+							"label" : "General purpose",
+							"items" : [ "blue-marble" ]
+						} ]
+					} ]
 				}
 			}
 		});
@@ -45,6 +62,22 @@ describe("board tests", function() {
 		injector.require([ "layers" ], function() {
 			bus.listen("layers-loaded", function(e, layerRoot) {
 				done();
+			});
+			bus.send("modules-loaded");
+		});
+	});
+
+	it("remove layer in second level", function(done) {
+		injector.require([ "layers" ], function() {
+			bus.listen("layers-loaded", function(e, layerRoot) {
+				var layer = layerRoot.getPortalLayer("blue-marble");
+				if (layer != null) { // to ignore reentering calls
+					layer.remove();
+					var group = layerRoot.getGroup("innerbase");
+					expect(group.items.length).toBe(0);
+
+					done();
+				}
 			});
 			bus.send("modules-loaded");
 		});

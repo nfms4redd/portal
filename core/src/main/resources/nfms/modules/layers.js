@@ -203,9 +203,8 @@ define([ "jquery", "message-bus", "customization", "module" ], function($, bus, 
 					var index = group["items"].indexOf(portalLayer.getId());
 					if (index != -1) {
 						group["items"].splice(index, 1);
+						return true;
 					}
-
-					return true;
 				}
 
 				return false;
