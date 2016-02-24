@@ -36,11 +36,6 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 		});
 	}
 
-	function save() {
-		var groups = getGroups($("#all_layers")).items;
-		// TODO Change groups
-	}
-
 	bus.listen("layers-loaded", function() {
 
 		$("#newGroupButton").remove();
