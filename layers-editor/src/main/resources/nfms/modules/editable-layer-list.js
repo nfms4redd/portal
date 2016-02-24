@@ -1,5 +1,11 @@
 define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bus, forms, $) {
 
+	var layerRoot = null
+
+	bus.listen("layers-loaded", function(e, newLayerRoot) {
+		layerRoot = newLayerRoot;
+	});
+
 	bus.listen("before-adding-layers", function() {
 		bus.send("register-layer-action", function(layer) {
 			return link(layer.getId(), forms.editLayer);
@@ -30,11 +36,6 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 		});
 	}
 
-	function save() {
-		var groups = getGroups($("#all_layers")).items;
-		// TODO Change groups 
-	}
-
 	bus.listen("layers-loaded", function() {
 
 		$("#newGroupButton").remove();
@@ -54,7 +55,7 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 
 		// Añadir placeholder para soltar subgrupos
 		$(".group").each(function(i, el) {
-			var groupInfo = getGroups($(el));
+			var groupInfo = layerRoot.getGroup($(el).attr("data-group"));
 			if (groupInfo.items.length == 0) { // Sólo en grupos vacíos
 				$("<div/>").addClass("group_placeholder").addClass("group-container").appendTo($("#group-content-table-" + groupInfo.id));
 			}
@@ -81,7 +82,15 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 					}
 				});
 
-				save();
+				var groupId = ui.item.attr("data-group");
+				var newPosition = ui.item.index();
+				var currentAncestor = ui.item.parent();
+				while (currentAncestor.attr("id") != "all_layers" && currentAncestor.attr('data-group') == undefined) {
+					currentAncestor = currentAncestor.parent();
+				}
+				var parentDiv = currentAncestor.attr("id") == "all_layers" ? null : currentAncestor.attr("data-group");
+
+				layerRoot.moveGroup(groupId, parentDiv, newPosition);
 			}
 		});
 
@@ -101,35 +110,16 @@ define([ "message-bus", "layers-edit-form", "jquery", "jquery-ui" ], function(bu
 			placeholder : "root_group_placeholder",
 			forcePlaceholderSize : true,
 			stop : function(event, ui) {
-				save();
+				var layerId = ui.item.attr("data-layer");
+				var newPosition = ui.item.index();
+				var currentAncestor = ui.item.parent();
+				while (currentAncestor.attr("id") != "all_layers" && currentAncestor.attr('data-group') == undefined) {
+					currentAncestor = currentAncestor.parent();
+				}
+				var parentId = currentAncestor.attr("id") == "all_layers" ? null : currentAncestor.attr("data-group");
+				layerRoot.moveLayer(layerId, parentId, newPosition);
 			}
 		});
 	});
-
-	function getGroups(el) {
-		var attrs = el.attr("data-group") ? JSON.parse(el.attr("data-group")) : {};
-		if (attrs.hasOwnProperty("name")) {
-			attrs.label = attrs.name;
-		}
-		delete attrs.name;
-		delete attrs.parentId;
-		attrs.items = [];
-		$(el.find(".group")[0]).parent().children(".group").each(function(i) {
-			attrs.items.push(getGroups($(this)));
-		});
-		attrs.items = attrs.items.concat(getLayers(el));
-		return attrs;
-	}
-
-	function getLayers(el) {
-		var ids = [];
-		el.find(".layer_row").filter(function() {
-			return $(this).parentsUntil(el, '.group').length < 1;
-		}).each(function(i) {
-			var id = $(this).attr('id').replace('layer-row-', '');
-			ids.push(id);
-		});
-		return ids;
-	}
 
 });
