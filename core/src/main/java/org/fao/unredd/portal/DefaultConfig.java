@@ -1,5 +1,6 @@
 package org.fao.unredd.portal;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -18,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
+import org.apache.log4j.Logger;
+
 /**
  * Utility class to access the custom resources placed in PORTAL_CONFIG_DIR.
  * 
@@ -26,6 +30,7 @@ import net.sf.json.JSONObject;
  */
 public class DefaultConfig implements Config {
 
+	private static Logger logger = Logger.getLogger(DefaultConfig.class);
 	private static final String PROPERTY_DEFAULT_LANG = "languages.default";
 
 	private Properties properties;
@@ -87,8 +92,18 @@ public class DefaultConfig implements Config {
 			throws ConfigurationException {
 		ResourceBundle bundle = localeBundles.get(locale);
 		if (bundle == null || !useCache) {
-			bundle = folder.getMessages(locale);
-			localeBundles.put(locale, bundle);
+			try {
+				bundle = folder.getMessages(locale);
+				localeBundles.put(locale, bundle);
+			} catch (MissingResourceException e) {
+				logger.info("Missing locale bundle: " + locale);
+				try {
+					bundle = new PropertyResourceBundle(
+							new ByteArrayInputStream(new byte[0]));
+				} catch (IOException e1) {
+					// ignore, not an actual IO operation
+				}
+			}
 		}
 		return bundle;
 	}
@@ -130,7 +145,7 @@ public class DefaultConfig implements Config {
 			if (langs != null && langs.length > 0) {
 				return langs[0].get("code");
 			} else {
-				return null;
+				return "en";
 			}
 		}
 	}
@@ -151,7 +166,7 @@ public class DefaultConfig implements Config {
 
 	@Override
 	public Map<String, JSONObject> getPluginConfiguration(Locale locale,
-			HttpServletRequest request) throws IOException {
+			HttpServletRequest request) {
 		Map<String, JSONObject> ret = new HashMap<String, JSONObject>();
 		for (ModuleConfigurationProvider provider : moduleConfigurationProviders) {
 
@@ -160,23 +175,32 @@ public class DefaultConfig implements Config {
 					.get(provider);
 			if (moduleConfigurations == null || !useCache
 					|| !provider.canBeCached()) {
-				moduleConfigurations = provider.getConfigurationMap(
-						new PortalConfigurationContextImpl(locale), request);
-				pluginConfigurations.put(provider, moduleConfigurations);
+				try {
+					moduleConfigurations = provider
+							.getConfigurationMap(
+									new PortalConfigurationContextImpl(locale),
+									request);
+					pluginConfigurations.put(provider, moduleConfigurations);
+				} catch (IOException e) {
+					logger.info("Provider failed to contribute configuration: "
+							+ provider.getClass());
+				}
 			}
 
 			// Merge the configuration in the result
-			Set<String> moduleNames = moduleConfigurations.keySet();
-			for (String moduleName : moduleNames) {
-				JSONObject moduleConfiguration = ret.get(moduleName);
-				if (moduleConfiguration == null) {
-					moduleConfiguration = new JSONObject();
-					ret.put(moduleName, moduleConfiguration);
-				}
+			if (moduleConfigurations != null) {
+				Set<String> moduleNames = moduleConfigurations.keySet();
+				for (String moduleName : moduleNames) {
+					JSONObject moduleConfiguration = ret.get(moduleName);
+					if (moduleConfiguration == null) {
+						moduleConfiguration = new JSONObject();
+						ret.put(moduleName, moduleConfiguration);
+					}
 
-				JSONObject moduleConfigurationToMerge = moduleConfigurations
-						.get(moduleName);
-				moduleConfiguration.putAll(moduleConfigurationToMerge);
+					JSONObject moduleConfigurationToMerge = moduleConfigurations
+							.get(moduleName);
+					moduleConfiguration.putAll(moduleConfigurationToMerge);
+				}
 			}
 
 		}

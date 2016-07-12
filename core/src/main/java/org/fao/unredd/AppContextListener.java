@@ -69,7 +69,7 @@ public class AppContextListener implements ServletContextListener {
 
 		@Override
 		public File getClientRoot() {
-			return new File(servletContext.getRealPath("/WEB-INF/classes/nfms"));
+			return new File(servletContext.getRealPath("/WEB-INF/classes/"));
 		}
 
 	}

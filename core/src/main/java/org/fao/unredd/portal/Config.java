@@ -16,7 +16,6 @@
 package org.fao.unredd.portal;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -71,10 +70,9 @@ public interface Config {
 	 * @param locale
 	 * @param request
 	 * @return
-	 * @throws IOException
 	 */
 	Map<String, JSONObject> getPluginConfiguration(Locale locale,
-			HttpServletRequest request) throws IOException;
+			HttpServletRequest request);
 
 	/**
 	 * Add providers to modify the behavior of
