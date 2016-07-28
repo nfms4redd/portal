@@ -5,11 +5,11 @@
   <parent>
     <groupId>org.fao.unredd</groupId>
     <artifactId>portal-root</artifactId>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>4.0.2</version>
   </parent>
   <groupId>org.fao.unredd</groupId>
   <artifactId>examples</artifactId>
-  <version>4.0.2-SNAPSHOT</version>
+  <version>4.0.2</version>
   <name>examples</name>
   <url>http://maven.apache.org</url>
   <properties>
