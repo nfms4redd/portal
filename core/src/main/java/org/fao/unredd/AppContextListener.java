@@ -22,7 +22,8 @@ public class AppContextListener implements ServletContextListener {
 		ServletContext servletContext = sce.getServletContext();
 		String rootPath = servletContext.getRealPath("/");
 		String configInitParameter = System.getenv("PORTAL_CONFIG_DIR");
-		if (!new File(configInitParameter).exists()) {
+		if (configInitParameter != null
+				&& !new File(configInitParameter).exists()) {
 			configInitParameter = servletContext
 					.getInitParameter("PORTAL_CONFIG_DIR");
 		}
