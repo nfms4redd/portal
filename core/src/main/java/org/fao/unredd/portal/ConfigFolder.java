@@ -29,7 +29,10 @@ public class ConfigFolder {
 					+ File.separator + "default_config";
 
 			// Get the portal config dir property from Java system properties
-			String portalConfigDir = System.getProperty("PORTAL_CONFIG_DIR");
+			String portalConfigDir = System.getenv("PORTAL_CONFIG_DIR");
+			if (portalConfigDir == null || portalConfigDir.trim().length() == 0) {
+				portalConfigDir = System.getProperty("PORTAL_CONFIG_DIR");
+			}
 
 			// If not set in the system properties, get it from the Servlet
 			// context parameters (web.xml)
