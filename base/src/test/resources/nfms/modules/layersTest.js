@@ -9,6 +9,7 @@ describe("board tests", function() {
 		require.config({
 			"baseUrl" : "src/",
 			"paths" : {
+				"message-bus" : "/messagebus/message-bus",
 				"jquery" : "/jslib/jquery-2.1.0"
 			},
 			"config" : {
@@ -46,6 +47,10 @@ describe("board tests", function() {
 			injector.require([ "message-bus" ], function(loadedModule) {
 				bus = loadedModule;
 				done();
+			});
+
+			injector.mock("customization", {
+				languageCode : "fr"
 			});
 		});
 	});

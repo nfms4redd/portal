@@ -82,63 +82,7 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.github.klieber</groupId>
-				<artifactId>phantomjs-maven-plugin</artifactId>
-				<version>0.7</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>install</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<version>1.9.7</version>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.searls</groupId>
-				<artifactId>jasmine-maven-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-				<!-- keep the configuration out of the execution so that the bdd goal 
-					has access to it -->
-				<configuration>
-					<jsSrcDir>src/main/resources/nfms/modules</jsSrcDir>
-					<jsTestSrcDir>src/test/resources/nfms/modules/</jsTestSrcDir>
-					<webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
-					<webDriverCapabilities>
-						<capability>
-							<name>phantomjs.binary.path</name>
-							<value>${phantomjs.binary}</value>
-						</capability>
-					</webDriverCapabilities>
-					<haltOnFailure>true</haltOnFailure>
-					<additionalContexts>
-						<context>
-							<contextRoot>/jslib</contextRoot>
-							<directory>${project.basedir}/src/main/resources/nfms/jslib</directory>
-						</context>
-						<context>
-							<contextRoot>/test-jslib</contextRoot>
-							<directory>${project.basedir}/src/test/resources/nfms/jslib</directory>
-						</context>
-					</additionalContexts>
-					<preloadSources>
-						<source>/jslib/jquery-2.1.0.js</source>
-						<source>/jslib/require.js</source>
-					</preloadSources>
-					<!-- <keepServerAlive>false</keepServerAlive> -->
-					<customRunnerTemplate>src/test/resources/SpecRunner.html</customRunnerTemplate>
-				</configuration>
-			</plugin>
+			
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
