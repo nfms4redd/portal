@@ -1,11 +1,9 @@
 define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui" ], function($, bus, layout, customization, i18n, ui) {
 
-	var divsById = [];
-	
+	var divsById = {};
 	var buttonPriorities = [];
 	
 	var divContainer = $("<div/>").attr("id", "layers_container").appendTo("body");
-
 	var divLayerListSelector = $("<div/>").attr("id", "layer_list_selector_pane").appendTo("body").hide();
 
 	bus.listen("show-layer-panel", function(event, id) {
@@ -18,11 +16,19 @@ define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui"
 		}
 	});
 
+	bus.listen("show-layer-panel", function(event, paneId) {
+		var btn = $("#" + paneId);
+		btn.prop("checked", true);
+		btn.button("refresh");
+		btn.change();
+	});
+
 	var registerLayerPanel = function(id, priority, text, div) {
 		var btn = $("<input type='radio'/>").attr("id", id).attr("name", "layerListSelector").appendTo(divLayerListSelector);
 		var lbl = $("<label/>").addClass("noselect").attr("for", id).html(text).appendTo(divLayerListSelector);
 				
 		buttonPriorities.push({
+			"id": id,
 			"btn" : btn,
 			"lbl" : lbl,
 			"priority" : priority,
@@ -31,47 +37,63 @@ define([ "jquery", "message-bus", "layout", "customization", "i18n", "jquery-ui"
 
 		div.appendTo(divContainer);
 
-		bus.listen("show-layer-panel", function(event, paneId) {
-			if (paneId == id) {
-				btn.prop("checked", true);
-				btn.button("refresh");
-				btn.change();
-			}
-		});
-
-		// Workaround for http://bugs.jqueryui.com/ticket/7665
-		lbl.click(function() {
-			btn.checked = !btn.checked;
-			btn.button("refresh");
-			btn.change();
-			bus.send("show-layer-panel", [ id ]);
-
-			return false;
-		});
-
 		divsById[id] = div;
+		renderButtons();
 	};
 
-	bus.listen("modules-loaded", function() {
+	var removeLayerPanel = function(id) {
+		$("#" + id).remove();
+		$("label[for=" + id + "]").remove();
+		for(var i in buttonPriorities) {
+			if(buttonPriorities[i].id == id) {
+				// Remove div
+				buttonPriorities[i].div.remove();
+				// Remove from buttonPriorities array
+				buttonPriorities.splice(i, 1);
+				break;
+			}
+		}
+		// Remove from divsById
+		delete divsById[id];
+		renderButtons();
+	};
+
+	var renderButtons = function() {
+		divLayerListSelector.empty();
 		var byPriority = function(a, b) {
 			return a.priority - b.priority;
 		}
 		buttonPriorities.sort(byPriority);
 		for (var i = 0; i < buttonPriorities.length; i++) {
+			var bp = buttonPriorities[i];
 			if (i == 0) {
-				buttonPriorities[i].btn.attr("checked", "true");
+				bp.btn.attr("checked", "true");
 			} else {
-				buttonPriorities[i].div.hide();
+				bp.div.hide();
 			}
-			divLayerListSelector.append(buttonPriorities[i].btn);
-			divLayerListSelector.append(buttonPriorities[i].lbl);
-		}
+			divLayerListSelector.append(bp.btn);
+			divLayerListSelector.append(bp.lbl);
 
+			bp.lbl.on("click", bp, function(event) {
+				var bp = event.data;
+				bp.btn.checked = !bp.btn.checked;
+				bp.btn.button("refresh");
+				bp.btn.change();
+				bus.send("show-layer-panel", [bp.id]);
+				console.log(bp.id);
+				return false;
+			});
+		}
 		divLayerListSelector.buttonset();
 		divLayerListSelector.show();
+	}
+
+	bus.listen("modules-loaded", function() {
+		renderButtons();
 	});
 
 	return {
-		"registerLayerPanel" : registerLayerPanel
+		"registerLayerPanel" : registerLayerPanel,
+		"removeLayerPanel" : removeLayerPanel
 	};
 });

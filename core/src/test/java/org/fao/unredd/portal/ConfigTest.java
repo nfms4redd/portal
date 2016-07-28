@@ -2,6 +2,7 @@ package org.fao.unredd.portal;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -169,4 +170,30 @@ public class ConfigTest {
 				any(HttpServletRequest.class));
 	}
 
+	@Test
+	public void testNoConfigurationFolder() {
+		Config config = new DefaultConfig(new ConfigFolder("doesnotexist",
+				"doesnotexist"), false);
+		assertNotNull(config.getDir());
+		assertNotNull(config.getPluginConfiguration(Locale.getDefault(),
+				mock(HttpServletRequest.class)));
+		assertNotNull(config.getProperties());
+		assertNotNull(config.getMessages(Locale.getDefault()));
+		assertNotNull(config.getDefaultLang());
+	}
+
+	@Test
+	public void testFailingConfigurationProvider() throws Exception {
+		Config config = new DefaultConfig(new ConfigFolder("doesnotexist",
+				"doesnotexist"), false);
+		ModuleConfigurationProvider provider = mock(ModuleConfigurationProvider.class);
+		when(
+				provider.getConfigurationMap(
+						any(PortalRequestConfiguration.class),
+						any(HttpServletRequest.class))).thenThrow(
+				new IOException("mock"));
+		config.addModuleConfigurationProvider(provider);
+		assertNotNull(config.getPluginConfiguration(Locale.getDefault(),
+				mock(HttpServletRequest.class)));
+	}
 }

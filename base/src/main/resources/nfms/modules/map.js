@@ -46,51 +46,63 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 
 	bus.listen("add-layer", function(event, layerInfo) {
 		var mapLayerArray = [];
-		$.each(layerInfo.wmsLayers, function(index, wmsLayer) {
+		$.each(layerInfo.getMapLayers(), function(index, mapLayer) {
 			var layer;
-			if (wmsLayer.type == "osm") {
-				layer = new OpenLayers.Layer.OSM(wmsLayer.id, wmsLayer.osmUrls);
-			} else if (wmsLayer.type == "gmaps") {
-				layer = new OpenLayers.Layer.Google(wmsLayer.id, {
-					type : google.maps.MapTypeId[wmsLayer["gmaps-type"]]
+			if (mapLayer.getType() == "osm") {
+				layer = new OpenLayers.Layer.OSM(mapLayer.getId(), mapLayer.getOSMURLs());
+			} else if (mapLayer.getType() == "gmaps") {
+				layer = new OpenLayers.Layer.Google(mapLayer.getId(), {
+					type : google.maps.MapTypeId[mapLayer.getGMapsType()]
 				});
-			} else if (wmsLayer.type == "wfs") {
+			} else if (mapLayer.getType() == "wfs") {
 				layer = new OpenLayers.Layer.Vector("WFS", {
 					strategies : [ new OpenLayers.Strategy.Fixed() ],
 					protocol : new OpenLayers.Protocol.WFS({
 						version : "1.0.0",
-						url : wmsLayer.baseUrl,
-						featureType : wmsLayer.featureTypeName
+						url : mapLayer.getBaseURL(),
+						featureType : mapLayer.getServerLayerName()
 					}),
 					projection : new OpenLayers.Projection("EPSG:4326")
 				});
 			} else {
-				layer = new OpenLayers.Layer.WMS(wmsLayer.id, wmsLayer.baseUrl, {
-					layers : wmsLayer.wmsName,
+				layer = new OpenLayers.Layer.WMS(mapLayer.getId(), mapLayer.getBaseURL(), {
+					layers : mapLayer.getServerLayerName(),
 					buffer : 0,
 					transitionEffect : "resize",
 					removeBackBufferDelay : 0,
 					isBaseLayer : false,
 					transparent : true,
-					format : wmsLayer.imageFormat || 'image/png'
+					format : mapLayer.getImageFormat() || 'image/png'
 				}, {
-					noMagic : true
+					noMagic : true,
+					visibility : false
+				// Don't show until a "layer-visibility" event indicates so
 				});
 			}
-			layer.id = wmsLayer.id;
+			layer.id = mapLayer.getId();
 			if (map !== null) {
 				map.addLayer(layer);
-				map.setLayerIndex(layer, wmsLayer.zIndex);
-				zIndexes[wmsLayer.id] = wmsLayer.zIndex;
+				map.setLayerIndex(layer, mapLayer.getZIndex());
+				zIndexes[mapLayer.getId()] = mapLayer.getZIndex();
 			}
-			mapLayerArray.push(wmsLayer.id);
+			mapLayerArray.push(mapLayer.getId());
 		});
 		if (mapLayerArray.length > 0) {
-			mapLayersByLayerId[layerInfo.id] = mapLayerArray;
+			mapLayersByLayerId[layerInfo.getId()] = mapLayerArray;
 		}
 	});
 
-	bus.listen("layers-loaded", function() {
+	bus.listen("reset-layers", function() {
+		zIndexes = {};
+		mapLayersByLayerId = {};
+		if (map !== null) {
+			while (map.layers.length > 0) {
+				map.removeLayer(map.layers[map.layers.length - 1]);
+			}
+		}
+	});
+
+	var sortLayers = function() {
 		/*
 		 * Sort all layers by zIndexes
 		 */
@@ -106,23 +118,34 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 				map.setLayerIndex(layer, z);
 			}
 		}
+	}
 
-		// Add the vector layer for highlighted features on top of all the other
-		// layers
-		// StyleMap for the highlight layer
-		var styleMap = new OpenLayers.StyleMap({
-			'strokeWidth' : 5,
-			fillOpacity : 0,
-			strokeColor : '#ee4400',
-			strokeOpacity : 0.5,
-			strokeLinecap : 'round'
-		});
+	var addVectorLayer = function() {
+		var id = "Highlighted Features";
 
-		var highlightLayer = new OpenLayers.Layer.Vector("Highlighted Features", {
-			styleMap : styleMap
+		// Remove if exists
+		var vector = map.getLayer(id);
+		if (map !== null && vector) {
+			map.removeLayer(vector);
+		}
+
+		// Create new vector layer
+		vector = new OpenLayers.Layer.Vector(id, {
+			styleMap : new OpenLayers.StyleMap({
+				'strokeWidth' : 5,
+				fillOpacity : 0,
+				strokeColor : '#ee4400',
+				strokeOpacity : 0.5,
+				strokeLinecap : 'round'
+			})
 		});
-		highlightLayer.id = "Highlighted Features";
-		map.addLayer(highlightLayer);
+		vector.id = id;
+		map.addLayer(vector);
+	}
+
+	bus.listen("layers-loaded", function() {
+		sortLayers();
+		addVectorLayer();
 	});
 
 	bus.listen("layer-visibility", function(event, layerId, visibility) {
@@ -136,7 +159,9 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 	});
 
 	bus.listen("activate-exclusive-control", function(event, control) {
-		if (!$.isArray(control)) {
+		if (!control) {
+			control = [];
+		} else if (!$.isArray(control)) {
 			control = [ control ];
 		}
 		activateExclusiveControl(control);
@@ -147,7 +172,9 @@ define([ "message-bus", "layout", "jquery", "openlayers" ], function(bus, layout
 	});
 
 	bus.listen("set-default-exclusive-control", function(event, control) {
-		if (!$.isArray(control)) {
+		if (!control) {
+			control = [];
+		} else if (!$.isArray(control)) {
 			control = [ control ];
 		}
 		defaultExclusiveControl = control;

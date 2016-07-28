@@ -156,7 +156,7 @@ public class Output extends OutputDescriptor {
 				for (String variableName : fieldSeries.keySet()) {
 					sql += ", \"" + variableName + "\" ";
 				}
-				sql += "FROM " + table_name_data + " WHERE \""
+				sql += " FROM " + table_name_data + " WHERE \""
 						+ data_table_id_field
 						+ "\"::varchar in (?, trim(leading '0' from ?)) "
 						+ "ORDER BY " + dateExpression;

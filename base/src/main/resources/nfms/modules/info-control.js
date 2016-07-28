@@ -28,21 +28,33 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 		feature["highlightGeom"] = highlightGeom;
 	};
 
+	bus.listen("reset-layers", function() {
+		layerIdControl = {};
+		layerIdInfo = {};
+		bus.send("set-default-exclusive-control", []);
+		bus.send("activate-default-exclusive-control");
+		for ( var c in controls) {
+			var control = controls[c];
+			control.destroy();
+		}
+		controls = [];
+	});
+
 	bus.listen("add-layer", function(e, layerInfo) {
-		var wmsLayers = layerInfo.wmsLayers;
-		for (var i = 0; i < wmsLayers.length; i++) {
-			var wmsLayer = wmsLayers[i];
-			if (!wmsLayer.hasOwnProperty("queryType")) {
+		var mapLayers = layerInfo.getMapLayers();
+		for (var i = 0; i < mapLayers.length; i++) {
+			var mapLayer = mapLayers[i];
+			if (!mapLayer.isQueryable()) {
 				continue;
 			}
 
-			layerIdInfo[layerInfo.id] = {};
+			layerIdInfo[layerInfo.getId()] = {};
 
 			var aliases = null;
-			if (wmsLayer.hasOwnProperty("queryFieldNames")) {
+			if (mapLayer.hasOwnProperty("queryFieldNames")) {
 				aliases = [];
-				var fieldNames = wmsLayer["queryFieldNames"];
-				var fieldAliases = wmsLayer["queryFieldAliases"];
+				var fieldNames = mapLayer.getQueryFieldNames();
+				var fieldAliases = mapLayer.getQueryFieldAliases();
 				for (var j = 0; j < fieldNames.length; j++) {
 					var alias = {
 						"name" : fieldNames[j],
@@ -51,28 +63,23 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 					aliases.push(alias);
 				}
 			}
-			var queryUrl = null;
-			if (wmsLayer.hasOwnProperty("queryUrl")) {
-				queryUrl = wmsLayer["queryUrl"];
-			} else {
-				queryUrl = wmsLayer["baseUrl"];
-			}
+			var queryUrl = mapLayer.getQueryURL();
 
 			var control = null;
-			if (wmsLayer["queryType"] == "wfs") {
+			if (mapLayer.queriesWFS()) {
 
 				queryUrl = queryUrl.trim();
 				queryUrl = queryUrl.replace(/wms$/, "wfs");
 				queryUrl = queryUrl + "?request=GetFeature&service=wfs&" + //
 				"version=1.0.0&outputFormat=application/json&srsName=EPSG:900913&" + //
-				"typeName=" + wmsLayer["wmsName"] + "&propertyName=" + wmsLayer["queryFieldNames"].join(",");
+				"typeName=" + mapLayer.getServerLayerName() + "&propertyName=" + mapLayer.getQueryFieldNames().join(",");
 
 				var wfsCallControl = null;
 
 				control = new OpenLayers.Control();
 				control.handler = new OpenLayers.Handler.Click(control, {
 					'click' : function(e) {
-						if (layerIdInfo.hasOwnProperty(layerInfo.id) && !layerIdInfo[layerInfo.id]["visibility"]) {
+						if (layerIdInfo.hasOwnProperty(layerInfo.getId()) && !layerIdInfo[layerInfo.getId()]["visibility"]) {
 							return;
 						}
 
@@ -88,7 +95,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 						}));
 						var bboxFilter = //
 						"  <ogc:Intersects>" + //
-						"    <ogc:PropertyName>" + wmsLayer["queryGeomFieldName"] + "</ogc:PropertyName>" + //
+						"    <ogc:PropertyName>" + mapLayer.getQueryGeomFieldName() + "</ogc:PropertyName>" + //
 						// " <gml:Point xmlns:gml=\"http://www.opengis.net/gml\"
 						// srsName=\"EPSG:900913\">" + //
 						// " <gml:coordinates decimal=\".\" cs=\",\" ts=\" \">"
@@ -111,15 +118,15 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 
 						// time parameter
 						var getFeatureMessage = "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">";
-						if (layerIdInfo.hasOwnProperty(layerInfo.id) && layerIdInfo[layerInfo.id].hasOwnProperty("timestamp")) {
+						if (layerIdInfo.hasOwnProperty(layerInfo.getId()) && layerIdInfo[layerInfo.getId()].hasOwnProperty("timestamp")) {
 							getFeatureMessage += //
 							"  <ogc:And>" + //
 							"" + bboxFilter + //
 							"    <ogc:PropertyIsEqualTo>" + //
-							"      <ogc:PropertyName>" + wmsLayer["queryTimeFieldName"] + "</ogc:PropertyName>" + //
+							"      <ogc:PropertyName>" + mapLayer.getQueryTimeFieldName() + "</ogc:PropertyName>" + //
 							"      <ogc:Function name=\"dateParse\">" + //
 							"        <ogc:Literal>yyyy-MM-dd</ogc:Literal>" + //
-							"        <ogc:Literal>" + layerIdInfo[layerInfo.id]["timestamp"].toISO8601String() + "</ogc:Literal>" + //
+							"        <ogc:Literal>" + layerIdInfo[layerInfo.getId()]["timestamp"].toISO8601String() + "</ogc:Literal>" + //
 							"      </ogc:Function>" + //
 							"    </ogc:PropertyIsEqualTo>" + //
 							"  </ogc:And>";
@@ -148,13 +155,13 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 										addBoundsAndHighlightGeom(feature);
 									});
 
-									bus.send("info-features", [ wmsLayer.id, features, e.xy.x, e.xy.y ]);
+									bus.send("info-features", [ mapLayer.getId(), features, e.xy.x, e.xy.y ]);
 								}
 							},
 							controlCallBack : function(control) {
 								wfsCallControl = control;
 							},
-							errorMsg : "Cannot get info for layer " + layerInfo.label
+							errorMsg : "Cannot get info for layer " + layerInfo.getName()
 						});
 
 					}
@@ -165,7 +172,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 
 				var control = new OpenLayers.Control.WMSGetFeatureInfo({
 					url : queryUrl,
-					layerUrls : [ wmsLayer["baseUrl"] ],
+					layerUrls : [ mapLayer.getBaseURL() ],
 					title : 'Identify features by clicking',
 					infoFormat : 'application/vnd.ogc.gml',
 					drillDown : false,
@@ -202,7 +209,7 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 								$.each(evt.features, function(index, feature) {
 									feature["aliases"] = featureAliases;
 									if (feature.geometry) {
-										if (wmsLayer.hasOwnProperty("queryHighlightBounds") && wmsLayer["queryHighlightBounds"]) {
+										if (mapLayer.highlightBounds()) {
 											feature.geometry = feature.geometry.getBounds().toGeometry();
 										}
 										feature.geometry.transform(epsg4326, epsg900913);
@@ -210,15 +217,15 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 									addBoundsAndHighlightGeom(feature);
 								});
 
-								bus.send("info-features", [ wmsLayer.id, evt.features, evt.xy.x, evt.xy.y ]);
+								bus.send("info-features", [ mapLayer.getId(), evt.features, evt.xy.x, evt.xy.y ]);
 							}
 						},
 						beforegetfeatureinfo : function(event) {
 							lastXY = event.xy;
-							var id = wmsLayer["id"];
-							if (layerIdInfo.hasOwnProperty(layerInfo.id) && layerIdInfo[layerInfo.id].hasOwnProperty("timestamp")) {
+							var id = mapLayer.getId();
+							if (layerIdInfo.hasOwnProperty(layerInfo.getId()) && layerIdInfo[layerInfo.getId()].hasOwnProperty("timestamp")) {
 								control.vendorParams = {
-									"time" : layerIdInfo[layerInfo.id]["timestamp"].toISO8601String()
+									"time" : layerIdInfo[layerInfo.getId()]["timestamp"].toISO8601String()
 								};
 							}
 
@@ -233,8 +240,8 @@ define([ "map", "message-bus", "customization", "openlayers", "jquery" ], functi
 			}
 
 			if (control != null) {
-				layerIdInfo[layerInfo.id]["control"] = control;
-				layerIdControl[wmsLayer["id"]] = control;
+				layerIdInfo[layerInfo.getId()]["control"] = control;
+				layerIdControl[mapLayer.getId()] = control;
 				controls.push(control);
 			}
 		}

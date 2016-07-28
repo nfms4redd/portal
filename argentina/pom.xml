@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.fao.unredd</groupId>
 		<artifactId>portal-root</artifactId>
-		<version>4.0.1</version>
+		<version>4.0.2</version>
 	</parent>
 	<packaging>war</packaging>
 	<artifactId>argentina</artifactId>
@@ -22,32 +22,32 @@
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>core</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>base</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>feedback</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>layer-time-sliders</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>time-slider</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.fao.unredd</groupId>
 			<artifactId>tour</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>ec.gob.dnf.portal</groupId>
@@ -163,7 +163,7 @@
 					<plugin>
 						<groupId>org.fao.unredd</groupId>
 						<artifactId>jwebclient-analyzer-maven-plugin</artifactId>
-						<version>4.0.1</version>
+						<version>4.0.2</version>
 						<executions>
 							<execution>
 								<id>generate-buildconfig</id>

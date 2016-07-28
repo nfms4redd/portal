@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -31,7 +32,12 @@ public class ConfigServlet extends HttpServlet {
 
 		ResourceBundle bundle = config.getMessages(locale);
 
-		String title = bundle.getString("title");
+		String title;
+		try {
+			title = bundle.getString("title");
+		} catch (MissingResourceException e) {
+			title = "Untitled";
+		}
 
 		JSONObject moduleConfig = new JSONObject();
 		// Fixed elements
